@@ -1,6 +1,7 @@
 import { Button } from "@/app/components/UI/ButtonComponent"
 import ImageComponent from "@/app/components/UI/ImageComponent"
 import MemberDetailListView from "@/app/components/UI/MemberDetailListView"
+import { cn } from "@/app/utils/tailwindMerge"
 import { IMemberDetail } from "@/types/types"
 
 interface IProps {
@@ -12,7 +13,7 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
     return (
         <div className="mt-10">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
-                <div className="flex flex-col md:flex-row items-start md:gap-2">
+                <div className={cn("flex flex-col md:flex-row items-start md:gap-2", { "items-center": !data?.emailAddress })}>
                     <ImageComponent
                         src={data?.avatarUrls ?? ""}
                         alt={"Pattern50 Logo"}
@@ -32,7 +33,7 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                     </div>
                 </div>
                 <div>
-                    <Button>Archive</Button>
+                    <Button prefixIcon="Trash">Archive</Button>
                 </div>
             </div>
 

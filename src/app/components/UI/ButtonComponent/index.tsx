@@ -13,7 +13,7 @@ const buttonVariants = cva(
                 default: "text-white bg-primary hover:opacity-90",
                 secondary: "text-black bg-secondary hover:bg-secondaryHover",
                 outline: "text-black bg-transparent border-[1px] border-borderColor hover:bg-outlineHover focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
-                destructive: "text-white bg-destructive hover:bg-destructiveHover focus:bg-destructiveFocus focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
+                destructive: "text-white bg-destructive hover:bg-destructiveHover",
                 ghost: "text-textPrimary bg-transparent hover:bg-disabled focus:bg-disabled focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
                 link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
             },
