@@ -13,7 +13,7 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
     return (
         <div className="mt-10">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
-                <div className={cn("flex flex-col md:flex-row items-start md:gap-2", { "items-center": !data?.emailAddress })}>
+                <div className={cn("flex flex-col md:flex-row items-start md:gap-2", { "md:items-center": !data?.emailAddress })}>
                     <ImageComponent
                         src={data?.avatarUrls ?? ""}
                         alt={"Pattern50 Logo"}
