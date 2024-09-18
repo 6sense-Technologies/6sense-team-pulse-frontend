@@ -23,6 +23,20 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
         setCurrentPage(page);
     };
 
+    const formatDate = (dateString: string): string => {
+        const date = new Date(dateString);
+
+        // Get the day, month (abbreviated), and year
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const monthNames: string[] = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month: string = monthNames[date.getMonth()];
+
+        // Construct the final formatted date
+        return `${day} ${month}, ${year}`;
+    }
+
+
     useEffect(() => {
         router.push(`/member-list/${accountId}?page=${currentPage}`);
     }, [currentPage, router, accountId]);
@@ -62,6 +76,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                 USERSTORY COMPLETION RATE
                                             </th>
                                             <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                CODE TO BUG RATIO
+                                            </th>
+                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 OVERALL SCORE
                                             </th>
                                             <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
@@ -74,7 +91,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                             return (
                                                 <tr key={info?._id}>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.date}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(info.date)}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Task}</p>
@@ -86,7 +103,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Story}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.done?.Task + info?.issuesCount?.done?.Bug}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
+                                                            {info?.issuesCount?.done?.Task + info?.issuesCount?.done?.Bug}
+                                                        </p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.done?.Story}</p>
@@ -96,6 +115,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.userStoryCompletionRate}%</p>
+                                                    </td>
+                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">-</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore}%</p>

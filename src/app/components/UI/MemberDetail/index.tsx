@@ -11,7 +11,7 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
     console.log(data);
     return (
         <div className="mt-10">
-            <div className="flex flex-col md:flex-row md:justify-between">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
                 <div className="flex flex-col md:flex-row items-start md:gap-2">
                     <ImageComponent
                         src={data?.avatarUrls ?? ""}
@@ -26,9 +26,9 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                         <p className="text-sm text-subHeading">
                             {data?.emailAddress}
                         </p>
-                        <p className=" text-sm text-subHeading">
+                        {/* <p className=" text-sm text-subHeading">
                             Frontend Engineer
-                        </p>
+                        </p> */}
                     </div>
                 </div>
                 <div>

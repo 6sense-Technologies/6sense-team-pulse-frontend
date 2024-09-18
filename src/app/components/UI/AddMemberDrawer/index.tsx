@@ -100,13 +100,16 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
       onSuccess: (data) => {
         console.log(data);
         onClose();
-        router.push("/members?page=1");
+        router.push("/member-list?page=1");
         refetch();
       },
       onError: (error) => {
         const axiosError = error as AxiosError;
         if (axiosError && axiosError?.response?.status === 409) {
           setUserExistError("User already exist!");
+        }
+        if (axiosError && axiosError?.response?.status === 404) {
+          setUserExistError("Invalid credentials!");
         }
       },
       onSettled: () => {
@@ -169,7 +172,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                         Jira ID <span className="text-red-500">*</span>
                       </label>
                       <div className="w-full">
-                        <input {...register("jiraId")} placeholder="Enter Jira ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraId })} />
+                        <input {...register("jiraId")} onChange={(e) => { register("jiraId").onChange(e); setUserExistError(""); }} placeholder="Enter Jira ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraId })} />
                         {
                           errors && errors.jiraId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.jiraId?.message}</p>
                         }
@@ -187,7 +190,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                         Trello ID <span className="text-red-500">*</span>
                       </label>
                       <div className="w-full">
-                        <input {...register("trelloId")} placeholder="Enter Trello ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.trelloId })} />
+                        <input {...register("trelloId")} onChange={(e) => { register("trelloId").onChange(e); setUserExistError(""); }} placeholder="Enter Trello ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.trelloId })} />
                         {
                           errors && errors.trelloId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.trelloId?.message}</p>
                         }
@@ -210,7 +213,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
             <Button
               prefixIcon="PlusCircle"
               type="submit"
-              className="w-[90px]"
+              className="w-[90px] hover:opacity-90"
               prefixIconClassName="plusIcon"
               form="member-form"
               loading={isLoading}

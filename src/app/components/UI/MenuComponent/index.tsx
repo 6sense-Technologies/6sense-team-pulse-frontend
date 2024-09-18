@@ -24,8 +24,8 @@ const MenuComponent = ({ currentPage }: IPropTypes): JSX.Element => {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
 
   const menuItems: MenuItemsType = [
-    { name: "Home", href: "/", type: "link", icon: "HouseSimple" },
-    { name: "Members", href: "/member-list", type: "link", icon: "Users" },
+    // { name: "Home", href: "/", type: "link", icon: "HouseSimple" },
+    { name: "Members", href: "/member-list?page=1", type: "link", icon: "Users" },
 
   ]
 
@@ -36,7 +36,7 @@ const MenuComponent = ({ currentPage }: IPropTypes): JSX.Element => {
       </div>
       <div className={cn("max-w-[280px] fixed left-0 top-0 pl-8 z-50 h-screen w-full flex grow flex-col overflow-y-auto bg-[#FAFBFC] transition-transform duration-150 ease-in-out transform md:transform-none", { "-translate-x-full": !menuIsOpen }, { "translate-x-0": menuIsOpen })}>
         <div className="mt-6 flex items-center justify-between">
-          <Link href={"/"}>
+          <Link href={"/member-list?page=1"}>
             <ImageComponent
               src={"/logo/6senseLogo.svg"}
               alt={"Pattern50 Logo"}
