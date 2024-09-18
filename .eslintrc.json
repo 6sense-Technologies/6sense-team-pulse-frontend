@@ -4,6 +4,7 @@
     "es2021": true,
     "node": true
   },
+  "ignorePatterns": ["next.config.mjs"],
   "extends": ["eslint:recommended", "plugin:react-hooks/recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

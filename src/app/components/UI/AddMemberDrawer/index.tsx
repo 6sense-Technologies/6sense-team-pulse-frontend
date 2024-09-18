@@ -1,15 +1,57 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
+import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
-import { X } from "@phosphor-icons/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Warning, X } from "@phosphor-icons/react";
+import { useMutation } from "@tanstack/react-query";
+import axios, { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from 'zod';
 
 interface IProps {
   isOpen: boolean;
   onClose: () => void;
+  refetch: () => void;
 }
 
-const AddMemberDrawer = ({ isOpen, onClose }: IProps): JSX.Element => {
+interface IFormData {
+  jiraOrTrello: string;
+  jiraId: string;
+  trelloId: string;
+}
+
+const MemberSchema = z.object({
+  jiraOrTrello: z.string().min(1, "Jira/Trello is required"),
+  jiraId: z.string().optional(),
+  trelloId: z.string().optional()
+}).superRefine((data, ctx) => {
+  // Check if 'jiraOrTrello' is 'jira' and 'jiraId' is not provided
+  if (data.jiraOrTrello === 'jira' && !data.jiraId) {
+    ctx.addIssue({
+      path: ['jiraId'],
+      message: "Jira ID is required!",
+      code: z.ZodIssueCode.custom
+    });
+  }
+
+  // Check if 'jiraOrTrello' is 'trello' and 'trelloId' is not provided
+  if (data.jiraOrTrello === 'trello' && !data.trelloId) {
+    ctx.addIssue({
+      path: ['trelloId'],
+      message: "Trello ID is required!",
+      code: z.ZodIssueCode.custom
+    });
+  }
+});
+
+const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
+  const [jiraOrTrello, setJiraOrTrello] = useState("");
+  const [userExistError, setUserExistError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,21 +67,53 @@ const AddMemberDrawer = ({ isOpen, onClose }: IProps): JSX.Element => {
       }
     };
 
-    // Add event listeners
     document.addEventListener("keydown", handleEscKey);
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup event listeners on unmount
     return (): void => {
       document.removeEventListener("keydown", handleEscKey);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [onClose]);
 
+  const { handleSubmit, register, formState: { errors } } = useForm<IFormData>({
+    resolver: zodResolver(MemberSchema)
+  });
 
-  const [jiraOrTrello, setJiraOrTrello] = useState("");
+  const addMemberMutation = useMutation({
+    mutationKey: ["addMemberMutation", jiraOrTrello],
+    mutationFn: async (newMember: IFormData) => {
+      if (newMember.jiraOrTrello && newMember.jiraOrTrello === "jira") {
+        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.jiraId });
+        return res.data;
+      }
+      if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
+        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.trelloId });
+        return res.data;
+      }
+    },
+  });
 
-  console.log(jiraOrTrello);
+  const onsubmit = (data: IFormData): void => {
+    setIsLoading(true);
+    addMemberMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data);
+        onClose();
+        router.push("/members?page=1");
+        refetch();
+      },
+      onError: (error) => {
+        const axiosError = error as AxiosError;
+        if (axiosError && axiosError?.response?.status === 409) {
+          setUserExistError("User already exist!");
+        }
+      },
+      onSettled: () => {
+        setIsLoading(false);
+      }
+    })
+  };
 
   return (
     <div
@@ -52,7 +126,7 @@ const AddMemberDrawer = ({ isOpen, onClose }: IProps): JSX.Element => {
     >
       <div
         ref={drawerRef}
-        className="bg-white fixed right-0 top-0 bottom-0 max-w-lg w-full md:max-w-lg rounded-lg overflow-hidden shadow-xl overflow-y-auto"
+        className="bg-white fixed right-0 top-0 bottom-0 max-w-lg w-full md:max-w-lg rounded-lg overflow-hidden shadow-xl"
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -67,68 +141,86 @@ const AddMemberDrawer = ({ isOpen, onClose }: IProps): JSX.Element => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-grow bg-white px-10 py-4 overflow-auto">
+          <div className="flex-grow bg-white px-5 md:px-10 py-4 overflow-auto">
             <h2 className="text-xl font-bold">Member Information</h2>
-            <form className="mt-4">
-              {/* Form content will go here */}
+            <form id="member-form" onSubmit={handleSubmit(onsubmit)} className="mt-4">
               <div className="space-y-4">
                 <div>
-                  <div className="flex items-center">
+                  <div className="flex items-start">
                     <label className="w-[200px] text-nowrap">
                       Jira/Trello <span className="text-red-500">*</span>
                     </label>
-                    <select onChange={(e) => { setJiraOrTrello(e.target.value) }} className="w-full border outline-none px-4 py-2 rounded-md">
-                      <option value="">Select</option>
-                      <option value="jira">Jira</option>
-                      <option value="trello">Trello</option>
-                    </select>
+                    <div className="w-full">
+                      <select {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value) }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
+                        <option value="">Select</option>
+                        <option value="jira">Jira</option>
+                        <option value="trello">Trello</option>
+                      </select>
+                      {
+                        errors && errors.jiraOrTrello && <p className="text-red-400 flex md:items-center gap-1"><Warning className="mt-1 md:mt-0" /> {errors?.jiraOrTrello?.message}</p>
+                      }
+                    </div>
                   </div>
                 </div>
-                {
-                  jiraOrTrello === "jira" && (
-                    <div>
-                      <div className="flex items-center">
-                        <label className="w-[200px] text-nowrap">
-                          Jira ID <span className="text-red-500">*</span>
-                        </label>
-                        <input placeholder="Enter Jira ID" className="w-full border outline-none px-4 py-2 rounded-md" />
+                {jiraOrTrello === "jira" && (
+                  <div>
+                    <div className="flex items-start">
+                      <label className="w-[200px] text-nowrap">
+                        Jira ID <span className="text-red-500">*</span>
+                      </label>
+                      <div className="w-full">
+                        <input {...register("jiraId")} placeholder="Enter Jira ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraId })} />
+                        {
+                          errors && errors.jiraId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.jiraId?.message}</p>
+                        }
+                        {
+                          userExistError && <p className="text-red-400 flex items-center gap-1"><Warning /> {userExistError}</p>
+                        }
                       </div>
                     </div>
-                  )
-                }
-                {
-                  jiraOrTrello === "trello" && (
-                    <div>
-                      <div className="flex items-center">
-                        <label className="w-[200px] text-nowrap">
-                          Trello ID <span className="text-red-500">*</span>
-                        </label>
-                        <input placeholder="Enter Trello ID" className="w-full border outline-none px-4 py-2 rounded-md" />
+                  </div>
+                )}
+                {jiraOrTrello === "trello" && (
+                  <div>
+                    <div className="flex items-start">
+                      <label className="w-[200px] text-nowrap">
+                        Trello ID <span className="text-red-500">*</span>
+                      </label>
+                      <div className="w-full">
+                        <input {...register("trelloId")} placeholder="Enter Trello ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.trelloId })} />
+                        {
+                          errors && errors.trelloId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.trelloId?.message}</p>
+                        }
+                        {
+                          userExistError && <p className="text-red-400 flex items-center gap-1"><Warning /> {userExistError}</p>
+                        }
                       </div>
                     </div>
-                  )
-                }
+                  </div>
+                )}
               </div>
             </form>
           </div>
 
           {/* Button Section */}
-          <div className="py-5 pr-10 pl-10 bg-slate-50 flex gap-5 justify-end">
-            <Button variant={"secondary"} type="button" onClick={onClose}>
+          <div className="bg-slate-50 flex justify-end gap-5 p-5">
+            <Button variant={"secondary"} type="button" onClick={onClose} className="w-full">
               Cancel
             </Button>
             <Button
               prefixIcon="PlusCircle"
-              type="button"
-              className="w-full md:w-[153px]"
+              type="submit"
+              className="w-[90px]"
               prefixIconClassName="plusIcon"
+              form="member-form"
+              loading={isLoading}
             >
-              Create
+              {!isLoading && "Create"}
             </Button>
           </div>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 

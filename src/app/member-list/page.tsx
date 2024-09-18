@@ -1,26 +1,44 @@
 "use client";
 import AddMemberDrawer from "@/app/components/UI/AddMemberDrawer";
 import { Button } from "@/app/components/UI/ButtonComponent";
+import EmptyTableViewSkeleton from "@/app/components/UI/EmptyTableSkeleton";
 import MemberListView from "@/app/components/UI/MemberListView";
 import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
-import { useState } from "react";
-// import { useSearchParams } from "next/navigation";
-// import { useState } from "react";
+import { BACKEND_URI } from "@/app/utils/constants/constants";
+import { ICreateMemberType } from "@/types/types";
+import { useQuery } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const MemberList = (): JSX.Element => {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const handleDrawerOpen = (): void => { setIsDrawerOpen(true) };
     const handleDrawerClose = (): void => { setIsDrawerOpen(false) };
+    const searchParams = useSearchParams();
+    const [pagination, setPaignation] = useState({
+        page: 1,
+        size: 10,
+    })
 
-    // const searchParams = useSearchParams();
+    useEffect(() => {
+        setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
+    }, [searchParams, pagination.size])
 
-    // const [pagination, setPagination] = useState({
-    //     page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
-    //     size: 10,
-    //     // query: searchParams.get("query") ?? "",
-    // });
+    const { data, isFetching: membersLoading, refetch: memberRefetch } = useQuery<ICreateMemberType>({
+        queryKey: ["fetchMembers", pagination],
+        queryFn: async () => {
+            const res: AxiosResponse<ICreateMemberType> = await axios.get(`${BACKEND_URI}/users?page=${pagination.page}&limit=${pagination.size}`);
+            return res.data;
+        },
+        refetchOnWindowFocus: false
+    });
+
+    const members = data?.users ?? [];
+    const totalCount = data?.totalUsers;
+    const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 }
 
     return (
         <div className='relative adjustedWidthForMenu px-6 md:left-[280px]'>
@@ -31,18 +49,20 @@ const MemberList = (): JSX.Element => {
                 <h3 className='text-headingXS md:text-headingBase font-semibold'>All Members</h3>
             </section>
             <section className="mt-4 relative">
-                {/* <EmptyTableViewSkeleton /> */}
                 <div className="flex justify-center md:justify-end">
                     <Button onClick={handleDrawerOpen} prefixIcon='PlusCircle' type="button" className="w-full md:w-[153px] " prefixIconClassName='plusIcon' >Add Member</Button>
                 </div>
-                <div>
-                    <MemberListView />
+                <div className="mt-4">
+                    {
+                        membersLoading ? <EmptyTableViewSkeleton /> : <MemberListView totalCountAndLimit={totalCountAndLimit} members={members} refetch={memberRefetch} />
+                    }
+
                 </div>
             </section>
 
             {isDrawerOpen && (
                 <div className="relative">
-                    <AddMemberDrawer isOpen={isDrawerOpen} onClose={handleDrawerClose} />
+                    <AddMemberDrawer isOpen={isDrawerOpen} onClose={handleDrawerClose} refetch={memberRefetch} />
                 </div>
             )}
 
@@ -50,4 +70,4 @@ const MemberList = (): JSX.Element => {
     )
 }
 
-export default MemberList
+export default MemberList;

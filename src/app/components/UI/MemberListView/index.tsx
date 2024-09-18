@@ -1,30 +1,41 @@
+"use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import IconComponent from "@/app/components/UI/IconComponent";
+import ImageComponent from "@/app/components/UI/ImageComponent";
 import PaginationComponent from "@/app/components/UI/Pagination";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+interface IProps {
+    _id: string;
+    accountId: string;
+    displayName: string;
+    emailAddress: string;
+    avatarUrls: string;
+    currentPerformance: number;
+}
 
-const members = [
-    { id: 1, name: "Proshanto", designation: "Designation", score: "Score" },
-    { id: 1, name: "Proshanto", designation: "Designation", score: "Score" },
-    { id: 1, name: "Proshanto", designation: "Designation", score: "Score" },
-    { id: 1, name: "Proshanto", designation: "Designation", score: "Score" },
-    // Add more members here
-];
+const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IProps[], totalCountAndLimit: { totalCount: number, size: number }, refetch: () => void }): JSX.Element => {
+    const searchParams = useSearchParams();
+    const page = parseInt(searchParams.get("page") || "1");
+    const [currentPage, setCurrentPage] = useState(page);
+    const router = useRouter();
+    const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
 
-const MemberListView = (): JSX.Element => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPage = 10;
-
-    const onPageChange = (page: number) => {
+    const onPageChange = (page: number): void => {
         setCurrentPage(page);
-        // Perform any additional actions, such as refetching data
+        refetch();
     };
+
+    useEffect(() => {
+        router.push(`/member-list?page=${currentPage}`);
+    }, [currentPage, router]);
+
     return (
         <div className="flow-root">
-            <div className="overflow-x-auto"> {/* Moved overflow-x-auto to this container */}
+            <div className="overflow-x-auto">
                 <div className="inline-block min-w-full align-middle">
                     <div className="">
                         <table className="min-w-full divide-y divide-gray-300">
@@ -48,26 +59,29 @@ const MemberListView = (): JSX.Element => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                                {members.map((member) => {
+                                {members.map((member: IProps) => {
                                     return (
-                                        <tr key={member.id}>
+                                        <tr key={member._id}>
                                             <td className={cn("py-2 pl-6 text-textSecondary")}>
                                                 <div className={cn("w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center")}>
-                                                    <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
+                                                    {
+                                                        member?.avatarUrls ? <ImageComponent src={member?.avatarUrls} alt="Member Information" width="w-full" height="h-full" imageClassName="rounded-full" /> : <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
+
+                                                    }
                                                 </div>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.name}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.displayName}</p>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.designation}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">Designation</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.score}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.currentPerformance}%</p>
                                             </td>
                                             <td className="sticky right-0 px-3 pl-3 py-2 text-sm text-textSecondary bg-white z-10"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={`/members/${member.id}`}>
+                                                    <Link href={`/member-list/${member.accountId}`}>
                                                         <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
@@ -83,7 +97,7 @@ const MemberListView = (): JSX.Element => {
                 </div>
             </div>
 
-            <PaginationComponent currentPage={currentPage} totalPage={totalPage} onPageChange={onPageChange} />
+            <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
         </div>
     );
 };
