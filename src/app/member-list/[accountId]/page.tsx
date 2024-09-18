@@ -16,7 +16,7 @@ const MemberInformation = (): JSX.Element => {
     const searchParams = useSearchParams();
     const [pagination, setPaignation] = useState({
         page: 1,
-        size: 1,
+        size: 10,
     })
 
     useEffect(() => {
