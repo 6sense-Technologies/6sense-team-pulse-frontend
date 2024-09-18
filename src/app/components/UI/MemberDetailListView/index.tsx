@@ -134,7 +134,12 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                         </div>
                     </div>
 
-                    <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
+                    <div className="mt-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
+                        <p className="text-gray-400 text-sm">
+                            Showing {data.length} out of {totalCountAndLimit.totalCount}
+                        </p>
+                        <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
+                    </div>
                 </div>) : <p className="text-textSecondary">No Data Found!</p>
             }
         </>

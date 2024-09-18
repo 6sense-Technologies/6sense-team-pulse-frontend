@@ -97,7 +97,13 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                 </div>
             </div>
 
-            <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
+            <div className="mt-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
+                <p className="text-gray-400 text-sm">
+                    Showing {members.length} out of {totalCountAndLimit.totalCount}
+                </p>
+                <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
+            </div>
+
         </div>
     );
 };
