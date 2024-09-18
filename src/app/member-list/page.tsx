@@ -50,7 +50,7 @@ const MemberList = (): JSX.Element => {
             </section>
             <section className="mt-4 relative">
                 <div className="flex justify-center md:justify-end">
-                    <Button onClick={handleDrawerOpen} prefixIcon='PlusCircle' type="button" className="w-full md:w-[153px] " prefixIconClassName='plusIcon' >Add Member</Button>
+                    <Button onClick={handleDrawerOpen} prefixIcon='PlusCircle' type="button" className="w-full md:w-[153px]" prefixIconClassName='plusIcon' >Add Member</Button>
                 </div>
                 <div className="mt-4">
                     {

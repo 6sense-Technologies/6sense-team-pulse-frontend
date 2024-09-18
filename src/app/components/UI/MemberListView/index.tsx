@@ -48,7 +48,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                         NAME
                                     </th>
                                     <th scope="col" className={cn("pl-6 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
-                                        DESIGNATION
+                                        EMAIL
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
                                         OVERALL PERFORMANCE
@@ -74,10 +74,10 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.displayName}</p>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">Designation</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.emailAddress}</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.currentPerformance}%</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance}%</p>
                                             </td>
                                             <td className="sticky right-0 px-3 pl-3 py-2 text-sm text-textSecondary bg-white z-10"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
