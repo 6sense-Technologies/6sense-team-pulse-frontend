@@ -45,7 +45,7 @@ const PaginationComponent = ({ currentPage, totalPage, onPageChange }: IPaginati
     const pagination = getPagination();
 
     return (
-        <nav className="flex justify-center md:justify-end mt-10 items-center space-x-2 px-6 md:px-0">
+        <nav className="flex justify-center md:justify-end items-center space-x-2 px-6 md:px-0">
             <button
                 className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100 disabled:cursor-not-allowed"
                 onClick={() => { onPageChange(currentPage - 1); }}
