@@ -21,10 +21,12 @@ interface IFormData {
   jiraOrTrello: string;
   jiraId: string;
   trelloId: string;
+  designation: string;
 }
 
 const MemberSchema = z.object({
   jiraOrTrello: z.string().min(1, "Jira/Trello is required"),
+  // designation: z.string().min(1, "Designation is required"),
   jiraId: z.string().optional(),
   trelloId: z.string().optional()
 }).superRefine((data, ctx) => {
@@ -160,7 +162,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                         <option value="trello">Trello</option>
                       </select>
                       {
-                        errors && errors.jiraOrTrello && <p className="text-red-400 flex md:items-center gap-1"><Warning className="mt-1 md:mt-0" /> {errors?.jiraOrTrello?.message}</p>
+                        errors && errors.jiraOrTrello && <p className="text-red-400 flex md:items-center gap-1 text-xs"><Warning className="mt-1 md:mt-0" /> {errors?.jiraOrTrello?.message}</p>
                       }
                     </div>
                   </div>
@@ -174,10 +176,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       <div className="w-full">
                         <input {...register("jiraId")} onChange={(e) => { register("jiraId").onChange(e); setUserExistError(""); }} placeholder="Enter Jira ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraId })} />
                         {
-                          errors && errors.jiraId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.jiraId?.message}</p>
+                          errors && errors.jiraId && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.jiraId?.message}</p>
                         }
                         {
-                          userExistError && <p className="text-red-400 flex items-center gap-1"><Warning /> {userExistError}</p>
+                          userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
                         }
                       </div>
                     </div>
@@ -192,15 +194,30 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       <div className="w-full">
                         <input {...register("trelloId")} onChange={(e) => { register("trelloId").onChange(e); setUserExistError(""); }} placeholder="Enter Trello ID" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.trelloId })} />
                         {
-                          errors && errors.trelloId && <p className="text-red-400 flex items-center gap-1"><Warning /> {errors?.trelloId?.message}</p>
+                          errors && errors.trelloId && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.trelloId?.message}</p>
                         }
                         {
-                          userExistError && <p className="text-red-400 flex items-center gap-1"><Warning /> {userExistError}</p>
+                          userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
                         }
                       </div>
                     </div>
                   </div>
                 )}
+                {/* {jiraOrTrello && (
+                  <div>
+                    <div className="flex items-start">
+                      <label className="w-[200px] text-nowrap">
+                        Designation <span className="text-red-500">*</span>
+                      </label>
+                      <div className="w-full">
+                        <input {...register("designation")} placeholder="Enter your designation" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })} />
+                        {
+                          errors && errors.designation && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.designation?.message}</p>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                )} */}
               </div>
             </form>
           </div>
