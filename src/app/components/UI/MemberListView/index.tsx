@@ -74,7 +74,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.displayName}</p>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.emailAddress}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.emailAddress ?? "-"}</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance}%</p>
@@ -99,7 +99,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
 
             <div className="mt-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
                 <p className="text-gray-400 text-sm">
-                    Showing {members.length} out of {totalCountAndLimit.totalCount} results
+                    Showing {members.length} out of {totalCountAndLimit.totalCount} result{`${totalCountAndLimit.totalCount > 1 ? "s" : ""}`}
                 </p>
                 <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
             </div>
