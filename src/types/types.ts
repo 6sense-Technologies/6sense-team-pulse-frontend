@@ -8,6 +8,7 @@ export interface ICreateMemberType {
         emailAddress: string
         avatarUrls: string
         currentPerformance: number
+        designation: string
     }[],
     totalPages: number
     currentPage: number
@@ -22,6 +23,7 @@ export interface IMemberInformationType {
         emailAddress: string
         avatarUrls: string
         currentPerformance: number
+        designation: string
         issueHistory: IIssueHistory[]
         __v: number
         totalIssueHistory: number
@@ -36,6 +38,7 @@ export interface IMemberDetail {
     displayName: string
     emailAddress: string
     avatarUrls: string
+    designation: string
     currentPerformance: number
     issueHistory: IIssueHistory[]
     __v: number
@@ -63,4 +66,8 @@ export interface IIssueHistory {
     overallScore: number;
     _id: string;
     __v: number;
+}
+
+export interface IDesignation {
+    designations: string[]
 }

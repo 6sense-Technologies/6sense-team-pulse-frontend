@@ -15,6 +15,7 @@ interface IProps {
     emailAddress: string;
     avatarUrls: string;
     currentPerformance: number;
+    designation: string
 }
 
 const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IProps[], totalCountAndLimit: { totalCount: number, size: number }, refetch: () => void }): JSX.Element => {
@@ -50,6 +51,9 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                     <th scope="col" className={cn("pl-6 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
                                         EMAIL
                                     </th>
+                                    <th scope="col" className={cn("pl-6 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
+                                        DESIGNATION
+                                    </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
                                         OVERALL PERFORMANCE
                                     </th>
@@ -75,6 +79,9 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.emailAddress ?? "-"}</p>
+                                            </td>
+                                            <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.designation ?? "-"}</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance}%</p>

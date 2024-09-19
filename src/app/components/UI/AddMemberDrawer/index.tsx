@@ -2,13 +2,15 @@
 import { Button } from "@/app/components/UI/ButtonComponent";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
+import { IDesignation } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Warning, X } from "@phosphor-icons/react";
-import { useMutation } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios, { AxiosError, AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Toaster } from 'react-hot-toast';
 import { z } from 'zod';
 
 interface IProps {
@@ -26,7 +28,7 @@ interface IFormData {
 
 const MemberSchema = z.object({
   jiraOrTrello: z.string().min(1, "Jira/Trello is required"),
-  // designation: z.string().min(1, "Designation is required"),
+  designation: z.string().min(1, "Designation is required"),
   jiraId: z.string().optional(),
   trelloId: z.string().optional()
 }).superRefine((data, ctx) => {
@@ -40,13 +42,13 @@ const MemberSchema = z.object({
   }
 
   // Check if 'jiraOrTrello' is 'trello' and 'trelloId' is not provided
-  if (data.jiraOrTrello === 'trello' && !data.trelloId) {
-    ctx.addIssue({
-      path: ['trelloId'],
-      message: "Trello ID is required!",
-      code: z.ZodIssueCode.custom
-    });
-  }
+  // if (data.jiraOrTrello === 'trello' && !data.trelloId) {
+  //   ctx.addIssue({
+  //     path: ['trelloId'],
+  //     message: "Trello ID is required!",
+  //     code: z.ZodIssueCode.custom
+  //   });
+  // }
 });
 
 const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
@@ -55,6 +57,19 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
+
+
+
+  const { data: designationData } = useQuery({
+    queryKey: ["getDesignationList"],
+    queryFn: async () => {
+      const res: AxiosResponse<IDesignation> = await axios.get(`${BACKEND_URI}/users/designations/list`);
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+
+  const designations = designationData?.designations ?? [];
 
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent): void => {
@@ -78,21 +93,24 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
     };
   }, [onClose]);
 
-  const { handleSubmit, register, formState: { errors } } = useForm<IFormData>({
+  const { handleSubmit, register, formState: { errors }, clearErrors } = useForm<IFormData>({
     resolver: zodResolver(MemberSchema)
   });
 
   const addMemberMutation = useMutation({
     mutationKey: ["addMemberMutation", jiraOrTrello],
     mutationFn: async (newMember: IFormData) => {
+      // Jira
       if (newMember.jiraOrTrello && newMember.jiraOrTrello === "jira") {
-        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.jiraId });
+        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.jiraId, designation: newMember.designation });
         return res.data;
       }
-      if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
-        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.trelloId });
-        return res.data;
-      }
+
+      // Trello:
+      // if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
+      //   const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.trelloId, designation: newMember.designation });
+      //   return res.data;
+      // }
     },
   });
 
@@ -119,6 +137,8 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
       }
     })
   };
+
+  console.log(errors)
 
   return (
     <div
@@ -156,10 +176,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       Jira/Trello <span className="text-red-500">*</span>
                     </label>
                     <div className="w-full">
-                      <select {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value) }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
+                      <select {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value); clearErrors("jiraOrTrello"); }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
                         <option value="">Select</option>
                         <option value="jira">Jira</option>
-                        <option value="trello">Trello</option>
+                        {/* <option value="trello">Trello</option> */}
                       </select>
                       {
                         errors && errors.jiraOrTrello && <p className="text-red-400 flex md:items-center gap-1 text-xs"><Warning className="mt-1 md:mt-0" /> {errors?.jiraOrTrello?.message}</p>
@@ -178,14 +198,11 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                         {
                           errors && errors.jiraId && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.jiraId?.message}</p>
                         }
-                        {
-                          userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
-                        }
                       </div>
                     </div>
                   </div>
                 )}
-                {jiraOrTrello === "trello" && (
+                {/* {jiraOrTrello === "trello" && (
                   <div>
                     <div className="flex items-start">
                       <label className="w-[200px] text-nowrap">
@@ -202,22 +219,32 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       </div>
                     </div>
                   </div>
-                )}
-                {/* {jiraOrTrello && (
-                  <div>
-                    <div className="flex items-start">
-                      <label className="w-[200px] text-nowrap">
-                        Designation <span className="text-red-500">*</span>
-                      </label>
-                      <div className="w-full">
-                        <input {...register("designation")} placeholder="Enter your designation" className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })} />
+                )} */}
+                <div>
+                  <div className="flex items-start">
+                    <label className="w-[200px] text-nowrap">
+                      Designation <span className="text-red-500">*</span>
+                    </label>
+                    <div className="w-full">
+                      <select {...register("designation")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
+                        <option value="">Select</option>
                         {
-                          errors && errors.designation && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.designation?.message}</p>
+                          designations.map((designation, index) => {
+                            return (
+                              <option value={designation} key={index}>{designation}</option>
+                            )
+                          })
                         }
-                      </div>
+                      </select>
+                      {
+                        errors && errors.designation && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.designation?.message}</p>
+                      }
+                      {
+                        userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
+                      }
                     </div>
                   </div>
-                )} */}
+                </div>
               </div>
             </form>
           </div>
@@ -240,6 +267,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 };
