@@ -91,7 +91,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                             return (
                                                 <tr key={info?._id}>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(info.date)}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">{formatDate(info.date)}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Task}</p>
