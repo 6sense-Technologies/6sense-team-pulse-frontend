@@ -40,10 +40,10 @@ const ConfirmDialog: React.FC<IConfirmDialogProps> = ({ isLoading, isOpen, onClo
                     </svg>
                     <h3 className="mb-5 text-sm font-normal text-gray-500">{title}</h3>
                     {children}
-                    <div className='flex gap-4 justify-center mt-1'>
+                    <div className='flex gap-4 justify-center mt-2'>
                         <Button onClick={handleCloseDialog} variant={"outline"} className="font-normal focus:outline-[0px]">No, Cancel</Button>
 
-                        <Button loading={isLoading} onClick={handleConfirmDelete} variant={"destructive"} className="focus:outline-[0px] w-[107px]">{!isLoading && "Yes, I'm sure"}</Button>
+                        <Button loading={isLoading} onClick={handleConfirmDelete} variant={"destructive"} className="focus:outline-[0px] w-[108px]">{!isLoading && "Yes, I'm sure"}</Button>
                     </div>
                 </div>
             </div>

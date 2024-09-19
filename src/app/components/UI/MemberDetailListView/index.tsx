@@ -33,7 +33,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
         const month: string = monthNames[date.getMonth()];
 
         // Construct the final formatted date
-        return `${day} ${month}, ${year}`;
+        return `${day} ${month} ${year}`;
     }
 
 
@@ -51,7 +51,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                 <table className="min-w-full divide-y divide-gray-300">
                                     <thead className="">
                                         <tr>
-                                            <th scope="col" className={cn("w-[10%] pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th scope="col" className={cn("w-[11%] pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 DATE
                                             </th>
                                             <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
