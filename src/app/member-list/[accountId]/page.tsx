@@ -19,9 +19,24 @@ const MemberInformation = (): JSX.Element => {
         size: 10,
     })
 
+    // useEffect(() => {
+    //     setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
+    // }, [searchParams, pagination.size])
+
     useEffect(() => {
-        setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
-    }, [searchParams, pagination.size])
+        const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+
+        // Only update pagination if the new page is different from the current page
+        setPaignation((prevPagination) => {
+            if (prevPagination.page !== newPage) {
+                return {
+                    page: newPage,
+                    size: prevPagination.size,
+                };
+            }
+            return prevPagination; // Return the previous state if no change
+        });
+    }, [searchParams]);
 
 
     const { data, isFetching: memberLoading } = useQuery<IMemberInformationType>({

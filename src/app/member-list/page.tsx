@@ -23,9 +23,30 @@ const MemberList = (): JSX.Element => {
         size: 10,
     })
 
+    // useEffect(() => {
+    //     setPaignation((prevPagination) => {
+    //         return {
+    //             page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
+    //             size: prevPagination.size,
+    //         }
+    //     });
+    // }, [searchParams])
+
     useEffect(() => {
-        setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
-    }, [searchParams, pagination.size])
+        const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
+
+        // Only update pagination if the new page is different from the current page
+        setPaignation((prevPagination) => {
+            if (prevPagination.page !== newPage) {
+                return {
+                    page: newPage,
+                    size: prevPagination.size,
+                };
+            }
+            return prevPagination; // Return the previous state if no change
+        });
+    }, [searchParams]);
+
 
     const { data, isFetching: membersLoading, refetch: memberRefetch } = useQuery<ICreateMemberType>({
         queryKey: ["fetchMembers", pagination],
@@ -45,7 +66,7 @@ const MemberList = (): JSX.Element => {
             <MenuComponent currentPage={'members'} />
             <PageTitle pageName='Members' title='6sense Efficiency' />
             <section className="mt-[18px]">
-                <div className='mr-auto text-base text-primary font-medium'>Members</div>
+                <h4 className='mr-auto text-base text-primary font-medium'>Members</h4>
                 <h3 className='text-headingXS md:text-headingBase font-semibold'>All Members</h3>
             </section>
             <section className="mt-4 relative">
