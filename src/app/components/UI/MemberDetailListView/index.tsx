@@ -175,16 +175,16 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.done?.Story}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.taskCompletionRate.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.taskCompletionRate?.toFixed(2)}%</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.userStoryCompletionRate.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.userStoryCompletionRate?.toFixed(2)}%</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.codeToBugRatio.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.codeToBugRatio?.toFixed(2)}%</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore?.toFixed(2)}%</p>
                                                     </td>
                                                     <td id="tooltip-comment" className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <div
