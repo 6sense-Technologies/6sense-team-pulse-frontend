@@ -64,6 +64,8 @@ export interface IIssueHistory {
     taskCompletionRate: number;
     userStoryCompletionRate: number;
     overallScore: number;
+    comment: string;
+    codeToBugRatio: number;
     _id: string;
     __v: number;
 }
