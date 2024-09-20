@@ -24,6 +24,7 @@
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
     "react-hot-toast": "^2.4.1",
+    "react-tooltip": "^5.28.0",
     "tailwind-merge": "^2.5.2",
     "ts-node": "^10.9.2",
     "typescript-eslint": "^8.5.0",

@@ -4,6 +4,7 @@ import { cn } from "@/app/utils/tailwindMerge";
 import { IIssueHistory } from "@/types/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Tooltip } from 'react-tooltip';
 
 interface IProps {
     data: IIssueHistory[] | undefined
@@ -50,36 +51,99 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                             <div className="">
                                 <table className="min-w-full divide-y divide-gray-300">
                                     <thead className="">
-                                        <tr>
+                                        <tr className="">
                                             <th scope="col" className={cn("w-[11%] pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 DATE
                                             </th>
-                                            <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                NO. OF TASKS
+                                            <th id="tooltip-task" scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                TASKS
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-task"
+                                                    content="NO. OF TASKS"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                NO. OF BUGS
+                                            <th id="tooltip-bugs" scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                BUGS
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-bugs"
+                                                    content="NO. OF BUGS"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                NO. OF USERSTORIES
+                                            <th id="tooltip-stories" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                STORIES
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-stories"
+                                                    content="NO. OF USERSTORIES"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                COMPLETED TASKS
+                                            <th id="tooltip-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                CT
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-com"
+                                                    content="NO. OF COMPLETED TASKS"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                COMPLETED USERSTORIES
+                                            <th id="tooltip-story" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                CU
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-story"
+                                                    content="COMPLETED USERSTORIES"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                TASK COMPLETION RATE
+                                            <th id="tooltip-task-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                TCR
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-task-com"
+                                                    content="TASK COMPLETION RATE"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                USERSTORY COMPLETION RATE
+                                            <th id="tooltip-us-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                USCR
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-us-com"
+                                                    content="USERSTORIES COMPLETION RATE"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                CODE TO BUG RATIO
+                                            <th id="tooltip-ctbr" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                CTBR
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-ctbr"
+                                                    content="CODE TO BUG RATIO"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                OVERALL SCORE
+                                            <th id="tooltip-score" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                SCORE
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-score"
+                                                    content="OVERALL SCORE"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
                                             </th>
                                             <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 COMMENT
@@ -99,32 +163,52 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Bug}</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Story}</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
                                                             {info?.issuesCount?.done?.Task + info?.issuesCount?.done?.Bug}
                                                         </p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.done?.Story}</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.taskCompletionRate.toFixed(2)}%</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.userStoryCompletionRate.toFixed(2)}%</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">-</p>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.codeToBugRatio.toFixed(2)}%</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore.toFixed(2)}%</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">-</p>
+                                                    <td id="tooltip-comment" className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                        <div
+                                                            className={cn(
+                                                                "items-center gap-0 cursor-pointer",
+                                                                { "flex": info.comment }
+                                                            )}
+                                                        >
+                                                            <p className={cn(
+                                                                "text-sm text-textSecondary font-semibold pb-[2px]",
+                                                                { "truncate max-w-[150px] w-full": info.comment }
+                                                            )}>
+                                                                {info?.comment ? info.comment : "-"}
+                                                            </p>
+                                                            <Tooltip
+                                                                anchorSelect="#tooltip-comment"
+                                                                content={info.comment}
+                                                                place="left"
+                                                                offset={0}
+                                                                style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                            />
+                                                        </div>
                                                     </td>
+
                                                 </tr>
                                             )
                                         })}
