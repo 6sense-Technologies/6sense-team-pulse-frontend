@@ -125,11 +125,15 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
       },
       onError: (error) => {
         const axiosError = error as AxiosError;
+
         if (axiosError && axiosError?.response?.status === 409) {
           setUserExistError("User already exist!");
         }
         if (axiosError && axiosError?.response?.status === 404) {
           setUserExistError("Invalid credentials!");
+        }
+        if (axiosError && axiosError?.response?.status === 500) {
+          setUserExistError("Error creating user!");
         }
       },
       onSettled: () => {

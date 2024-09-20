@@ -84,7 +84,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.designation ?? "-"}</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance}%</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance.toFixed(2)}%</p>
                                             </td>
                                             <td className="sticky right-0 px-3 pl-3 py-2 text-sm text-textSecondary bg-white z-10"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
