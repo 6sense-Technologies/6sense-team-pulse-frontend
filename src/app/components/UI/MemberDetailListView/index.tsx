@@ -37,7 +37,6 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
         return `${day} ${month} ${year}`;
     }
 
-
     useEffect(() => {
         router.push(`/member-list/${accountId}?page=${currentPage}`);
     }, [currentPage, router, accountId]);
@@ -152,6 +151,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {data?.map((info: IIssueHistory) => {
+                                            console.log(info?.comment ? info.comment : "no comment")
                                             return (
                                                 <tr key={info?._id}>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
@@ -186,26 +186,26 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore?.toFixed(2)}%</p>
                                                     </td>
-                                                    <td id="tooltip-comment" className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <div
                                                             className={cn(
                                                                 "items-center gap-0 cursor-pointer",
-                                                                { "flex": info.comment }
+                                                                { "flex": info?.comment }
                                                             )}
                                                         >
-                                                            <p className={cn(
+                                                            <p id={info?.comment ? "tooltip-comment" : undefined} className={cn(
                                                                 "text-sm text-textSecondary font-semibold pb-[2px]",
-                                                                { "truncate max-w-[150px] w-full": info.comment }
+                                                                { "truncate max-w-[150px] w-full": info?.comment }
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>
-                                                            <Tooltip
+                                                            {info?.comment && <Tooltip
                                                                 anchorSelect="#tooltip-comment"
-                                                                content={info.comment}
+                                                                content={info?.comment}
                                                                 place="left"
                                                                 offset={0}
                                                                 style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
-                                                            />
+                                                            />}
                                                         </div>
                                                     </td>
 
