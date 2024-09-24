@@ -73,3 +73,6 @@ export interface IIssueHistory {
 export interface IDesignation {
     designations: string[]
 }
+export interface IProjects {
+    projects: string[]
+}
