@@ -57,7 +57,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                     <th scope="col" className={cn("pl-4 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
                                         OVERALL PERFORMANCE
                                     </th>
-                                    <th scope="col" className="sticky right-0 bg-white py-2 pl-3 pr-16 text-xs md:text-sm font-bold text-primaryFocus text-left z-10">
+                                    <th scope="col" className="py-2 pl-3 pr-16 text-xs md:text-sm font-bold text-primaryFocus text-left z-10">
                                         ACTION
                                     </th>
                                 </tr>
@@ -86,9 +86,9 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance.toFixed(2)}%</p>
                                             </td>
-                                            <td className="sticky right-0 px-3 pl-3 py-2 text-sm text-textSecondary bg-white z-10"> {/* Added bg-white to sticky cell */}
+                                            <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={`/member-list/${member.accountId}`}>
+                                                    <Link href={`/member-list/${member.accountId}?page=1`}>
                                                         <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
