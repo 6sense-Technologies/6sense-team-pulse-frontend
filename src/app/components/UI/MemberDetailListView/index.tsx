@@ -44,7 +44,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
     return (
         <>
             {
-                data && data.length > 0 ? (<div className="flow-root">
+                data && data.length > 0 ? <div className="flow-root">
                     <div className="overflow-x-auto">
                         <div className="inline-block min-w-full align-middle">
                             <div className="">
@@ -224,7 +224,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                         </p>
                         <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
                     </div>
-                </div>) : <p className="text-textSecondary">No Data Found!</p>
+                </div> : <p className="text-textSecondary">No Data Found!</p>
             }
         </>
     );

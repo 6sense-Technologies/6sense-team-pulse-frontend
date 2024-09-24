@@ -2,7 +2,7 @@
 import { Button } from "@/app/components/UI/ButtonComponent";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
-import { IDesignation } from "@/types/types";
+import { IDesignation, IProjects } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Warning, X } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -24,11 +24,13 @@ interface IFormData {
   jiraId: string;
   trelloId: string;
   designation: string;
+  project: string;
 }
 
 const MemberSchema = z.object({
   jiraOrTrello: z.string().min(1, "Jira/Trello is required"),
   designation: z.string().min(1, "Designation is required"),
+  project: z.string().min(1, "Project is required"),
   jiraId: z.string().optional(),
   trelloId: z.string().optional()
 }).superRefine((data, ctx) => {
@@ -71,6 +73,16 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
 
   const designations = designationData?.designations ?? [];
 
+  const { data: projectData } = useQuery({
+    queryKey: ["getProjectList"],
+    queryFn: async () => {
+      const res: AxiosResponse<IProjects> = await axios.get(`${BACKEND_URI}/users/projects/list`);
+      return res.data;
+    },
+    refetchOnWindowFocus: false
+  });
+  const projects = projectData?.projects ?? [];
+
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent): void => {
       if (event.key === "Escape") {
@@ -102,7 +114,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
     mutationFn: async (newMember: IFormData) => {
       // Jira
       if (newMember.jiraOrTrello && newMember.jiraOrTrello === "jira") {
-        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.jiraId, designation: newMember.designation });
+        const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.jiraId, designation: newMember.designation, project: newMember.project });
         return res.data;
       }
 
@@ -242,6 +254,28 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       </select>
                       {
                         errors && errors.designation && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.designation?.message}</p>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex items-start">
+                    <label className="w-[200px] text-nowrap">
+                      Project <span className="text-red-500">*</span>
+                    </label>
+                    <div className="w-full">
+                      <select {...register("project")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
+                        <option value="">Select</option>
+                        {
+                          projects.map((project, index) => {
+                            return (
+                              <option value={project} key={index}>{project}</option>
+                            )
+                          })
+                        }
+                      </select>
+                      {
+                        errors && errors.project && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.project?.message}</p>
                       }
                       {
                         userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
