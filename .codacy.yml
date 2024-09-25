@@ -1,0 +1,8 @@
+engines:
+  duplication:
+    minTokenMatch: 120
+    skipLexicalErrors: false
+    ignoreLiterals: false
+    ignoreIdentifiers: true
+    ignoreAnnotations: false
+    ignoreUsings: false
