@@ -5,6 +5,11 @@
 .adjustedWidthForMenu {
   width: calc(100% - 280px);
 }
+
+.react-tooltip.core-styles-module_tooltip__3vRRp.styles-module_tooltip__mnnfp.styles-module_dark__xNqje.react-tooltip__place-left.core-styles-module_show__Nt9eE.react-tooltip__show {
+  opacity: 1;
+}
+
 @media screen and (max-width: 768px) {
   .adjustedWidthForMenu {
     width: 100%;

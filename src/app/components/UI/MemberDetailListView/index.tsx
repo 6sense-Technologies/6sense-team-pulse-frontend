@@ -94,6 +94,16 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
                                             </th>
+                                            <th id="tooltip-com-bug" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                CB
+                                                <Tooltip
+                                                    anchorSelect="#tooltip-com-bug"
+                                                    content="NO. OF COMPLETED BUGS"
+                                                    place="top"
+                                                    offset={0}
+                                                    style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                />
+                                            </th>
                                             <th id="tooltip-story" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 CU
                                                 <Tooltip
@@ -168,7 +178,12 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                                            {info?.issuesCount?.done?.Task + info?.issuesCount?.done?.Bug}
+                                                            {info?.issuesCount?.done?.Task}
+                                                        </p>
+                                                    </td>
+                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
+                                                            {info?.issuesCount?.done?.Bug}
                                                         </p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
