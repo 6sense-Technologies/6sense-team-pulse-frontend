@@ -17,7 +17,9 @@ const MemberPerformanceDetails = (): JSX.Element => {
             const res = await axios.get(`${BACKEND_URI}/users/${accountId}/${date}`);
 
             return res.data;
-        }
+        },
+        refetchOnWindowFocus: false,
+        enabled: !!accountId && !!date
     })
 
     return (
