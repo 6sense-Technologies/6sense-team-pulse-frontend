@@ -1,7 +1,9 @@
 "use client";
+import { Button } from "@/app/components/UI/ButtonComponent";
 import PaginationComponent from "@/app/components/UI/Pagination";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IIssueHistory } from "@/types/types";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Tooltip } from 'react-tooltip';
@@ -157,6 +159,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                             <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 COMMENT
                                             </th>
+                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                ACTION
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
@@ -221,6 +226,16 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                                 offset={0}
                                                                 style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                             />}
+                                                        </div>
+                                                    </td>
+
+                                                    <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
+                                                        <div className="flex items-center gap-2">
+                                                            <Link href={`/member-list/${info?.date}?page=1`}>
+                                                                <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
+                                                                    Details
+                                                                </Button>
+                                                            </Link>
                                                         </div>
                                                     </td>
 
