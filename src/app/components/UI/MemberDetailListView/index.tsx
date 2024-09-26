@@ -160,7 +160,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
-                                        {data?.map((info: IIssueHistory) => {
+                                        {data?.map((info: IIssueHistory, index) => {
                                             console.log(info?.comment ? info.comment : "no comment")
                                             return (
                                                 <tr key={info?._id}>
@@ -208,14 +208,14 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                                 { "flex": info?.comment }
                                                             )}
                                                         >
-                                                            <p id={info?.comment ? "tooltip-comment" : undefined} className={cn(
+                                                            <p id={info?.comment ? `tooltip-comment-${index}` : undefined} className={cn(
                                                                 "text-sm text-textSecondary font-semibold pb-[2px]",
                                                                 { "truncate max-w-[150px] w-full": info?.comment }
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>
                                                             {info?.comment && <Tooltip
-                                                                anchorSelect="#tooltip-comment"
+                                                                anchorSelect={`#tooltip-comment-${index}`}
                                                                 content={info?.comment}
                                                                 place="left"
                                                                 offset={0}
