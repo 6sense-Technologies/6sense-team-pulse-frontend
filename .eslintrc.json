@@ -4,7 +4,29 @@
     "es2021": true,
     "node": true
   },
-  "ignorePatterns": ["next.config.mjs"],
+  "ignorePatterns": [
+    "next.config.mjs",
+    "sentry.client.config.ts",
+    "sentry.edge.config.ts",
+    "sentry.server.config.ts",
+    "./src/instrumentation.ts",
+    "./src/app/global-error.tsx"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "sentry.client.config.ts",
+        "sentry.edge.config.ts",
+        "sentry.server.config.ts",
+        "./src/instrumentation.ts",
+        "./src/app/global-error.tsx"
+      ],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+      }
+    }
+  ],
   "extends": ["eslint:recommended", "plugin:react-hooks/recommended", "plugin:@typescript-eslint/recommended", "next/core-web-vitals"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

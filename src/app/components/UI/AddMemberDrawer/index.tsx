@@ -192,7 +192,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       Jira/Trello <span className="text-red-500">*</span>
                     </label>
                     <div className="w-full">
-                      <select {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value); clearErrors("jiraOrTrello"); }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
+                      <select role="combobox" {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value); clearErrors("jiraOrTrello"); }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
                         <option value="">Select</option>
                         <option value="jira">Jira</option>
                         {/* <option value="trello">Trello</option> */}
@@ -242,7 +242,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       Designation <span className="text-red-500">*</span>
                     </label>
                     <div className="w-full">
-                      <select {...register("designation")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
+                      <select role="combobox" {...register("designation")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
                         <option value="">Select</option>
                         {
                           designations.map((designation, index) => {
@@ -264,7 +264,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       Project <span className="text-red-500">*</span>
                     </label>
                     <div className="w-full">
-                      <select {...register("project")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
+                      <select role="combobox" {...register("project")} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.designation })}>
                         <option value="">Select</option>
                         {
                           projects.map((project, index) => {
@@ -293,6 +293,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
               Cancel
             </Button>
             <Button
+              aria-label="create"
               prefixIcon="PlusCircle"
               type="submit"
               className="w-[90px] hover:opacity-90"
