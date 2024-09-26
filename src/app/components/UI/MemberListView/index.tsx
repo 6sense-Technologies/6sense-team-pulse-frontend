@@ -20,7 +20,7 @@ interface IProps {
 
 const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IProps[], totalCountAndLimit: { totalCount: number, size: number }, refetch: () => void }): JSX.Element => {
     const searchParams = useSearchParams();
-    const page = parseInt(searchParams.get("page") || "1");
+    const page = parseInt(searchParams?.get("page") || "1");
     const [currentPage, setCurrentPage] = useState(page);
     const router = useRouter();
     const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
@@ -89,7 +89,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                             <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
                                                     <Link href={`/member-list/${member.accountId}?page=1`}>
-                                                        <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
+                                                        <Button aria-label="details" role="button" variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
                                                     </Link>
