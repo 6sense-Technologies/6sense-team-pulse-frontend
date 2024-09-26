@@ -156,10 +156,10 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th scope="col" className={cn("w-[10%] py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 COMMENT
                                             </th>
-                                            <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th scope="col" className={cn("py-2 pl-3 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 ACTION
                                             </th>
                                         </tr>
@@ -206,7 +206,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore?.toFixed(2)}%</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn(" py-2 text-sm text-textSecondary")}>
                                                         <div
                                                             className={cn(
                                                                 "items-center gap-0 cursor-pointer",
@@ -215,7 +215,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         >
                                                             <p id={info?.comment ? `tooltip-comment-${index}` : undefined} className={cn(
                                                                 "text-sm text-textSecondary font-semibold pb-[2px]",
-                                                                { "truncate max-w-[150px] w-full": info?.comment }
+                                                                { "truncate max-w-[100px] w-full": info?.comment }
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>
@@ -229,9 +229,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         </div>
                                                     </td>
 
-                                                    <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
+                                                    <td className="py-2 pl-3 text-sm text-textSecondary">
                                                         <div className="flex items-center gap-2">
-                                                            <Link href={`/member-list/${info?.date}?page=1`}>
+                                                            <Link href={`/member-list/${accountId}/${info?.date}`}>
                                                                 <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
                                                                     Details
                                                                 </Button>
