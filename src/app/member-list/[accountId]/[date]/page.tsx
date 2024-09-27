@@ -34,7 +34,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
             </section>
             <section className="mt-8 relative">
                 {
-                    performanceLoading ? <div className="flex justify-center items-center min-h-[75vh] md:min-h-[75vh]"><IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} /></div> : <PerformanceDetails date={date} data={data} />
+                    performanceLoading ? <div className="flex justify-center items-center min-h-[50vh] md:min-h-[75vh]"><IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} /></div> : <PerformanceDetails date={date} data={data} />
                 }
             </section>
         </div>
