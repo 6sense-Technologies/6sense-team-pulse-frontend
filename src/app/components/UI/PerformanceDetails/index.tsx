@@ -60,7 +60,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                         PLAN STATUS
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        LINK
+                                        LINKED IDS
                                     </th>
                                 </tr>
                             </thead>
@@ -130,7 +130,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                     {/* <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.link ? info?.link : "-"}</p> */}
-                                                    <div
+                                                    {/* <div
                                                         className={cn(
                                                             "items-center gap-0 cursor-pointer",
                                                             { "flex": info?.link }
@@ -149,7 +149,9 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                             offset={5}
                                                             style={{ width: "200px", whiteSpace: "normal", wordBreak: "break-word", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                         />}
-                                                    </div>
+                                                    </div> */}
+
+                                                    <p className="w-[150px] text-sm text-textSecondary font-semibold pb-[2px] whitespace-normal break-words">{info?.link ? info.link : "-"}</p>
                                                 </td>
                                             </tr>
                                         )
