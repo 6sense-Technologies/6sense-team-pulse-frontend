@@ -1,8 +1,16 @@
 "use client";
 import { cn } from "@/app/utils/tailwindMerge";
-import { Tooltip } from 'react-tooltip';
+import { IMemberPerformanceIssueHistory } from "@/types/types";
+import { Tooltip } from "react-tooltip";
 
-const PerformanceDetails = (): JSX.Element => {
+interface IProps {
+    data: IMemberPerformanceIssueHistory | undefined,
+    date: string
+}
+
+const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
+
+    const userName: string = data?.userName ?? "-";
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -16,6 +24,9 @@ const PerformanceDetails = (): JSX.Element => {
         // Construct the final formatted date
         return `${day} ${month} ${year}`;
     }
+
+    if (!data) return <p>No Data Found!</p>
+
     return (
         <div className="flow-root">
             <div className="overflow-x-auto">
@@ -27,10 +38,10 @@ const PerformanceDetails = (): JSX.Element => {
                                     <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         NO.
                                     </th>
-                                    <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                    <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         DATE
                                     </th>
-                                    <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                    <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         USERNAME
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
@@ -39,15 +50,8 @@ const PerformanceDetails = (): JSX.Element => {
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         TASK TYPE
                                     </th>
-                                    <th id="tooltip-summary" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        SUMMARY
-                                        <Tooltip
-                                            anchorSelect="#tooltip-summary"
-                                            content="TASK SUMMARY"
-                                            place="top"
-                                            offset={0}
-                                            style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
-                                        />
+                                    <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                        TASK Title
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         STATUS
@@ -55,195 +59,82 @@ const PerformanceDetails = (): JSX.Element => {
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         PLANNED
                                     </th>
-                                    <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                    {/* <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         CHECKED
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         LINK
-                                    </th>
+                                    </th> */}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
-                                <tr>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">Hello</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">Hello</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">Hello</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">Hello</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                            hello
-                                        </p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">hello</p>
-                                    </td>
-                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">Hello</p>
-                                    </td>
-                                </tr>
+                                {
+                                    data?.issues?.map((info, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.serialNumber}</p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(date)}</p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">
+                                                        {userName}
+                                                    </p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">
+                                                        {info?.issueId}
+                                                    </p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issueType}</p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    {/* <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issueSummary ? info?.issueSummary : "-"}</p> */}
+
+                                                    <div
+                                                        className={cn(
+                                                            "items-center gap-0 cursor-pointer",
+                                                            { "flex": info?.issueSummary }
+                                                        )}
+                                                    >
+                                                        <p id={info?.issueSummary ? `tooltip-issueSummary-${index}` : undefined} className={cn(
+                                                            "text-sm text-textSecondary font-semibold pb-[2px]",
+                                                            { "truncate max-w-[150px] w-full": info?.issueSummary }
+                                                        )}>
+                                                            {info?.issueSummary ? info.issueSummary : "-"}
+                                                        </p>
+                                                        {info?.issueSummary && <Tooltip
+                                                            anchorSelect={`#tooltip-issueSummary-${index}`}
+                                                            content={info?.issueSummary}
+                                                            place="top"
+                                                            offset={0}
+                                                            style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                        />}
+                                                    </div>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-xs text-textSecondary font-semibold pb-[2px] uppercase">
+                                                        {/* <span className={cn("border rounded-2xl px-3 py-[3px] text-white uppercase text-xs", {
+                                                            "bg-green-400": info?.issueStatus === "Done",
+                                                            "bg-emerald-400	": info?.issueStatus === "IN TESTING",
+                                                            "bg-yellow-400": info?.issueStatus === "To Do",
+                                                            "bg-emerald-500": info?.issueStatus === "User Stories (In progress)",
+                                                        })}>
+                                                            {info?.issueStatus}
+                                                        </span> */}
+                                                        {info?.issueStatus}
+                                                    </p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.planned ? "Planned" : "Unplanned"}</p>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>

@@ -76,3 +76,17 @@ export interface IDesignation {
 export interface IProjects {
     projects: string[]
 }
+
+export interface IMemberPerformanceIssueHistory {
+    userName: string
+    accountId: string
+    issues: {
+        serialNumber: number
+        issueType: string
+        issueId: string
+        issueStatus: string
+        planned: boolean
+        issueSummary: string
+    }[]
+}
+
