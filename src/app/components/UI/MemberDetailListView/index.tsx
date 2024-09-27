@@ -51,7 +51,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                         <div className="inline-block min-w-full align-middle">
                             <div className="">
                                 <table className="min-w-full divide-y divide-gray-300">
-                                    <thead className="">
+                                    <thead className="bg-bgSecondary">
                                         <tr className="">
                                             <th scope="col" className={cn("w-[11%] pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 DATE
@@ -232,7 +232,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className="py-2 pl-3 text-sm text-textSecondary">
                                                         <div className="flex items-center gap-2">
                                                             <Link href={`/member-list/${accountId}/${info?.date}`}>
-                                                                <Button variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
+                                                                <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                                     Details
                                                                 </Button>
                                                             </Link>
