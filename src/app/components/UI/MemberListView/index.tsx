@@ -40,7 +40,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                 <div className="inline-block min-w-full align-middle">
                     <div className="">
                         <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="">
+                            <thead className="bg-bgSecondary">
                                 <tr>
                                     <th scope="col" className={cn("pl-6 py-2 text-xs md:text-sm font-bold text-primaryFocus text-left")}>
                                         PHOTO
@@ -89,7 +89,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                             <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
                                                     <Link href={`/member-list/${member.accountId}?page=1`}>
-                                                        <Button aria-label="details" role="button" variant="ghost" className={cn("text-textPrimary font-medium px-0 focus:outline-[0px]")}>
+                                                        <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
                                                     </Link>

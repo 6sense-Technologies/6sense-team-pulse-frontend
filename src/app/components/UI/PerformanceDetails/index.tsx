@@ -33,7 +33,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                 <div className="inline-block min-w-full align-middle">
                     <div className="">
                         <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="">
+                            <thead className="bg-bgSecondary">
                                 <tr className="">
                                     <th scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         NO.
@@ -45,19 +45,19 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                         USERNAME
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        TASK ID
+                                        ID
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        TASK TYPE
+                                        TYPE
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        TASK Title
+                                        TITLE
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         STATUS
                                     </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        PLANNED
+                                        PLAN STATUS
                                     </th>
                                     {/* <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         CHECKED
