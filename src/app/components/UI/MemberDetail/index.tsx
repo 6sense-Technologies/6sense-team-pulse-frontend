@@ -62,7 +62,9 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                             className="text-left md:mt-1"
                         />
                             :
-                            <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
+                            <div className="w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center">
+                                <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
+                            </div>
 
                     }
                     <div>
