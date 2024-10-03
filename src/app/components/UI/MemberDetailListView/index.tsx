@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
+import DialogForm from "@/app/components/UI/DialogForm";
 import PaginationComponent from "@/app/components/UI/Pagination";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IIssueHistory } from "@/types/types";
@@ -19,11 +20,17 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
     const searchParams = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1");
     const [currentPage, setCurrentPage] = useState(page);
+    const [isOpenDialog, setIsOpenDialog] = useState(false);
+
     const router = useRouter();
     const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit?.size) : 0;
 
     const onPageChange = (page: number): void => {
         setCurrentPage(page);
+    };
+
+    const handleCloseDialog = (): void => {
+        setIsOpenDialog(false);
     };
 
     const formatDate = (dateString: string): string => {
@@ -159,14 +166,13 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                             <th scope="col" className={cn("w-[10%] py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 COMMENT
                                             </th>
-                                            <th scope="col" className={cn("py-2 pl-3 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th scope="col" className={cn("flex justify-center items-center py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 ACTION
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {data?.map((info: IIssueHistory, index) => {
-                                            console.log(info?.comment ? info.comment : "no comment")
                                             return (
                                                 <tr key={info?._id}>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
@@ -230,12 +236,16 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     </td>
 
                                                     <td className="py-2 pl-3 text-sm text-textSecondary">
-                                                        <div className="flex items-center gap-2">
+                                                        <div className="flex justify-center items-center gap-2">
                                                             <Link href={`/member-list/${accountId}/${info?.date}`}>
                                                                 <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                                     Details
                                                                 </Button>
                                                             </Link>
+
+                                                            <Button onClick={() => { setIsOpenDialog(true); }} aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
+                                                                Report bug
+                                                            </Button>
                                                         </div>
                                                     </td>
 
@@ -256,6 +266,11 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                     </div>
                 </div> : <p className="text-textSecondary">No Data Found!</p>
             }
+
+            {/* Modal */}
+            {isOpenDialog && (
+                <DialogForm isOpen={isOpenDialog} onClose={handleCloseDialog} onConfirm={() => { console.log("Deleted"); }} />
+            )}
         </>
     );
 };

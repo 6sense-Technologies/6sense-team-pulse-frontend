@@ -65,7 +65,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {members.map((member: IProps) => {
                                     return (
-                                        <tr key={member._id}>
+                                        <tr key={member?._id}>
                                             <td className={cn("py-2 pl-6 text-textSecondary")}>
                                                 <div className={cn("w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center")}>
                                                     {
@@ -75,20 +75,20 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                                 </div>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.displayName}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px] capitalize">{member?.displayName}</p>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.emailAddress ?? "-"}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.emailAddress ? member?.emailAddress : "-"}</p>
                                             </td>
                                             <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member.designation ?? "-"}</p>
+                                                <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.designation ?? "-"}</p>
                                             </td>
                                             <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{member?.currentPerformance.toFixed(2)}%</p>
                                             </td>
                                             <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={`/member-list/${member.accountId}?page=1`}>
+                                                    <Link href={`/member-list/${member?.accountId}?page=1`}>
                                                         <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
@@ -104,7 +104,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                 </div>
             </div>
 
-            <div className="mt-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
+            <div className="mt-2 mb-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
                 <p className="text-gray-400 text-sm">
                     Showing {members.length} out of {totalCountAndLimit.totalCount} result{`${totalCountAndLimit.totalCount > 1 ? "s" : ""}`}
                 </p>

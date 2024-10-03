@@ -1,8 +1,10 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import ConfirmDialog from "@/app/components/UI/ConfirmDialog";
+import IconComponent from "@/app/components/UI/IconComponent";
 import ImageComponent from "@/app/components/UI/ImageComponent";
 import MemberDetailListView from "@/app/components/UI/MemberDetailListView";
+import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberDetail } from "@/types/types";
@@ -49,16 +51,22 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
         <div className="mt-10 relative">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
                 <div className={cn("flex flex-col md:flex-row items-start md:gap-2", { "md:items-center": !data?.emailAddress })}>
-                    <ImageComponent
-                        src={data?.avatarUrls ?? ""}
-                        alt={"Pattern50 Logo"}
-                        width="w-[40px]"
-                        height="h-[40px]"
-                        imageClassName="rounded-full"
-                        className="text-left md:mt-1"
-                    />
+
+                    {
+                        data?.avatarUrls ? <ImageComponent
+                            src={data?.avatarUrls ?? ""}
+                            alt={"Pattern50 Logo"}
+                            width="w-[40px]"
+                            height="h-[40px]"
+                            imageClassName="rounded-full"
+                            className="text-left md:mt-1"
+                        />
+                            :
+                            <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
+
+                    }
                     <div>
-                        <h3 className="text-xl text-textSecondary font-semibold">{data?.displayName}</h3>
+                        <h3 className="text-xl text-textSecondary font-semibold capitalize">{data?.displayName}</h3>
                         <p className="text-sm text-subHeading">
                             {data?.emailAddress}
                         </p>
