@@ -120,7 +120,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
 
       // Trello:
       if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
-        const res = await axios.post(`${BACKEND_URI}/trello/users/create`, { accountId: newMember.trelloId, designation: newMember.designation, project: newMember.project });
+        const res = await axios.post(`${BACKEND_URI}/trello/users/create`, { accountId: newMember.trelloId, designation: newMember.designation, project: newMember.project, userFrom: newMember?.jiraOrTrello});
         return res.data;
       }
     },
