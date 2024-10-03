@@ -44,13 +44,13 @@ const MemberSchema = z.object({
   }
 
   // Check if 'jiraOrTrello' is 'trello' and 'trelloId' is not provided
-  // if (data.jiraOrTrello === 'trello' && !data.trelloId) {
-  //   ctx.addIssue({
-  //     path: ['trelloId'],
-  //     message: "Trello ID is required!",
-  //     code: z.ZodIssueCode.custom
-  //   });
-  // }
+  if (data.jiraOrTrello === 'trello' && !data.trelloId) {
+    ctx.addIssue({
+      path: ['trelloId'],
+      message: "Trello ID is required!",
+      code: z.ZodIssueCode.custom
+    });
+  }
 });
 
 const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
@@ -119,10 +119,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
       }
 
       // Trello:
-      // if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
-      //   const res = await axios.post(`${BACKEND_URI}/jira/users/create`, { accountId: newMember.trelloId, designation: newMember.designation });
-      //   return res.data;
-      // }
+      if (newMember.jiraOrTrello && newMember.jiraOrTrello === "trello") {
+        const res = await axios.post(`${BACKEND_URI}/trello/users/create`, { accountId: newMember.trelloId, designation: newMember.designation, project: newMember.project });
+        return res.data;
+      }
     },
   });
 
@@ -195,7 +195,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       <select role="combobox" {...register("jiraOrTrello")} onChange={(e) => { setJiraOrTrello(e.target.value); clearErrors("jiraOrTrello"); }} className={cn("w-full border outline-none px-4 py-2 rounded-md", { "border border-red-400": errors.jiraOrTrello })}>
                         <option value="">Select</option>
                         <option value="jira">Jira</option>
-                        {/* <option value="trello">Trello</option> */}
+                        <option value="trello">Trello</option>
                       </select>
                       {
                         errors && errors.jiraOrTrello && <p className="text-red-400 flex md:items-center gap-1 text-xs"><Warning className="mt-1 md:mt-0" /> {errors?.jiraOrTrello?.message}</p>
@@ -218,7 +218,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                     </div>
                   </div>
                 )}
-                {/* {jiraOrTrello === "trello" && (
+                {jiraOrTrello === "trello" && (
                   <div>
                     <div className="flex items-start">
                       <label className="w-[200px] text-nowrap">
@@ -229,13 +229,13 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                         {
                           errors && errors.trelloId && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {errors?.trelloId?.message}</p>
                         }
-                        {
+                        {/* {
                           userExistError && <p className="text-red-400 flex items-center gap-1 text-xs"><Warning /> {userExistError}</p>
-                        }
+                        } */}
                       </div>
                     </div>
                   </div>
-                )} */}
+                )}
                 <div>
                   <div className="flex items-start">
                     <label className="w-[200px] text-nowrap">

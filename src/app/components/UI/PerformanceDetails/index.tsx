@@ -76,7 +76,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                     <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.serialNumber}</p>
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(date)}</p>
+                                                    <p className="w-[80px] text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(date)}</p>
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                     <p className="text-sm text-textSecondary font-semibold pb-[2px]">
