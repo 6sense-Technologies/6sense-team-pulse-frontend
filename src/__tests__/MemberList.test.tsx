@@ -53,4 +53,15 @@ describe("MemberList Component - Basic Rendering", () => {
         expect(membersTitle).toBeInTheDocument();
     });
 
+    it("should display loading skeleton while members are being fetched", () => {
+        const queryClient = new QueryClient();
+        render(
+            <QueryClientProvider client={queryClient}>
+                <MemberList />
+            </QueryClientProvider>
+        );
+
+        // You can check for a loader or skeleton based on your component structure
+        expect(screen.getByTestId("skeleton-loader")).toBeInTheDocument();
+    });
 });

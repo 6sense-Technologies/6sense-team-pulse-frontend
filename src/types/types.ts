@@ -87,6 +87,7 @@ export interface IMemberPerformanceIssueHistory {
         issueStatus: string
         planned: boolean
         issueSummary: string
+        link: string
     }[]
 }
 

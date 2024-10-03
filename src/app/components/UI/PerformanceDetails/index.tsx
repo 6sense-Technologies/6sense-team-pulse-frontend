@@ -59,12 +59,9 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                         PLAN STATUS
                                     </th>
-                                    {/* <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        CHECKED
-                                    </th>
                                     <th scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                        LINK
-                                    </th> */}
+                                        LINKED IDS
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
@@ -76,10 +73,14 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                     <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.serialNumber}</p>
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+<<<<<<< HEAD
                                                     <p className="w-[80px] text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(date)}</p>
+=======
+                                                    <p className="w-[80px] md:w-full text-sm text-textSecondary font-semibold pb-[2px]">{formatDate(date)}</p>
+>>>>>>> f63b38c95ccd916f84984b18ef47d00407980573
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">
+                                                    <p className="w-[80px] md:w-full text-sm text-textSecondary font-semibold pb-[2px]">
                                                         {userName}
                                                     </p>
                                                 </td>
@@ -116,7 +117,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                     </div>
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                    <p className="text-xs text-textSecondary font-semibold pb-[2px] uppercase">
+                                                    <p className="w-[100px] md:w-full text-xs text-textSecondary font-semibold pb-[2px] uppercase">
                                                         {/* <span className={cn("border rounded-2xl px-3 py-[3px] text-white uppercase text-xs", {
                                                             "bg-green-400": info?.issueStatus === "Done",
                                                             "bg-emerald-400	": info?.issueStatus === "IN TESTING",
@@ -129,7 +130,32 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                     </p>
                                                 </td>
                                                 <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.planned ? "Planned" : "Unplanned"}</p>
+                                                    <p className="w-[80px] md:w-full text-sm text-textSecondary font-semibold pb-[2px]">{info?.planned ? "Planned" : "Unplanned"}</p>
+                                                </td>
+                                                <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    {/* <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.link ? info?.link : "-"}</p> */}
+                                                    {/* <div
+                                                        className={cn(
+                                                            "items-center gap-0 cursor-pointer",
+                                                            { "flex": info?.link }
+                                                        )}
+                                                    >
+                                                        <p id={info?.link ? `tooltip-link-${index}` : undefined} className={cn(
+                                                            "text-sm text-textSecondary font-semibold pb-[2px]",
+                                                            { "truncate max-w-[100px] w-full": info?.link }
+                                                        )}>
+                                                            {info?.link ? info.link : "-"}
+                                                        </p>
+                                                        {info?.link?.length > 10 && <Tooltip
+                                                            anchorSelect={`#tooltip-link-${index}`}
+                                                            content={info?.link}
+                                                            place="top"
+                                                            offset={5}
+                                                            style={{ width: "200px", whiteSpace: "normal", wordBreak: "break-word", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                        />}
+                                                    </div> */}
+
+                                                    <p className="w-[150px] text-sm text-textSecondary font-semibold pb-[2px] whitespace-normal break-words">{info?.link ? info.link : "-"}</p>
                                                 </td>
                                             </tr>
                                         )
