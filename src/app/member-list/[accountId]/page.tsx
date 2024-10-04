@@ -57,7 +57,7 @@ const MemberInformation = (): JSX.Element => {
     const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 }
 
     return (
-        <div className='relative adjustedWidthForMenu px-6 md:left-[280px]'>
+        <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
             <MenuComponent currentPage={'members'} />
             <PageTitle pageName='Members' title='6sense Efficiency' />
             <section className="mt-[18px]">

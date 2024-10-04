@@ -27,7 +27,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
 
 
     return (
-        <div className='relative adjustedWidthForMenu px-6 md:left-[280px]'>
+        <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
             <MenuComponent currentPage={'members'} />
             <PageTitle pageName='Performance Details' title='6sense Efficiency' />
             <section className="mt-[18px]">
