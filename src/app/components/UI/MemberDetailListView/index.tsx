@@ -258,7 +258,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                         </div>
                     </div>
 
-                    <div className="mt-2 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
+                    <div className="mt-2 mb-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
                         <p className="text-gray-400 text-sm">
                             Showing {data.length} out of {totalCountAndLimit.totalCount} result{`${totalCountAndLimit.totalCount > 1 ? "s" : ""}`}
                         </p>

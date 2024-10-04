@@ -3,10 +3,12 @@ import IconComponent from "@/app/components/UI/IconComponent";
 import MemberDetail from "@/app/components/UI/MemberDetail";
 import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
+import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { IMemberInformationType } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -59,7 +61,12 @@ const MemberInformation = (): JSX.Element => {
             <MenuComponent currentPage={'members'} />
             <PageTitle pageName='Members' title='6sense Efficiency' />
             <section className="mt-[18px]">
-                <div className='mr-auto text-base text-primary font-medium'>Information</div>
+                <div className='mb-2 flex items-center gap-x-2 mr-auto text-base font-medium'>
+                    <Link href={'/member-list?page=1'} className='text-subHeading'>Members</Link>
+                    <IconComponent name={'CaretRight'} color={COLOR_SUBHEADING} fontSize={14} />
+                    <Link href={`/member-list/${accountId}?page=1`} className='text-primary'>Information</Link>
+                </div>
+                {/* <div className='mr-auto text-base text-primary font-medium'>Information</div> */}
                 <h3 className='text-headingXS md:text-headingBase font-semibold'>Member Information</h3>
             </section>
             <section className="mt-4 relative">
