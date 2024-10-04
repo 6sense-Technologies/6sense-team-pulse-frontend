@@ -66,7 +66,7 @@ const MemberList = (): JSX.Element => {
             <MenuComponent currentPage={'members'} />
             <PageTitle pageName='Members' title='6sense Efficiency' />
             <section className="mt-[18px]">
-                <h4 className='mr-auto text-base text-primary font-medium'>Members</h4>
+                <h4 className='mb-2 mr-auto text-base text-primary font-medium'>Members</h4>
                 <h3 className='text-headingXS md:text-headingBase font-semibold'>All Members</h3>
             </section>
             <section className="mt-4 relative">
