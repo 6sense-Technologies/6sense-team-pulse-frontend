@@ -72,9 +72,10 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                         <p className="text-sm text-subHeading">
                             {data?.emailAddress}
                         </p>
-                        <p className=" text-sm text-subHeading">
+                        <p className="text-sm text-subHeading">
                             {data?.designation}
                         </p>
+                        <p className="mt-1 max-w-[105px] w-full font-semibold text-xs text-white capitalize bg-emerald-500 rounded-2xl py-1 flex justify-center items-center">{data?.project}</p>
                     </div>
                 </div>
                 <div>

@@ -1,7 +1,10 @@
 import { Button } from '@/app/components/UI/ButtonComponent';
+import { BACKEND_URI } from '@/app/utils/constants/constants';
 import { cn } from '@/app/utils/tailwindMerge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Warning } from '@phosphor-icons/react';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -9,7 +12,8 @@ import { z } from 'zod';
 interface IDialogFormProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (data: IFormData) => void;
+    accountId: string;
+    currentDate: string;
 }
 
 interface IFormData {
@@ -31,11 +35,12 @@ const BugReportSchema = z.object({
         .min(1, "Token is required."), // Minimum length 1 ensures non-empty
     comment: z
         .string()
-        .min(1, "Comment is required.") // Minimum length 1 ensures non-empty
+        .optional()
 });
 
-const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, onConfirm }) => {
+const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, accountId }) => {
     const [isLoading, setIsLoading] = useState(false)
+    const [submissionError, setSubmissionError] = useState("");
 
     const { register, handleSubmit, formState: { errors } } = useForm<IFormData>({
         resolver: zodResolver(BugReportSchema)
@@ -45,15 +50,38 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, onConfirm }) 
         onClose();
     };
 
-    const handleFormSubmit = (data: IFormData): void => {
-        setIsLoading(true);
-        onConfirm(data);
-        console.log(data)
+    const handleBugReport = async (data: IFormData): Promise<void> => {
+        const res = await axios.put(`${BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
+            noOfBugs: data?.noOfBug,
+            comment: data?.comment ?? "",
+            token: data?.token
+        });
 
-        // remove this once real api is connected for mutation
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 3000)
+        return res.data;
+    }
+
+    const bugReportMutation = useMutation({
+        mutationKey: ["bugReport", accountId, currentDate],
+        mutationFn: handleBugReport
+    })
+
+    const handleFormSubmit = (data: IFormData): void => {
+        setSubmissionError("");
+        setIsLoading(true);
+        bugReportMutation.mutate(data, {
+            onSuccess: (data) => {
+                handleCloseDialog();
+                console.log(data);
+            },
+            onError: (error) => {
+                console.log(error);
+                setSubmissionError("Bug report failed!");
+            },
+            onSettled: () => {
+                setIsLoading(false);
+                // setSubmissionError("");
+            }
+        });
     };
 
 
@@ -105,7 +133,7 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, onConfirm }) 
 
                             <div className="flex items-start">
                                 <label className="w-[200px] text-nowrap">
-                                    Comment<span className="text-red-500">*</span>
+                                    Comment
                                 </label>
                                 <div className="w-full">
                                     <textarea
@@ -113,9 +141,10 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, onConfirm }) 
                                         placeholder="Enter comment"
                                         className={cn("w-full border outline-none px-4 py-2 rounded-md")}
                                     />
-                                    {errors.comment && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning /> {errors.comment.message}</p>}
+                                    {submissionError && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning /> {submissionError}</p>}
                                 </div>
                             </div>
+
                         </div>
                     </form>
                     <div className="flex gap-4 justify-end mt-8">

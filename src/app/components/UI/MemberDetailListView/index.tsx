@@ -13,7 +13,6 @@ interface IProps {
     data: IIssueHistory[] | undefined
     totalCountAndLimit: { totalCount: number, size: number }
     accountId: string
-
 }
 
 const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): JSX.Element => {
@@ -21,6 +20,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
     const page = parseInt(searchParams.get("page") || "1");
     const [currentPage, setCurrentPage] = useState(page);
     const [isOpenDialog, setIsOpenDialog] = useState(false);
+    const [currentDate, setCurrentDate] = useState("");
 
     const router = useRouter();
     const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit?.size) : 0;
@@ -174,7 +174,9 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {data?.map((info: IIssueHistory, index) => {
                                             return (
-                                                <tr key={info?._id}>
+                                                <tr key={info?._id}
+                                                    className={cn("", { "bg-red-50": info?.comment === "holidays/leave" })}
+                                                >
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">{formatDate(info.date)}</p>
                                                     </td>
@@ -243,7 +245,10 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                                 </Button>
                                                             </Link>
 
-                                                            <Button onClick={() => { setIsOpenDialog(true); }} aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
+                                                            <Button onClick={() => {
+                                                                setIsOpenDialog(true);
+                                                                setCurrentDate(info?.date);
+                                                            }} aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                                 Report bug
                                                             </Button>
                                                         </div>
@@ -256,7 +261,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div >
 
                     <div className="mt-2 mb-8 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0 md:justify-between">
                         <p className="text-gray-400 text-sm">
@@ -264,13 +269,15 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                         </p>
                         <PaginationComponent currentPage={currentPage} totalPage={totalPages} onPageChange={onPageChange} />
                     </div>
-                </div> : <p className="text-textSecondary">No Data Found!</p>
+                </div > : <p className="text-textSecondary">No Data Found!</p>
             }
 
             {/* Modal */}
-            {isOpenDialog && (
-                <DialogForm isOpen={isOpenDialog} onClose={handleCloseDialog} onConfirm={() => { console.log("Deleted"); }} />
-            )}
+            {
+                isOpenDialog && (
+                    <DialogForm currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenDialog} onClose={handleCloseDialog} />
+                )
+            }
         </>
     );
 };

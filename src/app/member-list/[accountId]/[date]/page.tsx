@@ -24,8 +24,6 @@ const MemberPerformanceDetails = (): JSX.Element => {
         refetchOnWindowFocus: false,
         enabled: !!accountId && !!date
     });
-
-
     return (
         <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
             <MenuComponent currentPage={'members'} />
@@ -42,9 +40,23 @@ const MemberPerformanceDetails = (): JSX.Element => {
                 <h3 className='text-headingXS md:text-headingBase font-semibold'>Performance Details</h3>
             </section>
             <section className="mt-8 relative">
-                {
-                    performanceLoading ? <div className="flex justify-center items-center min-h-[70vh] md:min-h-[75vh]"><IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} /></div> : <PerformanceDetails date={date} data={data} />
-                }
+                {performanceLoading ? (
+                    <div className="flex justify-center items-center min-h-[70vh] md:min-h-[75vh]">
+                        <IconComponent name={'loader'} color={'#BA8D46'} className="animate-spin" fontSize={40} />
+                    </div>
+                ) : (
+                    <>
+                        <section className="mb-8">
+                            <h1 className="font-semibold text-sm">No. Of Bugs: {data?.noOfBugs ?? 0}</h1>
+                        </section>
+
+                        {data?.issues && data.issues.length > 0 ? (
+                            <PerformanceDetails date={date} data={data} />
+                        ) : (
+                            <p>No Data Found!</p>
+                        )}
+                    </>
+                )}
             </section>
         </div>
     )

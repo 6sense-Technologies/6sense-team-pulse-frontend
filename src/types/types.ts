@@ -29,6 +29,7 @@ export interface IMemberInformationType {
         totalIssueHistory: number
         currentPage: number
         totalPages: number
+        project: string
     }
 }
 
@@ -45,6 +46,7 @@ export interface IMemberDetail {
     totalIssueHistory: number
     currentPage: number
     totalPages: number
+    project: string
 }
 
 export interface IIssueHistory {
@@ -80,6 +82,8 @@ export interface IProjects {
 export interface IMemberPerformanceIssueHistory {
     userName: string
     accountId: string
+    noOfBugs: number
+    comment: string
     issues: {
         serialNumber: number
         issueType: string
