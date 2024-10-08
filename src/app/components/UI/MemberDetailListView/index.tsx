@@ -227,11 +227,11 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>
-                                                            {info?.comment && <Tooltip
+                                                            {info?.comment && info?.comment?.length > 15 && <Tooltip
                                                                 anchorSelect={`#tooltip-comment-${index}`}
                                                                 content={info?.comment}
                                                                 place="left"
-                                                                offset={0}
+                                                                offset={5}
                                                                 style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                             />}
                                                         </div>

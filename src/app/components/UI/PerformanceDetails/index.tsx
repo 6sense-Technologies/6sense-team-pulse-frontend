@@ -103,7 +103,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
                                                         )}>
                                                             {info?.issueSummary ? info.issueSummary : "-"}
                                                         </p>
-                                                        {info?.issueSummary && <Tooltip
+                                                        {info?.issueSummary && info?.issueSummary?.length > 10 && <Tooltip
                                                             anchorSelect={`#tooltip-issueSummary-${index}`}
                                                             content={info?.issueSummary}
                                                             place="top"
