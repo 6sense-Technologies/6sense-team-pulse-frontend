@@ -8,9 +8,11 @@ interface IPropTypes {
 const SkeletonRow = ({ className, widths }: { className: string; widths: string[] }): JSX.Element => {
     return (
         <div className={cn("bg-white grid grid-cols-4 items-center gap-x-10 py-[18px] px-4 border-b-[1px] border-[#F8F9FB]", className)}>
-            {widths.map((width, index) => (
-                <div key={index} className={`max-w-[${width}] bg-[#F5F5F5] rounded-full text-pageBg h-[16px]`}></div>
-            ))}
+            {widths.map((width, index) => {
+                return (
+                    <div key={index} className={`max-w-[${width}] bg-[#F5F5F5] rounded-full text-pageBg h-[16px]`}></div>
+                )
+            })}
         </div>
     );
 };
