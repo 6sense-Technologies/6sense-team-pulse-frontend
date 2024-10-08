@@ -80,14 +80,17 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
 
                     }
                     <div>
-                        <h3 className="text-xl text-textSecondary font-semibold capitalize">{data?.displayName}</h3>
+                        <div className="flex gap-2 items-center">
+                            <h3 className="text-xl text-textSecondary font-semibold capitalize">{data?.displayName}</h3>
+                            <p className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{data?.project}</p>
+                        </div>
                         <p className="text-sm text-subHeading">
                             {data?.emailAddress}
                         </p>
                         <p className="text-sm text-subHeading">
                             {data?.designation}
                         </p>
-                        <p className="mt-1 max-w-[105px] w-full font-semibold text-xs border-2 border-primary capitalize rounded-2xl py-1 flex justify-center items-center text-primary">{data?.project}</p>
+
                     </div>
                 </div>
                 <div>
