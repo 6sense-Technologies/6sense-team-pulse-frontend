@@ -71,7 +71,17 @@ const MemberInformation = (): JSX.Element => {
             </section>
             <section className="mt-4 relative">
                 {
-                    memberLoading ? <div className="flex justify-center items-center min-h-[75vh]"><IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} /></div> : <MemberDetail totalCountAndLimit={totalCountAndLimit} data={member} />
+                    memberLoading ?
+                        <div className="flex justify-center items-center min-h-[75vh]">
+                            <IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} />
+                        </div>
+                        :
+                        <>
+                            {member?.issueHistory && member?.issueHistory?.length > 0 ?
+                                <MemberDetail totalCountAndLimit={totalCountAndLimit} data={member} />
+                                : <p>No Data Found!</p>
+                            }
+                        </>
                 }
             </section>
         </div>

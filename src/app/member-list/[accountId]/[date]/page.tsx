@@ -47,7 +47,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
                 ) : (
                     <>
                         <section className="mb-8">
-                            <h1 className="font-semibold text-sm">No. Of Bugs: {data?.noOfBugs ?? 0}</h1>
+                            <h1 className="font-semibold text-sm">Bugs Reported: {data?.noOfBugs ?? 0}</h1>
                         </section>
 
                         {data?.issues && data.issues.length > 0 ? (

@@ -181,38 +181,38 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">{formatDate(info.date)}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Task}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Task}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Bug}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Bug}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.notDone?.Story}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Story}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                                            {info?.issuesCount?.done?.Task}
+                                                            {info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Task}
                                                         </p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
-                                                            {info?.issuesCount?.done?.Bug}
+                                                            {info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Bug}
                                                         </p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.issuesCount?.done?.Story}</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Story}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.taskCompletionRate?.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.taskCompletionRate?.toFixed(2)}%`}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.userStoryCompletionRate?.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.userStoryCompletionRate?.toFixed(2)}%`}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.codeToBugRatio?.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.codeToBugRatio?.toFixed(2)}%`}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.overallScore?.toFixed(2)}%</p>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.overallScore?.toFixed(2)}%`}</p>
                                                     </td>
                                                     <td className={cn(" py-2 text-sm text-textSecondary")}>
                                                         <div
@@ -239,16 +239,16 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
 
                                                     <td className="py-2 pl-3 text-sm text-textSecondary">
                                                         <div className="flex justify-center items-center gap-2">
-                                                            <Link href={`/member-list/${accountId}/${info?.date}`}>
-                                                                <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
+                                                            <Button aria-label="details" role="button" disabled={info?.comment === "holidays/leave"} variant={`${info?.comment === "holidays/leave" ? "ghost" : "secondary"}`} className={cn("disabled:bg-transparent text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
+                                                                <Link href={`/member-list/${accountId}/${info?.date}`}>
                                                                     Details
-                                                                </Button>
-                                                            </Link>
+                                                                </Link>
+                                                            </Button>
 
                                                             <Button onClick={() => {
                                                                 setIsOpenDialog(true);
                                                                 setCurrentDate(info?.date);
-                                                            }} aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
+                                                            }} aria-label="details" role="button" disabled={info?.comment === "holidays/leave"} variant={`${info?.comment === "holidays/leave" ? "ghost" : "secondary"}`} className={cn("disabled:bg-transparent text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                                 Report bug
                                                             </Button>
                                                         </div>

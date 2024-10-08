@@ -1,9 +1,7 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
-import IconComponent from "@/app/components/UI/IconComponent";
 import ImageComponent from "@/app/components/UI/ImageComponent";
 import PaginationComponent from "@/app/components/UI/Pagination";
-import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -64,13 +62,42 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white">
                                 {members.map((member: IProps) => {
+
+                                    let avatarName = "";
+                                    const memberNameArray = member?.displayName?.split(" ");
+                                    if (memberNameArray?.length > 1) {
+                                        avatarName = memberNameArray?.[0]?.[0] + memberNameArray?.[1]?.[0];
+                                    }
+                                    if (memberNameArray?.length === 1) {
+                                        avatarName = memberNameArray?.[0]?.[0];
+                                    }
+
                                     return (
                                         <tr key={member?._id}>
                                             <td className={cn("py-2 pl-6 text-textSecondary")}>
                                                 <div className={cn("w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center")}>
                                                     {
-                                                        member?.avatarUrls ? <ImageComponent src={member?.avatarUrls} alt="Member Information" width="w-full" height="h-full" imageClassName="rounded-full" /> : <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
-
+                                                        member?.avatarUrls ?
+                                                            <ImageComponent
+                                                                src={member?.avatarUrls}
+                                                                alt="Member Information"
+                                                                width="w-full"
+                                                                height="h-full"
+                                                                imageClassName="rounded-full"
+                                                            />
+                                                            // <div className="w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center">
+                                                            //     <span className="w-6 h-6 bg-[#405A4C] rounded-full text-[11px] flex justify-center items-center text-white">
+                                                            //         {avatarName}
+                                                            //     </span>
+                                                            // </div>
+                                                            :
+                                                            (
+                                                                <div className="w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center">
+                                                                    <span className="w-6 h-6 bg-[#405A4C] rounded-full text-[11px] flex justify-center items-center text-white">
+                                                                        {avatarName}
+                                                                    </span>
+                                                                </div>
+                                                            )
                                                     }
                                                 </div>
                                             </td>

@@ -1,17 +1,15 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import ConfirmDialog from "@/app/components/UI/ConfirmDialog";
-import IconComponent from "@/app/components/UI/IconComponent";
 import ImageComponent from "@/app/components/UI/ImageComponent";
 import MemberDetailListView from "@/app/components/UI/MemberDetailListView";
-import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberDetail } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IProps {
     data?: IMemberDetail,
@@ -22,6 +20,19 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
     const router = useRouter();
 
     const [isOpenDialog, setIsOpenDialog] = useState(false);
+    const [avatarName, setAvatarName] = useState("");
+
+    useEffect(() => {
+        if (data && !data?.avatarUrls) {
+            const memberNameArray = data && data?.displayName?.split(" ");
+            if (memberNameArray && memberNameArray?.length > 1) {
+                setAvatarName(memberNameArray?.[0]?.[0] + memberNameArray?.[1]?.[0])
+            }
+            if (memberNameArray && memberNameArray?.length === 1) {
+                setAvatarName(memberNameArray?.[0]?.[0])
+            }
+        }
+    }, [data]);
 
     const handleCloseDialog = (): void => {
         setIsOpenDialog(false);
@@ -50,21 +61,22 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
     return (
         <div className="mt-10 relative">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
-                <div className={cn("flex flex-col md:flex-row items-start md:gap-2", { "md:items-center": !data?.emailAddress })}>
+                <div className={cn("flex flex-col md:flex-row items-start md:gap-2")}>
 
                     {
-                        data?.avatarUrls ? <ImageComponent
-                            src={data?.avatarUrls ?? ""}
-                            alt={"Pattern50 Logo"}
-                            width="w-[40px]"
-                            height="h-[40px]"
-                            imageClassName="rounded-full"
-                            className="text-left md:mt-1"
-                        />
+                        data?.avatarUrls ?
+                            <ImageComponent
+                                src={data?.avatarUrls ?? ""}
+                                alt={"Pattern50 Logo"}
+                                width="w-[40px]"
+                                height="h-[40px]"
+                                imageClassName="rounded-full"
+                                className="text-left md:mt-1"
+                            />
                             :
-                            <div className="w-10 h-10 p-2 rounded-full bg-pageBg flex justify-center items-center">
-                                <IconComponent name="User" color={COLOR_SUBHEADING} fontSize={24} weight="regular" />
-                            </div>
+                            <span className="mt-1 w-[40px] h-[40px] bg-[#405A4C] rounded-full flex justify-center items-center text-white">
+                                {avatarName}
+                            </span>
 
                     }
                     <div>
@@ -75,7 +87,7 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                         <p className="text-sm text-subHeading">
                             {data?.designation}
                         </p>
-                        <p className="mt-1 max-w-[105px] w-full font-semibold text-xs text-white capitalize bg-emerald-500 rounded-2xl py-1 flex justify-center items-center">{data?.project}</p>
+                        <p className="mt-1 max-w-[105px] w-full font-semibold text-xs border-2 border-primary capitalize rounded-2xl py-1 flex justify-center items-center text-primary">{data?.project}</p>
                     </div>
                 </div>
                 <div>
