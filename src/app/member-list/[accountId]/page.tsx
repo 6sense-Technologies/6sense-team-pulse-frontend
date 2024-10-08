@@ -73,7 +73,7 @@ const MemberInformation = (): JSX.Element => {
                 {
                     memberLoading ?
                         <div className="flex justify-center items-center min-h-[75vh]">
-                            <IconComponent name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} />
+                            <IconComponent data-testid="loader" name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} />
                         </div>
                         :
                         <>
