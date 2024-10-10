@@ -7,6 +7,7 @@ interface IProps {
 
 
 const Threads = ({ needRefetch }: IProps): JSX.Element => {
+    console.log(needRefetch)
     const comments = [
         { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "12:59 PM" },
         { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "12:00 PM" },
