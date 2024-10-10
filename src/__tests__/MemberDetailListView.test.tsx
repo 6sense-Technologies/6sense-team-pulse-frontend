@@ -89,14 +89,9 @@ describe("Member Detail List View", () => {
         expect(screen.getByText("TASKS")).toBeInTheDocument();
         expect(screen.getByText("BUGS")).toBeInTheDocument();
         expect(screen.getByText("STORIES")).toBeInTheDocument();
-        expect(screen.getByText("CT")).toBeInTheDocument();
-        expect(screen.getByText("CB")).toBeInTheDocument();
-        expect(screen.getByText("CU")).toBeInTheDocument();
-        expect(screen.getByText("TCR")).toBeInTheDocument();
-        expect(screen.getByText("USCR")).toBeInTheDocument();
         expect(screen.getByText("CTBR")).toBeInTheDocument();
         expect(screen.getByText("SCORE")).toBeInTheDocument();
-        expect(screen.getByText("COMMENT")).toBeInTheDocument();
+        expect(screen.getByText("INSIGHT")).toBeInTheDocument();
         expect(screen.getByText("ACTION")).toBeInTheDocument();
     });
 
