@@ -1,8 +1,11 @@
 "use client";
+import { Button } from "@/app/components/UI/ButtonComponent";
+import CommentDialog from "@/app/components/UI/CommentDialog";
 import IconComponent from "@/app/components/UI/IconComponent";
 import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
 import PerformanceDetails from "@/app/components/UI/PerformanceDetails";
+import Threads from "@/app/components/UI/Threads";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { IMemberPerformanceIssueHistory } from "@/types/types";
@@ -10,9 +13,16 @@ import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 
 const MemberPerformanceDetails = (): JSX.Element => {
     const { accountId, date } = useParams<{ accountId: string, date: string }>();
+    const [isOpenCommentDialog, setIsOpenCommentDialog] = useState(false);
+    const [isNeedRefetch, setIsNeedRefetch] = useState(false);
+
+    const handleCloseCommentDialog = (): void => {
+        setIsOpenCommentDialog(false);
+    }
 
     const { data, isFetching: performanceLoading } = useQuery({
         queryKey: ["fetchMemberPerformanceDetails", accountId, date],
@@ -24,6 +34,8 @@ const MemberPerformanceDetails = (): JSX.Element => {
         refetchOnWindowFocus: false,
         enabled: !!accountId && !!date
     });
+
+    console.log(isNeedRefetch)
     return (
         <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
             <MenuComponent currentPage={'members'} />
@@ -46,17 +58,43 @@ const MemberPerformanceDetails = (): JSX.Element => {
                     </div>
                 ) : (
                     <>
-                        <section className="mb-8">
-                            <h1 className="font-semibold text-sm">Bugs Reported: {data?.noOfBugs ?? 0}</h1>
+                        <section className="mb-8 flex justify-between items-center">
+                            <h1 className="font-semibold text-xl">Bugs Reported: {data?.noOfBugs ?? 0}</h1>
+                            <div className="flex justify-center md:justify-end">
+                                <Button
+                                    prefixIcon='PlusCircle'
+                                    type="button"
+                                    className="w-full md:w-[153px]"
+                                    prefixIconClassName='plusIcon'
+                                    onClick={() => {
+                                        setIsOpenCommentDialog(true);
+                                    }}
+                                >
+                                    Add Comment
+                                </Button>
+                            </div>
                         </section>
 
                         {data?.issues && data.issues.length > 0 ? (
-                            <PerformanceDetails date={date} data={data} />
+                            <>
+
+                                <PerformanceDetails date={date} data={data} />
+                                <div className="mt-8">
+                                    {/* sending the needRefetch so that i can refetch based on this */}
+                                    <Threads needRefetch={isNeedRefetch} />
+                                </div>
+                            </>
                         ) : (
                             <p>No Data Found!</p>
                         )}
                     </>
                 )}
+
+                {
+                    isOpenCommentDialog && (
+                        <CommentDialog commentAdded={() => { setIsNeedRefetch(true); }} currentDate={`${date}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
+                    )
+                }
             </section>
         </div>
     )

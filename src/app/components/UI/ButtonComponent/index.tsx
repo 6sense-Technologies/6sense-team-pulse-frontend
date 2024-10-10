@@ -38,7 +38,7 @@ export interface IButtonProps
     asChild?: boolean
     loading?: boolean
     loaderColor?: string
-    prefixIcon?: 'loader' | 'PlusCircle' | 'PencilSimpleLine' | 'MinusCircle' | 'TrashSimple' | 'CheckCircle' | 'ArrowClockwise' | 'UserCirclePlus' | 'Copy' | 'ArrowCounterClockwise' | 'GearSix' | 'ArrowSquareOut' | 'UploadSimple' | 'CaretLeft' | 'CaretRight' | 'ChatCenteredDots' | 'ClockCounterClockwise' | 'close' | 'List' | 'PaperPlaneRight' | 'Check' | 'Trash'
+    prefixIcon?: 'Bug' | 'ChatCircleText' | 'loader' | 'PlusCircle' | 'PencilSimpleLine' | 'MinusCircle' | 'TrashSimple' | 'CheckCircle' | 'ArrowClockwise' | 'UserCirclePlus' | 'Copy' | 'ArrowCounterClockwise' | 'GearSix' | 'ArrowSquareOut' | 'UploadSimple' | 'CaretLeft' | 'CaretRight' | 'ChatCenteredDots' | 'ClockCounterClockwise' | 'close' | 'List' | 'PaperPlaneRight' | 'Check' | 'Trash'
     prefixIconColor?: string
     suffixIcon?: 'ArrowBendUpRight'
     suffixIconColor?: string
@@ -47,10 +47,11 @@ export interface IButtonProps
     prefixIconSize?: number
     suffixIconSize?: number
     suffixIconClassName?: string
+    weight?: "bold" | "thin" | "light" | "regular" | "fill" | "duotone" | undefined
 }
 
 const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
-    ({ className, variant, size, loading, loaderColor, prefixIcon, prefixIconColor, prefixIconClassName, prefixIconSize, suffixIcon, suffixIconColor, suffixIconClassName, suffixIconSize, buttonDivClassName, children, ...props }, ref) => {
+    ({ className, variant, size, weight, loading, loaderColor, prefixIcon, prefixIconColor, prefixIconClassName, prefixIconSize, suffixIcon, suffixIconColor, suffixIconClassName, suffixIconSize, buttonDivClassName, children, ...props }, ref) => {
         return (
             <div className={cn("relative", { "cursor-not-allowed": props?.disabled }, (buttonDivClassName ?? ''))}>
 
@@ -64,7 +65,7 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
                             <div className='flex gap-x-2 items-center'>
                                 {
                                     prefixIcon ?
-                                        <IconComponent name={prefixIcon} color={prefixIconColor ?? '#fff'} className={prefixIconClassName} fontSize={prefixIconSize} /> : null
+                                        <IconComponent name={prefixIcon} color={prefixIconColor ?? '#fff'} className={prefixIconClassName} fontSize={prefixIconSize} weight={weight} /> : null
                                 }
                                 {children}
                                 {
