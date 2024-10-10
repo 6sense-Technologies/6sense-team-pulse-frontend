@@ -1,7 +1,9 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
+import CommentDialog from "@/app/components/UI/CommentDialog";
 import DialogForm from "@/app/components/UI/DialogForm";
 import PaginationComponent from "@/app/components/UI/Pagination";
+import { COLOR_TEXT_PRIMARY } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IIssueHistory } from "@/types/types";
 import Link from "next/link";
@@ -19,7 +21,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
     const searchParams = useSearchParams();
     const page = parseInt(searchParams.get("page") || "1");
     const [currentPage, setCurrentPage] = useState(page);
-    const [isOpenDialog, setIsOpenDialog] = useState(false);
+    const [isOpenBugReportDialog, setIsOpenBugReportDialog] = useState(false);
+    const [isOpenCommentDialog, setIsOpenCommentDialog] = useState(false);
     const [currentDate, setCurrentDate] = useState("");
 
     const router = useRouter();
@@ -29,9 +32,13 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
         setCurrentPage(page);
     };
 
-    const handleCloseDialog = (): void => {
-        setIsOpenDialog(false);
+    const handleCloseBugReportDialog = (): void => {
+        setIsOpenBugReportDialog(false);
     };
+
+    const handleCloseCommentDialog = (): void => {
+        setIsOpenCommentDialog(false);
+    }
 
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
@@ -57,7 +64,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                     <div className="overflow-x-auto">
                         <div className="inline-block min-w-full align-middle">
                             <div className="">
-                                <table className="min-w-full divide-y divide-gray-300">
+                                <table className="min-w-[1046px] w-full divide-y divide-gray-300">
                                     <thead className="bg-bgSecondary">
                                         <tr className="">
                                             <th scope="col" className={cn("w-[11%] pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
@@ -67,17 +74,26 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                 TASKS
                                                 <Tooltip
                                                     anchorSelect="#tooltip-task"
-                                                    content="NO. OF TASKS"
                                                     place="top"
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                    render={() => {
+                                                        return (
+                                                            <>
+                                                                <span>COMPLETED / TOTAL</span> <br />
+                                                                <span>
+                                                                    TCR - TASK COMPLETION RATE
+                                                                </span>
+                                                            </>
+                                                        )
+                                                    }}
                                                 />
                                             </th>
-                                            <th id="tooltip-bugs" scope="col" className={cn("pl-6 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th id="tooltip-bugs" scope="col" className={cn("py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 BUGS
                                                 <Tooltip
                                                     anchorSelect="#tooltip-bugs"
-                                                    content="NO. OF BUGS"
+                                                    content="COMPLETED / TOTAL"
                                                     place="top"
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
@@ -87,13 +103,22 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                 STORIES
                                                 <Tooltip
                                                     anchorSelect="#tooltip-stories"
-                                                    content="NO. OF USERSTORIES"
                                                     place="top"
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                    render={() => {
+                                                        return (
+                                                            <>
+                                                                <span>COMPLETED / TOTAL</span> <br />
+                                                                <span>
+                                                                    USCR - USER STORY COMPLETION RATE
+                                                                </span>
+                                                            </>
+                                                        )
+                                                    }}
                                                 />
                                             </th>
-                                            <th id="tooltip-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            {/* <th id="tooltip-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 CT
                                                 <Tooltip
                                                     anchorSelect="#tooltip-com"
@@ -102,8 +127,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
-                                            </th>
-                                            <th id="tooltip-com-bug" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            </th> */}
+                                            {/* <th id="tooltip-com-bug" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 CB
                                                 <Tooltip
                                                     anchorSelect="#tooltip-com-bug"
@@ -112,8 +137,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
-                                            </th>
-                                            <th id="tooltip-story" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            </th> */}
+                                            {/* <th id="tooltip-story" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 CU
                                                 <Tooltip
                                                     anchorSelect="#tooltip-story"
@@ -122,8 +147,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
-                                            </th>
-                                            <th id="tooltip-task-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            </th> */}
+                                            {/* <th id="tooltip-task-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 TCR
                                                 <Tooltip
                                                     anchorSelect="#tooltip-task-com"
@@ -132,8 +157,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
-                                            </th>
-                                            <th id="tooltip-us-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            </th> */}
+                                            {/* <th id="tooltip-us-com" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 USCR
                                                 <Tooltip
                                                     anchorSelect="#tooltip-us-com"
@@ -142,8 +167,8 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     offset={0}
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
-                                            </th>
-                                            <th id="tooltip-ctbr" scope="col" className={cn("pl-4 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            </th> */}
+                                            <th id="tooltip-ctbr" scope="col" className={cn("py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 CTBR
                                                 <Tooltip
                                                     anchorSelect="#tooltip-ctbr"
@@ -163,16 +188,17 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     style={{ backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                                 />
                                             </th>
-                                            <th scope="col" className={cn("w-[10%] py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
-                                                COMMENT
+                                            <th scope="col" className={cn("py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                                INSIGHT
                                             </th>
-                                            <th scope="col" className={cn("flex justify-center items-center py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
+                                            <th scope="col" className={cn("pl-2 py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                 ACTION
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-white">
                                         {data?.map((info: IIssueHistory, index) => {
+
                                             return (
                                                 <tr key={info?._id}
                                                     className={cn("", { "bg-red-50": info?.comment === "holidays/leave" })}
@@ -180,41 +206,56 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px] whitespace-nowrap">{formatDate(info.date)}</p>
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Task}</p>
+                                                    <td className={cn("pl-6 py-2 text-sm text-textSecondary")}>
+                                                        {
+                                                            info?.comment === "holidays/leave" ? "-" :
+                                                                <>
+                                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{`${info?.issuesCount?.done?.Task}/${info?.issuesCount?.notDone?.Task}`}</p>
+                                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{`TCR: ${info?.taskCompletionRate?.toFixed(2)}%`}</p>
+                                                                </>
+                                                        }
                                                     </td>
-                                                    <td className={cn("px-3 pl-6 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Bug}</p>
+                                                    <td className={cn("py-2 text-sm text-textSecondary")}>
+                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.issuesCount?.done?.Bug}/${info?.issuesCount?.notDone?.Bug}`}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
-                                                        <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.notDone?.Story}</p>
+                                                        {
+                                                            info?.comment === "holidays/leave" ? "-"
+                                                                :
+                                                                <>
+                                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{`${info?.issuesCount?.done?.Story}/${info?.issuesCount?.notDone?.Story}`}</p>
+
+                                                                    <p className="text-sm text-textSecondary font-semibold pb-[2px]">{`USCR: ${info?.userStoryCompletionRate?.toFixed(2)}%`}</p>
+                                                                </>
+                                                        }
+
                                                     </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    {/* <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
                                                             {info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Task}
                                                         </p>
-                                                    </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    </td> */}
+                                                    {/* <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">
                                                             {info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Bug}
                                                         </p>
-                                                    </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    </td> */}
+                                                    {/* <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : info?.issuesCount?.done?.Story}</p>
-                                                    </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    </td> */}
+                                                    {/* <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.taskCompletionRate?.toFixed(2)}%`}</p>
-                                                    </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    </td> */}
+                                                    {/* <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.userStoryCompletionRate?.toFixed(2)}%`}</p>
-                                                    </td>
-                                                    <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
+                                                    </td> */}
+                                                    <td className={cn("py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.codeToBugRatio?.toFixed(2)}%`}</p>
                                                     </td>
                                                     <td className={cn("px-3 pl-4 py-2 text-sm text-textSecondary")}>
                                                         <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.overallScore?.toFixed(2)}%`}</p>
                                                     </td>
-                                                    <td className={cn(" py-2 text-sm text-textSecondary")}>
+                                                    <td className={cn("w-[340px] py-2 text-sm text-textSecondary")}>
                                                         <div
                                                             className={cn(
                                                                 "items-center gap-0 cursor-pointer",
@@ -223,35 +264,72 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         >
                                                             <p id={info?.comment ? `tooltip-comment-${index}` : undefined} className={cn(
                                                                 "text-sm text-textSecondary font-semibold pb-[2px]",
-                                                                { "truncate max-w-[100px] w-full": info?.comment }
+                                                                { "max-w-[290px] w-full": info?.comment }
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>
-                                                            {info?.comment && info?.comment?.length > 15 && <Tooltip
+                                                            {/* {info?.comment && info?.comment?.length > 15 && <Tooltip
+                                                                className="z-10"
                                                                 anchorSelect={`#tooltip-comment-${index}`}
                                                                 content={info?.comment}
                                                                 place="left"
                                                                 offset={5}
                                                                 style={{ width: "200px", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
-                                                            />}
+                                                            />} */}
                                                         </div>
                                                     </td>
 
-                                                    <td className="py-2 pl-3 text-sm text-textSecondary">
-                                                        <div className="flex justify-center items-center gap-2">
-                                                            <Button aria-label="details" role="button" disabled={info?.comment === "holidays/leave"} variant={`${info?.comment === "holidays/leave" ? "ghost" : "secondary"}`} className={cn("disabled:bg-transparent text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
-                                                                <Link href={`/member-list/${accountId}/${info?.date}`}>
-                                                                    Details
-                                                                </Link>
-                                                            </Button>
+                                                    <td className="py-2 text-sm text-textSecondary">
+                                                        <div className="flex justify-start items-center gap-3">
+                                                            <>
+                                                                <Button onClick={() => {
+                                                                    setIsOpenCommentDialog(true);
+                                                                    setCurrentDate(info?.date);
+                                                                }} weight="regular" className="focus:outline-[0px] p-0" disabled={info?.comment === "holidays/leave"} variant={"ghost"} prefixIcon="ChatCircleText" prefixIconColor={COLOR_TEXT_PRIMARY} />
 
-                                                            <Button onClick={() => {
-                                                                setIsOpenDialog(true);
+                                                                <Tooltip
+                                                                    anchorSelect={`#tooltip-put-comment-${index}`}
+                                                                    content="ADD COMMENT"
+                                                                    place="top"
+                                                                    offset={0}
+                                                                    style={{ fontSize: "12px", fontWeight: "bold", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                                />
+                                                            </>
+
+                                                            <>
+                                                                <Button weight="regular" id={`report-bug-${index}`} onClick={() => {
+                                                                    setIsOpenBugReportDialog(true);
+                                                                    setCurrentDate(info?.date);
+                                                                }} className="focus:outline-[0px] p-0" disabled={info?.comment === "holidays/leave"} variant={"ghost"} prefixIcon="Bug" prefixIconColor={COLOR_TEXT_PRIMARY} />
+                                                                <Tooltip
+                                                                    anchorSelect={`#report-bug-${index}`}
+                                                                    content="REPORT BUG"
+                                                                    place="top"
+                                                                    offset={0}
+                                                                    style={{ fontSize: "12px", fontWeight: "bold", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                                />
+                                                            </>
+
+                                                            <Link id={`detail-${index}`} href={info?.comment === "holidays/leave" ? "#" : `/member-list/${accountId}/${info?.date}`}>
+                                                                <Button weight="regular" className="focus:outline-[0px] p-0" disabled={info?.comment === "holidays/leave"} variant={"ghost"} prefixIcon="CaretRight" prefixIconColor={COLOR_TEXT_PRIMARY} />
+
+                                                                <Tooltip
+                                                                    anchorSelect={`#detail-${index}`}
+                                                                    content="DETAILS"
+                                                                    place="top"
+                                                                    offset={0}
+                                                                    style={{ fontSize: "12px", fontWeight: "bold", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                                                />
+                                                            </Link>
+
+                                                        </div>
+                                                        {/* <Button onClick={() => {
+                                                                setIsOpenBugReportDialog(true);
                                                                 setCurrentDate(info?.date);
                                                             }} aria-label="details" role="button" disabled={info?.comment === "holidays/leave"} variant={`${info?.comment === "holidays/leave" ? "ghost" : "secondary"}`} className={cn("disabled:bg-transparent text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                                 Report bug
-                                                            </Button>
-                                                        </div>
+                                                            </Button> */}
+
                                                     </td>
 
                                                 </tr>
@@ -274,8 +352,13 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
 
             {/* Modal */}
             {
-                isOpenDialog && (
-                    <DialogForm currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenDialog} onClose={handleCloseDialog} />
+                isOpenBugReportDialog && (
+                    <DialogForm currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenBugReportDialog} onClose={handleCloseBugReportDialog} />
+                )
+            }
+            {
+                isOpenCommentDialog && (
+                    <CommentDialog currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
                 )
             }
         </>

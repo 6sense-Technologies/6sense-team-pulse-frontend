@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-interface IDialogFormProps {
+interface ICommentDialogProps {
     isOpen: boolean;
     onClose: () => void;
     accountId: string;
@@ -17,65 +17,51 @@ interface IDialogFormProps {
 }
 
 interface IFormData {
-    noOfBug: number;
-    token: string;
     comment: string;
 }
 
-const BugReportSchema = z.object({
-    noOfBug: z
-        .string() // Accept input as a string initially
-        .min(1, "No. of bug is required.") // Ensure the field is not empty
-        .transform((value) => { return Number(value) }) // Convert the string to a number
-        .refine((value) => { return !isNaN(value) && value > 0 && Number.isInteger(value) }, {
-            message: "No. of bug must be a positive integer."
-        }),
-    token: z
-        .string()
-        .min(1, "Token is required."), // Minimum length 1 ensures non-empty
+const CommentSchema = z.object({
     comment: z
         .string()
-        .optional()
+        .min(1, "Comment is required!")
 });
 
-const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, accountId }) => {
+const CommentDialog: React.FC<ICommentDialogProps> = ({ isOpen, onClose, currentDate, accountId }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [submissionError, setSubmissionError] = useState("");
 
     const { register, handleSubmit, formState: { errors } } = useForm<IFormData>({
-        resolver: zodResolver(BugReportSchema)
+        resolver: zodResolver(CommentSchema)
     });
 
     const handleCloseDialog = (): void => {
         onClose();
     };
 
-    const handleBugReport = async (data: IFormData): Promise<void> => {
+    const handeComment = async (data: IFormData): Promise<void> => {
         const res = await axios.put(`${BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
-            noOfBugs: data?.noOfBug,
-            comment: data?.comment ?? "",
-            token: data?.token
+            comment: data?.comment,
         });
 
         return res.data;
     }
 
-    const bugReportMutation = useMutation({
-        mutationKey: ["bugReport", accountId, currentDate],
-        mutationFn: handleBugReport
+    const commentMutation = useMutation({
+        mutationKey: ["comment", accountId, currentDate],
+        mutationFn: handeComment
     })
 
     const handleFormSubmit = (data: IFormData): void => {
         setSubmissionError("");
         setIsLoading(true);
-        bugReportMutation.mutate(data, {
+        commentMutation.mutate(data, {
             onSuccess: (data) => {
                 handleCloseDialog();
                 console.log(data);
             },
             onError: (error) => {
                 console.log(error);
-                setSubmissionError("Bug report failed!");
+                setSubmissionError("Adding comment failed!");
             },
             onSettled: () => {
                 setIsLoading(false);
@@ -105,42 +91,17 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
                         <div className="space-y-4">
                             <div className="flex items-start">
                                 <label className="w-[200px] text-nowrap">
-                                    No. Of Bug<span className="text-red-500"> *</span>
-                                </label>
-                                <div className="w-full">
-                                    <input
-                                        {...register("noOfBug")}
-                                        placeholder="Enter no. of bug"
-                                        className={cn("w-full border outline-none px-4 py-2 rounded-md")}
-                                    />
-                                    {errors.noOfBug && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning />{errors.noOfBug.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="flex items-start">
-                                <label className="w-[200px] text-nowrap">
-                                    Token<span className="text-red-500"> *</span>
-                                </label>
-                                <div className="w-full">
-                                    <input
-                                        {...register("token")}
-                                        placeholder="Enter the token"
-                                        className={cn("w-full border outline-none px-4 py-2 rounded-md")}
-                                    />
-                                    {errors.token && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning /> {errors.token.message}</p>}
-                                </div>
-                            </div>
-
-                            <div className="flex items-start">
-                                <label className="w-[200px] text-nowrap">
-                                    Comment
+                                    Comment <span className="text-red-500"> *</span>
                                 </label>
                                 <div className="w-full">
                                     <textarea
                                         {...register("comment")}
                                         placeholder="Enter comment"
-                                        className={cn("w-full border outline-none px-4 py-2 rounded-md")}
+                                        className={cn("w-full border outline-none px-4 py-2 rounded-md", {
+                                            "border border-red-400": errors?.comment
+                                        })}
                                     />
+                                    {errors && errors?.comment && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning /> {errors?.comment?.message}</p>}
                                     {submissionError && <p className="flex items-center  gap-1 text-red-500 text-sm"><Warning /> {submissionError}</p>}
                                 </div>
                             </div>
@@ -158,7 +119,7 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
                             form="submitForm"
                             loading={isLoading}
                         >
-                            {!isLoading && "Create"}
+                            {!isLoading && "Post"}
                         </Button>
                     </div>
                 </div>
@@ -167,4 +128,4 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
     );
 };
 
-export default DialogForm;
+export default CommentDialog;
