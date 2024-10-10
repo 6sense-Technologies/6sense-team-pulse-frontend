@@ -111,9 +111,9 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ commentAdded, isOpen, on
                         </div>
                     </form>
                     <div className="flex gap-4 justify-end mt-8">
-                        <Button onClick={handleCloseDialog} variant="outline" className="font-normal focus:outline-[0px]">Cancel</Button>
+                        <Button data-testid="Cancel" onClick={handleCloseDialog} variant="outline" className="font-normal focus:outline-[0px]">Cancel</Button>
                         <Button
-                            aria-label="create"
+                            data-testid="post"
                             prefixIcon="PlusCircle"
                             type="submit"
                             className="w-[90px] hover:opacity-90"

@@ -1,8 +1,10 @@
+import CommentDialog from "@/app/components/UI/CommentDialog";
 import PerformanceDetails from "@/app/components/UI/PerformanceDetails";
+import Threads from "@/app/components/UI/Threads";
 import MemberPerformanceDetails from "@/app/member-list/[accountId]/[date]/page";
 import { IMemberPerformanceIssueHistory } from "@/types/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 jest.mock("next/navigation", () => {
     return {
@@ -61,6 +63,64 @@ describe("Member Performance Details", () => {
         );
 
         expect(screen.getByText("Bugs Reported: 0")).toBeInTheDocument();
+    });
+    it("should have the All comments title", () => {
+        const queryClient = new QueryClient();
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Threads needRefetch={false} />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText("All Comments")).toBeInTheDocument();
+    });
+
+    it("comment dialog should render correctly", () => {
+        const queryClient = new QueryClient();
+        render(
+            <QueryClientProvider client={queryClient}>
+                <CommentDialog isOpen={true} onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                }} accountId={""} currentDate={""} commentAdded={function (): void {
+                    throw new Error("Function not implemented.");
+                }} />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText("Comment")).toBeInTheDocument();
+        expect(screen.getByTestId("post")).toBeInTheDocument();
+        expect(screen.getByTestId("Cancel")).toBeInTheDocument();
+    });
+
+    it("should call onClose when Cancel button is clicked", () => {
+        const onClose = jest.fn();
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <CommentDialog isOpen={true} onClose={onClose} accountId={""} currentDate={""} commentAdded={() => { }} />
+            </QueryClientProvider>
+        );
+
+        const cancelButton = screen.getByTestId("Cancel");
+        fireEvent.click(cancelButton);
+
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    it("should show validation error when submitting empty comment", async () => {
+        const queryClient = new QueryClient();
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <CommentDialog isOpen={true} onClose={() => { }} accountId={""} currentDate={""} commentAdded={() => { }} />
+            </QueryClientProvider>
+        );
+
+        const postButton = screen.getByTestId("post");
+        fireEvent.click(postButton);
+
+        expect(await screen.findByText("Comment is required!")).toBeInTheDocument();
     });
 
     it("should show not found when here is no data", () => {
