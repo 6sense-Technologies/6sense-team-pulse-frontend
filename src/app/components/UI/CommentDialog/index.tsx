@@ -14,6 +14,7 @@ interface ICommentDialogProps {
     onClose: () => void;
     accountId: string;
     currentDate: string;
+    commentAdded: () => void;
 }
 
 interface IFormData {
@@ -26,7 +27,7 @@ const CommentSchema = z.object({
         .min(1, "Comment is required!")
 });
 
-const CommentDialog: React.FC<ICommentDialogProps> = ({ isOpen, onClose, currentDate, accountId }) => {
+const CommentDialog: React.FC<ICommentDialogProps> = ({ commentAdded, isOpen, onClose, currentDate, accountId }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [submissionError, setSubmissionError] = useState("");
 
@@ -38,7 +39,7 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ isOpen, onClose, current
         onClose();
     };
 
-    const handeComment = async (data: IFormData): Promise<void> => {
+    const handleComment = async (data: IFormData): Promise<void> => {
         const res = await axios.put(`${BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
             comment: data?.comment,
         });
@@ -48,7 +49,7 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ isOpen, onClose, current
 
     const commentMutation = useMutation({
         mutationKey: ["comment", accountId, currentDate],
-        mutationFn: handeComment
+        mutationFn: handleComment
     })
 
     const handleFormSubmit = (data: IFormData): void => {
@@ -57,6 +58,7 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ isOpen, onClose, current
         commentMutation.mutate(data, {
             onSuccess: (data) => {
                 handleCloseDialog();
+                commentAdded();
                 console.log(data);
             },
             onError: (error) => {

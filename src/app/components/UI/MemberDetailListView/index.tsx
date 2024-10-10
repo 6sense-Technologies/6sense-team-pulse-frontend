@@ -358,7 +358,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
             }
             {
                 isOpenCommentDialog && (
-                    <CommentDialog currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
+                    <CommentDialog commentAdded={() => { console.log("Added comment") }} currentDate={`${currentDate}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
                 )
             }
         </>
