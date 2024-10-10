@@ -282,7 +282,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                     <td className="py-2 text-sm text-textSecondary">
                                                         <div className="flex justify-start items-center gap-3">
                                                             <>
-                                                                <Button onClick={() => {
+                                                                <Button id={`tooltip-put-comment-${index}`} onClick={() => {
                                                                     setIsOpenCommentDialog(true);
                                                                     setCurrentDate(info?.date);
                                                                 }} weight="regular" className="focus:outline-[0px] p-0" disabled={info?.comment === "holidays/leave"} variant={"ghost"} prefixIcon="ChatCircleText" prefixIconColor={COLOR_TEXT_PRIMARY} />
