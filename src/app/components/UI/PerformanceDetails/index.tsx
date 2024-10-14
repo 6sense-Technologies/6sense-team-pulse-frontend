@@ -26,7 +26,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
         return `${day} ${month} ${year}`;
     }
 
-    if (!data) return <EmptyTableDataView iconName="FolderPlus" heading='No Data Found' subHeading="" />
+    if (!data) return <EmptyTableDataView iconName="FolderPlus" heading='No Data Found!' subHeading="" />
 
     return (
         <div className="flow-root">
