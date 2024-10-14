@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import CommentDialog from "@/app/components/UI/CommentDialog";
+import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
 import IconComponent from "@/app/components/UI/IconComponent";
 import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
@@ -90,9 +91,8 @@ const MemberPerformanceDetails = (): JSX.Element => {
                                     <Threads comments={comments} />
                                 </div>
                             </>
-                        ) : (
-                            <p>No Data Found!</p>
-                        )}
+                        ) : <EmptyTableDataView iconName="FolderPlus" heading='No Data Found' subHeading="" />
+                        }
                     </>
                 )}
 

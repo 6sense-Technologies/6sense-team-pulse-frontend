@@ -1,4 +1,5 @@
 "use client";
+import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberPerformanceIssueHistory } from "@/types/types";
 import { Tooltip } from "react-tooltip";
@@ -25,7 +26,7 @@ const PerformanceDetails = ({ data, date }: IProps): JSX.Element => {
         return `${day} ${month} ${year}`;
     }
 
-    if (!data) return <p>No Data Found!</p>
+    if (!data) return <EmptyTableDataView iconName="FolderPlus" heading='No Data Found' subHeading="" />
 
     return (
         <div className="flow-root">
