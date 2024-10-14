@@ -1,4 +1,5 @@
 "use client";
+import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
 import IconComponent from "@/app/components/UI/IconComponent";
 import MemberDetail from "@/app/components/UI/MemberDetail";
 import MenuComponent from "@/app/components/UI/MenuComponent";
@@ -41,7 +42,7 @@ const MemberInformation = (): JSX.Element => {
     }, [searchParams]);
 
 
-    const { data, isFetching: memberLoading } = useQuery<IMemberInformationType>({
+    const { data, isFetching: memberLoading, refetch: memberInformationRefetch } = useQuery<IMemberInformationType>({
         queryKey: ["fetchMemberInformation", accountId, pagination.page, pagination.size],
         queryFn: async () => {
             const res: AxiosResponse<IMemberInformationType> = await axios.get(`${BACKEND_URI}/users/${accountId}?page=${pagination?.page}&limit=${pagination?.size}`);
@@ -78,8 +79,8 @@ const MemberInformation = (): JSX.Element => {
                         :
                         <>
                             {member?.issueHistory && member?.issueHistory?.length > 0 ?
-                                <MemberDetail totalCountAndLimit={totalCountAndLimit} data={member} />
-                                : <p>No Data Found!</p>
+                                <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
+                                : <EmptyTableDataView iconName="FolderPlus" heading='No information' subHeading="" />
                             }
                         </>
                 }

@@ -1,19 +1,26 @@
+import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
 import IconComponent from "@/app/components/UI/IconComponent";
 import { COLOR_PRIMARY } from "@/app/utils/colorUtils";
 
 interface IProps {
-    needRefetch: boolean
+    comments: {
+        comment: string;
+        timestamp: string;
+    }[]
 }
 
 
-const Threads = ({ needRefetch }: IProps): JSX.Element => {
-    console.log(needRefetch)
-    const comments = [
-        { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "12:59 PM" },
-        { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "12:00 PM" },
-        { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "1:10 PM" },
-        { comment: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum numquam saepe reiciendis omnis ratione esse asperiores, sunt porro vel mollitia!", time: "6:00 PM" },
-    ]
+const Threads = ({ comments }: IProps): JSX.Element => {
+    const formatTime = (timestamp: string): string => {
+        const date = new Date(timestamp);
+        const options: Intl.DateTimeFormatOptions = {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        };
+        return date.toLocaleTimeString('en-US', options);
+    };
+
     return (
         <div>
             <div className="flex items-center justify-between">
@@ -32,13 +39,13 @@ const Threads = ({ needRefetch }: IProps): JSX.Element => {
                                     </div>
                                     <div>
                                         {/* <p className="text-xs">{comment?.time}</p> */}
-                                        <span className="font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] text-primary bg-primary/10">{comment?.time}</span>
+                                        <span className="font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] text-primary bg-primary/10">{formatTime(comment?.timestamp)}</span>
                                         <p className="text-textSecondary mt-1 text-sm">{comment?.comment}</p>
                                     </div>
                                 </div>
                             </div>
                         )
-                    }) : <p>No Comments Found!</p>
+                    }) : <EmptyTableDataView iconName="FolderPlus" heading='No comments' subHeading='Get started by creating a new comment.' />
                 }
             </div>
         </div>

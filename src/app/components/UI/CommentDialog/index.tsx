@@ -40,7 +40,7 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ commentAdded, isOpen, on
     };
 
     const handleComment = async (data: IFormData): Promise<void> => {
-        const res = await axios.put(`${BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
+        const res = await axios.post(`${BACKEND_URI}/users/comment/${accountId}/${currentDate}`, {
             comment: data?.comment,
         });
 

@@ -264,7 +264,7 @@ const MemberDetailListView = ({ data, accountId, totalCountAndLimit }: IProps): 
                                                         >
                                                             <p id={info?.comment ? `tooltip-comment-${index}` : undefined} className={cn(
                                                                 "text-sm text-textSecondary font-semibold pb-[2px]",
-                                                                { "max-w-[290px] w-full": info?.comment }
+                                                                { "max-w-[260px] w-full": info?.comment }
                                                             )}>
                                                                 {info?.comment ? info.comment : "-"}
                                                             </p>

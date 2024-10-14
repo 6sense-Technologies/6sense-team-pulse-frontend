@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import ConfirmDialog from "@/app/components/UI/ConfirmDialog";
+import IconComponent from "@/app/components/UI/IconComponent";
 import ImageComponent from "@/app/components/UI/ImageComponent";
 import MemberDetailListView from "@/app/components/UI/MemberDetailListView";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
@@ -13,9 +14,10 @@ import { useEffect, useState } from "react";
 
 interface IProps {
     data?: IMemberDetail,
-    totalCountAndLimit: { totalCount: number, size: number }
+    totalCountAndLimit: { totalCount: number, size: number },
+    onUpdate: () => void;
 }
-const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
+const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Element => {
 
     const router = useRouter();
 
@@ -58,6 +60,26 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
         });
     };
 
+    const updateProfileMutation = useMutation({
+        mutationKey: ["updateProfile", data?.accountId],
+        mutationFn: async () => {
+            const res = await axios.put(`${BACKEND_URI}/jira/user/${data?.accountId}`, null);
+            return res.data;
+        }
+    })
+
+    const handleUpdateProfile = (): void => {
+        updateProfileMutation.mutate(undefined, {
+            onSuccess: () => {
+                console.log("Updated Profile Successfully!");
+                onUpdate();
+            },
+            onError: (error) => {
+                console.error("Failed to update profile!", error);
+            }
+        })
+    }
+
     return (
         <div className="mt-10 relative">
             <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
@@ -82,6 +104,11 @@ const MemberDetail = ({ data, totalCountAndLimit }: IProps): JSX.Element => {
                     <div>
                         <div className="flex gap-2 items-center">
                             <h3 className="text-xl text-textSecondary font-semibold capitalize">{data?.displayName}</h3>
+                            <div onClick={handleUpdateProfile} className="cursor-pointer">
+                                <IconComponent name={'ArrowsClockwise'} color={''} weight="regular" className={cn("", {
+                                    "animate-spin": updateProfileMutation?.isPending
+                                })} />
+                            </div>
                             <p className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{data?.project}</p>
                         </div>
                         <p className="text-sm text-subHeading">

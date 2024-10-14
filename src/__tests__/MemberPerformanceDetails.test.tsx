@@ -43,6 +43,11 @@ jest.mock("axios", () => {
 
 describe("Member Performance Details", () => {
 
+    afterEach(() => {
+        jest.resetModules();
+        jest.clearAllMocks();
+    });
+
     it("should have the page title", () => {
         const queryClient = new QueryClient();
         render(
@@ -68,7 +73,7 @@ describe("Member Performance Details", () => {
         const queryClient = new QueryClient();
         render(
             <QueryClientProvider client={queryClient}>
-                <Threads needRefetch={false} />
+                <Threads comments={[]} />
             </QueryClientProvider>
         );
 
@@ -98,7 +103,9 @@ describe("Member Performance Details", () => {
 
         render(
             <QueryClientProvider client={queryClient}>
-                <CommentDialog isOpen={true} onClose={onClose} accountId={""} currentDate={""} commentAdded={() => { }} />
+                <CommentDialog isOpen={true} onClose={onClose} accountId={""} currentDate={""} commentAdded={function (): void {
+                    throw new Error("Function not implemented.");
+                }} />
             </QueryClientProvider>
         );
 
@@ -113,7 +120,11 @@ describe("Member Performance Details", () => {
 
         render(
             <QueryClientProvider client={queryClient}>
-                <CommentDialog isOpen={true} onClose={() => { }} accountId={""} currentDate={""} commentAdded={() => { }} />
+                <CommentDialog isOpen={true} accountId={""} currentDate={""} commentAdded={function (): void {
+                    throw new Error("Function not implemented.");
+                }} onClose={function (): void {
+                    throw new Error("Function not implemented.");
+                }} />
             </QueryClientProvider>
         );
 
@@ -140,6 +151,7 @@ describe("Member Performance Details", () => {
             accountId: "12345",
             noOfBugs: 5,
             comment: "Overall good performance, but issues with bug handling.",
+            comments: [],
             issues: [
                 {
                     serialNumber: 1,

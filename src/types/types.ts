@@ -84,6 +84,10 @@ export interface IMemberPerformanceIssueHistory {
     accountId: string
     noOfBugs: number
     comment: string
+    comments: {
+        comment: string
+        timestamp: string
+    }[]
     issues: {
         serialNumber: number
         issueType: string

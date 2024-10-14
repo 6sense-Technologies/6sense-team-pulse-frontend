@@ -18,13 +18,12 @@ import { useState } from "react";
 const MemberPerformanceDetails = (): JSX.Element => {
     const { accountId, date } = useParams<{ accountId: string, date: string }>();
     const [isOpenCommentDialog, setIsOpenCommentDialog] = useState(false);
-    const [isNeedRefetch, setIsNeedRefetch] = useState(false);
 
     const handleCloseCommentDialog = (): void => {
         setIsOpenCommentDialog(false);
     }
 
-    const { data, isFetching: performanceLoading } = useQuery({
+    const { data, isFetching: performanceLoading, refetch } = useQuery({
         queryKey: ["fetchMemberPerformanceDetails", accountId, date],
         queryFn: async () => {
             const res: AxiosResponse<IMemberPerformanceIssueHistory> = await axios.get(`${BACKEND_URI}/users/issues/${accountId}/${date}`);
@@ -35,7 +34,8 @@ const MemberPerformanceDetails = (): JSX.Element => {
         enabled: !!accountId && !!date
     });
 
-    console.log(isNeedRefetch)
+    const comments = data?.comments ?? [];
+
     return (
         <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
             <MenuComponent currentPage={'members'} />
@@ -54,7 +54,13 @@ const MemberPerformanceDetails = (): JSX.Element => {
             <section className="mt-8 relative">
                 {performanceLoading ? (
                     <div className="flex justify-center items-center min-h-[70vh] md:min-h-[75vh]">
-                        <IconComponent name={'loader'} color={'#BA8D46'} className="animate-spin" fontSize={40} />
+                        <IconComponent
+                            data-testid="loader"
+                            name={'loader'}
+                            color={'#BA8D46'}
+                            className="animate-spin"
+                            fontSize={40}
+                        />
                     </div>
                 ) : (
                     <>
@@ -81,7 +87,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
                                 <PerformanceDetails date={date} data={data} />
                                 <div className="mt-8">
                                     {/* sending the needRefetch so that i can refetch based on this */}
-                                    <Threads needRefetch={isNeedRefetch} />
+                                    <Threads comments={comments} />
                                 </div>
                             </>
                         ) : (
@@ -92,7 +98,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
 
                 {
                     isOpenCommentDialog && (
-                        <CommentDialog commentAdded={() => { setIsNeedRefetch(true); }} currentDate={`${date}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
+                        <CommentDialog commentAdded={() => { refetch() }} currentDate={`${date}`} accountId={`${accountId}`} isOpen={isOpenCommentDialog} onClose={handleCloseCommentDialog} />
                     )
                 }
             </section>

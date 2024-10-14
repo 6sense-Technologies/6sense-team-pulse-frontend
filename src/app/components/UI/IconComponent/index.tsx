@@ -1,6 +1,6 @@
 'use client'
 
-import { AddressBook, ArrowBendUpRight, ArrowClockwise, ArrowCounterClockwise, ArrowLeft, ArrowRight, ArrowSquareOut, Bank, Basket, Bug, Calendar, CaretDown, CaretLeft, CaretRight, CaretUpDown, ChartLineUp, ChatCenteredDots, ChatCircleText, ChatsCircle, Check, CheckCircle, CheckSquare, CircleNotch, ClipboardText, ClockCounterClockwise, Coins, Copy, CreditCard, CurrencyCircleDollar, DotsThreeOutlineVertical, Eye, EyeSlash, Factory, FileDoc, Files, FolderPlus, GearSix, HouseSimple, ImageSquare, Info, Lightbulb, Link, List, MagnifyingGlass, MinusCircle, Monitor, Paperclip, PaperPlaneRight, PaperPlaneTilt, PencilSimpleLine, Percent, PlusCircle, Question, Receipt, Trash, TrashSimple, UploadSimple, User, UserCircle, UserCirclePlus, Users, UsersThree, Warning, WarningDiamond, X } from '@phosphor-icons/react'
+import { AddressBook, ArrowBendUpRight, ArrowClockwise, ArrowCounterClockwise, ArrowLeft, ArrowRight, ArrowsClockwise, ArrowSquareOut, Bank, Basket, Bug, Calendar, CaretDown, CaretLeft, CaretRight, CaretUpDown, ChartLineUp, ChatCenteredDots, ChatCircleText, ChatsCircle, Check, CheckCircle, CheckSquare, CircleNotch, ClipboardText, ClockCounterClockwise, Coins, Copy, CreditCard, CurrencyCircleDollar, DotsThreeOutlineVertical, Eye, EyeSlash, Factory, FileDoc, Files, FolderPlus, GearSix, HouseSimple, ImageSquare, Info, Lightbulb, Link, List, MagnifyingGlass, MinusCircle, Monitor, Paperclip, PaperPlaneRight, PaperPlaneTilt, PencilSimpleLine, Percent, PlusCircle, Question, Receipt, Trash, TrashSimple, UploadSimple, User, UserCircle, UserCirclePlus, Users, UsersThree, Warning, WarningDiamond, X } from '@phosphor-icons/react'
 import React from 'react'
 
 // export type IconNameProps = 'Bank' | 'PaperPlaneRight' | 'List' | 'ArrowLeft' | 'Files' | 'ClockCounterClockwise' | 'ChatsCircle' | 'Users' | 'Paperclip' | 'PaperPlaneTilt' | 'ArrowRight' | 'Lightbulb' | 'ArrowBendUpRight' | 'ChatCenteredDots' | 'ChartLineUp' | 'Percent' | 'CreditCard' | 'UploadSimple' | 'ImageSquare' | 'WarningDiamond' | 'FileDoc' | 'ArrowSquareOut' | 'Monitor' | 'CurrencyCircleDollar' | 'GearSix' | 'ArrowCounterClockwise' | 'Copy' | 'UserCirclePlus' | 'Question' | 'ArrowClockwise' | 'Basket' | 'CheckSquare' | 'CaretUpDown' | 'Check' | 'CaretDown' | 'Trash' | 'TrashSimple' | 'MinusCircle' | 'ThreeDotsVertical' | 'FolderPlus' | 'PencilSimpleLine' | 'User' | 'CaretLeft' | 'CaretRight' | 'PlusCircle' | 'Search' | 'CheckCircle' | 'Calendar' | 'warning' | 'loader' | 'HouseSimple' | 'Factory' | 'Receipt' | 'ClipboardText' | 'UserCircle' | 'UsersThree' | 'Coins' | 'Link' | 'AddressBook' | 'hidePassword' | 'showPassword' | 'info' | 'close' | ''
@@ -82,7 +82,8 @@ const iconMap: { [key: string]: React.ReactElement } = {
     TrashSimple: <TrashSimple />,
     Trash: <Trash />,
     ChatCircleText: <ChatCircleText />,
-    Bug: <Bug />
+    Bug: <Bug />,
+    ArrowsClockwise: <ArrowsClockwise />,
 }
 
 const IconComponent = ({ name, fontSize, color, hoverColor, className, weight }: IPropTypes): React.ReactElement | null => {
