@@ -55,7 +55,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
                 {performanceLoading ? (
                     <div className="flex justify-center items-center min-h-[70vh] md:min-h-[75vh]">
                         <IconComponent
-                            data-testid="loader"
+                            data-testid="loading"
                             name={'loader'}
                             color={'#BA8D46'}
                             className="animate-spin"

@@ -11,6 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
 
 interface IProps {
     data?: IMemberDetail,
@@ -104,10 +105,18 @@ const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Eleme
                     <div>
                         <div className="flex gap-2 items-center">
                             <h3 className="text-xl text-textSecondary font-semibold capitalize">{data?.displayName}</h3>
-                            <div onClick={handleUpdateProfile} className="cursor-pointer">
+                            <div id="profile-sync" onClick={handleUpdateProfile} className="cursor-pointer">
                                 <IconComponent name={'ArrowsClockwise'} color={''} weight="regular" className={cn("", {
                                     "animate-spin": updateProfileMutation?.isPending
                                 })} />
+
+                                <Tooltip
+                                    anchorSelect="#profile-sync"
+                                    content="Sync Profile"
+                                    place="top"
+                                    offset={5}
+                                    style={{ fontSize: "12px", fontWeight: "bold", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
+                                />
                             </div>
                             <p className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{data?.project}</p>
                         </div>

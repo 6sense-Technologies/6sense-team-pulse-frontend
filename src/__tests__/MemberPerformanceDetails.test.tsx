@@ -40,6 +40,14 @@ jest.mock("axios", () => {
     };
 });
 
+jest.mock("../../node_modules/@tanstack/react-query", () => {
+    return {
+        useQuery: jest.fn(), // mock the named export useQuery
+        data: undefined,
+        isFetching: true,
+    }
+});
+
 
 describe("Member Performance Details", () => {
 
@@ -69,6 +77,7 @@ describe("Member Performance Details", () => {
 
         expect(screen.getByText("Bugs Reported: 0")).toBeInTheDocument();
     });
+
     it("should have the All comments title", () => {
         const queryClient = new QueryClient();
         render(
@@ -194,6 +203,60 @@ describe("Member Performance Details", () => {
     });
 
 
+    it("should display the correct issue data in the table", () => {
+        const mockPerformanceData: IMemberPerformanceIssueHistory = {
+            userName: "John Doe",
+            accountId: "12345",
+            noOfBugs: 5,
+            comment: "Overall good performance, but issues with bug handling.",
+            comments: [
+                {
+                    comment: "Fixed the login bug quickly.",
+                    timestamp: "2024-10-12T10:38:17.972Z"
+                },
+                {
+                    comment: "Still facing some UI misalignment issues.",
+                    timestamp: "2024-10-13T15:23:11.972Z"
+                }
+            ],
+            issues: [
+                {
+                    serialNumber: 1,
+                    issueType: "Bug",
+                    issueId: "BUG-101",
+                    issueStatus: "Open",
+                    planned: false,
+                    issueSummary: "Unexpected error on login page",
+                    link: "https://issue-tracker.com/BUG-101"
+                },
+                {
+                    serialNumber: 2,
+                    issueType: "Task",
+                    issueId: "BUG-102",
+                    issueStatus: "Closed",
+                    planned: true,
+                    issueSummary: "UI misalignment in dashboard",
+                    link: "https://issue-tracker.com/BUG-102"
+                }
+            ]
+        };
+
+        const queryClient = new QueryClient();
+        render(
+            <QueryClientProvider client={queryClient}>
+
+                <PerformanceDetails data={mockPerformanceData} date={"2024-10-08"} />
+            </QueryClientProvider>
+        );
+
+        // Check if issue data is rendered
+        expect(screen.getByText("1")).toBeInTheDocument();
+        expect(screen.getByText("BUG-101")).toBeInTheDocument();
+        expect(screen.getByText("Bug")).toBeInTheDocument();
+        expect(screen.getByText("Open")).toBeInTheDocument();
+        expect(screen.getByText("Unexpected error on login page")).toBeInTheDocument();
+        expect(screen.getByText("https://issue-tracker.com/BUG-101")).toBeInTheDocument();
+    });
 })
 
 describe('Threads component', () => {
