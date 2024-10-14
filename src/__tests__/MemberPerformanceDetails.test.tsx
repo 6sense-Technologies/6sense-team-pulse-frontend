@@ -197,6 +197,17 @@ describe("Member Performance Details", () => {
 })
 
 describe('Threads component', () => {
+
+    beforeAll(() => {
+        // Mocking toLocaleTimeString to ensure consistent formatting across environments
+        jest.spyOn(Date.prototype, 'toLocaleTimeString').mockImplementation(() => { return '05:38 AM' });
+    });
+
+    afterAll(() => {
+        jest.restoreAllMocks();
+    });
+
+
     const queryClient = new QueryClient();
 
     it("should have the All Comments title", () => {
@@ -221,6 +232,6 @@ describe('Threads component', () => {
         );
 
         expect(screen.getByText('First comment')).toBeInTheDocument();
-        expect(screen.getByText('11:38 AM')).toBeInTheDocument();
+        expect(screen.getByText('05:38 AM')).toBeInTheDocument();
     });
 });
