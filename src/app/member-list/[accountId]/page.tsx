@@ -44,7 +44,7 @@ const MemberInformation = (): JSX.Element => {
     const { data, isFetching: memberLoading } = useQuery<IMemberInformationType>({
         queryKey: ["fetchMemberInformation", accountId, pagination.page, pagination.size],
         queryFn: async () => {
-            const res: AxiosResponse<IMemberInformationType> = await axios.get(`${BACKEND_URI}/users/${accountId}?page=${pagination.page}&limit=${pagination.size}`);
+            const res: AxiosResponse<IMemberInformationType> = await axios.get(`${BACKEND_URI}/users/${accountId}?page=${pagination?.page}&limit=${pagination?.size}`);
 
             return res.data;
         },
