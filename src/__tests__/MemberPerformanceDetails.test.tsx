@@ -80,6 +80,8 @@ describe("Member Performance Details", () => {
         expect(screen.getByText("All Comments")).toBeInTheDocument();
     });
 
+
+
     it("comment dialog should render correctly", () => {
         const queryClient = new QueryClient();
         render(
@@ -193,3 +195,32 @@ describe("Member Performance Details", () => {
 
 
 })
+
+describe('Threads component', () => {
+    const queryClient = new QueryClient();
+
+    it("should have the All Comments title", () => {
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Threads comments={[]} />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText("All Comments")).toBeInTheDocument();
+    });
+
+    it('should render all comments with formatted time', () => {
+        const comments = [
+            { comment: 'First comment', timestamp: '2024-10-14T05:38:17.972Z' },
+        ];
+
+        render(
+            <QueryClientProvider client={queryClient}>
+                <Threads comments={comments} />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText('First comment')).toBeInTheDocument();
+        expect(screen.getByText('11:38 AM')).toBeInTheDocument();
+    });
+});
