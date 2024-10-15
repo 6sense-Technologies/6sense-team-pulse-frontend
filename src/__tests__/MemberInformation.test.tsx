@@ -84,15 +84,16 @@ describe("Member Information", () => {
             totalIssueHistory: 1,
             currentPage: 1,
             totalPages: 1,
-            project: "Project Alpha"
+            project: ["Project Alpha"]
         };
 
         render(
             <QueryClientProvider client={queryClient}>
                 <MemberDetail
                     totalCountAndLimit={{ totalCount: 1, size: 10 }}
-                    data={mockData}
-                />
+                    data={mockData} onUpdate={function (): void {
+                        throw new Error("Function not implemented.");
+                    }} />
             </QueryClientProvider>
         );
 
@@ -132,15 +133,16 @@ describe("Member Information", () => {
             totalIssueHistory: 1,
             currentPage: 1,
             totalPages: 1,
-            project: "Project Alpha"
+            project: ["Project Alpha"]
         };
 
         render(
             <QueryClientProvider client={queryClient}>
                 <MemberDetail
                     totalCountAndLimit={{ totalCount: 1, size: 10 }}
-                    data={mockData}
-                />
+                    data={mockData} onUpdate={function (): void {
+                        throw new Error("Function not implemented.");
+                    }} />
             </QueryClientProvider>
         );
 
