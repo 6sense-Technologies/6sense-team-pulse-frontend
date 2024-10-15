@@ -135,7 +135,7 @@ const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Eleme
             </div>
 
             <div className="mt-8">
-                <MemberDetailListView totalCountAndLimit={totalCountAndLimit} data={data?.issueHistory} accountId={`${data?.accountId}`} />
+                <MemberDetailListView totalCountAndLimit={totalCountAndLimit} data={data?.issueHistory} accountId={`${data?.accountId}`} designation={`${data?.designation}`} />
             </div>
 
 
