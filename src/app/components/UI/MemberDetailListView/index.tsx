@@ -91,7 +91,7 @@ const MemberDetailListView = ({ designation, data, accountId, totalCountAndLimit
                                                 />
                                             </th>
                                             {
-                                                designation !== "Designer" && designation !== "SQA" &&
+                                                !designation.includes("Designer") && !designation.includes("SQA") &&
                                                 <>
                                                     <th id="tooltip-bugs" scope="col" className={cn("py-2 text-xs font-bold text-primaryFocus text-left text-wrap")}>
                                                         BUGS
@@ -172,7 +172,7 @@ const MemberDetailListView = ({ designation, data, accountId, totalCountAndLimit
                                                         }
                                                     </td>
                                                     {
-                                                        designation !== "Designer" && designation !== "SQA" &&
+                                                        !designation.includes("Designer") && !designation.includes("SQA") &&
                                                         <>
                                                             <td className={cn("py-2 text-sm text-textSecondary")}>
                                                                 <p className="text-sm text-textSecondary font-semibold pb-[2px]">{info?.comment === "holidays/leave" ? "-" : `${info?.issuesCount?.done?.Bug}/${info?.issuesCount?.notDone?.Bug}`}</p>
