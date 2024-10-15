@@ -29,7 +29,7 @@ export interface IMemberInformationType {
         totalIssueHistory: number
         currentPage: number
         totalPages: number
-        project: string
+        project: string[]
     }
 }
 
@@ -46,7 +46,7 @@ export interface IMemberDetail {
     totalIssueHistory: number
     currentPage: number
     totalPages: number
-    project: string
+    project: string[]
 }
 
 export interface IIssueHistory {

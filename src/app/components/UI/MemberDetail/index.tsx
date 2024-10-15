@@ -118,7 +118,13 @@ const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Eleme
                                     style={{ fontSize: "12px", fontWeight: "bold", backgroundColor: '#BA8D46', color: 'white', borderRadius: '5px', padding: '5px' }}
                                 />
                             </div>
-                            <p className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{data?.project}</p>
+                            {
+                                data?.project?.map((proj, idx) => {
+                                    return (
+                                        <p key={idx} className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{proj}</p>
+                                    )
+                                })
+                            }
                         </div>
                         <p className="text-sm text-subHeading">
                             {data?.emailAddress}
