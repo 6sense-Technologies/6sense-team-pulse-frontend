@@ -1,1 +1,1 @@
-export const BACKEND_URI = "https://6sense-efficiency-backend.vercel.app"
+export const BACKEND_URI = "https://sixsense-team-pulse-backend.onrender.com"
