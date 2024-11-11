@@ -3,7 +3,7 @@ import { COLOR_EMPTY_TABLE_ICON_COLOR } from "@/app/utils/colorUtils"
 import { cn } from "@/app/utils/tailwindMerge"
 
 interface IPropTypes {
-    iconName?: 'FolderPlus' | 'FileDoc' | 'Users' | 'ChatsCircle' | 'Files'
+    iconName?: 'FolderPlus' | 'FileDoc' | 'Users' | 'ChatsCircle' | 'Files' | 'GithubLogo'
     iconSize?: number
     iconColor?: string
     heading: string
