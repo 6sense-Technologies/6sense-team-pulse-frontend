@@ -1,6 +1,4 @@
 import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
-import IconComponent from "@/app/components/UI/IconComponent";
-import { COLOR_PRIMARY } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IGitContribution } from "@/types/types";
 import { Spinner } from "@phosphor-icons/react";
