@@ -128,3 +128,13 @@ export interface IGitContribution {
   updatedAt: string;
   user: string;
 }
+
+export interface IProject {
+  _id: string
+  tool: string
+  toolURL: string
+  name: string
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
