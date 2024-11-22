@@ -78,10 +78,11 @@ const MemberInformation = (): JSX.Element => {
                         </div>
                         :
                         <>
-                            {member?.issueHistory && member?.issueHistory?.length > 0 ?
+                        <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
+                            {/* {member?.issueHistory && member?.issueHistory?.length > 0 ?
                                 <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
                                 : <EmptyTableDataView iconName="FolderPlus" heading='No information' subHeading="" />
-                            }
+                            } */}
                         </>
                 }
             </section>

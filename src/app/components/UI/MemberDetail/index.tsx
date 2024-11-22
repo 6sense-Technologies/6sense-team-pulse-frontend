@@ -119,9 +119,9 @@ const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Eleme
                                 />
                             </div>
                             {
-                                data?.project?.map((proj, idx) => {
+                                data?.projects?.map((proj, idx) => {
                                     return (
-                                        <p key={idx} className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{proj}</p>
+                                        <p key={idx} className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10">{proj.projectDetails[0]?.name}</p>
                                     )
                                 })
                             }
@@ -141,7 +141,7 @@ const MemberDetail = ({ onUpdate, data, totalCountAndLimit }: IProps): JSX.Eleme
             </div>
 
             <div className="mt-8">
-                <MemberDetailListView totalCountAndLimit={totalCountAndLimit} data={data?.issueHistory} accountId={`${data?.accountId}`} designation={`${data?.designation}`} />
+                {/* <MemberDetailListView totalCountAndLimit={totalCountAndLimit} data={data?.issueHistory} accountId={`${data?.accountId}`} designation={`${data?.designation}`} /> */}
             </div>
 
 

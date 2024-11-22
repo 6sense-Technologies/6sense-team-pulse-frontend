@@ -46,7 +46,7 @@ export interface IMemberDetail {
   totalIssueHistory: number;
   currentPage: number;
   totalPages: number;
-  project: string[];
+  projects: any[];
 }
 
 export interface IIssueHistory {

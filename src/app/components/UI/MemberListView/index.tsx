@@ -115,7 +115,7 @@ const MemberListView = ({ members, refetch, totalCountAndLimit }: { members: IPr
                                             </td>
                                             <td className="px-3 pl-3 py-2 text-sm text-textSecondary"> {/* Added bg-white to sticky cell */}
                                                 <div className="flex items-center gap-2">
-                                                    <Link href={`/member-list/${member?.accountId}?page=1`}>
+                                                    <Link href={`/member-list/${member?._id}?page=1`}>
                                                         <Button aria-label="details" role="button" variant="secondary" className={cn("text-textPrimary font-medium px-4 py-2 focus:outline-[0px]")}>
                                                             Details
                                                         </Button>
