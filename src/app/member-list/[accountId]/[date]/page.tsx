@@ -45,7 +45,7 @@ const MemberPerformanceDetails = (): JSX.Element => {
 
   return (
     <div className="relative adjustedWidthForMenu px-4 md:left-[280px]">
-      <MenuComponent currentPage={"members"} />
+      {/* <MenuComponent currentPage={"members"} /> */}
       <PageTitle pageName="Performance Details" title="6sense Efficiency" />
       <section className="mt-[18px]">
         <div className="mb-2 flex items-center gap-x-2 mr-auto text-base font-medium">

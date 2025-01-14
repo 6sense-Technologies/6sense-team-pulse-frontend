@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .adjustedWidthForMenu {
-  width: calc(100% - 280px);
+  width: 100%
 }
 
 .react-tooltip.core-styles-module_tooltip__3vRRp.styles-module_tooltip__mnnfp.styles-module_dark__xNqje.react-tooltip__place-left.core-styles-module_show__Nt9eE.react-tooltip__show {
@@ -21,3 +21,5 @@
     width: 100%;
   }
 }
+
+
