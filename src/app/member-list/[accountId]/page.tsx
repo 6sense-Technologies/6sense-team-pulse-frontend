@@ -1,11 +1,11 @@
 "use client";
-import EmptyTableDataView from "@/app/components/UI/EmptyTableDataView";
 import IconComponent from "@/app/components/UI/IconComponent";
 import MemberDetail from "@/app/components/UI/MemberDetail";
 import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
+import PageHeading from "@/components/pageHeading";
 import { IMemberInformationType } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
@@ -58,8 +58,8 @@ const MemberInformation = (): JSX.Element => {
     const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 }
 
     return (
-        <div className='relative adjustedWidthForMenu px-4 md:left-[280px]'>
-            <MenuComponent currentPage={'members'} />
+        <div className='relative adjustedWidthForMenu px-4'>
+            {/* <MenuComponent currentPage={'members'} /> */}
             <PageTitle pageName='Members' title='6sense Efficiency' />
             <section className="mt-[18px]">
                 <div className='mb-2 flex items-center gap-x-2 mr-auto text-base font-medium'>
@@ -68,7 +68,8 @@ const MemberInformation = (): JSX.Element => {
                     <Link href={`/member-list/${accountId}?page=1`} className='text-primary'>Information</Link>
                 </div>
                 {/* <div className='mr-auto text-base text-primary font-medium'>Information</div> */}
-                <h3 className='text-headingXS md:text-headingBase font-semibold'>Member Information</h3>
+                <PageHeading title='Member Information' subTitle="" />
+
             </section>
             <section className="mt-4 relative">
                 {

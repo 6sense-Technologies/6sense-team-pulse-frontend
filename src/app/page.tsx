@@ -7,7 +7,7 @@ export default function Home(): JSX.Element {
 
   return (
     <div className='relative adjustedWidthForMenu px-6 md:left-[280px]'>
-      <MenuComponent currentPage={'home'} />
+      {/* <MenuComponent currentPage={'home'} /> */}
       <PageTitle pageName='Home' title='6sense Efficiency' />
     </div>
   );

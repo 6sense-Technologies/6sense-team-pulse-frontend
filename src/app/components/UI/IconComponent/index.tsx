@@ -68,6 +68,7 @@ import {
   WarningDiamond,
   X,
   GithubLogo,
+  TrendUp,
 } from "@phosphor-icons/react";
 import React from "react";
 
@@ -151,6 +152,7 @@ const iconMap: { [key: string]: React.ReactElement } = {
   Bug: <Bug />,
   ArrowsClockwise: <ArrowsClockwise />,
   GithubLogo: <GithubLogo />,
+  TrendUp: <TrendUp />,
 };
 
 const IconComponent = ({

@@ -138,3 +138,23 @@ export interface IProject {
   updatedAt: string
   __v: number
 }
+
+export interface IGrowthItems {
+  id: string;
+  user: string;
+  goalItem: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+}
+
+export interface IGrowthDetailItems {
+  id: string;
+  user: string;
+  goalItem: string;
+  status: string;
+  summary: string;
+  date: string;
+  activites: string[];
+}

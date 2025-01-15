@@ -16,6 +16,7 @@ const buttonVariants = cva(
                 destructive: "text-white bg-destructive hover:bg-destructiveHover",
                 ghost: "text-textPrimary bg-transparent hover:bg-disabled focus:bg-disabled focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
                 link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
+                greenish: "text-white bg-green-500 hover:bg-green-600",
             },
             size: {
                 md: "text-sm px-5 h-9",
@@ -38,7 +39,7 @@ export interface IButtonProps
     asChild?: boolean
     loading?: boolean
     loaderColor?: string
-    prefixIcon?: 'Bug' | 'ChatCircleText' | 'loader' | 'PlusCircle' | 'PencilSimpleLine' | 'MinusCircle' | 'TrashSimple' | 'CheckCircle' | 'ArrowClockwise' | 'UserCirclePlus' | 'Copy' | 'ArrowCounterClockwise' | 'GearSix' | 'ArrowSquareOut' | 'UploadSimple' | 'CaretLeft' | 'CaretRight' | 'ChatCenteredDots' | 'ClockCounterClockwise' | 'close' | 'List' | 'PaperPlaneRight' | 'Check' | 'Trash'
+    prefixIcon?: 'Bug' | 'ChatCircleText' | 'loader' | 'PlusCircle' | 'PencilSimpleLine' | 'MinusCircle' | 'TrashSimple' | 'CheckCircle' | 'ArrowClockwise' | 'UserCirclePlus' | 'Copy' | 'ArrowCounterClockwise' | 'GearSix' | 'ArrowSquareOut' | 'UploadSimple' | 'CaretLeft' | 'CaretRight' | 'ChatCenteredDots' | 'ClockCounterClockwise' | 'close' | 'List' | 'PaperPlaneRight' | 'Check' | 'Trash' | 'TrendUp'
     prefixIconColor?: string
     suffixIcon?: 'ArrowBendUpRight'
     suffixIconColor?: string

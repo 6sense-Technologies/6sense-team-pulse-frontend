@@ -12,7 +12,6 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
-  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -27,6 +26,7 @@ import {
 } from "@/components/ui/sidebar"
 import { NavProjects } from "./nav-projects"
 import { NavUser } from "./nav-user"
+import { Users } from "@phosphor-icons/react"
 
 // This is sample data.
 const data = {
@@ -54,7 +54,7 @@ const data = {
       icon: Users,
       isActive: true,
         items: [
-            { title: "List", url: "/member-list" },
+            { title: "List", url: "/member-list?page=1" },
         ],
     },
 ]
@@ -64,11 +64,11 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} className="bg-white">
-      <SidebarHeader className="bg-white">
+    <Sidebar collapsible="icon" {...props} className="bg-[#FAFBFC]">
+      <SidebarHeader className="bg-[#FAFBFC]">
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent className="bg-white">
+      <SidebarContent className="bg-[#FAFBFC]">
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarRail />
