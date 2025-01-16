@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
 import { TablePagination } from "./tablePagination";
+import Tooltips from "./tooltip";
+import { Note } from "@phosphor-icons/react";
 
 export interface IMember {
   _id: string;
@@ -39,8 +41,8 @@ export interface IMember {
 export const columns: ColumnDef<IMember>[] = [
   {
     accessorKey: "avatarUrls",
-    header: () => <div className="ml-4 text-bold">PHOTO</div>,
-    cell: ({ row }) => {
+    header: (): JSX.Element => { return <div className="ml-4 text-bold">PHOTO</div>; },
+    cell: ({ row }: { row: any }): JSX.Element => {
       const avatarUrl = row.getValue("avatarUrls");
       const displayName = row.getValue("displayName") as string;
       const nameParts = displayName.split(" ");
@@ -64,14 +66,15 @@ export const columns: ColumnDef<IMember>[] = [
   },
   {
     accessorKey: "displayName",
-    header: () => <div className="text-bold">NAME</div>,
-    cell: ({ row }) => <div className="text-medium">{row.getValue("displayName") || '-'}</div>,
+    header: () => { return <div className="text-bold">NAME</div>; },
+    cell: ({ row }: { row: any }) => { return <div className="text-medium">{row.getValue("displayName") || '-'}</div>; },
   },
   {
     accessorKey: "emailAddress",
-    header: () => <div className="text-bold">EMAIL</div>,
-    cell: ({ row }) => 
-      <div className="lowercase text-medium">{row.getValue("emailAddress") || '-'}</div>,
+    header: () => { return <div className="text-bold">EMAIL</div>; },
+    cell: ({ row }): JSX.Element => {
+      return <div className="lowercase text-medium">{row.getValue("emailAddress") || '-'}</div>;
+    },
   },
   {
     accessorKey: "designation",
@@ -88,19 +91,21 @@ export const columns: ColumnDef<IMember>[] = [
   },
   {
     id: "actions",
-    header: () => <div className="text-bold">ACTIONS</div>,
+    header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
     enableHiding: false,
     cell: ({ row }) => {
       const member = row.original;
 
       return (
-        <Button variant={"monoChrome"}
-          onClick={() => {
-            window.location.href = `/member-list/${member.accountId}?page=1`;
-          }}
-        >
-          Details
-        </Button>
+        <div className="flex items-center justify-end space-x-4 pr-4">
+          <Tooltips
+            icon={Note}
+            tooltipText="Details"
+            onClick={() => {
+              window.location.href = `/member-list/${member.accountId}?page=1`;
+            }}
+          />
+        </div>
       );
     },
   },
@@ -158,11 +163,9 @@ export const MemberTable = ({
   });
 
   const onPageChange = (page: number): void => {
-    {
-      setCurrentPage(page);
-      table.setPageIndex(page - 1);
-      refetch();
-    }
+    setCurrentPage(page);
+    table.setPageIndex(page - 1);
+    refetch();
   };
 
   return (
@@ -171,9 +174,9 @@ export const MemberTable = ({
         <Table>
           <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="py-1 leading-none">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                  <TableHead key={header.id} className={`text-left py-1 leading-none ${header.column.id === 'actions' ? 'text-right' : ''}`}>
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -183,14 +186,16 @@ export const MemberTable = ({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="py-1 leading-none">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                    <TableCell key={cell.id} className={`py-1 leading-none ${cell.column.id === 'actions' ? 'text-right pr-4' : ''}`}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="py-1 leading-none">
                 <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>

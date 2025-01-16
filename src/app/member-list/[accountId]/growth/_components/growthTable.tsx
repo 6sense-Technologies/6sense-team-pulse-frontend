@@ -28,14 +28,10 @@ import { GrowthTablePagination } from "./growthTablePagination";
 import { IGrowthItems } from "@/types/types";
 import { GrowthDrawer } from "./growthDrawer";
 import { Badge } from "@/components/ui/badge";
+import GrowthTooltip from "./growthTooltip";
+import { Note, Trash } from "@phosphor-icons/react";
 
 export const columns: ColumnDef<IGrowthItems>[] = [
-  {
-    id: "rowNumber",
-    header: () => <div className="text-bold ml-4">No.</div>,
-    cell: ({ row }) => <div className="text-medium ml-6">{row.index + 1}</div>,
-    size: 50,
-  },
   {
     accessorKey: "goalItem",
     header: () => <div className="text-bold">ITEMS</div>,
@@ -58,29 +54,28 @@ export const columns: ColumnDef<IGrowthItems>[] = [
   },
   {
     id: "actions",
-    header: () => <div className="text-bold">ACTIONS</div>,
+    header: () => <div className="text-bold text-right">ACTIONS</div>,
     enableHiding: false,
     cell: ({ row }) => {
       const growthItem = row.original;
 
       return (
-        <div className="flex items-center space-x-4">
-          <Button
-            variant={"monoChrome"}
+        <div className="flex items-center justify-end space-x-4">
+          <GrowthTooltip
+            icon={Note}
+            tooltipText="Details"
             onClick={() => {
               window.location.href = `/member-list/${growthItem.accountId}?page=1`;
             }}
-          >
-            Details
-          </Button>
-          <Button
-            variant={"destructive"}
+          />
+          <GrowthTooltip
+            icon={Trash}
+            tooltipText="Delete"
+            color="red"
             onClick={() => {
               window.location.href = `/member-list/${growthItem.accountId}?page=1`;
             }}
-          >
-            Delete
-          </Button>
+          />
         </div>
       );
     },
@@ -151,43 +146,63 @@ export const GrowthTable = ({
   return (
     <div className="w-full">
       <div className="flex items-center justify-end mb-4">
-        <AddButton prefixIcon="PlusCircle" onClick={handleDrawerToggle}>Add Growth</AddButton>
+        <AddButton prefixIcon="PlusCircle" onClick={handleDrawerToggle}>
+          Add Growth
+        </AddButton>
       </div>
       <div className="rounded-md">
         <Table>
           <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={`${
+                        header.column.id === "actions" ? "text-right pr-4" : ""
+                      } ${header.column.id === "goalItem" ? "pl-4" : ""}`}
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="min-w-[150px]">
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <TableCell
+                          key={cell.id}
+                          className={`${
+                            cell.column.id === "actions"
+                              ? "text-right pr-4"
+                              : ""
+                          } ${cell.column.id === "goalItem" ? "pl-4" : ""}`}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
@@ -217,7 +232,9 @@ export const GrowthTable = ({
       {isDrawerOpen && (
         <GrowthDrawer
           isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
+          onClose={() => {
+            setIsDrawerOpen(false);
+          }}
         />
       )}
     </div>
