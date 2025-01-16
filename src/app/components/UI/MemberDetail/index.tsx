@@ -92,7 +92,7 @@ const MemberDetail = ({
 
   const handleGrowthRoute = () : void =>
   {
-    router.push(`/member-list/${data?.accountId}/growth`);
+    router.push(`/member-list/${data?.accountId}/growth?page=1`);
   }
 
   return (

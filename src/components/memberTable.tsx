@@ -38,6 +38,11 @@ export interface IMember {
   designation: string;
 }
 
+const handleDetails = (member: IMember): void => {
+  localStorage.setItem("memberId", member._id);
+  window.location.href = `/member-list/${member.accountId}?page=1`;
+}
+
 export const columns: ColumnDef<IMember>[] = [
   {
     accessorKey: "avatarUrls",
@@ -101,9 +106,7 @@ export const columns: ColumnDef<IMember>[] = [
           <Tooltips
             icon={Note}
             tooltipText="Details"
-            onClick={() => {
-              window.location.href = `/member-list/${member.accountId}?page=1`;
-            }}
+            onClick={() => { handleDetails(member); }}
           />
         </div>
       );

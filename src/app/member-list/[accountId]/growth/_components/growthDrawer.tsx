@@ -18,9 +18,14 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
+import toast from "react-hot-toast";
 
 interface IFormData {
   goal: string;
+  user?: string;
 }
 
 const GrowthSchema = z.object({
@@ -30,29 +35,79 @@ const GrowthSchema = z.object({
 export function GrowthDrawer({
   isOpen,
   onClose,
+  refetch,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  refetch: () => void;
 }) {
   const {
     handleSubmit,
     register,
     formState: { errors },
-    setValue,
-    watch,
+    reset,
     clearErrors,
   } = useForm<IFormData>({
     resolver: zodResolver(GrowthSchema),
   });
 
-  const onSubmit = (data: IFormData): void => {
-    console.log(data);
-  };
+  const AddGoalMutation = useMutation({
+    mutationKey: ["addGoalMutation"],
+    mutationFn: async (newGoal: IFormData) => {
+      const res = await axios.post(`${TEMP_BACKEND_URI}/goals`,
+        {
+          ...newGoal,
+        }
+      )
+      return res.data;
+    }
+   
+  });
+
+
+  // const onSubmit = (data: IFormData): void => {
+  //   setIsLoading(true);
+  //   addMemberMutation.mutate(data, {
+  //     onSuccess: () => {
+  //       toast.success("Member added successfully!");
+  //       // onClose();
+  //       router.push("/member-list?page=1");
+  //       refetch();
+  //     },
+  //     onError: (error: any) => {
+  //       toast.error("Unable to add the member");
+  //       console.error(error);
+  //     },
+  //     onSettled: () => {
+  //       setIsLoading(false); // Stop loader
+  //     },
+  //   });
+  // };
 
   const handleCancel = () => {
     clearErrors();
+    reset();
     onClose();
   };
+
+
+  const onSubmit = (data: IFormData): void => {
+    const Formdata = {
+      goal: data.goal,
+      user: localStorage.getItem("memberId") || undefined,
+    }
+    AddGoalMutation.mutate(Formdata,
+      {
+        onSuccess: () => 
+        {
+          toast.success("Goal added successfully!");
+          handleCancel();
+          refetch();
+        }
+      }
+    );
+  };
+
 
   return (
     <Drawer open={isOpen} onOpenChange={onClose}>

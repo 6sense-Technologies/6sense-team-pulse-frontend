@@ -15,22 +15,17 @@ import { useEffect, useState } from "react";
 
 const MemberInformation = (): JSX.Element => {
     const { accountId } = useParams();
-
     const searchParams = useSearchParams();
-    const [pagination, setPaignation] = useState({
+    const [pagination, setPagination] = useState({
         page: 1,
         size: 30,
-    })
-
-    // useEffect(() => {
-    //     setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
-    // }, [searchParams, pagination.size])
+    });
 
     useEffect(() => {
         const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
         // Only update pagination if the new page is different from the current page
-        setPaignation((prevPagination) => {
+        setPagination((prevPagination) => {
             if (prevPagination.page !== newPage) {
                 return {
                     page: newPage,
@@ -41,12 +36,10 @@ const MemberInformation = (): JSX.Element => {
         });
     }, [searchParams]);
 
-
     const { data, isFetching: memberLoading, refetch: memberInformationRefetch } = useQuery<IMemberInformationType>({
         queryKey: ["fetchMemberInformation", accountId, pagination.page, pagination.size],
         queryFn: async () => {
             const res: AxiosResponse<IMemberInformationType> = await axios.get(`${BACKEND_URI}/users/${accountId}?page=${pagination?.page}&limit=${pagination?.size}`);
-
             return res.data;
         },
         refetchOnWindowFocus: false,
@@ -55,7 +48,7 @@ const MemberInformation = (): JSX.Element => {
 
     const member = data?.user ?? undefined;
     const totalCount = data?.user?.totalIssueHistory;
-    const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 }
+    const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 };
 
     return (
         <div className='relative adjustedWidthForMenu px-4'>
@@ -65,30 +58,30 @@ const MemberInformation = (): JSX.Element => {
                 <div className='mb-2 flex items-center gap-x-2 mr-auto text-base font-medium'>
                     <Link href={'/member-list?page=1'} className='text-subHeading'>Members</Link>
                     <IconComponent name={'CaretRight'} color={COLOR_SUBHEADING} fontSize={14} />
-                    <Link href={`/member-list/${accountId}?page=1`} className='text-primary'>Information</Link>
+                    <Link href={`/member-list/${accountId}?${searchParams.toString()}`} className='text-primary'>Information</Link>
                 </div>
                 {/* <div className='mr-auto text-base text-primary font-medium'>Information</div> */}
                 <PageHeading title='Member Information' subTitle="" />
-
             </section>
             <section className="mt-4 relative">
                 {
-                    memberLoading ?
+                    memberLoading ? (
                         <div className="flex justify-center items-center min-h-[75vh]">
                             <IconComponent data-testid="loader" name={'loader'} color={'#BA8D46'} className='animate-spin' fontSize={40} />
                         </div>
-                        :
+                    ) : (
                         <>
-                        <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
+                            <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
                             {/* {member?.issueHistory && member?.issueHistory?.length > 0 ?
                                 <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
                                 : <EmptyTableDataView iconName="FolderPlus" heading='No information' subHeading="" />
                             } */}
                         </>
+                    )
                 }
             </section>
         </div>
-    )
-}
+    );
+};
 
-export default MemberInformation
+export default MemberInformation;

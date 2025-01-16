@@ -64,6 +64,8 @@ export function GrowthTablePagination({
 
   const pagination = getPagination();
 
+  const id = localStorage.getItem("memberId");
+
   return (
     <CustomPagination>
       <PaginationContent>
@@ -74,7 +76,7 @@ export function GrowthTablePagination({
               e.preventDefault();
               if (currentPage > 1) {
                 onPageChange(currentPage - 1);
-                router.push(`/member-list?page=${currentPage - 1}`);
+                router.push(`/member-list/${id}/growth?page=${currentPage - 1}`);
               }
             }}
           />
@@ -88,7 +90,7 @@ export function GrowthTablePagination({
                 onClick={(e) => {
                   e.preventDefault();
                   onPageChange(page);
-                  router.push(`/member-list?page=${page}`);
+                  router.push(`/member-list/${id}/growth?page=${page}`);
                 }}
               >
                 {page}
@@ -105,7 +107,7 @@ export function GrowthTablePagination({
               e.preventDefault();
               if (currentPage < totalPage) {
                 onPageChange(currentPage + 1);
-                router.push(`/member-list?page=${currentPage + 1}`);
+                router.push(`/member-list/${id}/growth?page=${currentPage + 1}`);
               }
             }}
           />

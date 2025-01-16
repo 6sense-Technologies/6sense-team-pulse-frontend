@@ -13,7 +13,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
 import { Button as AddButton } from "../../../../components/UI/ButtonComponent";
 import {
   Table,
@@ -65,7 +64,7 @@ export const columns: ColumnDef<IGrowthItems>[] = [
             icon={Note}
             tooltipText="Details"
             onClick={() => {
-              window.location.href = `/member-list/712020%3Aa719c94b-862c-4240-bfcb-b6ce2653aae6/growth/details`;
+              window.location.href = `/member-list/712020:a719c94b-862c-4240-bfcb-b6ce2653aae6/growth/details?page=1&goalId=${growthItem._id}`;
             }}
           />
           <GrowthTooltip
@@ -93,22 +92,14 @@ export const GrowthTable = ({
   refetch: () => void;
 }): JSX.Element => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPage, setCurrentPage] = React.useState(page);
-  const totalPages = totalCountAndLimit.totalCount
-    ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
-    : 0;
+  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize) : 0;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = (): void => {
@@ -116,7 +107,7 @@ export const GrowthTable = ({
   };
 
   const table = useReactTable({
-    data: growthItems,
+    data: growthItems || [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -134,12 +125,12 @@ export const GrowthTable = ({
       pagination,
     },
     manualPagination: true,
-    pageCount: Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize),
+    pageCount: totalPages,
   });
 
   const onPageChange = (page: number): void => {
     setCurrentPage(page);
-    table.setPageIndex(page - 1);
+    setPagination((prev) => ({ ...prev, pageIndex: page - 1 }));
     refetch();
   };
 
@@ -154,57 +145,49 @@ export const GrowthTable = ({
         <Table>
           <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className={`${
-                        header.column.id === "actions" ? "text-right pr-4" : ""
-                      } ${header.column.id === "goalItem" ? "pl-4" : ""}`}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+              <TableRow key={headerGroup.id} className="py-1 leading-none">
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className={`text-left py-1 leading-none ${
+                      header.column.id === "actions" ? "text-right pr-4" : ""
+                    }`}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => {
-                return (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+            {table.getRowModel().rows?.slice(0, pagination.pageSize).map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+                className="py-1 leading-none"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell
+                    key={cell.id}
+                    className={`py-1 leading-none ${
+                      cell.column.id === "actions" ? "text-right pr-4" : ""
+                    }`}
                   >
-                    {row.getVisibleCells().map((cell) => {
-                      return (
-                        <TableCell
-                          key={cell.id}
-                          className={`${
-                            cell.column.id === "actions"
-                              ? "text-right pr-4"
-                              : ""
-                          } ${cell.column.id === "goalItem" ? "pl-4" : ""}`}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableRow>
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+            {!table.getRowModel().rows?.length && (
+              <TableRow className="py-1 leading-none">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"
@@ -218,7 +201,7 @@ export const GrowthTable = ({
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="text-sm text-subHeading">
-          Showing {table.getRowModel().rows.length} out of{" "}
+          Showing {table.getRowModel().rows.slice(0, pagination.pageSize).length} out of{" "}
           {totalCountAndLimit.totalCount} results
         </div>
         <div className="flex justify-end mb-2">
@@ -229,8 +212,11 @@ export const GrowthTable = ({
           />
         </div>
       </div>
-
-      <GrowthDrawer isOpen={isDrawerOpen} onClose={handleDrawerToggle} />
+      <GrowthDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleDrawerToggle}
+        refetch={refetch}
+      />
     </div>
   );
 };

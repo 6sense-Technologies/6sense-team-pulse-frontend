@@ -139,15 +139,6 @@ export interface IProject {
   __v: number
 }
 
-export interface IGrowthItems {
-  id: string;
-  user: string;
-  goalItem: string;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-  __v?: number;
-}
 
 export interface IGrowthDetailItems {
   id: string;
@@ -157,4 +148,17 @@ export interface IGrowthDetailItems {
   summary: string;
   date: string;
   activites: string[];
+}
+
+
+export type TGrowthItem = IGrowthItems[]
+
+export interface IGrowthItems {
+  _id: string
+  user: string
+  goalItem: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }
