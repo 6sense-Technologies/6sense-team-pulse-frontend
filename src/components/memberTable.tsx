@@ -188,7 +188,7 @@ export const MemberTable = ({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="py-1 leading-none">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={`py-1 leading-none ${cell.column.id === 'actions' ? 'text-right pr-4' : ''}`}>
+                    <TableCell key={cell.id} className={`py-1 leading-none ${cell.column.id === 'actions' ? 'text-right' : ''}`}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

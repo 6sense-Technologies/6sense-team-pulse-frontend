@@ -65,7 +65,7 @@ export const columns: ColumnDef<IGrowthItems>[] = [
             icon={Note}
             tooltipText="Details"
             onClick={() => {
-              window.location.href = `/member-list/${growthItem.accountId}?page=1`;
+              window.location.href = `/member-list/712020%3Aa719c94b-862c-4240-bfcb-b6ce2653aae6/growth/details`;
             }}
           />
           <GrowthTooltip
@@ -229,14 +229,8 @@ export const GrowthTable = ({
           />
         </div>
       </div>
-      {isDrawerOpen && (
-        <GrowthDrawer
-          isOpen={isDrawerOpen}
-          onClose={() => {
-            setIsDrawerOpen(false);
-          }}
-        />
-      )}
+
+      <GrowthDrawer isOpen={isDrawerOpen} onClose={handleDrawerToggle} />
     </div>
   );
 };

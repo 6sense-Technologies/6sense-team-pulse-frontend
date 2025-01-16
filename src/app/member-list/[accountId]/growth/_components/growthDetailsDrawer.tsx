@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,13 +22,14 @@ export function GrowthDetailsDrawer({ isOpen, onClose }: { isOpen: boolean; onCl
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="bg-white">
+    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DrawerContent className="bg-white transition-transform duration-300 ease-in-out transform">
         <div className="mx-auto w-full max-w-sm bg-gray-100 mb-4 rounded-lg">
           <DrawerHeader>
-            <DrawerTitle>Add Activites</DrawerTitle>
+            <DrawerTitle>Add Activities</DrawerTitle>
             <DrawerDescription>Set your daily activities.</DrawerDescription>
             <DrawerClose asChild>
+              <div />
             </DrawerClose>
           </DrawerHeader>
           <div className="p-4 pb-0">

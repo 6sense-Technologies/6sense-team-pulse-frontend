@@ -2,7 +2,6 @@
 import IconComponent from "@/app/components/UI/IconComponent";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
-import PageHeading from "@/components/pageHeading";
 import { ICreateMemberType, IGrowthDetailItems } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
@@ -10,6 +9,8 @@ import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GrowthDetailsTable } from "../_components/growthDetailsTable";
+import { Badge } from "@/components/ui/badge";
+import GrowthDetailsPageHeading from "../_components/growthDetailsPageHeading";
 
 const MemberGrowthDetails = (): JSX.Element => {
   const { accountId } = useParams();
@@ -139,10 +140,13 @@ const MemberGrowthDetails = (): JSX.Element => {
           </Link>
         </div>
         {/* <div className='mr-auto text-base text-primary font-medium'>Information</div> */}
-        <PageHeading
-          title="Growth Details"
-          subTitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate recusandae"
-        />
+        <div className="flex items-center gap-x-2">
+          <GrowthDetailsPageHeading
+            title={`${growthDetailItems[0].goalItem} Growth Details`}
+            status={growthDetailItems[0].status}
+            subTitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate recusandae"
+          />
+        </div>
       </section>
       <section className="mt-0 relative">
         <div className="w-full mt-4">

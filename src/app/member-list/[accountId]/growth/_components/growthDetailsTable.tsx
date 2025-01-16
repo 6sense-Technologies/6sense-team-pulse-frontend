@@ -26,20 +26,14 @@ import { IGrowthDetailItems } from "@/types/types";
 import { GrowthDetailsTablePagination } from "./growthDetailsPagination";
 import { GrowthDetailsDrawer } from "./growthDetailsDrawer";
 import { Button } from "../../../../../app/components/UI/ButtonComponent";
-import { Badge } from "@/components/ui/badge";
+import GrowthDetailsSummary from "./growthDetailsSummary";
 
 export const columns: ColumnDef<IGrowthDetailItems>[] = [
   {
-    id: "rowNumber",
-    header: () => <div className="text-bold ml-4">No.</div>,
-    cell: ({ row }) => <div className="text-medium ml-6">{row.index + 1}</div>,
-    size: 50,
-  },
-  {
     accessorKey: "date",
-    header: () => <div className="text-bold">DATE</div>,
+    header: () => <div className="text-bold pl-4">DATE</div>,
     cell: ({ row }) => (
-      <div className="text-medium">{row.getValue("date") || "-"}</div>
+      <div className="text-medium pl-4">{row.getValue("date") || "-"}</div>
     ),
     size: 200,
   },
@@ -65,22 +59,14 @@ export const GrowthDetailsTable = ({
   refetch: () => void;
 }): JSX.Element => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPage, setCurrentPage] = React.useState(page);
-  const totalPages = totalCountAndLimit.totalCount
-    ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
-    : 0;
+  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = (): void => {
@@ -115,6 +101,7 @@ export const GrowthDetailsTable = ({
     refetch();
   };
 
+
   const currentItem = growthDetailItems[0];
 
   return (
@@ -131,32 +118,16 @@ export const GrowthDetailsTable = ({
           Add Activity
         </Button>
       </div>
-      {currentItem && (
-        <div className="mb-4 p-4 bg-gray-100 rounded-md">
-          <div className="text-lg font-bold">{currentItem.goalItem}</div>
-          <div className="flex items-center space-x-2 my-2">
-            <Badge
-              variant={
-                currentItem.status === "In Progress"
-                  ? "in-progress"
-                  : currentItem.status === "Completed"
-                  ? "completed"
-                  : "todo"
-              }
-            >
-              {currentItem.status}
-            </Badge>
-          </div>
-          <div className="mt-2 text-sm">{currentItem.summary}</div>
-        </div>
-      )}
+      {currentItem ? (
+        <GrowthDetailsSummary summary={currentItem.summary} />
+      ) : null}
       <div className="rounded-md">
         <Table>
           <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-left">
+                  <TableHead key={header.id} className={`text-left ${header.column.id === 'date' ? 'pl-4' : ''}`}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -176,7 +147,7 @@ export const GrowthDetailsTable = ({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="min-w-[150px]">
+                    <TableCell key={cell.id} className={`min-w-[150px] ${cell.column.id === 'date' ? 'pl-4' : ''}`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -211,12 +182,10 @@ export const GrowthDetailsTable = ({
           />
         </div>
       </div>
-      {isDrawerOpen && (
         <GrowthDetailsDrawer
           isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
+          onClose={handleDrawerToggle}
         />
-      )}
     </div>
   );
 };
