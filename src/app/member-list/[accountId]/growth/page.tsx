@@ -3,7 +3,7 @@ import IconComponent from "@/app/components/UI/IconComponent";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
 import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import PageHeading from "@/components/pageHeading";
-import {TGrowthItem } from "@/types/types";
+import {IGrowthItem } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
@@ -12,16 +12,17 @@ import { useEffect, useState } from "react";
 import { GrowthTable } from "./_components/growthTable";
 
 const MemberGrowth = (): JSX.Element => {
-  const { accountId } = useParams();
-
+  const { accountId } = useParams() as { accountId: string };
+  
   const searchParams = useSearchParams();
   const [pagination, setPaignation] = useState({
     page: 1,
     size: 30,
   });
-
-  const id = localStorage.getItem("memberId")
-
+  
+  localStorage.setItem("memberId", accountId);
+  
+  console.log("🚀 ~ accountId:", accountId)
 
 
   useEffect(() => {
@@ -32,14 +33,14 @@ const MemberGrowth = (): JSX.Element => {
     data : growthItems,
     isFetching: growthLoading,
     refetch: growthRefetch,
-  } = useQuery<TGrowthItem>({
-    queryKey: ["fetchGrowth", pagination],
+  } = useQuery<IGrowthItem>({
+    queryKey: ["fetchGrowth", pagination.page, pagination.size],
     queryFn: async () => {
-      const res: AxiosResponse<TGrowthItem> = await axios.get(
-        `${TEMP_BACKEND_URI}/goals/?page=${pagination.page}&limit=${pagination.size}`
+      const res: AxiosResponse<IGrowthItem> = await axios.get(
+        `${TEMP_BACKEND_URI}/goals/user?userId=${accountId}&page=${pagination.page}&limit=${10}`
       );
 
-      console.log(res.data);
+      console.log("Result",res.data);
 
       return res.data;
       
@@ -47,9 +48,10 @@ const MemberGrowth = (): JSX.Element => {
     refetchOnWindowFocus: false,
   });
 
+  
   console.log(growthItems);
 
-  const totalCount = growthItems?.length;
+  const totalCount = growthItems?.count;
   const totalCountAndLimit = {
     totalCount: totalCount ?? 0,
     size: pagination.size ?? 10,
@@ -97,7 +99,7 @@ const MemberGrowth = (): JSX.Element => {
         <div className="w-full mt-4">
             <GrowthTable
             totalCountAndLimit={totalCountAndLimit}
-            growthItems={growthItems ?? []}
+            growthItems={growthItems?.data ?? []}
             refetch={growthRefetch}
             />
         </div>

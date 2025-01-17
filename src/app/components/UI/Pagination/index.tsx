@@ -1,11 +1,13 @@
 import { Button } from "@/app/components/UI/ButtonComponent";
 import IconComponent from "@/app/components/UI/IconComponent";
+import { useParams, useRouter} from "next/navigation";
 
 interface IPaginationProps {
     currentPage: number;
     totalPage: number;
     onPageChange: (page: number) => void;
 }
+
 
 const PaginationComponent = ({ currentPage, totalPage, onPageChange }: IPaginationProps): JSX.Element => {
     const getPagination = (): (number | string)[] => {
@@ -16,6 +18,7 @@ const PaginationComponent = ({ currentPage, totalPage, onPageChange }: IPaginati
             totalPage,
             currentPage + Math.floor(maxPagesToShow / 2)
         );
+
 
         if (endPage - startPage + 1 < maxPagesToShow) {
             if (currentPage < Math.ceil(maxPagesToShow / 2)) {
@@ -44,6 +47,10 @@ const PaginationComponent = ({ currentPage, totalPage, onPageChange }: IPaginati
 
     const pagination = getPagination();
 
+    const router = useRouter();
+    const {accountId} = useParams();
+
+    
     return (
         <nav className="flex justify-center md:justify-end items-center space-x-2 px-6 md:px-0">
             <button
@@ -61,7 +68,7 @@ const PaginationComponent = ({ currentPage, totalPage, onPageChange }: IPaginati
                             ? "bg-primary text-white"
                             : "bg-white text-black"
                             }`}
-                        onClick={() => { onPageChange(page); }}
+                        onClick={() => {router.push(`/member-list/${accountId}?page=${page}`) }}
                     >
                         {page}
                     </Button>

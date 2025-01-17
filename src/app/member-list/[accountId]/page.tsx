@@ -1,12 +1,11 @@
 "use client";
 import IconComponent from "@/app/components/UI/IconComponent";
 import MemberDetail from "@/app/components/UI/MemberDetail";
-import MenuComponent from "@/app/components/UI/MenuComponent";
 import PageTitle from "@/app/components/UI/PageTitle";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
-import { BACKEND_URI } from "@/app/utils/constants/constants";
+import { BACKEND_URI, TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import PageHeading from "@/components/pageHeading";
-import { IMemberInformationType } from "@/types/types";
+import { IMemberInfo } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
@@ -18,8 +17,10 @@ const MemberInformation = (): JSX.Element => {
     const searchParams = useSearchParams();
     const [pagination, setPagination] = useState({
         page: 1,
-        size: 30,
+        size: 10,
     });
+
+    console.log("Account ID:",accountId);
 
     useEffect(() => {
         const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
@@ -36,19 +37,26 @@ const MemberInformation = (): JSX.Element => {
         });
     }, [searchParams]);
 
-    const { data, isFetching: memberLoading, refetch: memberInformationRefetch } = useQuery<IMemberInformationType>({
+    const { data:memberInformation, isFetching: memberLoading, refetch: memberInformationRefetch } = useQuery<IMemberInfo>({
+
         queryKey: ["fetchMemberInformation", accountId, pagination.page, pagination.size],
         queryFn: async () => {
-            const res: AxiosResponse<IMemberInformationType> = await axios.get(`${BACKEND_URI}/users/${accountId}?page=${pagination?.page}&limit=${pagination?.size}`);
+            const res: AxiosResponse<IMemberInfo> = await axios.get(`${TEMP_BACKEND_URI}/users/v2?userId=${accountId}&page=${pagination?.page}&limit=${pagination?.size}`);
+            
+            console.log(res.data);
+
             return res.data;
         },
         refetchOnWindowFocus: false,
         enabled: !!accountId && !!pagination.page && !!pagination.size
     });
 
-    const member = data?.user ?? undefined;
-    const totalCount = data?.user?.totalIssueHistory;
+    console.log("🚀 ~ memberInformation:", memberInformation)
+
+    
+    const totalCount = memberInformation?.history?.count;
     const totalCountAndLimit = { totalCount: totalCount ?? 0, size: pagination.size ?? 10 };
+    console.log("🚀 ~ totalCount:", totalCount)
 
     return (
         <div className='relative adjustedWidthForMenu px-4'>
@@ -71,7 +79,7 @@ const MemberInformation = (): JSX.Element => {
                         </div>
                     ) : (
                         <>
-                            <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
+                            <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} memberInformation={ memberInformation} />
                             {/* {member?.issueHistory && member?.issueHistory?.length > 0 ?
                                 <MemberDetail onUpdate={() => { return memberInformationRefetch() }} totalCountAndLimit={totalCountAndLimit} data={member} />
                                 : <EmptyTableDataView iconName="FolderPlus" heading='No information' subHeading="" />

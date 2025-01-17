@@ -22,15 +22,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { GrowthTablePagination } from "./growthTablePagination";
 import { IGrowthItems } from "@/types/types";
 import { GrowthDrawer } from "./growthDrawer";
 import { Badge } from "@/components/ui/badge";
 import GrowthTooltip from "./growthTooltip";
 import { Note, Trash } from "@phosphor-icons/react";
+import axios, { AxiosResponse } from "axios";
+import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
+
+
+const handleDelete = async (id: string): Promise<void> => {
+    await axios.delete(`${TEMP_BACKEND_URI}/goals/${id}`);
+    window.location.reload();
+};
+
+const id = localStorage.getItem("memberId");
 
 export const columns: ColumnDef<IGrowthItems>[] = [
+
   {
     accessorKey: "goalItem",
     header: () => <div className="text-bold">ITEMS</div>,
@@ -64,7 +75,7 @@ export const columns: ColumnDef<IGrowthItems>[] = [
             icon={Note}
             tooltipText="Details"
             onClick={() => {
-              window.location.href = `/member-list/712020:a719c94b-862c-4240-bfcb-b6ce2653aae6/growth/details?page=1&goalId=${growthItem._id}`;
+              window.location.href = `/member-list/${id}/growth/details?page=1&goalId=${growthItem._id}`;
             }}
           />
           <GrowthTooltip
@@ -72,7 +83,7 @@ export const columns: ColumnDef<IGrowthItems>[] = [
             tooltipText="Delete"
             color="red"
             onClick={() => {
-              window.location.href = `/member-list/${growthItem.accountId}?page=1`;
+              handleDelete(growthItem?._id);
             }}
           />
         </div>
@@ -92,14 +103,22 @@ export const GrowthTable = ({
   refetch: () => void;
 }): JSX.Element => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPage, setCurrentPage] = React.useState(page);
-  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize) : 0;
+  const totalPages = totalCountAndLimit.totalCount
+    ? Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize)
+    : 0;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = (): void => {
@@ -165,27 +184,30 @@ export const GrowthTable = ({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.slice(0, pagination.pageSize).map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className="py-1 leading-none"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell
-                    key={cell.id}
-                    className={`py-1 leading-none ${
-                      cell.column.id === "actions" ? "text-right pr-4" : ""
-                    }`}
-                  >
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {table
+              .getRowModel()
+              .rows?.slice(0, pagination.pageSize)
+              .map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className="py-1 leading-none"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      className={`py-1 leading-none ${
+                        cell.column.id === "actions" ? "text-right pr-4" : ""
+                      }`}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
             {!table.getRowModel().rows?.length && (
               <TableRow className="py-1 leading-none">
                 <TableCell
@@ -201,7 +223,8 @@ export const GrowthTable = ({
       </div>
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="text-sm text-subHeading">
-          Showing {table.getRowModel().rows.slice(0, pagination.pageSize).length} out of{" "}
+          Showing{" "}
+          {table.getRowModel().rows.slice(0, pagination.pageSize).length} out of{" "}
           {totalCountAndLimit.totalCount} results
         </div>
         <div className="flex justify-end mb-2">

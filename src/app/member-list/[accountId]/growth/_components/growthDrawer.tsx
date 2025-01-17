@@ -22,6 +22,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import toast from "react-hot-toast";
+import { useParams } from "next/navigation";
 
 interface IFormData {
   goal: string;
@@ -51,12 +52,15 @@ export function GrowthDrawer({
     resolver: zodResolver(GrowthSchema),
   });
 
+  const {accountId} = useParams();
+
   const AddGoalMutation = useMutation({
     mutationKey: ["addGoalMutation"],
     mutationFn: async (newGoal: IFormData) => {
       const res = await axios.post(`${TEMP_BACKEND_URI}/goals`,
         {
           ...newGoal,
+          user: accountId,
         }
       )
       return res.data;

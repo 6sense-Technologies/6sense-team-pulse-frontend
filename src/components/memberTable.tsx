@@ -27,25 +27,18 @@ import { useSearchParams } from "next/navigation";
 import { TablePagination } from "./tablePagination";
 import Tooltips from "./tooltip";
 import { Note } from "@phosphor-icons/react";
+import { IMemberList } from "@/types/types";
 
-export interface IMember {
-  _id: string;
-  accountId: string;
-  displayName: string;
-  emailAddress: string;
-  avatarUrls: string;
-  currentPerformance: number;
-  designation: string;
-}
 
-const handleDetails = (member: IMember): void => {
+const handleDetails = (member: IMemberList): void => {
   localStorage.setItem("memberId", member._id);
-  window.location.href = `/member-list/${member.accountId}?page=1`;
+  window.location.href = `/member-list/${member._id}?page=1`;
 }
 
-export const columns: ColumnDef<IMember>[] = [
+export const columns: ColumnDef<IMemberList>[] = [
   {
     accessorKey: "avatarUrls",
+    accessorFn: (row: IMemberList): string => { return row.userData.avatarUrls; },
     header: (): JSX.Element => { return <div className="ml-4 text-bold">PHOTO</div>; },
     cell: ({ row }: { row: any }): JSX.Element => {
       const avatarUrl = row.getValue("avatarUrls");
@@ -71,25 +64,31 @@ export const columns: ColumnDef<IMember>[] = [
   },
   {
     accessorKey: "displayName",
+    accessorFn: (row: IMemberList): string => { return row.userData.displayName; },
     header: () => { return <div className="text-bold">NAME</div>; },
     cell: ({ row }: { row: any }) => { return <div className="text-medium">{row.getValue("displayName") || '-'}</div>; },
   },
   {
     accessorKey: "emailAddress",
-    header: () => { return <div className="text-bold">EMAIL</div>; },
-    cell: ({ row }): JSX.Element => {
+    accessorFn: (row: IMemberList): string => { return row.userData.emailAddress; },
+    header: (): JSX.Element => { return <div className="text-bold">EMAIL</div>; },
+    cell: ({ row }: { row: any }): JSX.Element => {
       return <div className="lowercase text-medium">{row.getValue("emailAddress") || '-'}</div>;
     },
   },
   {
     accessorKey: "designation",
-    header: () => <div className="text-bold">DESIGNATION</div>,
-    cell: ({ row }) => <div className="text-medium">{row.getValue("designation") || '-'}</div>,
+    accessorFn: (row: IMemberList): string => { return row.userData.designation; },
+    header: () => { return <div className="text-bold">DESIGNATION</div>; },
+    cell: ({ row }: { row: any }): JSX.Element => {
+      return <div className="text-medium">{row.getValue("designation") || '-'}</div>;
+    },
   },
   {
     accessorKey: "currentPerformance",
-    header: () => <div className="text-bold">OVERALL PERFORMANCE</div>,
-    cell: ({ row }) => {
+    accessorFn: (row: IMemberList): number => { return row.score; },
+    header: (): JSX.Element => { return <div className="text-bold">OVERALL PERFORMANCE</div>; },
+    cell: ({ row }: { row: any }): JSX.Element => {
       const currentPerformance = row.getValue("currentPerformance") as number | null;
       return <div className="text-medium">{currentPerformance !== null ? `${currentPerformance.toFixed(2)}%` : '-'}</div>;
     },
@@ -114,22 +113,13 @@ export const columns: ColumnDef<IMember>[] = [
   },
 ];
 
-interface IProps {
-  _id: string;
-  accountId: string;
-  displayName: string;
-  emailAddress: string;
-  avatarUrls: string;
-  currentPerformance: number;
-  designation: string;
-}
 
 export const MemberTable = ({
   members,
   refetch,
   totalCountAndLimit,
 }: {
-  members: IProps[];
+  members: IMemberList[];
   totalCountAndLimit: { totalCount: number; size: number };
   refetch: () => void;
 }): JSX.Element => {

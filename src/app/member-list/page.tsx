@@ -3,10 +3,10 @@ import AddMemberDrawer from "@/app/components/UI/AddMemberDrawer";
 import { Button } from "@/app/components/UI/ButtonComponent";
 import EmptyTableViewSkeleton from "@/app/components/UI/EmptyTableSkeleton";
 import PageTitle from "@/app/components/UI/PageTitle";
-import { BACKEND_URI } from "@/app/utils/constants/constants";
+import { BACKEND_URI, TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import { MemberTable } from "@/components/memberTable";
 import PageHeading from "@/components/pageHeading";
-import { ICreateMemberType } from "@/types/types";
+import { IAllMembersType} from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { useSearchParams } from "next/navigation";
@@ -53,22 +53,24 @@ const MemberList = (): JSX.Element => {
   }, [searchParams]);
 
   const {
-    data,
+    data : members,
     isFetching: membersLoading,
     refetch: memberRefetch,
-  } = useQuery<ICreateMemberType>({
+  } = useQuery<IAllMembersType>({
     queryKey: ["fetchMembers", pagination],
     queryFn: async () => {
-      const res: AxiosResponse<ICreateMemberType> = await axios.get(
-        `${BACKEND_URI}/users?page=${pagination.page}&limit=${pagination.size}`
+      const res: AxiosResponse<IAllMembersType> = await axios.get(
+        `${TEMP_BACKEND_URI}/users/v2/all?page=${pagination.page}&limit=${pagination.size}`
       );
+      // console.log(res.data);
       return res.data;
     },
     refetchOnWindowFocus: false,
   });
 
-  const members = data?.users ?? [];
-  const totalCount = data?.totalUsers;
+  console.log(members);
+
+  const totalCount = members?.count;
   const totalCountAndLimit = {
     totalCount: totalCount ?? 0,
     size: pagination.size ?? 10,
@@ -102,7 +104,7 @@ const MemberList = (): JSX.Element => {
           ) : (
             <MemberTable
               totalCountAndLimit={totalCountAndLimit}
-              members={members}
+              members={members?.data ?? []}
               refetch={memberRefetch}
             />
           )}

@@ -6,21 +6,22 @@ import ImageComponent from "@/app/components/UI/ImageComponent";
 import MemberDetailListView from "@/app/components/UI/MemberDetailListView";
 import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
-import { IMemberDetail } from "@/types/types";
+import { IMemberInfo } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
 interface IProps {
-  data?: IMemberDetail;
+  memberInformation?: IMemberInfo;
   totalCountAndLimit: { totalCount: number; size: number };
   onUpdate: () => void;
 }
 const MemberDetail = ({
   onUpdate,
-  data,
+  memberInformation,
   totalCountAndLimit,
 }: IProps): JSX.Element => {
   const router = useRouter();
@@ -29,8 +30,9 @@ const MemberDetail = ({
   const [avatarName, setAvatarName] = useState("");
 
   useEffect(() => {
-    if (data && !data?.avatarUrls) {
-      const memberNameArray = data && data?.displayName?.split(" ");
+    if (memberInformation && !memberInformation?.userData?.avatarUrls) {
+      const memberNameArray =
+        memberInformation && memberInformation?.userData?.displayName?.split(" ");
       if (memberNameArray && memberNameArray?.length > 1) {
         setAvatarName(memberNameArray?.[0]?.[0] + memberNameArray?.[1]?.[0]);
       }
@@ -38,17 +40,17 @@ const MemberDetail = ({
         setAvatarName(memberNameArray?.[0]?.[0]);
       }
     }
-  }, [data]);
+  }, [memberInformation]);
 
   const handleCloseDialog = (): void => {
     setIsOpenDialog(false);
   };
 
   const archiveMutation = useMutation({
-    mutationKey: ["archive", data?.accountId],
+    mutationKey: ["archive", memberInformation?.userData?._id],
     mutationFn: async () => {
       const res = await axios.put(
-        `${BACKEND_URI}/users/${data?.accountId}/archive`,
+        `${BACKEND_URI}/users/${memberInformation?.userData?._id}/archive`,
         null
       );
       return res.data;
@@ -68,10 +70,10 @@ const MemberDetail = ({
   };
 
   const updateProfileMutation = useMutation({
-    mutationKey: ["updateProfile", data?.accountId],
+    mutationKey: ["updateProfile", memberInformation?.userData?._id],
     mutationFn: async () => {
       const res = await axios.put(
-        `${BACKEND_URI}/jira/user/${data?.accountId}`,
+        `${BACKEND_URI}/jira/user/${memberInformation?.userData?._id}`,
         null
       );
       return res.data;
@@ -90,18 +92,15 @@ const MemberDetail = ({
     });
   };
 
-  const handleGrowthRoute = () : void =>
-  {
-    router.push(`/member-list/${data?.accountId}/growth?page=1`);
-  }
+  console.log("MemberInfo",memberInformation);
 
   return (
     <div className="mt-10 relative">
       <div className="flex flex-col md:flex-row gap-4 md:gap-0 md:justify-between">
         <div className={cn("flex flex-col md:flex-row items-start md:gap-2")}>
-          {data?.avatarUrls ? (
+          {memberInformation?.userData?.avatarUrls ? (
             <ImageComponent
-              src={data?.avatarUrls ?? ""}
+              src={memberInformation?.userData?.avatarUrls ?? ""}
               alt={"Pattern50 Logo"}
               width="w-[40px]"
               height="h-[40px]"
@@ -116,7 +115,7 @@ const MemberDetail = ({
           <div>
             <div className="flex gap-2 items-center">
               <h3 className="text-xl text-textSecondary font-semibold capitalize">
-                {data?.displayName}
+                {memberInformation?.userData?.displayName}
               </h3>
               <div
                 id="profile-sync"
@@ -147,26 +146,28 @@ const MemberDetail = ({
                   }}
                 />
               </div>
-              {data?.projects?.map((proj, idx) => {
+              {memberInformation?.projects?.map((proj, idx) => {
                 return (
                   <p
                     key={idx}
                     className="mt-1 font-semibold text-xs capitalize rounded-2xl px-2 py-[2px] flex justify-center items-center text-primary bg-primary/10"
                   >
-                    {proj.projectDetails[0]?.name}
+                    {proj?.projectDetails[0]?.name}
                   </p>
                 );
               })}
             </div>
-            <p className="text-sm text-subHeading">{data?.emailAddress}</p>
-            <p className="text-sm text-subHeading">{data?.designation}</p>
+            <p className="text-sm text-subHeading">
+              {memberInformation?.userData?.emailAddress}
+            </p>
+            <p className="text-sm text-subHeading">
+              {memberInformation?.userData?.designation}
+            </p>
           </div>
         </div>
         <div className="flex gap-4 mt-4 md:mt-0">
-        <Button
-            prefixIcon="TrendUp"
-            onClick={handleGrowthRoute}
-          >
+          <Button prefixIcon="TrendUp"
+          onClick={() => {router.push(`/member-list/${memberInformation?.userData?._id}/growth?page=1`)}}>
             Growth
           </Button>
           <Button
@@ -183,12 +184,11 @@ const MemberDetail = ({
       <div className="mt-8">
         <MemberDetailListView
           totalCountAndLimit={totalCountAndLimit}
-          data={data?.issueHistory}
-          accountId={`${data?.accountId}`}
-          designation={`${data?.designation}`}
+          data={memberInformation?.history?.data}
+          // accountId={`${memberInformation?._id}`}
+          designation={`${memberInformation?.userData?.designation}`}
         />
       </div>
-
       {/* Modal */}
       {isOpenDialog && (
         <ConfirmDialog

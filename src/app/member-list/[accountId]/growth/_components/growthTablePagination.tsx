@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 interface PaginationProps {
   currentPage: number;
@@ -64,7 +64,7 @@ export function GrowthTablePagination({
 
   const pagination = getPagination();
 
-  const id = localStorage.getItem("memberId");
+  const {accountId} = useParams();
 
   return (
     <CustomPagination>
@@ -76,7 +76,7 @@ export function GrowthTablePagination({
               e.preventDefault();
               if (currentPage > 1) {
                 onPageChange(currentPage - 1);
-                router.push(`/member-list/${id}/growth?page=${currentPage - 1}`);
+                router.push(`/member-list/${accountId}/growth?page=${currentPage - 1}`);
               }
             }}
           />
@@ -90,7 +90,7 @@ export function GrowthTablePagination({
                 onClick={(e) => {
                   e.preventDefault();
                   onPageChange(page);
-                  router.push(`/member-list/${id}/growth?page=${page}`);
+                  router.push(`/member-list/${accountId}/growth?page=${page}`);
                 }}
               >
                 {page}
@@ -107,7 +107,7 @@ export function GrowthTablePagination({
               e.preventDefault();
               if (currentPage < totalPage) {
                 onPageChange(currentPage + 1);
-                router.push(`/member-list/${id}/growth?page=${currentPage + 1}`);
+                router.push(`/member-list/${accountId}/growth?page=${currentPage + 1}`);
               }
             }}
           />

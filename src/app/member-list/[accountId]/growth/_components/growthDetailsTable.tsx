@@ -30,20 +30,18 @@ import GrowthDetailsSummary from "./growthDetailsSummary";
 
 export const columns: ColumnDef<IGrowthDetailItems>[] = [
   {
-    accessorKey: "date",
+    accessorKey: "createdAt",
     header: () => <div className="text-bold pl-4">DATE</div>,
     cell: ({ row }) => (
-      <div className="text-medium pl-4">{row.getValue("date") || "-"}</div>
+      <div className="text-medium pl-4">{new Date(row.getValue("createdAt")).toLocaleDateString() || "-"}</div>
     ),
     size: 200,
   },
   {
-    accessorKey: "activites",
-    header: () => <div className="text-bold">ACTIVITIES</div>,
+    accessorKey: "action",
+    header: () => <div className="text-bold">ACTION</div>,
     cell: ({ row }) => (
-      <div className="text-medium">
-        {(row.getValue("activites") as string[]).join(", ") || "-"}
-      </div>
+      <div className="text-medium">{row.getValue("action") || "-"}</div>
     ),
     size: 300,
   },
@@ -66,7 +64,7 @@ export const GrowthDetailsTable = ({
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPage, setCurrentPage] = React.useState(page);
-  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
+  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize) : 0;
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const handleDrawerToggle = (): void => {
@@ -101,8 +99,11 @@ export const GrowthDetailsTable = ({
     refetch();
   };
 
+  const goalId = searchParams.get("goalId");
 
-  const currentItem = growthDetailItems[0];
+  const handleMarkAsComplete = (goalId: string): void => {
+    
+  }
 
   return (
     <div className="w-full">
@@ -118,16 +119,13 @@ export const GrowthDetailsTable = ({
           Add Activity
         </Button>
       </div>
-      {currentItem ? (
-        <GrowthDetailsSummary summary={currentItem.summary} />
-      ) : null}
       <div className="rounded-md">
         <Table>
           <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className={`text-left ${header.column.id === 'date' ? 'pl-4' : ''}`}>
+                  <TableHead key={header.id} className={`text-left ${header.column.id === 'createdAt' ? 'pl-4' : ''}`}>
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -147,7 +145,7 @@ export const GrowthDetailsTable = ({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className={`min-w-[150px] ${cell.column.id === 'date' ? 'pl-4' : ''}`}>
+                    <TableCell key={cell.id} className={`min-w-[150px] ${cell.column.id === 'createdAt' ? 'pl-4' : ''}`}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -182,10 +180,11 @@ export const GrowthDetailsTable = ({
           />
         </div>
       </div>
-        <GrowthDetailsDrawer
-          isOpen={isDrawerOpen}
-          onClose={handleDrawerToggle}
-        />
+      <GrowthDetailsDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleDrawerToggle}
+        refetch={refetch}
+      />
     </div>
   );
 };

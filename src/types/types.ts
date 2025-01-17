@@ -1,18 +1,18 @@
-export interface ICreateMemberType {
-  message: string;
-  statusCode: number;
-  users: {
-    _id: string;
-    accountId: string;
-    displayName: string;
-    emailAddress: string;
-    avatarUrls: string;
-    currentPerformance: number;
-    designation: string;
-  }[];
-  totalPages: number;
-  currentPage: number;
-  totalUsers: number;
+export interface IAllMembersType {
+  data: IMemberList[]
+  count: number
+}
+export interface IMemberList {
+  _id: string
+  score: number
+  userData: IUserData
+}
+
+export interface IUserData {
+  displayName: string
+  emailAddress: string
+  avatarUrls: string
+  designation: string
 }
 
 export interface IMemberInformationType {
@@ -29,8 +29,42 @@ export interface IMemberInformationType {
     totalIssueHistory: number;
     currentPage: number;
     totalPages: number;
-    project: string[];
+    project: any;
   };
+}
+
+export interface IMemberInfo {
+  userData: IMemberInfoData
+  history: IHistory
+  projects?: IProjects[]
+}
+
+export interface IMemberInfoData {
+  _id: string
+  displayName: string
+  emailAddress: string
+  designation: string
+  avatarUrls: string
+}
+
+export interface IHistory {
+  data: IMemberHistoryDetails[]
+  count: number
+}
+
+export interface IMemberHistoryDetails {
+  doneTaskCount: number
+  notDoneTaskCount: number
+  doneStoryCount: number
+  notDoneStoryCount: number
+  doneBugCount: number
+  notDoneBugCount: number
+  comment: string
+  date: string
+  taskRatio: number
+  storyRatio: number
+  bugRatio: number
+  score: number
 }
 
 export interface IMemberDetail {
@@ -46,7 +80,7 @@ export interface IMemberDetail {
   totalIssueHistory: number;
   currentPage: number;
   totalPages: number;
-  projects: any[];
+  projects?: any[];
 }
 
 export interface IIssueHistory {
@@ -77,6 +111,7 @@ export interface IDesignation {
 }
 export interface IProjects {
   projects: string[];
+  projectDetails: any;
 }
 
 export interface IMemberPerformanceIssueHistory {
@@ -151,7 +186,10 @@ export interface IGrowthDetailItems {
 }
 
 
-export type TGrowthItem = IGrowthItems[]
+export interface IGrowthItem {
+  count: number
+  data: IGrowthItems[]
+}
 
 export interface IGrowthItems {
   _id: string

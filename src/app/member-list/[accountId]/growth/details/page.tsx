@@ -1,8 +1,8 @@
 "use client";
 import IconComponent from "@/app/components/UI/IconComponent";
 import { COLOR_SUBHEADING } from "@/app/utils/colorUtils";
-import { BACKEND_URI } from "@/app/utils/constants/constants";
-import { ICreateMemberType, IGrowthDetailItems } from "@/types/types";
+import { BACKEND_URI, TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
+import { ICreateMemberType, IGrowthDetailItems, IGrowthItem } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import Link from "next/link";
@@ -21,8 +21,10 @@ const MemberGrowthDetails = (): JSX.Element => {
     size: 30,
   });
 
+  const goalId = searchParams.get("goalId");
+
   // Dummy data for IGrowthDetailItems
-  const growthDetailItems: IGrowthDetailItems[] = [
+  const growthDetailItem: IGrowthDetailItems[] = [
     {
       id: "1",
       user: "User 1",
@@ -75,23 +77,45 @@ const MemberGrowthDetails = (): JSX.Element => {
   //     setPaignation({ page: searchParams.get("page") ? Number(searchParams.get("page")) : 1, size: pagination.size })
   // }, [searchParams, pagination.size])
 
+
   const {
-    data,
-    isFetching: membersLoading,
-    refetch: memberRefetch,
-  } = useQuery<ICreateMemberType>({
-    queryKey: ["fetchMembers", pagination],
+    data : goals,
+    isFetching: goalsLoading,
+    refetch: goalsRefetch,
+  } = useQuery<any>({
+    queryKey: ["fetchGrowth"],
     queryFn: async () => {
-      const res: AxiosResponse<ICreateMemberType> = await axios.get(
-        `${BACKEND_URI}/users?page=${pagination.page}&limit=${pagination.size}`
+      const res: AxiosResponse<any> = await axios.get(
+        `${TEMP_BACKEND_URI}/goals/${goalId}`
+      );
+
+      // console.log("Result",res.data);
+
+      return res.data;
+      
+    },
+    refetchOnWindowFocus: false,
+  });
+
+  const {
+    data:growthDetailItems,
+    isFetching: goalDetaillsLoading,
+    refetch: goalDetailsRefetch,
+  } = useQuery<any>({
+    queryKey: ["fetchGoalDetails", pagination],
+    queryFn: async () => {
+      const res: AxiosResponse<any> = await axios.get(
+        `${TEMP_BACKEND_URI}/goals/${goalId}/actions?page=${pagination.page}&limit=${pagination.size}}`
       );
       return res.data;
     },
     refetchOnWindowFocus: false,
   });
 
+  console.log("working!!!!!!",growthDetailItems);
+
   //   const growthItems = data?.users ?? [];
-  const totalCount = data?.totalUsers;
+  const totalCount = growthDetailItems?.count;
   const totalCountAndLimit = {
     totalCount: totalCount ?? 0,
     size: pagination.size ?? 10,
@@ -142,8 +166,8 @@ const MemberGrowthDetails = (): JSX.Element => {
         {/* <div className='mr-auto text-base text-primary font-medium'>Information</div> */}
         <div className="flex items-center gap-x-2">
           <GrowthDetailsPageHeading
-            title={`${growthDetailItems[0].goalItem} Growth Details`}
-            status={growthDetailItems[0].status}
+            title={`${goals?.goalItem} Growth Details`}
+            status={goals?.status}
             subTitle="Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptate recusandae"
           />
         </div>
@@ -152,8 +176,8 @@ const MemberGrowthDetails = (): JSX.Element => {
         <div className="w-full mt-4">
           <GrowthDetailsTable
             totalCountAndLimit={totalCountAndLimit}
-            growthDetailItems={growthDetailItems}
-            refetch={memberRefetch}
+            growthDetailItems={growthDetailItems?.data?? []}
+            refetch={goalDetailsRefetch}
           />
         </div>
       </section>

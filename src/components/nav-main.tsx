@@ -56,7 +56,7 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem
                       key={subItem.title}
-                      className={`${subItem.isActive ? 'bg-gray-100' : ''}`}
+                      className={`${subItem.isActive ? 'bg-red-100' : ''}`}
                     >
                       <SidebarMenuSubButton
                         asChild
