@@ -40,6 +40,10 @@ const config: Config = {
   			borderColor: '#E4E4E7 !important',
   			menuTextColor: '#596574',
   			emptyTableIconColor: '#9599A1',
+			blackishBg: '#18181B',
+			lightWhiteColor: '#FAFAFA',
+			lightBtnColor: '#F4F4F5',
+			deepBlackColor: '#020617',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

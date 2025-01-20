@@ -1,5 +1,5 @@
-import MenuComponent from '@/app/components/UI/MenuComponent';
-import PageTitle from '@/app/components/UI/PageTitle';
+
+import PageTitle from '@/components/PageTitle';
 import { redirect } from 'next/navigation';
 export default function Home(): JSX.Element {
 

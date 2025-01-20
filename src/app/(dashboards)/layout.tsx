@@ -1,20 +1,22 @@
 import Providers from "@/app/utils/react-query/providers/provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
+import "../globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 
 const Inter = localFont({
-  src: "./fonts/Inter-VariableFont_opsz,wght.ttf",
+  src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
 });
+
+
 
 export const metadata: Metadata = {
   title: "6sense Efficiency",
   description: "Performance Automation for 6sense Team",
   icons: {
-    icon: "/favicon/favicon.webp",
-  },
+    icon: "/favicon/favicon.webp"
+  }
 };
 
 export default function RootLayout({
@@ -23,8 +25,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): JSX.Element {
   return (
+    
     <html lang="en">
-      <body className={` ${Inter} antialiased`}>{children}</body>
+      <body
+        className={` ${Inter} antialiased`}
+      >
+        <SidebarProvider>
+        <AppSidebar />
+        <Providers>
+        <SidebarTrigger />
+          {children}
+        </Providers>
+        </SidebarProvider>
+      </body>
     </html>
   );
 }
