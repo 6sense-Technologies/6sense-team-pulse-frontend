@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-
 import GoogleLogo from "../../../../public/logo/googleLogo.png";
 import FacebookLogo from "../../../../public/logo/facebookLogo.png";
 import AppleLogo from "../../../../public/logo/appleLogo.png";
@@ -13,12 +12,12 @@ import { useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
 
-const SignIn = () => {
+const SignUp = () => {
   const router = useRouter();
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
+      <div className="bg-blackishBg w-full  h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
         </div>
@@ -30,13 +29,16 @@ const SignIn = () => {
       </div>
       <div className="bg-white w-full">
         <div className="flex justify-between md:justify-end mt-9 mx-4 md:mr-9  md:gap-0">
+          <div className="block md:hidden bg-black text-center px-3">
+            <Image src={Logo} alt="Ops4Team Logo" />
+          </div>
 
-        <div className="block md:hidden bg-black text-center px-3">
-          <Image src={Logo} alt="Ops4Team Logo"  />
-        </div>
-
-          <Button variant="light" className="text-sm" onClick={() => router.push("/signUp")}>
-            Sign Up
+          <Button
+            variant="light"
+            className="text-sm"
+            onClick={() => router.push("/signIn")}
+          >
+            Sign In
           </Button>
         </div>
 
@@ -45,14 +47,14 @@ const SignIn = () => {
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
-              titleclassName="md:text-2xl text-deepBlackColor pt-[32px]"
-              subTitleClassName="pt-[4px] pb-[24px]"
+              titleclassName="md:text-2xl text-deepBlackColor pt-6 md:pt-0"
+              subTitleClassName="pt-[4px] pb-[20px]"
             />
           </div>
           <div className="flex gap-x-[34px]">
             <Button
               variant="extralight"
-              onClick={() => router.push("/signIn/SSO")}
+              onClick={() => router.push("/signUp/SSO")}
             >
               SSO
             </Button>
@@ -90,6 +92,17 @@ const SignIn = () => {
 
           <form action="">
             <div className="w-full">
+              <label htmlFor="name" className="text-black text-sm">
+                Name
+              </label>
+              <Input
+                type="text"
+                id="name"
+                placeholder="Type your name"
+                className="placeholder:text-subHeading w-full mt-[4px]"
+              />
+            </div>
+            <div className="w-full pt-3">
               <label htmlFor="email" className="text-black text-sm">
                 Email
               </label>
@@ -100,7 +113,7 @@ const SignIn = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
-            <div className="pt-5 w-full">
+            <div className="pt-4 w-full">
               <label htmlFor="email" className="text-black text-sm">
                 Password
               </label>
@@ -112,17 +125,19 @@ const SignIn = () => {
               />
             </div>
 
-            <Button variant="dark" className="mt-8 w-full">
-              Sign In
+            <Button variant="dark" className="mt-6 w-full">
+              Sign Up
             </Button>
           </form>
 
           <div>
-            <p className="text-sm text-textMuted px-10 text-center pt-5">
-              By clicking continue, you agree to our{" "}
-              <span className="underline cursor-pointer">Terms of Service</span>{" "}
-              and{" "}
-              <span className="underline cursor-pointer">Privacy Policy</span>.
+            <p className="text-sm text-textMuted px-10 text-center pt-3">
+              By clicking continue, you agree to our {""}
+              <span className="underline cursor-pointer">
+                Terms of Service
+              </span>{" "}
+              and
+              <span className="underline cursor-pointer"> Privacy Policy</span>.
             </p>
           </div>
         </div>
@@ -131,4 +146,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

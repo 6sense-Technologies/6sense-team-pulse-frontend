@@ -44,6 +44,8 @@ const config: Config = {
 			lightWhiteColor: '#FAFAFA',
 			lightBtnColor: '#F4F4F5',
 			deepBlackColor: '#020617',
+			lightBlueBg: '#0EA5E9',
+			lightAquaBg: '#F1F5F9',
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

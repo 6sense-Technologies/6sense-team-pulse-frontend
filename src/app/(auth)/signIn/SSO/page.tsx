@@ -1,19 +1,21 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Logo from "../../../../public/logo/Ops4TeamLogo.png";
+import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
 
-import GoogleLogo from "../../../../public/logo/googleLogo.png";
-import FacebookLogo from "../../../../public/logo/facebookLogo.png";
-import AppleLogo from "../../../../public/logo/appleLogo.png";
-import OrDivider from "../_components/orDivider";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import FooterTexts from "../_components/footerTexts";
-import AuthPageHeader from "../_components/authPageHeader";
 
-const SignIn = () => {
+import GoogleLogo from "../../../../../public/logo/googleLogo.png";
+import FacebookLogo from "../../../../../public/logo/facebookLogo.png";
+import AppleLogo from "../../../../../public/logo/appleLogo.png";
+
+import { Input } from "@/components/ui/input";
+
+import OrDivider from "../../_components/orDivider";
+import { useRouter } from "next/navigation";
+import FooterTexts from "../../_components/footerTexts";
+import AuthPageHeader from "../../_components/authPageHeader";
+const SSOSignIn = () => {
   const router = useRouter();
 
   return (
@@ -30,12 +32,15 @@ const SignIn = () => {
       </div>
       <div className="bg-white w-full">
         <div className="flex justify-between md:justify-end mt-9 mx-4 md:mr-9  md:gap-0">
+          <div className="block md:hidden bg-black text-center px-3">
+            <Image src={Logo} alt="Ops4Team Logo" />
+          </div>
 
-        <div className="block md:hidden bg-black text-center px-3">
-          <Image src={Logo} alt="Ops4Team Logo"  />
-        </div>
-
-          <Button variant="light" className="text-sm" onClick={() => router.push("/signUp")}>
+          <Button
+            variant="light"
+            className="text-sm"
+            onClick={() => router.push("/signUp")}
+          >
             Sign Up
           </Button>
         </div>
@@ -50,11 +55,8 @@ const SignIn = () => {
             />
           </div>
           <div className="flex gap-x-[34px]">
-            <Button
-              variant="extralight"
-              onClick={() => router.push("/signIn/SSO")}
-            >
-              SSO
+            <Button variant="extralight" onClick={() => router.push("/signIn")}>
+              Password
             </Button>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -89,7 +91,7 @@ const SignIn = () => {
           />
 
           <form action="">
-            <div className="w-full">
+            <div className="w-full pt-2">
               <label htmlFor="email" className="text-black text-sm">
                 Email
               </label>
@@ -97,17 +99,6 @@ const SignIn = () => {
                 type="email"
                 id="email"
                 placeholder="Type your email"
-                className="placeholder:text-subHeading w-full mt-[4px]"
-              />
-            </div>
-            <div className="pt-5 w-full">
-              <label htmlFor="email" className="text-black text-sm">
-                Password
-              </label>
-              <Input
-                type="password"
-                id="password"
-                placeholder="Type your password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
@@ -131,4 +122,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SSOSignIn;

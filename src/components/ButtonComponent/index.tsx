@@ -19,8 +19,12 @@ const buttonVariants = cva(
                 link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
                 greenish: "text-white bg-green-500 hover:bg-green-600",
                 light: "text-black bg-lightBtnColor hover:bg-lightBtnColor",
+                extralight: "text-black bg-white hover:bg-white border",
+                dark: "text-white bg-blackishBg hover:bg-blackishBg",
+                submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
             },
             size: {
+                smallest: 'px-1 h-9',
                 md: "text-sm px-5 h-9",
                 xs: "text-sm px-3 h-7",
                 sm: "text-sm px-5 h-9",
