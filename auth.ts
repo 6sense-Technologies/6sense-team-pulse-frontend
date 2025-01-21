@@ -7,13 +7,11 @@ declare module 'next-auth' {
   interface Session {
     accessToken?: string;
     refreshToken?: string;
-    status?: string;
   }
 
   interface User {
     accessToken?: string;
     refreshToken?: string;
-    isVerified?: boolean;
   }
 }
 class CustomError extends CredentialsSignin{
@@ -52,7 +50,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         try {
 
-          // console.log('CREDENTIALS:', credentials);
+          console.log('CREDENTIALS:', credentials);
 
           const response = await axios.post(
             'http://192.168.0.158:8000/auth/login',
@@ -73,7 +71,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // console.log(data?.userInfo?.name);
           // Ensure tokens are included in the returned object
           if (data?.accessToken) {
-          
+            console.log(data);
             return {
                 emailAddress: credentials.emailAddress,
               name: data?.userInfo?.name,
@@ -99,12 +97,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Merge tokens for both Google and Credential-based logins
       if (user) {
         console.log('SESSION FLOW');
-        console.log(user);
-        console.log("ACCOUNT");
-        console.log(account);
         token.accessToken = user.accessToken || token.accessToken;
         token.refreshToken = user.refreshToken || token.refreshToken;
-        token.isVerified = user.isVerified as boolean;
       }
 
       if (account && account.provider === 'google') {
@@ -130,16 +124,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      // console.log(session);
-      if(token.isVerified===true) {
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
-      }
-      else{
-        session.status = 'unverified';
-      }
-        // console.log('SESSION ACTIVATED: ');
-        // console.log(session.status);
+      session.accessToken = token.accessToken as string;
+      session.refreshToken = token.refreshToken as string;
+      // console.log('SESSION ACTIVATED: ' + session.accessToken);
       return session;
     },
     async redirect({ baseUrl }) {

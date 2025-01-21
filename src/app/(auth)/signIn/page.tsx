@@ -142,7 +142,7 @@ const SignIn = () => {
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="email" className="text-black text-sm">
+              <label htmlFor="email" className="text-black font-medium  text-sm">
                 Email
               </label>
               <BaseInput
@@ -154,7 +154,7 @@ const SignIn = () => {
               />
             </div>
             <div className="pt-5 w-full">
-              <label htmlFor="password" className="text-black text-sm">
+              <label htmlFor="password" className="text-black font-medium  text-sm">
                 Password
               </label>
               <BaseInput

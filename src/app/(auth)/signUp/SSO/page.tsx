@@ -100,7 +100,7 @@ const SSOSignUp = () => {
               />
             </div>
             <div className="w-full pt-3">
-              <label htmlFor="email" className="text-black text-sm">
+              <label htmlFor="email" className="text-black font-medium  text-sm">
                 Email
               </label>
               <Input
@@ -111,7 +111,7 @@ const SSOSignUp = () => {
               />
             </div>
             <div className="pt-4 w-full">
-              <label htmlFor="email" className="text-black text-sm">
+              <label htmlFor="email" className="text-black font-medium  text-sm">
                 Password
               </label>
               <Input

@@ -93,7 +93,7 @@ const SSOSignIn = () => {
 
           <form action="">
             <div className="w-full pt-2">
-              <label htmlFor="email" className="text-black text-sm">
+              <label htmlFor="email" className="text-black font-medium  text-sm">
                 Email
               </label>
               <Input

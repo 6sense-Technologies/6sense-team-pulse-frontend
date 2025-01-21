@@ -116,7 +116,7 @@ const SignUp = () => {
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="displayName" className="text-black text-sm">
+              <label htmlFor="displayName" className="text-black font-medium text-sm">
                 Name
               </label>
               <BaseInput
@@ -128,7 +128,7 @@ const SignUp = () => {
               />
             </div>
             <div className="w-full pt-5">
-              <label htmlFor="emailAddress" className="text-black text-sm">
+              <label htmlFor="emailAddress" className="text-black font-medium  text-sm">
                 Email
               </label>
               <BaseInput
@@ -140,7 +140,7 @@ const SignUp = () => {
               />
             </div>
             <div className="pt-5 w-full">
-              <label htmlFor="password" className="text-black text-sm">
+              <label htmlFor="password" className="text-black font-medium text-sm">
                 Password
               </label>
               <BaseInput
