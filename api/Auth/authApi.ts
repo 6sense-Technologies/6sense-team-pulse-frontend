@@ -3,7 +3,7 @@ import { TBasicSignupFormInputs } from "@/types/Auth.types";
 import axios from "axios";
 
 export const handleBasicSignup = async (data: TBasicSignupFormInputs) => {
-    const response = await axios.post(`${TEMP_BACKEND_URI}/auth/signup`, data, {
+    const response = await axios.post(`${TEMP_BACKEND_URI}/auth/registration`, data, {
       headers: {
         'Content-Type': 'application/json',
       },

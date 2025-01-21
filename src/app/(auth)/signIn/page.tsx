@@ -17,6 +17,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { signIn, useSession } from "next-auth/react";
 import { BaseInput } from "@/components/BaseInput";
+import { Circle } from "@phosphor-icons/react";
 
 const SignIn = () => {
   const router = useRouter();
@@ -40,8 +41,8 @@ const SignIn = () => {
         password: data.password,
       });
 
-      if (result?.error) {
-        throw new Error(result.error);
+      if (result?.code) {
+        throw new Error(result.code);
       }
       return result;
     },
@@ -155,6 +156,7 @@ const SignIn = () => {
               </label>
               <BaseInput
                 control={control}
+                type="password"
                 name="password"
                 errors={errors}
                 placeholder="Type your password"
@@ -163,7 +165,7 @@ const SignIn = () => {
             </div>
 
             <Button variant="dark" className="mt-8 w-full">
-              Sign In
+               {BasicSignInMutation.isPending? <Circle className="animate-spin"/> : "Sign In"} 
             </Button>
           </form>
 

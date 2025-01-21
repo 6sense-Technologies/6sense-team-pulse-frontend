@@ -18,6 +18,7 @@ import { SignupSchema } from "../../../../Zodschema/authSchema";
 import { useMutation } from "@tanstack/react-query";
 import { handleBasicSignup } from "../../../../api/Auth/authApi";
 import { BaseInput } from "@/components/BaseInput";
+import { Circle } from "@phosphor-icons/react";
 
 const SignUp = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const SignUp = () => {
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
     onSuccess: () => {
-      router.push("/login");
+      router.push("/signIn");
     },
   });
 
@@ -122,7 +123,7 @@ const SignUp = () => {
               <label htmlFor="displayName" className="text-black text-sm">
                 Name
               </label>
-              <Input
+              <BaseInput
                 control={control}
                 name="displayName"
                 errors={errors}
@@ -149,6 +150,7 @@ const SignUp = () => {
               <BaseInput
                 control={control}
                 name="password"
+                type="password"
                 errors={errors}
                 placeholder="Type your password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
@@ -156,7 +158,7 @@ const SignUp = () => {
             </div>
 
             <Button variant="dark" className="mt-8 w-full">
-              Sign Up
+              {basicSignUpMutation.isPending ? <Circle className="animate-spin"/> : "Sign Up"}  
             </Button>
           </form>
 

@@ -49,10 +49,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials) {
         try {
+
+          console.log('CREDENTIALS:', credentials);
+
           const response = await axios.post(
-            'http://192.168.0.158:8000/auth/v2/login',
+            'http://192.168.0.158:8000/auth/login',
             {
-                emailAddress: credentials?.emailAddress,
+              emailAddress: credentials?.emailAddress,
               password: credentials?.password,
             },
             {
@@ -61,18 +64,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               },
             }
           );
-
-          console.log('RESPONSE:', response.status);
+          // console.log('RESPONSE:', response);
+          // console.log('RESPONSE-STATUS:', response.status);
           const data = response.data;
           // console.log('DATA:', response.data);
           // console.log(data?.userInfo?.name);
           // Ensure tokens are included in the returned object
-          if (data?.tokens?.access_token) {
+          if (data?.accessToken) {
+            console.log(data);
             return {
                 emailAddress: credentials.emailAddress,
               name: data?.userInfo?.name,
-              accessToken: data.tokens.access_token,
-              refreshToken: data.tokens.refresh_token,
+              accessToken: data.accessToken,
+              refreshToken: data.refreshToken,
+              isVerified: data?.userInfo?.isVerified,
             } as any;
           }
 
@@ -112,8 +117,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         );
         console.log('DATA:', response.data);
-        token.accessToken = response.data?.tokens?.access_token;
-        token.refreshToken = response.data?.tokens?.refresh_token;
+        token.accessToken = response.data?.accessToken;
+        token.refreshToken = response.data?.refreshToken;
       }
 
       return token;

@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider } from "next-auth/react";
 
 const Inter = localFont({
   src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
@@ -29,9 +29,7 @@ export default function RootLayout({
         <SessionProvider>
           <SidebarProvider>
             <AppSidebar />
-            <Providers>
-              {children}
-            </Providers>
+            {children}
           </SidebarProvider>
         </SessionProvider>
       </body>
