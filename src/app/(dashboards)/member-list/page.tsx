@@ -82,10 +82,10 @@ const MemberList = (): JSX.Element => {
       {/* <MenuComponent currentPage={'members'} /> */}
       <PageTitle pageName="Members" title="6sense Efficiency" />
       <section className="mt-[18px]">
-        <h4 className="mb-2 mr-auto text-base text-primary font-medium">
+        <h4 className="mb-2 mr-auto text-3xl text-primary font-medium">
           Members
         </h4>
-        <PageHeading title="All Members" subTitle=" " />
+        {/* <PageHeading title="All Members" subTitle=" " /> */}
       </section>
       <section className="mt-4 relative">
         <div className="flex justify-start md:justify-end">

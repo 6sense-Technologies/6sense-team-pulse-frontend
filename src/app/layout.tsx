@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SessionProvider } from "next-auth/react";
 
 const Inter = localFont({
   src: "./fonts/Inter-VariableFont_opsz,wght.ttf",
@@ -24,7 +25,9 @@ export default function RootLayout({
 }>): JSX.Element {
   return (
     <html lang="en">
-      <body className={` ${Inter} antialiased`}>{children}</body>
+      <body className={` ${Inter} antialiased`}>
+        <SessionProvider>{children}</SessionProvider>
+      </body>
     </html>
   );
 }

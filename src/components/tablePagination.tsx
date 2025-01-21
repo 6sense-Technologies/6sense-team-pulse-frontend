@@ -69,7 +69,7 @@ export function TablePagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            className={`${currentPage === 1 ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`${currentPage === 1 ? "cursor-not-allowed text-subHeading" : "cursor-pointer"}`}
             onClick={(e) => {
               e.preventDefault();
               if (currentPage > 1) {
@@ -100,7 +100,7 @@ export function TablePagination({
         ))}
         <PaginationItem>
           <PaginationNext
-            className={`${currentPage === totalPage ? "cursor-not-allowed" : "cursor-pointer"}`}
+            className={`${currentPage === totalPage ? "cursor-not-allowed text-subHeading" : "cursor-pointer"}`}
             onClick={(e) => {
               e.preventDefault();
               if (currentPage < totalPage) {

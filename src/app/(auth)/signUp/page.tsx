@@ -11,9 +11,36 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { TBasicSignupFormInputs } from "@/types/Auth.types";
+import { SignupSchema } from "../../../../Zodschema/authSchema";
+import { useMutation } from "@tanstack/react-query";
+import { handleBasicSignup } from "../../../../api/Auth/authApi";
+import { BaseInput } from "@/components/BaseInput";
 
 const SignUp = () => {
   const router = useRouter();
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    watch,
+  } = useForm<TBasicSignupFormInputs>({
+    resolver: zodResolver(SignupSchema),
+  });
+
+  const basicSignUpMutation = useMutation({
+    mutationFn: handleBasicSignup,
+    onSuccess: () => {
+      router.push("/login");
+    },
+  });
+
+  const handleSubmission: SubmitHandler<TBasicSignupFormInputs> = (data) => {
+    basicSignUpMutation.mutate(data);
+  };
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
@@ -90,42 +117,45 @@ const SignUp = () => {
             className="text-[12px] text-textMuted"
           />
 
-          <form action="">
+          <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="name" className="text-black text-sm">
+              <label htmlFor="displayName" className="text-black text-sm">
                 Name
               </label>
               <Input
-                type="text"
-                id="name"
+                control={control}
+                name="displayName"
+                errors={errors}
                 placeholder="Type your name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
-            <div className="w-full pt-3">
-              <label htmlFor="email" className="text-black text-sm">
+            <div className="w-full pt-5">
+              <label htmlFor="emailAddress" className="text-black text-sm">
                 Email
               </label>
-              <Input
-                type="email"
-                id="email"
+              <BaseInput
+                control={control}
+                name="emailAddress"
+                errors={errors}
                 placeholder="Type your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
-            <div className="pt-4 w-full">
-              <label htmlFor="email" className="text-black text-sm">
+            <div className="pt-5 w-full">
+              <label htmlFor="password" className="text-black text-sm">
                 Password
               </label>
-              <Input
-                type="password"
-                id="password"
+              <BaseInput
+                control={control}
+                name="password"
+                errors={errors}
                 placeholder="Type your password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
 
-            <Button variant="dark" className="mt-6 w-full">
+            <Button variant="dark" className="mt-8 w-full">
               Sign Up
             </Button>
           </form>
