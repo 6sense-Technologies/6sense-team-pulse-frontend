@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { signIn, useSession } from "next-auth/react";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
+import Link from "next/link";
 
 const SignIn = () => {
   const router = useRouter();
@@ -80,13 +81,14 @@ const SignIn = () => {
             <Image src={Logo} alt="Ops4Team Logo" />
           </div>
 
+          <Link href={"/signup"}>
           <Button
             variant="light"
             className="text-sm"
-            onClick={() => router.push("/signUp")}
           >
             Sign Up
           </Button>
+          </Link>
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
@@ -99,12 +101,13 @@ const SignIn = () => {
             />
           </div>
           <div className="flex gap-x-[34px]">
+            <Link href={"/signin/sso"}>
             <Button
               variant="extralight"
-              onClick={() => router.push("/signIn/SSO")}
             >
               SSO
             </Button>
+            </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
                 <Image

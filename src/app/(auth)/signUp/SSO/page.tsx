@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import OrDivider from "../../_components/orDivider";
 import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
+import Link from "next/link";
 
 const SSOSignUp = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const SSOSignUp = () => {
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
-          <Image src={Logo} alt="Ops4Team Logo"/>
+          <Image src={Logo} alt="Ops4Team Logo" />
         </div>
         <FooterTexts
           heading="“This library has saved me countless hours of work and helped me deliver
@@ -34,13 +35,11 @@ const SSOSignUp = () => {
             <Image src={Logo} alt="Ops4Team Logo" />
           </div>
 
-          <Button
-            variant="light"
-            className="text-sm"
-            onClick={() => router.push("/signIn")}
-          >
-            Sign In
-          </Button>
+          <Link href={"/signin"}>
+            <Button variant="light" className="text-sm">
+              Sign In
+            </Button>
+          </Link>
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
@@ -53,9 +52,9 @@ const SSOSignUp = () => {
             />
           </div>
           <div className="flex gap-x-[34px]">
-            <Button variant="extralight" onClick={() => router.push("/signUp")}>
-              Password
-            </Button>
+            <Link href={"/signup"}>
+              <Button variant="extralight">Password</Button>
+            </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
                 <Image

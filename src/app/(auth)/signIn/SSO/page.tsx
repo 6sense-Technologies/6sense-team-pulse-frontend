@@ -4,7 +4,6 @@ import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
 
-
 import GoogleLogo from "../../../../../public/logo/googleLogo.png";
 import FacebookLogo from "../../../../../public/logo/facebookLogo.png";
 import AppleLogo from "../../../../../public/logo/appleLogo.png";
@@ -15,6 +14,7 @@ import OrDivider from "../../_components/orDivider";
 import { useRouter } from "next/navigation";
 import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
+import Link from "next/link";
 const SSOSignIn = () => {
   const router = useRouter();
 
@@ -36,13 +36,14 @@ const SSOSignIn = () => {
             <Image src={Logo} alt="Ops4Team Logo" />
           </div>
 
+          <Link href={"/signup"}>
           <Button
             variant="light"
             className="text-sm"
-            onClick={() => router.push("/signUp")}
           >
             Sign Up
           </Button>
+          </Link>
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
@@ -55,9 +56,9 @@ const SSOSignIn = () => {
             />
           </div>
           <div className="flex gap-x-[34px]">
-            <Button variant="extralight" onClick={() => router.push("/signIn")}>
-              Password
-            </Button>
+            <Link href="/signin">
+              <Button variant="extralight">Password</Button>
+            </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
                 <Image

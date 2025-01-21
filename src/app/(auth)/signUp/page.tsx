@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { handleBasicSignup } from "../../../../api/Auth/authApi";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
+import Link from "next/link";
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,7 +36,7 @@ const SignUp = () => {
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
     onSuccess: () => {
-      router.push("/signIn");
+      router.push("/signin");
     },
   });
 
@@ -61,13 +62,11 @@ const SignUp = () => {
             <Image src={Logo} alt="Ops4Team Logo" />
           </div>
 
-          <Button
-            variant="light"
-            className="text-sm"
-            onClick={() => router.push("/signIn")}
-          >
-            Sign In
-          </Button>
+          <Link href="/signin">
+            <Button variant="light" className="text-sm">
+              Sign In
+            </Button>
+          </Link>
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
@@ -80,12 +79,9 @@ const SignUp = () => {
             />
           </div>
           <div className="flex gap-x-[34px]">
-            <Button
-              variant="extralight"
-              onClick={() => router.push("/signUp/SSO")}
-            >
-              SSO
-            </Button>
+            <Link href={"/signup/sso"}>
+              <Button variant="extralight">SSO</Button>
+            </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
                 <Image
@@ -158,7 +154,11 @@ const SignUp = () => {
             </div>
 
             <Button variant="dark" className="mt-8 w-full">
-              {basicSignUpMutation.isPending ? <Circle className="animate-spin"/> : "Sign Up"}  
+              {basicSignUpMutation.isPending ? (
+                <Circle className="animate-spin" />
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </form>
 

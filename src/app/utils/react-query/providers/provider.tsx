@@ -12,7 +12,7 @@ function Providers({ children }: React.PropsWithChildren): JSX.Element {
     return (
         <QueryClientProvider client={client}>
             {children}
-            <ReactQueryDevtools initialIsOpen={false} position="left" buttonPosition="bottom-left" />
+            {/* <ReactQueryDevtools initialIsOpen={false} position="left" buttonPosition="bottom-left" /> */}
         </QueryClientProvider>
     );
 }
