@@ -46,6 +46,8 @@ const config: Config = {
 			deepBlackColor: '#020617',
 			lightBlueBg: '#0EA5E9',
 			lightAquaBg: '#F1F5F9',
+			inputFooterColor: '#64748B',
+			
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',
   				foreground: 'hsl(var(--sidebar-foreground))',

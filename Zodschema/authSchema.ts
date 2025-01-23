@@ -26,3 +26,16 @@ export const SignupSchema = z
       .regex(passwordRegex, 'Password requirements not fulfilled.'),
   });
 
+
+  export const VerifyEmailSchema = z.object({
+    otp: z.string({ required_error: 'OTP is required.' }).min(6, 'OTP should be 6 characters long.'),
+  });
+
+  export const OrganizationSchema = z.object({
+    organizationName: z
+      .string({ required_error: 'Organization name is required.' })
+      .min(1, { message: 'Organization name is required.' }),
+      domainName: z
+      .string({ required_error: 'Domain is required.' })
+      .min(1, { message: 'Domain is required.' }),
+  });

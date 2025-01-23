@@ -6,13 +6,14 @@ interface IHeadingProps {
   subTitle?: string;
   titleclassName?: string;
   subTitleClassName?: string;
+  className?: string;
 }
 
-const PageHeading: FC<IHeadingProps> = ({ title, subTitle, titleclassName, subTitleClassName }) => {
+const PageHeading: FC<IHeadingProps> = ({ title, subTitle, titleclassName, subTitleClassName, className }) => {
   return (
-    <div>
-      <h3 className={cn('text-headingXS md:text-headingBase font-semibold', titleclassName)}>{title}</h3>
-      <p className={cn('text-md md:text-base font-medium text-subHeading', subTitleClassName)}>{subTitle}</p>
+    <div className={cn(className)}>
+      <h3 className={cn('text-headingXS md:text-2xl font-bold', titleclassName)}>{title}</h3>
+      <p className={cn('text-md md:text-sm text-subHeading pt-2', subTitleClassName)}>{subTitle}</p>
     </div>
   );
 };

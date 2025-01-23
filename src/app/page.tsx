@@ -3,7 +3,7 @@ import PageTitle from '@/components/PageTitle';
 import { redirect } from 'next/navigation';
 export default function Home(): JSX.Element {
 
-  redirect("/member-list?page=1")
+  redirect("/sign-in");
 
   return (
     <div className='relative adjustedWidthForMenu px-6 md:left-[280px]'>

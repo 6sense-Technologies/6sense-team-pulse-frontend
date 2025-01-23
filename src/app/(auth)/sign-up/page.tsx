@@ -10,17 +10,20 @@ import OrDivider from "../_components/orDivider";
 import { useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
-import { TBasicSignInFormInputs } from "@/types/Auth.types";
-import { LoginSchema } from "../../../../Zodschema/authSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { TBasicSignupFormInputs } from "@/types/Auth.types";
+import { SignupSchema } from "../../../../Zodschema/authSchema";
 import { useMutation } from "@tanstack/react-query";
-import { signIn, useSession } from "next-auth/react";
+import { handleBasicSignup } from "../../../../api/Auth/authApi";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
+import PageTitle from "@/components/PageTitle";
+import Cookies from "js-cookie";
+import { useSession } from "next-auth/react";
 
-const SignIn = () => {
+const SignUp = () => {
   const router = useRouter();
 
   const {
@@ -28,44 +31,50 @@ const SignIn = () => {
     control,
     formState: { errors },
     watch,
-  } = useForm<TBasicSignInFormInputs>({
-    resolver: zodResolver(LoginSchema),
+  } = useForm<TBasicSignupFormInputs>({
+    resolver: zodResolver(SignupSchema),
   });
+
+  const basicSignUpMutation = useMutation({
+    mutationFn: handleBasicSignup,
+    onSuccess: (data) => {
+      // Store user data in cookies
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('isVerified', 'false');
+      Cookies.set("user-email", data.userInfo.emailAddress, { expires: 7, secure: true, sameSite: 'strict' });
+      router.push("/sign-up/verification");
+    },
+  });
+
+  const handleSubmission: SubmitHandler<TBasicSignupFormInputs> = (data) => {
+    basicSignUpMutation.mutate(data);
+  };
 
   const session = useSession();
 
-  const BasicSignInMutation = useMutation({
-    mutationFn: async (data: TBasicSignInFormInputs) => {
-      const result = await signIn("credentials", {
-        redirect: false,
-        emailAddress: data.emailAddress,
-        password: data.password,
-      });
+  console.log(session); 
 
-      if (result?.code) {
-        throw new Error(result.code);
-      }
-      return result;
-    },
-    onSuccess: () => {
-      localStorage.setItem("logout", "false");
-      router.push("/dashboard");
-    },
-    onError: (error: any) => {
-      console.log("Error:", error.message);
-    },
-  });
-
-  const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
-    BasicSignInMutation.mutate(data, {
-      onSuccess: () => router.push("/dashboard"),
-    });
-    // console.log("data", data);
-  };
+  if(!session.data?.isVerified && !session.data?.hasOrganization)
+  {
+    router.push('/sign-up/verification');
+  }
+  if(session.data?.isVerified && !session.data?.hasOrganization)
+  {
+    router.push('/sign-up/create-organization');
+  }
+  if(session.data?.isVerified && session.data?.hasOrganization)
+  {
+    router.push('/dashboard');
+  }
+  if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
+    {
+      router.push('/dashboard');
+    }
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
+      <PageTitle pageName='Ops4 Team' title='Create Account - Try Ops4 Team for Free' />
+      <div className="bg-blackishBg w-full  h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
         </div>
@@ -81,13 +90,10 @@ const SignIn = () => {
             <Image src={Logo} alt="Ops4Team Logo" />
           </div>
 
-          <Link href={"/signup"}>
-          <Button
-            variant="light"
-            className="text-sm"
-          >
-            Sign Up
-          </Button>
+          <Link href="/sign-in">
+            <Button variant="light" className="text-sm">
+              Sign In
+            </Button>
           </Link>
         </div>
 
@@ -96,17 +102,13 @@ const SignIn = () => {
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
-              titleclassName="md:text-2xl text-deepBlackColor pt-[32px]"
-              subTitleClassName="pt-[4px] pb-[24px]"
+              titleclassName="md:text-2xl text-deepBlackColor pt-6 md:pt-0"
+              subTitleClassName="pt-[4px] pb-[20px]"
             />
           </div>
           <div className="flex gap-x-[34px]">
-            <Link href={"/signin/sso"}>
-            <Button
-              variant="extralight"
-            >
-              SSO
-            </Button>
+            <Link href={"/sign-up/sso"}>
+              <Button variant="extralight">SSO</Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -142,7 +144,19 @@ const SignIn = () => {
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="email" className="text-black font-medium  text-sm">
+              <label htmlFor="displayName" className="text-black font-medium text-sm">
+                Name
+              </label>
+              <BaseInput
+                control={control}
+                name="displayName"
+                errors={errors}
+                placeholder="Type your name"
+                className="placeholder:text-subHeading w-full mt-[4px]"
+              />
+            </div>
+            <div className="w-full pt-5">
+              <label htmlFor="emailAddress" className="text-black font-medium  text-sm">
                 Email
               </label>
               <BaseInput
@@ -154,13 +168,13 @@ const SignIn = () => {
               />
             </div>
             <div className="pt-5 w-full">
-              <label htmlFor="password" className="text-black font-medium  text-sm">
+              <label htmlFor="password" className="text-black font-medium text-sm">
                 Password
               </label>
               <BaseInput
                 control={control}
-                type="password"
                 name="password"
+                type="password"
                 errors={errors}
                 placeholder="Type your password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
@@ -168,16 +182,22 @@ const SignIn = () => {
             </div>
 
             <Button variant="dark" className="mt-8 w-full">
-               {BasicSignInMutation.isPending? <Circle className="animate-spin"/> : "Sign In"} 
+              {basicSignUpMutation.isPending ? (
+                <Circle className="animate-spin" />
+              ) : (
+                "Sign up"
+              )}
             </Button>
           </form>
 
           <div>
-            <p className="text-sm text-textMuted px-10 text-center pt-5">
-              By clicking continue, you agree to our{" "}
-              <span className="underline cursor-pointer">Terms of Service</span>{" "}
-              and{" "}
-              <span className="underline cursor-pointer">Privacy Policy</span>.
+            <p className="text-sm text-textMuted px-10 text-center pt-3">
+              By clicking continue, you agree to our {""}
+              <span className="underline cursor-pointer">
+                Terms of Service
+              </span>{" "}
+              and {" "}
+              <span className="cursor-pointer border-b-[1px] border-subHeading">Privacy Policy</span>.
             </p>
           </div>
         </div>
@@ -186,4 +206,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

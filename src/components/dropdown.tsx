@@ -1,5 +1,5 @@
-import * as React from "react"
-
+import * as React from "react";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -8,24 +8,60 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { Controller } from "react-hook-form";
 
-export function Dropdown() {
+type DropdownProps = {
+  className?: string;
+  placeholder: string;
+  control?: any;
+  name: string;
+  errors?: any;
+  additionalText?: string;
+  active?: boolean;
+};
+
+export function Dropdown({
+  className,
+  placeholder,
+  control,
+  name,
+  errors = {},
+  additionalText,
+  active = false,
+}: DropdownProps) {
   return (
-    <Select>
-      <SelectTrigger className="w-[200px]" disabled>
-        <SelectValue placeholder="Filter by Tool" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div className="relative">
+          <Select {...field}>
+            <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+              <SelectValue placeholder={placeholder} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup className={cn("bg-white !z-50 ",className) }>
+                <SelectLabel>Fruits</SelectLabel>
+                <SelectItem value="apple">Apple</SelectItem>
+                <SelectItem value="banana">Banana</SelectItem>
+                <SelectItem value="blueberry">Blueberry</SelectItem>
+                <SelectItem value="grapes">Grapes</SelectItem>
+                <SelectItem value="pineapple">Pineapple</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {errors[name]?.message ? (
+            <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
+              {errors[name].message}
+            </p>
+          ) : (
+            <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
+              {additionalText}
+            </p>
+          )}
+        </div>
+      )}
+    />
+  );
 }

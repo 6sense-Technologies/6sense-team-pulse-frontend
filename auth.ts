@@ -7,11 +7,15 @@ declare module 'next-auth' {
   interface Session {
     accessToken?: string;
     refreshToken?: string;
+    isVerified?: boolean;
+    hasOrganization: boolean;
   }
 
   interface User {
     accessToken?: string;
     refreshToken?: string;
+    isVerified?: boolean;
+    hasOrganization?: boolean;
   }
 }
 class CustomError extends CredentialsSignin{
@@ -67,6 +71,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // console.log('RESPONSE:', response);
           // console.log('RESPONSE-STATUS:', response.status);
           const data = response.data;
+          console.log(data);
+          
           // console.log('DATA:', response.data);
           // console.log(data?.userInfo?.name);
           // Ensure tokens are included in the returned object
@@ -78,6 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
               isVerified: data?.userInfo?.isVerified,
+              hasOrganization: data?.userInfo?.hasOrganization,
             } as any;
           }
 
@@ -99,6 +106,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         console.log('SESSION FLOW');
         token.accessToken = user.accessToken || token.accessToken;
         token.refreshToken = user.refreshToken || token.refreshToken;
+        token.isVerified = user.isVerified as boolean;
+        token.hasOrganization = user.hasOrganization as boolean;
       }
 
       if (account && account.provider === 'google') {
@@ -120,12 +129,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.accessToken = response.data?.accessToken;
         token.refreshToken = response.data?.refreshToken;
       }
-
+      
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
+      session.isVerified = token.isVerified as boolean;
+      session.hasOrganization = token.hasOrganization as boolean
       // console.log('SESSION ACTIVATED: ' + session.accessToken);
       return session;
     },

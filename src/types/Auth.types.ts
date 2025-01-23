@@ -22,3 +22,15 @@ export type TBasicSignupFormInputs =
     emailAddress: string;
     password: string;
 }
+
+export type TVerifyEmail = 
+{
+    otp: string;
+    email: string;
+}
+
+export type TOrgazinationDetails = 
+{
+    organizationName: string;
+    domainName: string;
+}

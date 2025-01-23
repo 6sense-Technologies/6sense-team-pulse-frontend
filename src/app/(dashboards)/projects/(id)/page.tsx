@@ -6,6 +6,8 @@ import React from "react";
 import Searchbar from "../_components/searchbar";
 import { Dropdown } from "@/components/dropdown";
 import { ProjectTable } from "../_components/projectTable";
+import PageTitle from "@/components/PageTitle";
+import PageHeading from "@/components/pageHeading";
 
 const projects = [
   {
@@ -63,6 +65,8 @@ const projects = [
 const ProjectList = () => {
   return (
     <div className="w-full">
+      <PageTitle pageName="Ops4 Team" title="Projects" />
+
       <div className="pl-4 pr-[14px] w-full">
         <GlobalBreadCrumb
           initialData="Projects"
@@ -70,20 +74,29 @@ const ProjectList = () => {
           secondayData="List"
           secondayLink="/projects"
         />
+        <PageHeading
+          title="Projects"
+          subTitle="Some examples built using the components. Use this as a guide to build your own."
+        />
         <div className="flex flex-col md:flex-row justify-between gap-y-3 md:gap-y-0 item-start md:items-end w-full">
           <Searchbar
             placeholder="Search by project name"
             name="search"
             btntext="Search"
-            className="mt-4 gap-x-2"
+            className="mt-4 gap-x-2 w-full max-w-[291px]"
             variant="light"
           />
-          <Dropdown />
+          <Dropdown 
+            placeholder="Filter by Tool"
+            name="tool"
+            active={false}
+          />
         </div>
         <div className="pt-4">
           <ProjectTable
             totalCountAndLimit={{ totalCount: 5, size: 10 }}
-           projects={projects ?? []} />
+            projects={projects ?? []}
+          />
         </div>
       </div>
     </div>
