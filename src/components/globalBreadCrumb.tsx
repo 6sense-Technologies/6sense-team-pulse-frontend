@@ -27,7 +27,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
   thirdLink,
 }) => {
   return (
-    <header className="flex h-12 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className="flex shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center">
         {/* <SidebarTrigger className="-ml-5" /> */}
         <Separator orientation="vertical" className="mr-2 h-4" />
@@ -36,7 +36,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
             <BreadcrumbItem className="hidden md:block">
               <BreadcrumbLink
                 href={initalLink}
-                className={secondayData || thirdData ? "text-subHeading text-sm" : "!text-primary text-sm"}
+                className={secondayData || thirdData ? "text-subHeading text-sm" : "!text-black text-sm"}
               >
                 {initialData}
               </BreadcrumbLink>
@@ -47,7 +47,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={secondayLink}
-                    className={thirdData ? "text-subHeading text-sm" : "!text-primary text-sm"}
+                    className={thirdData ? "text-subHeading text-sm" : "!text-black text-sm"}
                   >
                     {secondayData}
                   </BreadcrumbLink>
@@ -58,7 +58,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
               <>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbLink href={thirdLink} className="!text-primary text-sm">
+                  <BreadcrumbLink href={thirdLink} className="!text-black text-sm">
                     {thirdData}
                   </BreadcrumbLink>
                 </BreadcrumbItem>

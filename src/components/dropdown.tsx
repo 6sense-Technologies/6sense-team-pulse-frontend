@@ -30,38 +30,44 @@ export function Dropdown({
   additionalText,
   active = false,
 }: DropdownProps) {
+  const renderSelect = (field: any) => (
+    <Select {...field}>
+      <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup className={cn("bg-white !z-50 ", className)}>
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  );
+
   return (
-    <Controller
-      control={control}
-      name={name}
-      render={({ field }) => (
-        <div className="relative">
-          <Select {...field}>
-            <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
-              <SelectValue placeholder={placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup className={cn("bg-white !z-50 ",className) }>
-                <SelectLabel>Fruits</SelectLabel>
-                <SelectItem value="apple">Apple</SelectItem>
-                <SelectItem value="banana">Banana</SelectItem>
-                <SelectItem value="blueberry">Blueberry</SelectItem>
-                <SelectItem value="grapes">Grapes</SelectItem>
-                <SelectItem value="pineapple">Pineapple</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {errors[name]?.message ? (
-            <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
-              {errors[name].message}
-            </p>
-          ) : (
-            <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
-              {additionalText}
-            </p>
-          )}
-        </div>
+    <div className="relative">
+      {control ? (
+        <Controller
+          control={control}
+          name={name}
+          render={({ field }) => renderSelect(field)}
+        />
+      ) : (
+        renderSelect({})
       )}
-    />
+      {errors[name]?.message ? (
+        <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
+          {errors[name].message}
+        </p>
+      ) : (
+        <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
+          {additionalText}
+        </p>
+      )}
+    </div>
   );
 }

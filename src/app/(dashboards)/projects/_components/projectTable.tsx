@@ -141,15 +141,15 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
 
   return (
     <div className="w-full">
-      <div className="rounded-md">
-        <Table>
-          <TableHeader className="bg-bgSecondary border-b-[1px] border-gray-300">
+      <div className="">
+        <Table className="border border-lightborderColor !rounded-md">
+          <TableHeader className="border-b-[1px] text-inputFooterColor">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="py-1 leading-none">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className={`text-left py-1 leading-none ${
+                    className={`text-left h-12 leading-none ${
                       header.column.id === "actions" ? "text-right" : ""
                     }`}
                   >

@@ -67,7 +67,7 @@ const ProjectList = () => {
     <div className="w-full">
       <PageTitle pageName="Ops4 Team" title="Projects" />
 
-      <div className="pl-4 pr-[14px] w-full">
+      <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
           initialData="Projects"
           initalLink="/projects"
@@ -75,24 +75,26 @@ const ProjectList = () => {
           secondayLink="/projects"
         />
         <PageHeading
-          title="Projects"
+          title="List"
           subTitle="Some examples built using the components. Use this as a guide to build your own."
+          className="pl-2 pt-3"
         />
         <div className="flex flex-col md:flex-row justify-between gap-y-3 md:gap-y-0 item-start md:items-end w-full">
           <Searchbar
             placeholder="Search by project name"
             name="search"
             btntext="Search"
-            className="mt-4 gap-x-2 w-full max-w-[291px]"
+            className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
             variant="light"
           />
           <Dropdown 
             placeholder="Filter by Tool"
             name="tool"
             active={false}
+            className="mb-[26px]"
           />
         </div>
-        <div className="pt-4">
+        <div className="">
           <ProjectTable
             totalCountAndLimit={{ totalCount: 5, size: 10 }}
             projects={projects ?? []}

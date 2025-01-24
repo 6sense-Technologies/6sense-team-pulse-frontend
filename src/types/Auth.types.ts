@@ -34,3 +34,8 @@ export type TOrgazinationDetails =
     organizationName: string;
     domainName: string;
 }
+
+export type TResndOtp =
+{
+    email: string | undefined;
+}

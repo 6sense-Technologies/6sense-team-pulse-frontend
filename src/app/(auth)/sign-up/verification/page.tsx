@@ -8,14 +8,15 @@ import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import PageTitle from "@/components/PageTitle";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { TVerifyEmail } from "@/types/Auth.types";
+import { TResndOtp, TVerifyEmail } from "@/types/Auth.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { VerifyEmailSchema } from "../../../../../Zodschema/authSchema";
 import Cookies from "js-cookie";
 import Otpfields from "./_components/otpfields";
 import { useMutation } from "@tanstack/react-query";
-import { handleOtp } from "../../../../../api/Auth/authApi";
+import { handleOtp, handleResendOTP } from "../../../../../api/Auth/authApi";
 import { useSession } from "next-auth/react";
+import Loader from "@/components/loader";
 
 const Verify = () => {
   const router = useRouter();
@@ -28,17 +29,14 @@ const Verify = () => {
     resolver: zodResolver(VerifyEmailSchema),
   });
 
-  
-  const user = Cookies.get("user-email");
-
-  console.log("🚀 ~ User Email:", user);
-
+  const user = localStorage.getItem("user-email");
 
   const otpMutation = useMutation({
     mutationFn: handleOtp,
-    onSuccess: () =>
+    onSuccess: (data) =>
     {
-        localStorage.setItem('isVerified', 'true');
+        console.log(data);
+        // localStorage.setItem('isVerified', data.isVerified);
         router.push("/sign-up/create-organization");
     }
   })
@@ -59,27 +57,44 @@ const Verify = () => {
 
     // console.log("🚀 ~ payload", payload);
     otpMutation.mutate(payload);
+    window.location.reload();
+
   };
 
-  const session = useSession();
-  
-  if(!session.data?.isVerified && !session.data?.hasOrganization)
-    {
-      router.push('/sign-up/verification');
-    }
-    if(session.data?.isVerified && !session.data?.hasOrganization)
-    {
-      router.push('/sign-up/create-organization');
-    }
-    if(session.data?.isVerified && session.data?.hasOrganization)
-    {
-      router.push('/dashboard');
-    }
-    if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
-      {
-        router.push('/dashboard');
-      }
 
+
+  // const session = useSession();
+  
+  // if (session.data === undefined) {
+  //   router.push("/sign-in");
+  //   return <Loader />;
+  // }
+
+
+  // const logOut = localStorage.getItem("logout");
+
+  // console.log(session);
+  // if(logOut === "true") {
+  //   router.push("/sign-in");
+  // }
+  // if (session.status !== "loading" && session.status === "authenticated") {
+  //   if (!session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/verification");
+  //   }
+  //   if (session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/create-organization");
+  //   }
+  //   if (session.data?.isVerified && session.data?.hasOrganization) {
+  //     router.push("/dashboard");
+  //   }
+  //   if (
+  //     session.data?.isVerified &&
+  //     session.data?.hasOrganization &&
+  //     session.status === "authenticated"
+  //   ) {
+  //     router.push("/dashboard");
+  //   }
+  // }
 
   
 
@@ -125,7 +140,7 @@ const Verify = () => {
                 <Otpfields control={control} />
               </div>
               <p className="text-sm text-errorColor absolute pt-2">
-                {errors.token && "OTP incorrect"}
+                {errors.otp && "OTP incorrect"}
               </p>
             </div>
 
@@ -133,7 +148,7 @@ const Verify = () => {
               <p className="text-sm text-textMuted pt-11 text-start">
                 Didn't receive an email? Try checking your junk folder.
               </p>
-              <p className="text-sm text-deepBlackColor font-medium underline pt-1">
+              <p className="text-sm text-deepBlackColor font-medium underline pt-1 cursor-pointer" onClick={()=> handleResendOTP(user || "")}>
                 Resend
               </p>
             </div>

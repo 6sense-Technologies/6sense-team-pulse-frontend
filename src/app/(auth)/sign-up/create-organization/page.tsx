@@ -15,7 +15,7 @@ import { OrganizationSchema } from "../../../../../Zodschema/authSchema";
 import { TOrgazinationDetails } from "@/types/Auth.types";
 import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../api/Auth/authApi";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 const OrganizationDetails = () => {
   const router = useRouter();
@@ -30,41 +30,40 @@ const OrganizationDetails = () => {
 
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
-    onSuccess: () => {
+    onSuccess: (data) => {
       localStorage.setItem('hasOrganization', 'true');
-      router.push("/sign-in");
+      router.push("/dashboard");
     }
   });
 
   const handleSubmission: SubmitHandler<TOrgazinationDetails> = (data) => {
-    console.log(data);
+    // console.log(data);
     OrganizationMutation.mutate(data);
   };
 
   const session = useSession();
     
-    if(!session.data?.isVerified && !session.data?.hasOrganization)
-      {
-        router.push('/sign-up/verification');
-      }
-      if(session.data?.isVerified && !session.data?.hasOrganization)
-      {
-        router.push('/sign-up/create-organization');
-      }
-      if(session.data?.isVerified && session.data?.hasOrganization)
-      {
-        router.push('/dashboard');
-      }
-      if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
-      {
-        router.push('/dashboard');
-      }
-      if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
-        {
-          router.push('/dashboard');
-        }
-  
-  
+
+  if (session.status !== "loading" && session.status === "authenticated") {
+    if (!session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/verification");
+    }
+    if (session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/create-organization");
+    }
+    if (session.data?.isVerified && session.data?.hasOrganization) {
+      router.push("/dashboard");
+    }
+    if (
+      session.data?.isVerified &&
+      session.data?.hasOrganization &&
+      session.status === "authenticated"
+    ) {
+      router.push("/dashboard");
+    }
+  }
+
+
 
 
   return (
@@ -108,7 +107,7 @@ const OrganizationDetails = () => {
                 placeholder="Type your organization name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
-              {errors.organizationName && <p className="text-red-500 text-sm">{errors.orgName.message}</p>}
+              {errors.organizationName && <p className="text-red-500 text-sm">{errors.organizationName.message}</p>}
             </div>
             <div className="w-full pt-3">
               <label htmlFor="domain" className="text-black text-sm">
@@ -124,7 +123,7 @@ const OrganizationDetails = () => {
                 />
                 <span className="text-sm border text-subHeading bg-lightBlueBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">.ops4.ai</span>
               </div>
-              {errors.domainName && <p className="text-red-500 text-sm">{errors.domain.message}</p>}
+              {errors.domainName && <p className="text-red-500 text-sm">{errors.domainName.message}</p>}
             </div>
 
             <Button type="submit" variant="submit" className="mt-6">

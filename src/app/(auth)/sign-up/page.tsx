@@ -21,7 +21,8 @@ import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Cookies from "js-cookie";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
+import Loader from "@/components/loader";
 
 const SignUp = () => {
   const router = useRouter();
@@ -37,12 +38,52 @@ const SignUp = () => {
 
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+
+      localStorage.setItem('isVerified', data.userInfo.isVerified);
+      localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
+      localStorage.setItem('user-email', data.userInfo.emailAddress);
+      console.log(data);
+
+      if(data.userInfo.isVerified)
+            {
+              localStorage.setItem('isVerified', data.userInfo.isVerified);
+              localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
+              router.push("/sign-up/create-organization");
+            }
+            else if (data.userInfo.hasOrganization)
+            {
+              localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
+              router.push("/dashboard");
+            }
+            else 
+            {
+              localStorage.setItem
+              router.push("/sign-up/verification");
+            }
       // Store user data in cookies
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('isVerified', 'false');
-      Cookies.set("user-email", data.userInfo.emailAddress, { expires: 7, secure: true, sameSite: 'strict' });
-      router.push("/sign-up/verification");
+    //   console.log("FD");
+    //   console.log(formData);
+    //   localStorage.setItem("accessToken", data.accessToken);
+    //   Cookies.set("user-email", data.userInfo.emailAddress, {
+    //     expires: 7,
+    //     secure: true,
+    //     sameSite: "strict",
+    //   });
+    //   console.log("SOMETHING:");
+    //   console.log(data);
+    //   const result = await signIn("credentials", {
+    //     redirect: false,
+    //     emailAddress: formData.emailAddress,
+    //     password: formData.password,
+    //   });
+    //   console.log("SIGNIN IN RESPONSE")
+    //   console.log(result);
+    //   if (result?.code) {
+    //     throw new Error(result.code);
+    //   }
+    //   localStorage.setItem("logout", "false");
+    //   router.push("/sign-up/verification");
     },
   });
 
@@ -50,30 +91,35 @@ const SignUp = () => {
     basicSignUpMutation.mutate(data);
   };
 
-  const session = useSession();
+  // const session = useSession();
 
-  console.log(session); 
+  // console.log(session);
 
-  if(!session.data?.isVerified && !session.data?.hasOrganization)
-  {
-    router.push('/sign-up/verification');
-  }
-  if(session.data?.isVerified && !session.data?.hasOrganization)
-  {
-    router.push('/sign-up/create-organization');
-  }
-  if(session.data?.isVerified && session.data?.hasOrganization)
-  {
-    router.push('/dashboard');
-  }
-  if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
-    {
-      router.push('/dashboard');
-    }
-
+  // if (session.status !== "loading" && session.status === "authenticated") {
+  //   if (!session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/verification");
+  //   }
+  //   if (session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/create-organization");
+  //   }
+  //   if (session.data?.isVerified && session.data?.hasOrganization) {
+  //     router.push("/dashboard");
+  //   }
+  //   if (
+  //     session.data?.isVerified &&
+  //     session.data?.hasOrganization &&
+  //     session.status === "authenticated"
+  //   ) {
+  //     router.push("/dashboard");
+  //   }
+  // }
+  
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <PageTitle pageName='Ops4 Team' title='Create Account - Try Ops4 Team for Free' />
+      <PageTitle
+        pageName="Ops4 Team"
+        title="Create Account - Try Ops4 Team for Free"
+      />
       <div className="bg-blackishBg w-full  h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
@@ -144,7 +190,10 @@ const SignUp = () => {
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="displayName" className="text-black font-medium text-sm">
+              <label
+                htmlFor="displayName"
+                className="text-black font-medium text-sm"
+              >
                 Name
               </label>
               <BaseInput
@@ -156,7 +205,10 @@ const SignUp = () => {
               />
             </div>
             <div className="w-full pt-5">
-              <label htmlFor="emailAddress" className="text-black font-medium  text-sm">
+              <label
+                htmlFor="emailAddress"
+                className="text-black font-medium  text-sm"
+              >
                 Email
               </label>
               <BaseInput
@@ -168,7 +220,10 @@ const SignUp = () => {
               />
             </div>
             <div className="pt-5 w-full">
-              <label htmlFor="password" className="text-black font-medium text-sm">
+              <label
+                htmlFor="password"
+                className="text-black font-medium text-sm"
+              >
                 Password
               </label>
               <BaseInput
@@ -196,8 +251,11 @@ const SignUp = () => {
               <span className="underline cursor-pointer">
                 Terms of Service
               </span>{" "}
-              and {" "}
-              <span className="cursor-pointer border-b-[1px] border-subHeading">Privacy Policy</span>.
+              and{" "}
+              <span className="cursor-pointer border-b-[1px] border-subHeading">
+                Privacy Policy
+              </span>
+              .
             </p>
           </div>
         </div>

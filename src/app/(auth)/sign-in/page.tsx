@@ -20,6 +20,8 @@ import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
+import Loader from "@/components/loader";
+import Cookies from "js-cookie";
 
 const SignIn = () => {
   const router = useRouter();
@@ -35,6 +37,7 @@ const SignIn = () => {
 
   const session = useSession();
 
+
   const BasicSignInMutation = useMutation({
     mutationFn: async (data: TBasicSignInFormInputs) => {
       const result = await signIn("credentials", {
@@ -49,7 +52,14 @@ const SignIn = () => {
       return result;
     },
     onSuccess: () => {
+      console.log("!!!!!",session);
       localStorage.setItem("logout", "false");
+      localStorage.setItem("accessToken", session.data?.accessToken || "");
+      Cookies.set("user-email", session.data?.user?.email || "", {
+        expires: 7,
+        secure: true,
+        sameSite: "strict",
+      });
       router.push("/dashboard");
     },
     onError: (error: any) => {
@@ -57,32 +67,42 @@ const SignIn = () => {
     },
   });
 
+
+  
   const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
     BasicSignInMutation.mutate(data, {
-      onSuccess: () => router.push("/dashboard"),
+      onSuccess: () => 
+        {
+          localStorage.setItem("logout", "false");
+          router.push("/dashboard")
+        },
     });
     // console.log("data", data);
   };
 
-  if(!session.data?.isVerified && !session.data?.hasOrganization)
-    {
-      router.push('/sign-up/verification');
-    }
-    if(session.data?.isVerified && !session.data?.hasOrganization)
-    {
-      router.push('/sign-up/create-organization');
-    }
-    if(session.data?.isVerified && session.data?.hasOrganization)
-    {
-      router.push('/dashboard');
-    }
-    if(session.data?.isVerified && session.data?.hasOrganization && session.status === 'authenticated')
-      {
-        router.push('/dashboard');
-      }
-
   
-
+  if (session.status !== "loading" && session.status === "authenticated") {
+    if (!session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/verification");
+      return <Loader />;
+    }
+    if (session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/create-organization");
+      return <Loader />;
+    }
+    if (session.data?.isVerified && session.data?.hasOrganization) {
+      router.push("/dashboard");
+      return <Loader />;
+    }
+    if (
+      session.data?.isVerified &&
+      session.data?.hasOrganization &&
+      session.status === "authenticated"
+    ) {
+      router.push("/dashboard");
+    }
+  }
+  
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle pageName='Ops4 Team' title='Log in' />
