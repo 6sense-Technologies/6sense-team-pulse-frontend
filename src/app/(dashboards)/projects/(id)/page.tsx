@@ -12,56 +12,80 @@ import PageHeading from "@/components/pageHeading";
 const projects = [
   {
     projectName: "Project Alpha",
-    managementTools: "Jira",
+    managementTools: ["Jira", "Confluence"],
     teamSize: 10,
   },
   {
     projectName: "Project Beta",
-    managementTools: "Trello",
+    managementTools: ["Trello", "Slack"],
     teamSize: 8,
   },
   {
     projectName: "Project Gamma",
-    managementTools: "Asana",
+    managementTools: ["Asana", "Google Drive"],
     teamSize: 12,
   },
   {
     projectName: "Project Delta",
-    managementTools: "Monday.com",
+    managementTools: ["Monday.com", "Zoom"],
     teamSize: 6,
   },
   {
     projectName: "Project Epsilon",
-    managementTools: "ClickUp",
+    managementTools: ["ClickUp", "Microsoft Teams"],
     teamSize: 15,
   },
   {
     projectName: "Project Zeta",
-    managementTools: "Basecamp",
+    managementTools: ["Basecamp", "Dropbox"],
     teamSize: 9,
   },
   {
     projectName: "Project Eta",
-    managementTools: "Wrike",
+    managementTools: ["Wrike", "Slack"],
     teamSize: 11,
   },
   {
     projectName: "Project Theta",
-    managementTools: "Smartsheet",
+    managementTools: ["Smartsheet", "Google Calendar"],
     teamSize: 7,
   },
   {
     projectName: "Project Iota",
-    managementTools: "Notion",
+    managementTools: ["Notion", "Zoom"],
     teamSize: 14,
   },
   {
     projectName: "Project Kappa",
-    managementTools: "Airtable",
+    managementTools: [
+      "Airtable",
+      "Slack",
+      "Trello",
+      "Jira",
+      "Confluence",
+      "Asana",
+      "Google Drive",
+    ],
     teamSize: 5,
   },
-];
-
+  {
+    projectName: "Project Lambda",
+    managementTools: [
+      "Basecamp",
+      "Dropbox",
+      "Wrike",
+      "Slack",
+      "Smartsheet",
+      "Google Calendar",
+      "Notion",
+      "Zoom",
+      "ClickUp",
+      "Microsoft Teams",
+      "Monday.com",
+    ],
+    teamSize: 10,
+  },
+]; 
 const ProjectList = () => {
   return (
     <div className="w-full">
@@ -87,7 +111,7 @@ const ProjectList = () => {
             className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
             variant="light"
           />
-          <Dropdown 
+          <Dropdown
             placeholder="Filter by Tool"
             name="tool"
             active={false}

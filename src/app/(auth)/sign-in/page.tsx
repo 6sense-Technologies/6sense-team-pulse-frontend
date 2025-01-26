@@ -21,7 +21,7 @@ import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 const SignIn = () => {
   const router = useRouter();
@@ -81,6 +81,7 @@ const SignIn = () => {
     if (session.status !== "loading" && session.status === "authenticated") {
       if (!session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/verification");
+        return <Loader/>
       }
       if (session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/create-organization");

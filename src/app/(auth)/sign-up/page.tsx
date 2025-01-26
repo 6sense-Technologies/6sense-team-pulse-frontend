@@ -61,6 +61,7 @@ const SignUp = () => {
     if (session.status !== "loading" && session.status === "authenticated") {
       if (!session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/verification");
+        
       }
       if (session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/create-organization");

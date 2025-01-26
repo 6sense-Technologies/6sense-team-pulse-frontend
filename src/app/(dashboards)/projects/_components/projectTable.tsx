@@ -27,6 +27,9 @@ import { Note } from "@phosphor-icons/react";
 import { IMemberList } from "@/types/types";
 import Tooltips from "@/components/tooltip";
 import { TablePagination } from "@/components/tablePagination";
+import ManagementToolBadge from "./managementToolBadge";
+
+const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
 const handleDetails = (member: IMemberList): void => {
   localStorage.setItem("memberId", member._id);
@@ -42,15 +45,34 @@ export const columns: ColumnDef<any>[] = [
       <div className="text-medium">{row.getValue("projectName") || "-"}</div>
     ),
   },
+  // accessorFn: (row: IMemberList): string => row.userData.emailAddress,
   {
     accessorKey: "managementTools",
-    // accessorFn: (row: IMemberList): string => row.userData.emailAddress,
     header: (): JSX.Element => <div className="text-bold">Management Tool</div>,
-    cell: ({ row }: { row: any }): JSX.Element => (
-      <div className="lowercase text-medium">
-        {row.getValue("managementTools") || "-"}
-      </div>
-    ),
+    cell: ({ row }: { row: any }): JSX.Element => {
+      const managementTools = row.getValue("managementTools") || [];
+      const displayedTools = managementTools.slice(
+        0,
+        MAX_MANAGEMENT_TOOLS_DISPLAY
+      );
+      const remainingToolsCount =
+        managementTools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
+
+      return (
+        <div className="flex items-center space-x-2">
+          {displayedTools.map((tool: string, index: number) => (
+            <ManagementToolBadge key={index} className="lowercase text-medium">
+              {tool}
+            </ManagementToolBadge>
+          ))}
+          {remainingToolsCount > 0 && (
+            <ManagementToolBadge className="lowercase text-medium">
+              +{remainingToolsCount}
+            </ManagementToolBadge>
+          )}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "teamSize",
@@ -141,15 +163,15 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
 
   return (
     <div className="w-full">
-      <div className="">
-        <Table className="border border-lightborderColor !rounded-md">
+      <div className="overflow-hidden rounded-lg border border-lightborderColor">
+        <Table className="!rounded-lg">
           <TableHeader className="border-b-[1px] text-inputFooterColor">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className="py-1 leading-none">
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className={`text-left h-12 leading-none ${
+                    className={`text-left h-12 pl-4 leading-none ${
                       header.column.id === "actions" ? "text-right" : ""
                     }`}
                   >
@@ -170,13 +192,19 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="py-1 leading-none"
+                  className="h-12 leading-none"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
                       key={cell.id}
                       className={`py-1 leading-none ${
-                        cell.column.id === "actions" ? "text-right" : ""
+                        cell.column.id === "actions"
+                          ? "text-right"
+                          : cell.column.id === "teamSize"
+                          ? "pl-5 text-start"
+                          : cell.column.id === "managementTools"
+                          ? "pl-3 text-start"
+                          : "pl-4 text-start"
                       }`}
                     >
                       {flexRender(
@@ -189,7 +217,10 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
               ))
             ) : (
               <TableRow className="py-1 leading-none">
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -197,10 +228,10 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="text-sm text-subHeading">
-          Showing {table.getRowModel().rows.length} out of{" "}
-          {totalCountAndLimit.totalCount} results
+      <div className="flex items-center justify-between space-x-3 py-4">
+        <div className="text-sm text-subHeading pl-2">
+          {totalCountAndLimit.totalCount} of {table.getRowModel().rows.length}{" "}
+            row(s) showing.
         </div>
         <div className="flex justify-end mb-2">
           <TablePagination

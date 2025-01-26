@@ -58,6 +58,7 @@ export const Verify = () => {
     if (status !== "loading" && status === "authenticated") {
       if (!session.isVerified && !session.hasOrganization) {
         router.push("/sign-up/verification");
+        
       }
       if (session.isVerified && !session.hasOrganization) {
         router.push("/sign-up/create-organization");

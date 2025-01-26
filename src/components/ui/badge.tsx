@@ -14,6 +14,7 @@ const badgeVariants = cva(
         todo: "border-transparent bg-gray-400 text-white",
         "in-progress": "border-transparent bg-blue-500 text-white",
         completed: "border-transparent bg-green-500 text-white",
+        rounded: "rounded-xl text-foreground font-normal",
       },
     },
     defaultVariants: {
