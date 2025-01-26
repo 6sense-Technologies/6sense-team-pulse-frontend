@@ -56,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log("CREDENTIALS:", credentials);
 
           const response = await axios.post(
-            "http://192.168.0.158:8000/auth/login",
+            "http://localhost:8000/auth/login",
             {
               emailAddress: credentials?.emailAddress,
               password: credentials?.password,
@@ -104,8 +104,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, trigger, session, user, account }) {
+      ///update data when needed
+      if (trigger === "update") {
+        if (session.isVerified !== undefined) {
+          token.isVerified = session.isVerified;
+        }
+        if (session.hasOrganization !== undefined) {
+          token.hasOrganization = session.hasOrganization;
+        }
+      }
       // Merge tokens for both Google and Credential-based logins
+
       if (user) {
         console.log("SESSION FLOW");
         token.accessToken = user.accessToken || token.accessToken;
@@ -116,9 +126,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       if (account && account.provider === "google") {
         // Google login flow
-        console.log("FOUND GOOGLE AUTH FLOW");
+        // console.log("FOUND GOOGLE AUTH FLOW");
         const response = await axios.post(
-          "http://192.168.0.158:8000/auth/social-login",
+          "http://localhost:8000/auth/social-login",
           {
             idToken: account.id_token,
             provider: "google",
@@ -136,22 +146,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
-    async session({ session, token }) {
+    async session({ trigger, session, token }) {
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
-
-      console.log(token.accessToken);
-      // const response = await axios.get(
-      //   "http://192.168.0.158:8000/auth/user-status",
-      //   {
-      //     headers: {
-      //       accept: "*/*",
-      //       Authorization: `Bearer ${token.accessToken}`,
-      //     },
-      //   }
-      // );
-      // console.log("User Status:", response.data);
-      session.isVerified = token.verified as boolean;
+      session.isVerified = token.isVerified as boolean;
       session.hasOrganization = token.hasOrganization as boolean;
       // console.log('SESSION ACTIVATED: ' + session.accessToken);
       // console.log(session);

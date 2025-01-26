@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -37,7 +37,6 @@ const SignIn = () => {
 
   const session = useSession();
 
-
   const BasicSignInMutation = useMutation({
     mutationFn: async (data: TBasicSignInFormInputs) => {
       const result = await signIn("credentials", {
@@ -52,14 +51,6 @@ const SignIn = () => {
       return result;
     },
     onSuccess: () => {
-      console.log("!!!!!",session);
-      localStorage.setItem("logout", "false");
-      localStorage.setItem("accessToken", session.data?.accessToken || "");
-      Cookies.set("user-email", session.data?.user?.email || "", {
-        expires: 7,
-        secure: true,
-        sameSite: "strict",
-      });
       router.push("/dashboard");
     },
     onError: (error: any) => {
@@ -67,45 +58,48 @@ const SignIn = () => {
     },
   });
 
-
-  
   const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
     BasicSignInMutation.mutate(data, {
-      onSuccess: () => 
-        {
-          localStorage.setItem("logout", "false");
-          router.push("/dashboard")
-        },
+      onSuccess: async () => {
+        await signIn("credentials", {
+          redirect: false,
+          emailAddress: data.emailAddress,
+          password: data.password,
+        });
+        localStorage.setItem("user-email", data.emailAddress);
+        localStorage.setItem(
+          "accessToken",
+          session.data?.accessToken as string
+        );
+        router.push("/dashboard");
+      },
     });
     // console.log("data", data);
   };
 
-  
-  if (session.status !== "loading" && session.status === "authenticated") {
-    if (!session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/verification");
-      return <Loader />;
+  useEffect(() => {
+    if (session.status !== "loading" && session.status === "authenticated") {
+      if (!session.data?.isVerified && !session.data?.hasOrganization) {
+        router.push("/sign-up/verification");
+      }
+      if (session.data?.isVerified && !session.data?.hasOrganization) {
+        router.push("/sign-up/create-organization");
+      }
+      if (session.data?.isVerified && session.data?.hasOrganization) {
+        router.push("/dashboard");
+      }
+      if (
+        session.data?.isVerified &&
+        session.data?.hasOrganization &&
+        session.status === "authenticated"
+      ) {
+        router.push("/dashboard");
+      }
     }
-    if (session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/create-organization");
-      return <Loader />;
-    }
-    if (session.data?.isVerified && session.data?.hasOrganization) {
-      router.push("/dashboard");
-      return <Loader />;
-    }
-    if (
-      session.data?.isVerified &&
-      session.data?.hasOrganization &&
-      session.status === "authenticated"
-    ) {
-      router.push("/dashboard");
-    }
-  }
-  
+  });
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <PageTitle pageName='Ops4 Team' title='Log in' />
+      <PageTitle pageName="Ops4 Team" title="Log in" />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
@@ -123,12 +117,9 @@ const SignIn = () => {
           </div>
 
           <Link href={"/sign-up"}>
-          <Button
-            variant="light"
-            className="text-sm"
-          >
-            Sign Up
-          </Button>
+            <Button variant="light" className="text-sm">
+              Sign Up
+            </Button>
           </Link>
         </div>
 
@@ -143,11 +134,7 @@ const SignIn = () => {
           </div>
           <div className="flex gap-x-[34px]">
             <Link href={"/sign-in/sso"}>
-            <Button
-              variant="extralight"
-            >
-              SSO
-            </Button>
+              <Button variant="extralight">SSO</Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -183,7 +170,10 @@ const SignIn = () => {
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full">
-              <label htmlFor="email" className="text-black font-medium  text-sm">
+              <label
+                htmlFor="email"
+                className="text-black font-medium  text-sm"
+              >
                 Email
               </label>
               <BaseInput
@@ -195,7 +185,10 @@ const SignIn = () => {
               />
             </div>
             <div className="pt-5 w-full">
-              <label htmlFor="password" className="text-black font-medium  text-sm">
+              <label
+                htmlFor="password"
+                className="text-black font-medium  text-sm"
+              >
                 Password
               </label>
               <BaseInput
@@ -209,7 +202,11 @@ const SignIn = () => {
             </div>
 
             <Button variant="dark" className="mt-8 w-full">
-               {BasicSignInMutation.isPending? <Circle className="animate-spin"/> : "Sign in"} 
+              {BasicSignInMutation.isPending ? (
+                <Circle className="animate-spin" />
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </form>
 

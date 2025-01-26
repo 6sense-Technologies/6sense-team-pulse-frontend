@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import PageTitle from "@/components/PageTitle";
@@ -15,12 +15,12 @@ import Cookies from "js-cookie";
 import Otpfields from "./_components/otpfields";
 import { useMutation } from "@tanstack/react-query";
 import { handleOtp, handleResendOTP } from "../../../../../api/Auth/authApi";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
+import axios from "axios";
 
-const Verify = () => {
+export const Verify = () => {
   const router = useRouter();
-
   const {
     control,
     handleSubmit,
@@ -28,75 +28,54 @@ const Verify = () => {
   } = useForm<TVerifyEmail>({
     resolver: zodResolver(VerifyEmailSchema),
   });
-
   const user = localStorage.getItem("user-email");
+  const { data: session, status, update } = useSession();
 
   const otpMutation = useMutation({
     mutationFn: handleOtp,
-    onSuccess: (data) =>
-    {
-        console.log(data);
-        // localStorage.setItem('isVerified', data.isVerified);
-        router.push("/sign-up/create-organization");
-    }
-  })
-
-
+    onSuccess: async (data) => {
+      console.log(`DATA: `);
+      console.log(data);
+      await update({ isVerified: data.isValidated });
+      // localStorage.setItem('isVerified', data.isVerified);
+      router.push("/sign-up/create-organization");
+    },
+  });
 
   const handleSubmission: SubmitHandler<TVerifyEmail> = (data) => {
-    const email = user || ""; 
-
-  
-
+    const email = user || "";
     const payload = {
       email,
       token: data.otp,
     };
-
-    console.log(payload);
-
-    // console.log("🚀 ~ payload", payload);
-    otpMutation.mutate(payload);
-    window.location.reload();
-
+    // console.log(`PAYLOAD: ${payload}`);
+    // // console.log("🚀 ~ payload", payload);
+    otpMutation.mutate(payload as any);
   };
 
-
-
-  // const session = useSession();
-  
-  // if (session.data === undefined) {
-  //   router.push("/sign-in");
-  //   return <Loader />;
-  // }
-
-
-  // const logOut = localStorage.getItem("logout");
-
-  // console.log(session);
-  // if(logOut === "true") {
-  //   router.push("/sign-in");
-  // }
-  // if (session.status !== "loading" && session.status === "authenticated") {
-  //   if (!session.data?.isVerified && !session.data?.hasOrganization) {
-  //     router.push("/sign-up/verification");
-  //   }
-  //   if (session.data?.isVerified && !session.data?.hasOrganization) {
-  //     router.push("/sign-up/create-organization");
-  //   }
-  //   if (session.data?.isVerified && session.data?.hasOrganization) {
-  //     router.push("/dashboard");
-  //   }
-  //   if (
-  //     session.data?.isVerified &&
-  //     session.data?.hasOrganization &&
-  //     session.status === "authenticated"
-  //   ) {
-  //     router.push("/dashboard");
-  //   }
-  // }
-
-  
+  console.log(session);
+  useEffect(() => {
+    if (status !== "loading" && status === "authenticated") {
+      if (!session.isVerified && !session.hasOrganization) {
+        router.push("/sign-up/verification");
+      }
+      if (session.isVerified && !session.hasOrganization) {
+        router.push("/sign-up/create-organization");
+      }
+      if (session.isVerified && session.hasOrganization) {
+        router.push("/dashboard");
+      }
+      if (
+        session.isVerified &&
+        session.hasOrganization &&
+        status === "authenticated"
+      ) {
+        router.push("/dashboard");
+      }
+    } else if (status === "unauthenticated") {
+      router.push("/sign-in");
+    }
+  });
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
@@ -148,7 +127,10 @@ const Verify = () => {
               <p className="text-sm text-textMuted pt-11 text-start">
                 Didn't receive an email? Try checking your junk folder.
               </p>
-              <p className="text-sm text-deepBlackColor font-medium underline pt-1 cursor-pointer" onClick={()=> handleResendOTP(user || "")}>
+              <p
+                className="text-sm text-deepBlackColor font-medium underline pt-1 cursor-pointer"
+                onClick={() => handleResendOTP(user || "")}
+              >
                 Resend
               </p>
             </div>

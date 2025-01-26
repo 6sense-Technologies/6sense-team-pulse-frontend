@@ -2,7 +2,7 @@
 import PageTitle from "@/components/PageTitle";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import Loader from "../../../components/loader";
 import { Button } from "@/components/ButtonComponent";
 
@@ -12,18 +12,9 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.setItem("logout", "true");
-    router.push("/sign-in");
+    router.push('/sign-in')
   };
-
-  const logout = localStorage.getItem("logout");
-
-  if (logout === "true") {
-    router.push("/sign-in");
-    return <Loader />;
-  }
+  useEffect(()=>{
   if (session.status !== "loading" && session.status === "authenticated") {
     if (!session.data?.isVerified && !session.data?.hasOrganization) {
       router.push("/sign-up/verification");
@@ -37,7 +28,9 @@ const Dashboard = () => {
       router.push("/dashboard");
       // return <Loader />;
     }
-  }
+  }else if(session.status==='unauthenticated'){
+    router.push('/sign-in')
+  }})
 
   return (
     <div>

@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import FooterTexts from "@/app/(auth)/_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import PageTitle from "@/components/PageTitle";
@@ -15,7 +15,7 @@ import { OrganizationSchema } from "../../../../../Zodschema/authSchema";
 import { TOrgazinationDetails } from "@/types/Auth.types";
 import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../api/Auth/authApi";
-import { signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const OrganizationDetails = () => {
   const router = useRouter();
@@ -27,13 +27,15 @@ const OrganizationDetails = () => {
   } = useForm<TOrgazinationDetails>({
     resolver: zodResolver(OrganizationSchema),
   });
+  const { data: session, status, update } = useSession();
+  localStorage.setItem("accessToken", session?.accessToken as string);
 
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
-    onSuccess: (data) => {
-      localStorage.setItem('hasOrganization', 'true');
+    onSuccess: async (data) => {
+      await update({ hasOrganization: true });
       router.push("/dashboard");
-    }
+    },
   });
 
   const handleSubmission: SubmitHandler<TOrgazinationDetails> = (data) => {
@@ -41,34 +43,35 @@ const OrganizationDetails = () => {
     OrganizationMutation.mutate(data);
   };
 
-  const session = useSession();
-    
-
-  if (session.status !== "loading" && session.status === "authenticated") {
-    if (!session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/verification");
+  useEffect(() => {
+    if (status !== "loading" && status === "authenticated") {
+      if (!session.isVerified && !session.hasOrganization) {
+        router.push("/sign-up/verification");
+      }
+      if (session.isVerified && !session.hasOrganization) {
+        router.push("/sign-up/create-organization");
+      }
+      if (session.isVerified && session.hasOrganization) {
+        router.push("/dashboard");
+      }
+      if (
+        session.isVerified &&
+        session.hasOrganization &&
+        status === "authenticated"
+      ) {
+        router.push("/dashboard");
+      }
+    } else if (status === "unauthenticated") {
+      router.push("/sign-in");
     }
-    if (session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/create-organization");
-    }
-    if (session.data?.isVerified && session.data?.hasOrganization) {
-      router.push("/dashboard");
-    }
-    if (
-      session.data?.isVerified &&
-      session.data?.hasOrganization &&
-      session.status === "authenticated"
-    ) {
-      router.push("/dashboard");
-    }
-  }
-
-
-
+  });
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <PageTitle pageName='Ops4 Team' title='Create Organization - Try Ops4 Team for Free' />
+      <PageTitle
+        pageName="Ops4 Team"
+        title="Create Organization - Try Ops4 Team for Free"
+      />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
@@ -107,7 +110,11 @@ const OrganizationDetails = () => {
                 placeholder="Type your organization name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
-              {errors.organizationName && <p className="text-red-500 text-sm">{errors.organizationName.message}</p>}
+              {errors.organizationName && (
+                <p className="text-red-500 text-sm">
+                  {errors.organizationName.message}
+                </p>
+              )}
             </div>
             <div className="w-full pt-3">
               <label htmlFor="domain" className="text-black text-sm">
@@ -121,9 +128,15 @@ const OrganizationDetails = () => {
                   placeholder="Type your domain prefix"
                   className="placeholder:text-subHeading w-full mt-[4px]"
                 />
-                <span className="text-sm border text-subHeading bg-lightBlueBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">.ops4.ai</span>
+                <span className="text-sm border text-subHeading bg-lightBlueBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">
+                  .ops4.ai
+                </span>
               </div>
-              {errors.domainName && <p className="text-red-500 text-sm">{errors.domainName.message}</p>}
+              {errors.domainName && (
+                <p className="text-red-500 text-sm">
+                  {errors.domainName.message}
+                </p>
+              )}
             </div>
 
             <Button type="submit" variant="submit" className="mt-6">

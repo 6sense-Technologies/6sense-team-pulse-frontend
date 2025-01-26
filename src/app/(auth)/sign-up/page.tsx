@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -7,7 +7,7 @@ import GoogleLogo from "../../../../public/logo/googleLogo.png";
 import FacebookLogo from "../../../../public/logo/facebookLogo.png";
 import AppleLogo from "../../../../public/logo/appleLogo.png";
 import OrDivider from "../_components/orDivider";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,7 @@ import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Cookies from "js-cookie";
-import { signIn, useSession } from "next-auth/react";
+import { getSession, signIn, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const SignUp = () => {
@@ -35,55 +35,20 @@ const SignUp = () => {
   } = useForm<TBasicSignupFormInputs>({
     resolver: zodResolver(SignupSchema),
   });
+  const session = useSession();
 
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
-    onSuccess: async (data) => {
-
-      localStorage.setItem('isVerified', data.userInfo.isVerified);
-      localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
-      localStorage.setItem('user-email', data.userInfo.emailAddress);
-      console.log(data);
-
-      if(data.userInfo.isVerified)
-            {
-              localStorage.setItem('isVerified', data.userInfo.isVerified);
-              localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
-              router.push("/sign-up/create-organization");
-            }
-            else if (data.userInfo.hasOrganization)
-            {
-              localStorage.setItem('hasOrganization', data.userInfo.hasOrganization);
-              router.push("/dashboard");
-            }
-            else 
-            {
-              localStorage.setItem
-              router.push("/sign-up/verification");
-            }
-      // Store user data in cookies
-    //   console.log("FD");
-    //   console.log(formData);
-    //   localStorage.setItem("accessToken", data.accessToken);
-    //   Cookies.set("user-email", data.userInfo.emailAddress, {
-    //     expires: 7,
-    //     secure: true,
-    //     sameSite: "strict",
-    //   });
-    //   console.log("SOMETHING:");
-    //   console.log(data);
-    //   const result = await signIn("credentials", {
-    //     redirect: false,
-    //     emailAddress: formData.emailAddress,
-    //     password: formData.password,
-    //   });
-    //   console.log("SIGNIN IN RESPONSE")
-    //   console.log(result);
-    //   if (result?.code) {
-    //     throw new Error(result.code);
-    //   }
-    //   localStorage.setItem("logout", "false");
-    //   router.push("/sign-up/verification");
+    onSuccess: async (data, formData: TBasicSignupFormInputs) => {
+      await signIn("credentials", {
+        redirect: false,
+        emailAddress: formData.emailAddress,
+        password: formData.password,
+      });
+      await session.update();
+      localStorage.setItem("user-email", data.userInfo.emailAddress);
+      localStorage.setItem("accessToken", data.accessToken);
+      router.push("/sign-up/verification");
     },
   });
 
@@ -91,29 +56,27 @@ const SignUp = () => {
     basicSignUpMutation.mutate(data);
   };
 
-  // const session = useSession();
-
   // console.log(session);
-
-  // if (session.status !== "loading" && session.status === "authenticated") {
-  //   if (!session.data?.isVerified && !session.data?.hasOrganization) {
-  //     router.push("/sign-up/verification");
-  //   }
-  //   if (session.data?.isVerified && !session.data?.hasOrganization) {
-  //     router.push("/sign-up/create-organization");
-  //   }
-  //   if (session.data?.isVerified && session.data?.hasOrganization) {
-  //     router.push("/dashboard");
-  //   }
-  //   if (
-  //     session.data?.isVerified &&
-  //     session.data?.hasOrganization &&
-  //     session.status === "authenticated"
-  //   ) {
-  //     router.push("/dashboard");
-  //   }
-  // }
-  
+  useEffect(() => {
+    if (session.status !== "loading" && session.status === "authenticated") {
+      if (!session.data?.isVerified && !session.data?.hasOrganization) {
+        router.push("/sign-up/verification");
+      }
+      if (session.data?.isVerified && !session.data?.hasOrganization) {
+        router.push("/sign-up/create-organization");
+      }
+      if (session.data?.isVerified && session.data?.hasOrganization) {
+        router.push("/dashboard");
+      }
+      if (
+        session.data?.isVerified &&
+        session.data?.hasOrganization &&
+        session.status === "authenticated"
+      ) {
+        router.push("/dashboard");
+      }
+    }
+  });
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle
