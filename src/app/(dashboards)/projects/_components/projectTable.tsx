@@ -28,6 +28,7 @@ import { IMemberList } from "@/types/types";
 import Tooltips from "@/components/tooltip";
 import { TablePagination } from "@/components/tablePagination";
 import ManagementToolBadge from "./managementToolBadge";
+import { PencilLine, Trash2 } from "lucide-react";
 
 const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
@@ -90,14 +91,18 @@ export const columns: ColumnDef<any>[] = [
       const member = row.original;
 
       return (
-        <div className="flex items-center justify-end space-x-4 pr-4">
+        <div className="flex items-center justify-end space-x-4 pr-4 relative">
           <Tooltips
-            icon={Note}
-            tooltipText="Details"
-            onClick={() => {
-              handleDetails(member);
-            }}
+            icon={PencilLine}
+            tooltipText="Edit"
+            onClick={() => handleDetails(member)}
           />
+          <Tooltips
+            icon={Trash2}
+            tooltipText="Delete"
+            onClick={() => handleDetails(member)}
+          />
+
         </div>
       );
     },
@@ -231,7 +236,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
       <div className="flex items-center justify-between space-x-3 py-4">
         <div className="text-sm text-subHeading pl-2">
           {totalCountAndLimit.totalCount} of {table.getRowModel().rows.length}{" "}
-            row(s) showing.
+          row(s) showing.
         </div>
         <div className="flex justify-end mb-2">
           <TablePagination

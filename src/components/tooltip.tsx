@@ -3,10 +3,10 @@ import React, { FC } from "react";
 import { IconProps } from "@phosphor-icons/react";
 
 interface ITooltipProps {
-    icon: FC<IconProps>;
-    tooltipText: string;
-    onClick: () => void;
-    color?: string;
+  icon: FC<IconProps>;
+  tooltipText: string;
+  onClick: () => void;
+  color?: string;
 }
 
 const Tooltips: FC<ITooltipProps> = ({ icon, tooltipText, onClick, color }) => {
@@ -14,7 +14,10 @@ const Tooltips: FC<ITooltipProps> = ({ icon, tooltipText, onClick, color }) => {
     <div>
       <TooltipProvider>
         <Tooltip>
-          <TooltipTrigger onClick={onClick}>
+          <TooltipTrigger
+            onClick={onClick}
+            className="border border-gray-300 p-2 rounded-md hover:bg-gray-100"
+          >
             {React.createElement(icon, { size: 18, color })}
           </TooltipTrigger>
           <TooltipContent>

@@ -57,17 +57,16 @@ const SignUp = () => {
   };
 
   // console.log(session);
-  useEffect(() => {
+ 
     if (session.status !== "loading" && session.status === "authenticated") {
       if (!session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/verification");
+        return <Loader />;
         
       }
       if (session.data?.isVerified && !session.data?.hasOrganization) {
         router.push("/sign-up/create-organization");
-      }
-      if (session.data?.isVerified && session.data?.hasOrganization) {
-        router.push("/dashboard");
+        return <Loader />;
       }
       if (
         session.data?.isVerified &&
@@ -75,9 +74,10 @@ const SignUp = () => {
         session.status === "authenticated"
       ) {
         router.push("/dashboard");
+        return <Loader />;
       }
     }
-  });
+
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle

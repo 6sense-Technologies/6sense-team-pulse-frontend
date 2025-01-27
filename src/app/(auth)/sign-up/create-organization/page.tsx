@@ -16,6 +16,7 @@ import { TOrgazinationDetails } from "@/types/Auth.types";
 import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../api/Auth/authApi";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Loader from "@/components/loader";
 
 const OrganizationDetails = () => {
   const router = useRouter();
@@ -43,17 +44,15 @@ const OrganizationDetails = () => {
     OrganizationMutation.mutate(data);
   };
 
-  useEffect(() => {
+
     if (status !== "loading" && status === "authenticated") {
       if (!session.isVerified && !session.hasOrganization) {
         router.push("/sign-up/verification");
-        
+        return <Loader />;
       }
       if (session.isVerified && !session.hasOrganization) {
         router.push("/sign-up/create-organization");
-      }
-      if (session.isVerified && session.hasOrganization) {
-        router.push("/dashboard");
+        // return <Loader />;
       }
       if (
         session.isVerified &&
@@ -61,11 +60,14 @@ const OrganizationDetails = () => {
         status === "authenticated"
       ) {
         router.push("/dashboard");
+        return <Loader />;
       }
-    } else if (status === "unauthenticated") {
+    } 
+    else if (status === "unauthenticated") {
       router.push("/sign-in");
+      return <Loader />;
     }
-  });
+
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">

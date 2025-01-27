@@ -14,23 +14,23 @@ const Dashboard = () => {
     await signOut({ redirect: false });
     router.push('/sign-in')
   };
-  useEffect(()=>{
-  if (session.status !== "loading" && session.status === "authenticated") {
-    if (!session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/verification");
-      // return <Loader />;
-    }
-    if (session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/create-organization");
-      // return <Loader />;
-    }
-    if (session.data?.isVerified && session.data?.hasOrganization && session.status === "authenticated") {
-      router.push("/dashboard");
-      // return <Loader />;
-    }
-  }else if(session.status==='unauthenticated'){
-    router.push('/sign-in')
-  }})
+  // useEffect(()=>{
+  // if (session.status !== "loading" && session.status === "authenticated") {
+  //   if (!session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/verification");
+  //     // return <Loader />;
+  //   }
+  //   if (session.data?.isVerified && !session.data?.hasOrganization) {
+  //     router.push("/sign-up/create-organization");
+  //     // return <Loader />;
+  //   }
+  //   if (session.data?.isVerified && session.data?.hasOrganization && session.status === "authenticated") {
+  //     router.push("/dashboard");
+  //     // return <Loader />;
+  //   }
+  // }else if(session.status==='unauthenticated'){
+  //   router.push('/sign-in')
+  // }})
 
   return (
     <div>
