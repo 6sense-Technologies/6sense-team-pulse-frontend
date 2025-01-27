@@ -27,6 +27,8 @@ import Loader from "@/components/loader";
 const SignUp = () => {
   const router = useRouter();
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const {
     handleSubmit,
     control,
@@ -39,44 +41,53 @@ const SignUp = () => {
 
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
-    onSuccess: async (data, formData: TBasicSignupFormInputs) => {
-      await signIn("credentials", {
+    onSuccess: (data, formData: TBasicSignupFormInputs) => {
+      signIn("credentials", {
         redirect: false,
         emailAddress: formData.emailAddress,
         password: formData.password,
+      }).then(() => {
+        session.update().then(() => {
+          localStorage.setItem("user-email", data.userInfo.emailAddress);
+          localStorage.setItem("accessToken", data.accessToken);
+          router.push("/sign-up/verification");
+        });
       });
-      await session.update();
-      localStorage.setItem("user-email", data.userInfo.emailAddress);
-      localStorage.setItem("accessToken", data.accessToken);
-      router.push("/sign-up/verification");
+    },
+    onError: (error: any) => {
+      if (error.message) {
+        setErrorMessage("Email already exists");
+      }
     },
   });
 
   const handleSubmission: SubmitHandler<TBasicSignupFormInputs> = (data) => {
+    setErrorMessage(null); // Clear previous error message
     basicSignUpMutation.mutate(data);
   };
 
-  // console.log(session);
- 
-    if (session.status !== "loading" && session.status === "authenticated") {
-      if (!session.data?.isVerified && !session.data?.hasOrganization) {
-        router.push("/sign-up/verification");
-        return <Loader />;
-        
-      }
-      if (session.data?.isVerified && !session.data?.hasOrganization) {
-        router.push("/sign-up/create-organization");
-        return <Loader />;
-      }
-      if (
-        session.data?.isVerified &&
-        session.data?.hasOrganization &&
-        session.status === "authenticated"
-      ) {
-        router.push("/dashboard");
-        return <Loader />;
-      }
+  if (session.status === "loading") {
+    return <Loader />;
+  }
+
+  if (session.status === "authenticated") {
+    if (!session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/verification");
+      return <Loader />;
     }
+    if (session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/create-organization");
+      return <Loader />;
+    }
+    if (
+      session.data?.isVerified &&
+      session.data?.hasOrganization &&
+      session.status === "authenticated"
+    ) {
+      router.push("/dashboard");
+      return <Loader />;
+    }
+  }
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
@@ -102,7 +113,7 @@ const SignUp = () => {
 
           <Link href="/sign-in">
             <Button variant="light" className="text-sm">
-              Sign In
+              Sign in
             </Button>
           </Link>
         </div>
@@ -179,6 +190,7 @@ const SignUp = () => {
                 control={control}
                 name="emailAddress"
                 errors={errors}
+                externalError={errorMessage}
                 placeholder="Type your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />

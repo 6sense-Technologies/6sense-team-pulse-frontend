@@ -33,41 +33,41 @@ const OrganizationDetails = () => {
 
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
-    onSuccess: async (data) => {
-      await update({ hasOrganization: true });
-      router.push("/dashboard");
+    onSuccess: (data) => {
+      update({ hasOrganization: true }).then(() => {
+        router.push("/dashboard");
+      });
     },
   });
 
   const handleSubmission: SubmitHandler<TOrgazinationDetails> = (data) => {
-    // console.log(data);
     OrganizationMutation.mutate(data);
   };
 
+  if(status === "loading") {
+    return <Loader />
+  }
 
-    if (status !== "loading" && status === "authenticated") {
-      if (!session.isVerified && !session.hasOrganization) {
-        router.push("/sign-up/verification");
-        return <Loader />;
-      }
-      if (session.isVerified && !session.hasOrganization) {
-        router.push("/sign-up/create-organization");
-        // return <Loader />;
-      }
-      if (
-        session.isVerified &&
-        session.hasOrganization &&
-        status === "authenticated"
-      ) {
-        router.push("/dashboard");
-        return <Loader />;
-      }
-    } 
-    else if (status === "unauthenticated") {
-      router.push("/sign-in");
+  if (status === "authenticated") {
+    if (!session.isVerified && !session.hasOrganization) {
+      router.push("/sign-up/verification");
       return <Loader />;
     }
-
+    if (session.isVerified && !session.hasOrganization) {
+      router.push("/sign-up/create-organization");
+    }
+    if (
+      session.isVerified &&
+      session.hasOrganization &&
+      status === "authenticated"
+    ) {
+      router.push("/dashboard");
+      return <Loader />;
+    }
+  } else if (status === "unauthenticated") {
+    router.push("/sign-in");
+    return <Loader />;
+  }
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">

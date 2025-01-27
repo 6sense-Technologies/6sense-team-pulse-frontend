@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -15,13 +15,12 @@ import { LoginSchema } from "../../../../Zodschema/authSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
-// import Cookies from "js-cookie";
 
 const SignIn = () => {
   const router = useRouter();
@@ -36,6 +35,8 @@ const SignIn = () => {
   });
 
   const session = useSession();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const BasicSignInMutation = useMutation({
     mutationFn: async (data: TBasicSignInFormInputs) => {
@@ -55,45 +56,54 @@ const SignIn = () => {
     },
     onError: (error: any) => {
       console.log("Error:", error.message);
+      if (error.message) {
+        setErrorMessage("Invalid");
+      }
     },
   });
 
   const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
+    setErrorMessage(null);
     BasicSignInMutation.mutate(data, {
-      onSuccess: async () => {
-        await signIn("credentials", {
+      onSuccess: () => {
+        signIn("credentials", {
           redirect: false,
           emailAddress: data.emailAddress,
           password: data.password,
+        }).then(() => {
+          localStorage.setItem("user-email", data.emailAddress);
+          localStorage.setItem(
+            "accessToken",
+            session.data?.accessToken as string
+          );
+          router.push("/dashboard");
         });
-        localStorage.setItem("user-email", data.emailAddress);
-        localStorage.setItem(
-          "accessToken",
-          session.data?.accessToken as string
-        );
-        router.push("/dashboard");
       },
     });
-    // console.log("data", data);
   };
 
+  if (session.status === "loading") return <Loader />;
 
-    if (session.status !== "loading" && session.status === "authenticated") {
-      if (!session.data?.isVerified && !session.data?.hasOrganization) {
-        router.push("/sign-up/verification");
+  if (session.status === "authenticated") {
+    if (!session.data?.isVerified && !session.data?.hasOrganization) {
+      // router.push("/sign-up/verification");
+      signOut({ redirect: false }).then(() => {
         return <Loader />;
-      } else if (session.data?.isVerified && !session.data?.hasOrganization) {
-        router.push("/sign-up/create-organization");
-        return <Loader />;
-      } else if (
-        session.data?.isVerified &&
-        session.data?.hasOrganization &&
-        session.status === "authenticated"
-      ) {
-        router.push("/dashboard");
-        return <Loader />;
-      }
+      });
     }
+    if (session.data?.isVerified && !session.data?.hasOrganization) {
+      router.push("/sign-up/create-organization");
+      return <Loader />;
+    } else if (
+      session.data?.isVerified &&
+      session.data?.hasOrganization &&
+      session.status === "authenticated"
+    ) {
+      router.push("/dashboard");
+      return <Loader />;
+    }
+  }
+
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle pageName="Ops4 Team" title="Log in" />
@@ -115,7 +125,7 @@ const SignIn = () => {
 
           <Link href={"/sign-up"}>
             <Button variant="light" className="text-sm">
-              Sign Up
+              Sign up
             </Button>
           </Link>
         </div>
@@ -179,6 +189,7 @@ const SignIn = () => {
                 errors={errors}
                 placeholder="Type your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
+                externalError={errorMessage}
               />
             </div>
             <div className="pt-5 w-full">

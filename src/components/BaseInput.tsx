@@ -7,6 +7,7 @@ interface InputProps extends React.ComponentProps<"input"> {
   name: string;
   errors?: any;
   additionalText?: string;
+  externalError?: string | null | undefined;
 }
 
 const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
@@ -18,6 +19,7 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
       additionalText,
       errors = {},
       type = "text",
+      externalError,
       ...props
     },
     ref
@@ -36,16 +38,16 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
                 "border-input focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent py-1 pl-3 pr-10 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-subHeading focus-visible:outline-none focus-visible:ring-1 disabled:cursor-not-allowed disabled:opacity-50",
                 {
                   "border-errorColor focus-visible:ring-errorColor/50":
-                    errors[name]?.message,
+                    errors[name]?.message || externalError,
                 },
                 className
               )}
               ref={ref}
               {...props}
             />
-            {errors[name]?.message ? (
+            {(errors[name]?.message || externalError) ? (
               <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
-                {errors[name].message} additionalText
+                {errors[name]?.message || externalError}
               </p>
             ) : (
               <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
