@@ -62,7 +62,7 @@ const SignUp = () => {
   });
 
   const handleSubmission: SubmitHandler<TBasicSignupFormInputs> = (data) => {
-    setErrorMessage(null); // Clear previous error message
+    setErrorMessage(null);
     basicSignUpMutation.mutate(data);
   };
 

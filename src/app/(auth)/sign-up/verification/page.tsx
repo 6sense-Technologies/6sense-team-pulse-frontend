@@ -20,10 +20,25 @@ import Loader from "@/components/loader";
 const Verify = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(120); // 2 minutes timer
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
   useEffect(() => {
     const email = localStorage.getItem("user-email");
     setUserEmail(email);
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          setIsExpired(true);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const {
@@ -124,15 +139,23 @@ const Verify = () => {
 
             <div>
               <p className="text-sm text-textMuted pt-11 text-start">
-                Didn't receive an email? Try checking your junk folder.
-              </p>
-              <p
-                className="text-sm text-deepBlackColor font-medium underline pt-1 cursor-pointer"
-                onClick={() => handleResendOTP(userEmail || "")}
-              >
-                Resend
+                {isExpired ? "OTP expired" : `OTP expires in ${timeLeft} seconds`}
               </p>
             </div>
+
+            {isExpired && (
+              <div>
+                <p className="text-sm text-textMuted pt-11 text-start">
+                  Didn't receive an email? Try checking your junk folder.
+                </p>
+                <p
+                  className="text-sm text-deepBlackColor font-medium underline pt-1 cursor-pointer"
+                  onClick={() => handleResendOTP(userEmail || "")}
+                >
+                  Resend
+                </p>
+              </div>
+            )}
 
             <Button variant="submit" className="mt-6">
               Submit

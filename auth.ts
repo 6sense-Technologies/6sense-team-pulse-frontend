@@ -90,14 +90,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return false; // Login failed
         } catch (error: any) {
           console.log("error", error.response.status);
-          if (error.response.status === 401)
-            throw new CustomError("User not verified");
-          else if (
-            error.response.status === 400 ||
-            error.response.status === 404
-          )
+          if (error.response.status === 400){
             throw new CustomError("Invalid credentials");
+          }
           // console.error('Error during credential login:', error);
+          else if (error.response.status === 404) {
+            throw new CustomError("User not found");
+          }
           // return false;
         }
       },

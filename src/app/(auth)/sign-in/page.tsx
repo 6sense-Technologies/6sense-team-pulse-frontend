@@ -21,6 +21,7 @@ import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
+import InvalidErrorBanner from "./_components/invalidErrorBanner";
 
 const SignIn = () => {
   const router = useRouter();
@@ -37,6 +38,7 @@ const SignIn = () => {
   const session = useSession();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorFlag, setErrorFlag] = useState<boolean>(false);
 
   const BasicSignInMutation = useMutation({
     mutationFn: async (data: TBasicSignInFormInputs) => {
@@ -56,8 +58,12 @@ const SignIn = () => {
     },
     onError: (error: any) => {
       console.log("Error:", error.message);
-      if (error.message) {
-        setErrorMessage("Invalid");
+      if (error.message === "User not found") {
+        setErrorMessage("No account found with this user.");
+        setErrorFlag(false);
+      }
+      if (error.message === "Invalid credentials") {
+        setErrorFlag(true);
       }
     },
   });
@@ -209,7 +215,9 @@ const SignIn = () => {
               />
             </div>
 
-            <Button variant="dark" className="mt-8 w-full">
+            {errorFlag ? <InvalidErrorBanner /> : null}
+
+            <Button variant="dark" className={`${errorFlag ? "mt-2 w-full" : "mt-8 w-full"}`}>
               {BasicSignInMutation.isPending ? (
                 <Circle className="animate-spin" />
               ) : (
