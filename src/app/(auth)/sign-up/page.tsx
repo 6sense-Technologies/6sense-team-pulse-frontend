@@ -56,7 +56,7 @@ const SignUp = () => {
     },
     onError: (error: any) => {
       if (error.message) {
-        setErrorMessage("Email already exists");
+        setErrorMessage("Email already exists.");
       }
     },
   });
