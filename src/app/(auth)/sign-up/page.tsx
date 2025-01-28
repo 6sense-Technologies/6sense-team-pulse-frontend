@@ -95,7 +95,7 @@ const SignUp = () => {
         pageName="Ops4 Team"
         title="Create Account - Try Ops4 Team for Free"
       />
-      <div className="bg-blackishBg w-full  h-screen md:flex md:flex-col md:justify-between hidden">
+      <div className="bg-blackishBg w-full  h-full md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
         </div>
@@ -118,7 +118,7 @@ const SignUp = () => {
           </Link>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
+        <div className="w-full max-w-[465px] mx-auto px-3 md:px-5 pb-5">
           <div>
           <p className="text-3xl text-black font-semibold">Sign up</p>
             <AuthPageHeader
