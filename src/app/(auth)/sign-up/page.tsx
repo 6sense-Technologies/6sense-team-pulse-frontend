@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-import GoogleLogo from "../../../../public/logo/googleLogo.png";
-import FacebookLogo from "../../../../public/logo/facebookLogo.png";
-import AppleLogo from "../../../../public/logo/appleLogo.png";
+import GoogleLogo from "../../../../public/logo/googleLogo.svg";
+import FacebookLogo from "../../../../public/logo/facebookLogo.svg";
+import AppleLogo from "../../../../public/logo/appleLogo.svg";
 import OrDivider from "../_components/orDivider";
 import { redirect, useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
@@ -90,12 +90,12 @@ const SignUp = () => {
   }
 
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
+    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle
         pageName="Ops4 Team"
         title="Create Account - Try Ops4 Team for Free"
       />
-      <div className="bg-blackishBg w-full  h-full md:flex md:flex-col md:justify-between hidden">
+      <div className="bg-blackishBg w-full  md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
         </div>
@@ -120,7 +120,7 @@ const SignUp = () => {
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5 pb-5">
           <div>
-          <p className="text-3xl text-black font-semibold">Sign up</p>
+          <p className="text-3xl text-black font-semibold pb-6">Sign up</p>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
@@ -128,9 +128,9 @@ const SignUp = () => {
               subTitleClassName="pt-[4px] pb-[20px]"
             />
           </div>
-          <div className="flex gap-x-[34px]">
+          <div className="flex gap-x-4">
             <Link href={"/sign-up/sso"}>
-              <Button variant="extralight">SSO</Button>
+              <Button variant="extralight" size="minixl">SSO</Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -144,17 +144,17 @@ const SignUp = () => {
               <Button variant="extralight" size="smallest">
                 <Image
                   src={FacebookLogo}
-                  width={18}
-                  height={18}
-                  alt="facebookLogo"
-                />
-              </Button>
-              <Button variant="extralight" size="smallest">
-                <Image
-                  src={AppleLogo}
                   width={24}
                   height={24}
                   alt="facebookLogo"
+                />
+              </Button>
+              <Button variant="extralight" size="exSmall">
+                <Image
+                  src={AppleLogo}
+                  width={36}
+                  height={36}
+                  alt="applelogo"
                 />
               </Button>
             </div>
@@ -176,7 +176,7 @@ const SignUp = () => {
                 control={control}
                 name="displayName"
                 errors={errors}
-                placeholder="Type your name"
+                placeholder="Enter your full name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
@@ -192,7 +192,7 @@ const SignUp = () => {
                 name="emailAddress"
                 errors={errors}
                 externalError={errorMessage}
-                placeholder="Type your email"
+                placeholder="Enter your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
@@ -208,7 +208,7 @@ const SignUp = () => {
                 name="password"
                 type="password"
                 errors={errors}
-                placeholder="Type your password"
+                placeholder="password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>

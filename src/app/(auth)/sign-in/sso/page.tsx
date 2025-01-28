@@ -4,9 +4,9 @@ import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
 
-import GoogleLogo from "../../../../../public/logo/googleLogo.png";
-import FacebookLogo from "../../../../../public/logo/facebookLogo.png";
-import AppleLogo from "../../../../../public/logo/appleLogo.png";
+import GoogleLogo from "../../../../../public/logo/googleLogo.svg";
+import FacebookLogo from "../../../../../public/logo/facebookLogo.svg";
+import AppleLogo from "../../../../../public/logo/appleLogo.svg";
 
 import { Input } from "@/components/ui/input";
 
@@ -49,17 +49,18 @@ const SSOSignIn = () => {
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
-          <div>
+        <div>
+          <p className="text-3xl text-black font-semibold pb-6">Sign up</p>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
-              titleclassName="md:text-2xl text-deepBlackColor pt-[32px]"
-              subTitleClassName="pt-[4px] pb-[24px]"
+              titleclassName="md:text-2xl text-deepBlackColor pt-6 md:pt-0"
+              subTitleClassName="pt-[4px] pb-[20px]"
             />
           </div>
-          <div className="flex gap-x-[34px]">
-            <Link href="/sign-in">
-              <Button variant="extralight">Password</Button>
+          <div className="flex gap-x-4">
+            <Link href={"/sign-in"}>
+              <Button variant="extralight" size="minixl">Password</Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -73,17 +74,17 @@ const SSOSignIn = () => {
               <Button variant="extralight" size="smallest">
                 <Image
                   src={FacebookLogo}
-                  width={18}
-                  height={18}
-                  alt="facebookLogo"
-                />
-              </Button>
-              <Button variant="extralight" size="smallest">
-                <Image
-                  src={AppleLogo}
                   width={24}
                   height={24}
                   alt="facebookLogo"
+                />
+              </Button>
+              <Button variant="extralight" size="exSmall">
+                <Image
+                  src={AppleLogo}
+                  width={36}
+                  height={36}
+                  alt="applelogo"
                 />
               </Button>
             </div>

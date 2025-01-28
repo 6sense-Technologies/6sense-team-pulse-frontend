@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-import GoogleLogo from "../../../../public/logo/googleLogo.png";
-import FacebookLogo from "../../../../public/logo/facebookLogo.png";
-import AppleLogo from "../../../../public/logo/appleLogo.png";
+import GoogleLogo from "../../../../public/logo/googleLogo.svg";
+import FacebookLogo from "../../../../public/logo/facebookLogo.svg";
+import AppleLogo from "../../../../public/logo/appleLogo.svg";
 import OrDivider from "../_components/orDivider";
 import { useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
@@ -112,7 +112,7 @@ const SignIn = () => {
   }
 
   return (
-    <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
+    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle pageName="Ops4 Team" title="Log in" />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
@@ -138,7 +138,7 @@ const SignIn = () => {
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
-          <p className="text-3xl text-black font-semibold">Sign in</p>
+          <p className="text-3xl text-black font-semibold pt-4 md:pt-0">Sign in</p>
           <div>
             <AuthPageHeader
               title="You are one click away"
@@ -147,24 +147,24 @@ const SignIn = () => {
               subTitleClassName="pt-[4px] pb-[24px]"
             />
           </div>
-          <div className="flex gap-x-[34px]">
+          <div className="flex gap-x-4">
             <Link href={"/sign-in/sso"}>
-              <Button variant="extralight">SSO</Button>
+              <Button variant="extralight"size="minixl" >SSO</Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
                 <Image
                   src={GoogleLogo}
-                  width={22}
-                  height={22}
+                  width={24}
+                  height={24}
                   alt="googleLogo"
                 />
               </Button>
               <Button variant="extralight" size="smallest">
                 <Image
                   src={FacebookLogo}
-                  width={18}
-                  height={18}
+                  width={24}
+                  height={24}
                   alt="facebookLogo"
                 />
               </Button>
@@ -173,7 +173,7 @@ const SignIn = () => {
                   src={AppleLogo}
                   width={24}
                   height={24}
-                  alt="facebookLogo"
+                  alt="appleLogo"
                 />
               </Button>
             </div>
@@ -195,7 +195,7 @@ const SignIn = () => {
                 control={control}
                 name="emailAddress"
                 errors={errors}
-                placeholder="Type your email"
+                placeholder="Enter your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
                 externalError={errorMessage}
               />
@@ -212,7 +212,7 @@ const SignIn = () => {
                 type="password"
                 name="password"
                 errors={errors}
-                placeholder="Type your password"
+                placeholder="Enter your password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>

@@ -3,9 +3,9 @@ import React from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-import GoogleLogo from "../../../../../public/logo/googleLogo.png";
-import FacebookLogo from "../../../../../public/logo/facebookLogo.png";
-import AppleLogo from "../../../../../public/logo/appleLogo.png";
+import GoogleLogo from "../../../../../public/logo/googleLogo.svg";
+import FacebookLogo from "../../../../../public/logo/facebookLogo.svg";
+import AppleLogo from "../../../../../public/logo/appleLogo.svg";
 
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";

@@ -116,7 +116,7 @@ const OrganizationDetails = () => {
                 name="organizationName"
                 control={control}
                 type="text"
-                placeholder="Type your organization name"
+                placeholder="Enter your organization name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
               {errors.organizationName && (
@@ -134,7 +134,7 @@ const OrganizationDetails = () => {
                   name="domainName"
                   control={control}
                   type="text"
-                  placeholder="Type your domain prefix"
+                  placeholder="Domain"
                   className="placeholder:text-subHeading w-full mt-[4px]"
                 />
                 <span className="text-sm border text-black bg-lightAquaBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">
