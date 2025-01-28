@@ -25,7 +25,7 @@ const Otpfields: FC<OtpfieldsProps> = ({ control }) => {
 
   return (
     <Controller
-      name="otp"
+      name="token"
       control={control}
       render={({ field }) => {
         const valueArray = field.value ? field.value.split('') : Array(6).fill('');

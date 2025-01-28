@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -20,7 +20,7 @@ import Loader from "@/components/loader";
 
 const OrganizationDetails = () => {
   const router = useRouter();
-
+  const [orgError, setOrgError] = useState<string>("");
   const {
     handleSubmit,
     control,
@@ -38,14 +38,20 @@ const OrganizationDetails = () => {
         router.push("/dashboard");
       });
     },
+    onError: (error) => {
+      if (error.message) {
+        setOrgError("Domain must be unique.");
+      }
+    },
   });
 
   const handleSubmission: SubmitHandler<TOrgazinationDetails> = (data) => {
+    setOrgError("");
     OrganizationMutation.mutate(data);
   };
 
-  if(status === "loading") {
-    return <Loader />
+  if (status === "loading") {
+    return <Loader />;
   }
 
   if (status === "authenticated") {
@@ -102,7 +108,7 @@ const OrganizationDetails = () => {
             />
           </div>
           <form onSubmit={handleSubmit(handleSubmission)}>
-            <div className="w-full">
+            <div className="w-full relative pb-2">
               <label htmlFor="orgName" className="text-black text-sm">
                 Organization Name
               </label>
@@ -114,16 +120,16 @@ const OrganizationDetails = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
               {errors.organizationName && (
-                <p className="text-red-500 text-sm">
+                <p className="text-red-500 text-sm absolute">
                   {errors.organizationName.message}
                 </p>
               )}
             </div>
-            <div className="w-full pt-3">
+            <div className="w-full pt-3 pb-6 relative">
               <label htmlFor="domain" className="text-black text-sm">
                 Domain
               </label>
-              <div className="flex items-center gap-x-[8px]">
+              <div className="flex items-center gap-x-[8px] w-full">
                 <BaseInput
                   name="domainName"
                   control={control}
@@ -131,18 +137,25 @@ const OrganizationDetails = () => {
                   placeholder="Type your domain prefix"
                   className="placeholder:text-subHeading w-full mt-[4px]"
                 />
-                <span className="text-sm border text-subHeading bg-lightBlueBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">
+                <span className="text-sm border text-black bg-lightAquaBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">
                   .ops4.ai
                 </span>
               </div>
-              {errors.domainName && (
-                <p className="text-red-500 text-sm">
+              {errors.domainName ? (
+                <p className="text-red-500 text-sm absolute">
                   {errors.domainName.message}
                 </p>
-              )}
+              ):
+              (orgError ? (
+                <p className="text-red-500 text-sm absolute">{orgError}</p>
+              ) : null)}
             </div>
 
-            <Button type="submit" variant="submit" className="mt-6">
+            <Button
+              type="submit"
+              variant="submit"
+              className="mt-6 bg-primary hover:bg-primary"
+            >
               Submit
             </Button>
           </form>

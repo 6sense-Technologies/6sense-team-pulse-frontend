@@ -29,7 +29,7 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
         control={control}
         name={name}
         render={({ field }) => (
-          <div className="relative">
+          <div className="relative w-full">
             <input
               {...field}
               value={field?.value || ""}
