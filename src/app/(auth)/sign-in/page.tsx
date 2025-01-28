@@ -98,8 +98,9 @@ const SignIn = () => {
       });
     }
     if (session.data?.isVerified && !session.data?.hasOrganization) {
-      router.push("/sign-up/create-organization");
-      return <Loader />;
+      signOut({ redirect: false }).then(() => {
+        return <Loader />;
+      });
     } else if (
       session.data?.isVerified &&
       session.data?.hasOrganization &&
@@ -217,7 +218,10 @@ const SignIn = () => {
 
             {errorFlag ? <InvalidErrorBanner /> : null}
 
-            <Button variant="dark" className={`${errorFlag ? "mt-2 w-full" : "mt-8 w-full"}`}>
+            <Button
+              variant="dark"
+              className={`${errorFlag ? "mt-2 w-full" : "mt-8 w-full"}`}
+            >
               {BasicSignInMutation.isPending ? (
                 <Circle className="animate-spin" />
               ) : (
