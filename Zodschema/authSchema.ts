@@ -3,8 +3,8 @@ import { passwordRegex } from '../globalConstants';
 
 export const LoginSchema = z.object({
   emailAddress: z
-    .string({ required_error: 'Email address is required.' })
-    .min(1, { message: 'Email address is required.' })
+    .string({ required_error: 'Email is required.' })
+    .min(1, { message: 'Email is required.' })
     .email('Incorrect email.'),
   password: z
     .string({ required_error: 'Password is required.' })
@@ -14,11 +14,11 @@ export const LoginSchema = z.object({
 export const SignupSchema = z
   .object({
     displayName: z
-      .string({ required_error: 'Name is required.' })
-      .min(1, { message: 'Name is required.' }),
+      .string({ required_error: 'Full name is required.' })
+      .min(1, { message: 'Full name is required.' }),
     emailAddress: z
-      .string({ required_error: 'Email address is required.' })
-      .min(1, { message: 'Email address is required.' })
+      .string({ required_error: 'Email is required.' })
+      .min(1, { message: 'Email is required.' })
       .email('Incorrect email.'),
     password: z
       .string({ required_error: 'Password is required.' })

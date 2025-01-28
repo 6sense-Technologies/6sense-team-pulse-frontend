@@ -142,7 +142,7 @@ const OrganizationDetails = () => {
                 </span>
               </div>
               {errors.domainName ? (
-                <p className="text-red-500 text-sm absolute">
+                <p className="text-red-500 font-medium text-sm absolute">
                   {errors.domainName.message}
                 </p>
               ):

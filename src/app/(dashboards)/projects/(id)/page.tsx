@@ -2,91 +2,61 @@
 import { Button } from "@/components/ButtonComponent";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import { Input } from "@/components/ui/input";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Searchbar from "../_components/searchbar";
 import { Dropdown } from "@/components/dropdown";
 import { ProjectTable } from "../_components/projectTable";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
+import { useQuery } from "@tanstack/react-query";
+import { GetProjectList } from "../../../../../api/projects/projectApi";
+import { useSearchParams } from "next/navigation";
 
-const projects = [
-  {
-    projectName: "Project Alpha",
-    managementTools: ["Jira", "Confluence"],
-    teamSize: 10,
-  },
-  {
-    projectName: "Project Beta",
-    managementTools: ["Trello", "Slack"],
-    teamSize: 8,
-  },
-  {
-    projectName: "Project Gamma",
-    managementTools: ["Asana", "Google Drive"],
-    teamSize: 12,
-  },
-  {
-    projectName: "Project Delta",
-    managementTools: ["Monday.com", "Zoom"],
-    teamSize: 6,
-  },
-  {
-    projectName: "Project Epsilon",
-    managementTools: ["ClickUp", "Microsoft Teams"],
-    teamSize: 15,
-  },
-  {
-    projectName: "Project Zeta",
-    managementTools: ["Basecamp", "Dropbox"],
-    teamSize: 9,
-  },
-  {
-    projectName: "Project Eta",
-    managementTools: ["Wrike", "Slack"],
-    teamSize: 11,
-  },
-  {
-    projectName: "Project Theta",
-    managementTools: ["Smartsheet", "Google Calendar"],
-    teamSize: 7,
-  },
-  {
-    projectName: "Project Iota",
-    managementTools: ["Notion", "Zoom"],
-    teamSize: 14,
-  },
-  {
-    projectName: "Project Kappa",
-    managementTools: [
-      "Airtable",
-      "Slack",
-      "Trello",
-      "Jira",
-      "Confluence",
-      "Asana",
-      "Google Drive",
-    ],
-    teamSize: 5,
-  },
-  {
-    projectName: "Project Lambda",
-    managementTools: [
-      "Basecamp",
-      "Dropbox",
-      "Wrike",
-      "Slack",
-      "Smartsheet",
-      "Google Calendar",
-      "Notion",
-      "Zoom",
-      "ClickUp",
-      "Microsoft Teams",
-      "Monday.com",
-    ],
-    teamSize: 10,
-  },
-]; 
 const ProjectList = () => {
+  const [pages, setPages] = useState(1);
+  const [limit, setLimit] = useState(10);
+
+  const [pagination, setPagination] = useState({
+    page: 1,
+    size: 10,
+  });
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const newPage = searchParams.get("page")
+      ? Number(searchParams.get("page"))
+      : 1;
+
+    setPages(newPage);
+    // Only update pagination if the new page is different from the current page
+    setPagination((prevPagination) => {
+      if (prevPagination.page !== newPage) {
+        return {
+          page: newPage,
+          size: prevPagination.size,
+        };
+      }
+      return prevPagination; // Return the previous state if no change
+    });
+  }, [searchParams]);
+
+  const {
+    data: projectList,
+    isFetching: projectListLoading,
+    refetch: projectListRefetch,
+  } = useQuery<any>({
+    queryKey: ["fetchProjects", pages, limit],
+    queryFn: () => GetProjectList({ page: pages, limit }),
+  });
+
+  console.log(projectList);
+
+  const totalCountAndLimit = {
+    totalCount: projectList?.total ?? 0,
+    size: pagination.size ?? 10,
+  };
+
   return (
     <div className="w-full">
       <PageTitle pageName="Ops4 Team" title="Projects" />
@@ -120,8 +90,10 @@ const ProjectList = () => {
         </div>
         <div className="">
           <ProjectTable
-            totalCountAndLimit={{ totalCount: 5, size: 10 }}
-            projects={projects ?? []}
+            totalCountAndLimit={totalCountAndLimit}
+            projects={projectList?.data ?? []}
+            refetch={projectListRefetch}
+            currentPage={pages}
           />
         </div>
       </div>

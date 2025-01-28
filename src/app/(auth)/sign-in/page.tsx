@@ -138,11 +138,12 @@ const SignIn = () => {
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
+          <p className="text-3xl text-black font-semibold">Sign in</p>
           <div>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
-              titleclassName="md:text-2xl text-deepBlackColor pt-[32px]"
+              titleclassName="md:text-2xl text-deepBlackColor pt-6"
               subTitleClassName="pt-[4px] pb-[24px]"
             />
           </div>
@@ -154,8 +155,8 @@ const SignIn = () => {
               <Button variant="extralight" size="smallest">
                 <Image
                   src={GoogleLogo}
-                  width={24}
-                  height={24}
+                  width={22}
+                  height={22}
                   alt="googleLogo"
                 />
               </Button>

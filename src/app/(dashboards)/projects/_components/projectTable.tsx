@@ -22,48 +22,40 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-
-import { Note } from "@phosphor-icons/react";
-import { IMemberList } from "@/types/types";
 import Tooltips from "@/components/tooltip";
-import { TablePagination } from "@/components/tablePagination";
 import ManagementToolBadge from "./managementToolBadge";
 import { PencilLine, Trash2 } from "lucide-react";
+import { Projects } from "@/types/Project.types";
+import { ProjectPagination } from "./projectPagination";
 
 const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
-const handleDetails = (member: IMemberList): void => {
-  localStorage.setItem("memberId", member._id);
-  window.location.href = `/member-list/${member._id}?page=1`;
+const handleDetails = (project: Projects): void => {
+  localStorage.setItem("projectId", project._id);
+  window.location.href = `/projects/${project._id}?page=1`;
 };
 
-export const columns: ColumnDef<any>[] = [
+export const columns: ColumnDef<Projects>[] = [
   {
-    accessorKey: "projectName",
-    // accessorFn: (row: any): string => row.userData.displayName,
+    accessorKey: "name",
     header: () => <div className="text-bold">Project Name</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("projectName") || "-"}</div>
+      <div className="text-medium">{row.getValue("name") || "-"}</div>
     ),
   },
-  // accessorFn: (row: IMemberList): string => row.userData.emailAddress,
   {
-    accessorKey: "managementTools",
+    accessorKey: "tools",
     header: (): JSX.Element => <div className="text-bold">Management Tool</div>,
     cell: ({ row }: { row: any }): JSX.Element => {
-      const managementTools = row.getValue("managementTools") || [];
-      const displayedTools = managementTools.slice(
-        0,
-        MAX_MANAGEMENT_TOOLS_DISPLAY
-      );
-      const remainingToolsCount =
-        managementTools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
+      const tools = row.getValue("tools") || [];
+      const displayedTools = tools.slice(0, MAX_MANAGEMENT_TOOLS_DISPLAY);
+      const remainingToolsCount = tools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
 
       return (
         <div className="flex items-center space-x-2">
-          {displayedTools.map((tool: string, index: number) => (
+          {displayedTools.map((tool: any, index: number) => (
             <ManagementToolBadge key={index} className="lowercase text-medium">
-              {tool}
+              {tool.toolName}
             </ManagementToolBadge>
           ))}
           {remainingToolsCount > 0 && (
@@ -77,7 +69,6 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "teamSize",
-    // accessorFn: (row: IMemberList): string => row.userData.designation,
     header: () => <div className="text-bold">Team Size</div>,
     cell: ({ row }: { row: any }): JSX.Element => (
       <div className="text-medium">{row.getValue("teamSize") || "-"}</div>
@@ -88,21 +79,20 @@ export const columns: ColumnDef<any>[] = [
     header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const member = row.original;
+      const project = row.original;
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
           <Tooltips
             icon={PencilLine}
             tooltipText="Edit"
-            onClick={() => handleDetails(member)}
+            onClick={() => handleDetails(project)}
           />
           <Tooltips
             icon={Trash2}
             tooltipText="Delete"
-            onClick={() => handleDetails(member)}
+            onClick={() => handleDetails(project)}
           />
-
         </div>
       );
     },
@@ -110,15 +100,17 @@ export const columns: ColumnDef<any>[] = [
 ];
 
 type TProjectTableProps = {
-  projects?: any[];
+  projects?: Projects[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
+  currentPage: number;
 };
 
 export const ProjectTable: React.FC<TProjectTableProps> = ({
   projects = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
+  currentPage,
 }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -128,12 +120,12 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
+    pageIndex: currentPage - 1,
     pageSize: 10,
   });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
-  const [currentPage, setCurrentPage] = React.useState(page);
+  const [currentPageState, setCurrentPageState] = React.useState(page);
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
     : 0;
@@ -157,11 +149,11 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
       pagination,
     },
     manualPagination: true,
-    pageCount: Math.ceil(totalCountAndLimit.totalCount / pagination.pageSize),
+    pageCount: totalPages,
   });
 
   const onPageChange = (page: number): void => {
-    setCurrentPage(page);
+    setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
   };
@@ -207,7 +199,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                           ? "text-right"
                           : cell.column.id === "teamSize"
                           ? "pl-5 text-start"
-                          : cell.column.id === "managementTools"
+                          : cell.column.id === "tools"
                           ? "pl-3 text-start"
                           : "pl-4 text-start"
                       }`}
@@ -235,12 +227,11 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
       </div>
       <div className="flex items-center justify-between space-x-3 py-4">
         <div className="text-sm text-subHeading pl-2">
-          {totalCountAndLimit.totalCount} of {table.getRowModel().rows.length}{" "}
-          row(s) showing.
+          {projects.length} of {totalCountAndLimit.totalCount} row(s) showing.
         </div>
         <div className="flex justify-end mb-2">
-          <TablePagination
-            currentPage={currentPage}
+          <ProjectPagination
+            currentPage={currentPageState}
             totalPage={totalPages}
             onPageChange={onPageChange}
           />

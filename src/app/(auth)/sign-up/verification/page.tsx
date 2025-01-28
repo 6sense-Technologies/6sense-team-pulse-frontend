@@ -78,7 +78,7 @@ const Verify = () => {
     },
     onError: (error) => {
       if (error.message) {
-        setVerifyError("Invalid OTP");
+        setVerifyError("Incorrect OTP.");
       }
     },
   });
@@ -166,9 +166,9 @@ const Verify = () => {
                 <Otpfields control={control} />
               </div>
               <div className="flex justify-between items-center relative max-w-[240px]">
-                <p className="text-sm text-errorColor pt-2">
+                <p className="text-sm text-errorColor font-medium pt-2">
                   {isExpired
-                    ? "OTP expired"
+                    ? "OTP is expired."
                     : errors.token
                     ? errors.token.message
                     : verifyError

@@ -7,24 +7,17 @@ import {
 } from "@/types/Auth.types";
 import axios from "axios";
 
+
+const accessToken = localStorage.getItem("accessToken");
+
+
 export const handleBasicSignup = async (data: TBasicSignupFormInputs) => {
   const response = await axios.post(`${TEMP_BACKEND_URI}/auth/register`, data, {
     headers: {
       "Content-Type": "application/json",
     },
   });
-
   console.log(response.data);
-  // {
-  //   const result = await signIn("credentials", {
-  //           redirect: false,
-  //           emailAddress: data.emailAddress,
-  //           password: data.password,
-  //         });
-  // }
-  // console.log(response.data);
-  // localStorage.setItem('isVerified', response.data.userInfo.isVerified);
-  // localStorage.setItem('hasOrganization', response.data.userInfo.hasOrganization);
   return response.data;
 };
 

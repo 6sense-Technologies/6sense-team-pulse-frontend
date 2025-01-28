@@ -11,8 +11,8 @@ interface IHeadingProps {
 const AuthPageHeader: FC<IHeadingProps> = ({ title, subTitle, titleclassName, subTitleClassName }) => {
   return (
     <div>
-      <h3 className={cn('text-2xl md:text-headingBase font-semibold', titleclassName)}>{title}</h3>
-      <p className={cn('text-base md:text-base text-subHeading', subTitleClassName)}>{subTitle}</p>
+      <h3 className={cn('text-2xl font-semibold', titleclassName)}>{title}</h3>
+      <p className={cn('text-sm  text-subHeading', subTitleClassName)}>{subTitle}</p>
     </div>
   );
 };

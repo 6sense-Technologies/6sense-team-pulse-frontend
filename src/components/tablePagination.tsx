@@ -83,7 +83,7 @@ export function TablePagination({
           <PaginationItem key={index}>
             {typeof page === "number" ? (
               <PaginationLink
-                className={`cursor-pointer ${currentPage === page ? "bg-primary text-white" : ""}`}
+                className={`cursor-pointer ${currentPage === page ? "bg-white text-black" : ""}`}
                 isActive={currentPage === page}
                 onClick={(e) => {
                   e.preventDefault();

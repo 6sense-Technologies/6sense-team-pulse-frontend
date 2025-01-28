@@ -120,6 +120,7 @@ const SignUp = () => {
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
           <div>
+          <p className="text-3xl text-black font-semibold">Sign up</p>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"

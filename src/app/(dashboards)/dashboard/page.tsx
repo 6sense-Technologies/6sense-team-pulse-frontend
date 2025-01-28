@@ -15,6 +15,7 @@ const Dashboard = () => {
     router.push('/sign-in')
   };
   
+  localStorage.setItem("accessToken", session.data?.accessToken as string);
 
   return (
     <div>
