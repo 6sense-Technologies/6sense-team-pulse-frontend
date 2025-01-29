@@ -41,7 +41,7 @@ const ProjectCreate = () => {
     <div className="w-full">
       <PageTitle pageName="Ops4 Team" title="Create Project" />
       <form>
-        <div className="pl-[24px] pr-[14px] w-full">
+        <div className="pl-[24px] pr-[14px] pt-8 w-full">
           <GlobalBreadCrumb
             initialData="Projects"
             initalLink="/projects"
@@ -77,11 +77,11 @@ const ProjectCreate = () => {
 
           <div className="flex items-center justify-between w-full max-w-[872px]">
             <div className="pl-[6px]">
-              <h1 className="text-headingXXS font-semibold pb-2">
+              <h1 className="text-headingXXS font-semibold pb-1">
                 Project Management Tool
               </h1>
             </div>
-            <ToolDropdown control={control} name="tools" />
+            <ToolDropdown control={control} name="tool" placeholder="Select" />
           </div>
           <div className="w-full h-full pl-[320px]">
             <WorkspaceURL control={control} name="workspace" />
@@ -92,18 +92,21 @@ const ProjectCreate = () => {
               key={field.id}
               className="w-full h-full pl-[320px] flex-col items-center"
             >
-              <ToolDropdown control={control} name={`tools[${index}].tool`} />
-              <div className="flex items-center gap-4">
-                <WorkspaceURL
-                  control={control}
-                  name={`workspace[${index}].url`}
-                />
-                <div className="relative border w-10 h-10 rounded-lg mt-16">
+              <div className="flex items-end justify-start gap-x-[6px]">
+              <ToolDropdown control={control} name={`tool[${index}]`} />
+              <div className="relative border w-10 h-9 rounded-lg">
                   <Trash2
-                    className="w-5 h-5 text-black cursor-pointer absolute top-2 right-2"
+                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-3"
                     onClick={() => remove(index)}
                   />
                 </div>
+                </div>
+              <div className="flex items-center gap-4">
+                <WorkspaceURL
+                  control={control}
+                  name={`workspace[${index}]`}
+                />
+
               </div>
             </div>
           ))}
@@ -113,6 +116,7 @@ const ProjectCreate = () => {
               variant="extralight"
               size="xsExtended"
               onClick={handleAddtools}
+              className="mb-6"
             >
               Add Tool
             </Button>

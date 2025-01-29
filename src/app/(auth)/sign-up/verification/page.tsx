@@ -151,7 +151,7 @@ const Verify = () => {
           <div>
             <AuthPageHeader
               title="Verify Email"
-              subTitle={`We sent a six digit code to ${userEmail} Enter the code below:`}
+              subTitle={`We sent a six digit code to ${userEmail}. Enter the code below:`}
               titleclassName="text-2xl md:text-2xl text-deepBlackColor pt-[22px]"
               subTitleClassName="text-sm md:text-sm pt-[4px] pb-[20px]"
             />

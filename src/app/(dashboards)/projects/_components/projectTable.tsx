@@ -24,9 +24,10 @@ import {
 import { useSearchParams } from "next/navigation";
 import Tooltips from "@/components/tooltip";
 import ManagementToolBadge from "./managementToolBadge";
-import { PencilLine, Trash2 } from "lucide-react";
+import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import { ProjectPagination } from "./projectPagination";
+import EmptyTableSkeleton from "@/components/EmptyTableSkeleton"; // Import the skeleton loader component
 
 const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
@@ -83,16 +84,7 @@ export const columns: ColumnDef<Projects>[] = [
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <Tooltips
-            icon={PencilLine}
-            tooltipText="Edit"
-            onClick={() => handleDetails(project)}
-          />
-          <Tooltips
-            icon={Trash2}
-            tooltipText="Delete"
-            onClick={() => handleDetails(project)}
-          />
+          <EllipsisVertical className="cursor-pointer w-4 h-4" />
         </div>
       );
     },
@@ -104,6 +96,7 @@ type TProjectTableProps = {
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
+  loading?: boolean;
 };
 
 export const ProjectTable: React.FC<TProjectTableProps> = ({
@@ -111,6 +104,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
+  loading,
 }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -126,6 +120,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPageState, setCurrentPageState] = React.useState(page);
+  const [isLoading, setIsLoading] = React.useState(false); // State to manage loading
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
     : 0;
@@ -153,90 +148,107 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
+    setIsLoading(true); // Set loading state to true
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
   };
 
+  React.useEffect(() => {
+    if (!loading) {
+      setIsLoading(false); // Set loading state to false when data is loaded
+    }
+  }, [loading]);
+
+  const displayedRowsCount = currentPageState > 1
+    ? (currentPageState - 1) * pagination.pageSize + projects.length
+    : projects.length;
+
   return (
     <div className="w-full">
-      <div className="overflow-hidden rounded-lg border border-lightborderColor">
-        <Table className="!rounded-lg">
-          <TableHeader className="border-b-[1px] text-inputFooterColor">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="py-1 leading-none">
-                {headerGroup.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className={`text-left h-12 pl-4 leading-none ${
-                      header.column.id === "actions" ? "text-right" : ""
-                    }`}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
+      {isLoading ? (
+        <EmptyTableSkeleton /> // Show skeleton loader when loading
+      ) : (
+        <>
+          <div className="overflow-hidden rounded-lg border border-lightborderColor">
+            <Table className="!rounded-lg">
+              <TableHeader className="border-b-[1px] text-inputFooterColor">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id} className="py-1 leading-none">
+                    {headerGroup.headers.map((header) => (
+                      <TableHead
+                        key={header.id}
+                        className={`text-left h-12 pl-4 leading-none ${
+                          header.column.id === "actions" ? "text-right" : ""
+                        }`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  className="h-12 leading-none"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell
-                      key={cell.id}
-                      className={`py-1 leading-none ${
-                        cell.column.id === "actions"
-                          ? "text-right"
-                          : cell.column.id === "teamSize"
-                          ? "pl-5 text-start"
-                          : cell.column.id === "tools"
-                          ? "pl-3 text-start"
-                          : "pl-4 text-start"
-                      }`}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                      className="h-12 leading-none"
                     >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          className={`py-1 leading-none ${
+                            cell.column.id === "actions"
+                              ? "text-right"
+                              : cell.column.id === "teamSize"
+                              ? "pl-5 text-start w-72"
+                              : cell.column.id === "tools"
+                              ? "pl-3 text-start"
+                              : "pl-4 text-start"
+                          }`}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow className="py-1 leading-none">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No results.
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="py-1 leading-none">
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex items-center justify-between space-x-3 py-4">
-        <div className="text-sm text-subHeading pl-2">
-          {projects.length} of {totalCountAndLimit.totalCount} row(s) showing.
-        </div>
-        <div className="flex justify-end mb-2">
-          <ProjectPagination
-            currentPage={currentPageState}
-            totalPage={totalPages}
-            onPageChange={onPageChange}
-          />
-        </div>
-      </div>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="flex items-center justify-between space-x-3 py-4">
+            <div className="text-sm text-subHeading pl-2">
+              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing.
+            </div>
+            <div className="flex justify-end mb-2">
+              <ProjectPagination
+                currentPage={currentPageState}
+                totalPage={totalPages}
+                onPageChange={onPageChange}
+              />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
