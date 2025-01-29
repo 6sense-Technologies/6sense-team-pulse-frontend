@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ButtonComponent";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
-import { Input } from "@/components/ui/input";
 import React, { useEffect, useState } from "react";
 import Searchbar from "../_components/searchbar";
 import { ProjectDropdown } from "../_components/projectDropdown";
@@ -12,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetProjectList } from "../../../../../api/projects/projectApi";
 import { useSearchParams } from "next/navigation";
 import { FolderPlus } from "lucide-react";
+import Link from "next/link";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
@@ -89,10 +89,12 @@ const ProjectList = () => {
             className="mb-[26px]"
           />
         </div>
+        <Link href={`/projects/create`}>
         <Button>
           <FolderPlus size={16} className="mr-1" />
           Create Project
           </Button>
+          </Link>
         </div>
         <div className="">
           <ProjectTable

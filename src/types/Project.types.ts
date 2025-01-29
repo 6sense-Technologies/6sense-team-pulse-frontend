@@ -34,3 +34,14 @@ export interface IProjectList {
     toolName: string
     toolUrl: string
   }
+
+  export type ToolOptionList = ToolOptions[]
+
+  export interface ToolOptions {
+    _id: string
+    toolName: string
+    createdAt: string
+    updatedAt: string
+    __v: number
+  }
+  

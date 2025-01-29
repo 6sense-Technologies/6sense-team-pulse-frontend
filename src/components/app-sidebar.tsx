@@ -59,8 +59,9 @@ const defaultData = {
       icon: Users,
       isActive: true,
         items: [
-            { title: "List", url: "/member-list?page=1" },
-        ],
+            { title: "Dashboard", url: "/dashboard" },
+            {title: "Projects", url: "/projects"},
+          {title:"Team" , url:"/team-efficiency"}  ],
     },
 ]
 

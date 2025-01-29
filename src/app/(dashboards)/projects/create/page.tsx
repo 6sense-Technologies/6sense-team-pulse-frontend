@@ -3,16 +3,16 @@ import { BaseInput } from "@/components/BaseInput";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import PageHeading from "@/components/pageHeading";
 import PageTitle from "@/components/PageTitle";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ProjectSchema } from "../../../../../Zodschema/projectSchema";
 import { Button } from "@/components/ButtonComponent";
 import ToolDropdown from "./_components/ToolDropdown";
 import WorkspaceURL from "./_components/WorkspaceURL";
 import { Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
+import { useMutation } from "@tanstack/react-query";
+import {CreateProject} from "../../../../../api/projects/projectApi";
 
 const ProjectCreate = () => {
   const router = useRouter();
@@ -21,8 +21,10 @@ const ProjectCreate = () => {
     handleSubmit,
     control,
     formState: { errors },
+    register,
+    setError,
+    clearErrors,
   } = useForm<ProjectTools>({
-    resolver: zodResolver(ProjectSchema),
     defaultValues: {
       tools: [{ toolName: "", toolUrl: "" }],
     },
@@ -40,9 +42,46 @@ const ProjectCreate = () => {
     append({ toolName: "", toolUrl: "" });
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    // Add your form submission logic here
+  const validate = (data: ProjectTools) => {
+    let valid = true;
+    if (!data.name) {
+      setError("name", { type: "manual", message: "Project name is required." });
+      valid = false;
+    } else {
+      clearErrors("name");
+    }
+
+    data.tools.forEach((tool, index) => {
+      if (!tool.toolName) {
+        setError(`tools.${index}.toolName`, { type: "manual", message: "Tool name is required." });
+        valid = false;
+      } else {
+        clearErrors(`tools.${index}.toolName`);
+      }
+
+      if (!tool.toolUrl) {
+        setError(`tools.${index}.toolUrl`, { type: "manual", message: "Workspace URL is required." });
+        valid = false;
+      } else {
+        clearErrors(`tools.${index}.toolUrl`);
+      }
+    });
+
+    return valid;
+  };
+
+  const projectMutation = useMutation({
+    mutationFn: CreateProject,
+    onSuccess: () => {
+      router.push("/projects");
+    },
+  })
+
+  const onSubmit = (data: ProjectTools) => {
+    if (validate(data)) {
+      projectMutation.mutate(data);
+      // Add your form submission logic here
+    }
   };
 
   console.log("Root", errors);
@@ -59,11 +98,10 @@ const ProjectCreate = () => {
           />
           <PageHeading
             title="Create Project"
-            subTitle="Some examples built using the components. Use this as a guide to build your own."
-            className="pl-[5px]"
+            className="pl-[5px] pt-3"
           />
 
-          <div className="flex items-center justify-between w-full max-w-[872px] pt-8">
+          <div className="flex items-center justify-between w-full max-w-[872px] pt-4">
             <div className="pl-[6px]">
               <h1 className="text-headingXXS font-semibold pb-2">
                 Project Info
@@ -75,8 +113,8 @@ const ProjectCreate = () => {
               </label>
               <BaseInput
                 control={control}
-                type="text"
                 name="name"
+                type="text"
                 placeholder="Project Name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
                 additionalText="The project name you used in your code project"

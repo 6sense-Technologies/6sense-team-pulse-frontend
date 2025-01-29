@@ -11,11 +11,6 @@ import {
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
 
-type Options = {
-  value: string;
-  label: string;
-};
-
 type DropdownProps = {
   className?: string;
   placeholder: string;
@@ -24,11 +19,9 @@ type DropdownProps = {
   errors?: any;
   additionalText?: string;
   active?: boolean;
-  message?: any;
-  options?: Options[];
 };
 
-export function Dropdown({
+export function TeamDropdown({
   className,
   placeholder,
   control,
@@ -36,24 +29,20 @@ export function Dropdown({
   errors = {},
   additionalText,
   active = false,
-  message,
-  options = [],
 }: DropdownProps) {
   const renderSelect = (field: any) => (
-    <Select
-      value={field.value}
-      onValueChange={(value) => field.onChange(value)}
-    >
-      <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+    <Select {...field}>
+      <SelectTrigger className={cn("w-[200px] border-none shadow-none", className)} disabled={!active}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup className={cn("bg-white !z-50 ", className)}>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value}>
-              {option.label}
-            </SelectItem>
-          ))}
+          <SelectLabel>Fruits</SelectLabel>
+          <SelectItem value="apple">Apple</SelectItem>
+          <SelectItem value="banana">Banana</SelectItem>
+          <SelectItem value="blueberry">Blueberry</SelectItem>
+          <SelectItem value="grapes">Grapes</SelectItem>
+          <SelectItem value="pineapple">Pineapple</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
@@ -70,15 +59,15 @@ export function Dropdown({
       ) : (
         renderSelect({})
       )}
-      {errors[name]?.message ? (
+      {/* {errors[name]?.message ? (
         <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
           {errors[name].message}
         </p>
-      ) : message ? null : additionalText ? (
+      ) : (
         <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
           {additionalText}
         </p>
-      ) : null}
+      )} */}
     </div>
   );
 }

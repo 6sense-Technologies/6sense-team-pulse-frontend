@@ -1,6 +1,6 @@
 import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { ProjectTools } from "@/types/Project.types";
 
 interface TPaginationProps {
   page: number;
@@ -19,3 +19,23 @@ export const GetProjectList = async ( {page, limit} : TPaginationProps) => {
 
     return response.data;
 };
+
+export const GetTools =  async () => 
+  {
+    const response = await axios.get(`${TEMP_BACKEND_URI}/tool/list`);
+
+    return response.data;
+  }
+
+
+export const CreateProject = async (data: ProjectTools) => 
+{
+  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, data,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+}
