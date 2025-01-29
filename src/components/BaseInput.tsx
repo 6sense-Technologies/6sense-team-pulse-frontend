@@ -8,6 +8,8 @@ interface InputProps extends React.ComponentProps<"input"> {
   errors?: any;
   additionalText?: string;
   externalError?: string | null | undefined;
+  index?: number;
+  message?: any;
 }
 
 const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
@@ -20,10 +22,15 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
       errors = {},
       type = "text",
       externalError,
+      index,
+      message,
       ...props
     },
     ref
   ) => {
+
+    console.log("BaseInput", name);
+
     return (
       <Controller
         control={control}
@@ -45,15 +52,15 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
               ref={ref}
               {...props}
             />
-            {(errors[name]?.message || externalError) ? (
-              <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
+            {errors[name]?.message || externalError ? (
+              <p className="absolute mt-1 flex items-center text-sm font-medium text-errorColor">
                 {errors[name]?.message || externalError}
               </p>
-            ) : (
+            ) : message ? null : additionalText ? (
               <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
                 {additionalText}
               </p>
-            )}
+            ) : null}
           </div>
         )}
       />

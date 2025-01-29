@@ -19,6 +19,7 @@ type DropdownProps = {
   errors?: any;
   additionalText?: string;
   active?: boolean;
+  message?: any;
 };
 
 export function Dropdown({
@@ -29,6 +30,7 @@ export function Dropdown({
   errors = {},
   additionalText,
   active = false,
+  message,
 }: DropdownProps) {
   const renderSelect = (field: any) => (
     <Select {...field}>
@@ -63,11 +65,11 @@ export function Dropdown({
         <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
           {errors[name].message}
         </p>
-      ) : (
+      ) : message? null : additionalText ? (
         <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
           {additionalText}
         </p>
-      )}
+      ) : null}
     </div>
   );
 }

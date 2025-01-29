@@ -13,7 +13,7 @@ const PageHeading: FC<IHeadingProps> = ({ title, subTitle, titleclassName, subTi
   return (
     <div className={cn(className)}>
       <h3 className={cn('text-headingXS md:text-2xl font-bold', titleclassName)}>{title}</h3>
-      <p className={cn('text-md md:text-sm text-subHeading pt-2', subTitleClassName)}>{subTitle}</p>
+    {subTitle ? <p className={cn('text-md md:text-sm text-subHeading pt-2', subTitleClassName)}>{subTitle}</p> : null}  
     </div>
   );
 };

@@ -13,7 +13,7 @@ import {
   Settings2,
   SquareTerminal,
 } from "lucide-react"
-
+import { useSession } from "next-auth/react"
 import { NavMain } from "@/components/nav-main"
 
 import { TeamSwitcher } from "@/components/team-switcher"
@@ -29,7 +29,12 @@ import { NavUser } from "./nav-user"
 import { Users } from "@phosphor-icons/react"
 
 // This is sample data.
-const data = {
+const defaultData = {
+  user: {
+    name: 'Khan Atik Faisal',
+    email: 'Khanatik1176@gmail.com',
+    avatar: '/avatars/shadcn.jpg',
+  },
   teams: [
     {
       name: "Acme Inc",
@@ -63,15 +68,32 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const session = useSession();
+
+  console.log("🚀 ~ file: app-sidebar.tsx ~ line 70 ~ AppSidebar ~ session", session)
+
+  const userData = {
+    name: session?.data?.user?.name || defaultData.user.name,
+    email: session?.data?.user?.email || defaultData.user.email,
+    avatar: defaultData.user.avatar,
+  };
+
+  const data = {
+    ...defaultData,
+    user: userData,
+  };
   return (
-    <Sidebar collapsible="icon" {...props} className="bg-[#FAFBFC]">
-      <SidebarHeader className="bg-[#FAFBFC]">
-        <TeamSwitcher teams={data.teams} />
-      </SidebarHeader>
-      <SidebarContent className="bg-[#FAFBFC]">
-        <NavMain items={data.navMain} />
-      </SidebarContent>
-      <SidebarRail />
-    </Sidebar>
+<Sidebar collapsible='icon' {...props} className="bg-[#FAFBFC]">
+<SidebarHeader className="bg-[#FAFBFC]">
+  <TeamSwitcher teams={data.teams} />
+</SidebarHeader>
+<SidebarContent className="bg-[#FAFBFC]">
+  <NavMain items={data.navMain} />
+</SidebarContent>
+<SidebarFooter>
+  <NavUser user={data.user} />
+</SidebarFooter>
+<SidebarRail />
+</Sidebar>
   )
 }

@@ -24,3 +24,13 @@ export interface IProjectList {
     createdAt: string
     updatedAt: string
   }
+
+  export interface ProjectTools {
+    name: string
+    tools: ProjectTool[]
+  }
+  
+  export interface ProjectTool {
+    toolName: string
+    toolUrl: string
+  }
