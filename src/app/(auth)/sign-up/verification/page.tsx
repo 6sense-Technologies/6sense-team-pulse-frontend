@@ -127,8 +127,8 @@ const Verify = () => {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle
-        pageName="Ops4 Team"
-        title="Verify Account - Try Ops4 Team for Free"
+        pageName="Verify Account"
+        title="Try Ops4 Team for Free • Ops4 Team"
       />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">

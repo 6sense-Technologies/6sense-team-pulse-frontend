@@ -78,8 +78,8 @@ const OrganizationDetails = () => {
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
       <PageTitle
-        pageName="Ops4 Team"
-        title="Create Organization - Try Ops4 Team for Free"
+        pageName="Create Organization"
+        title="Try Ops4 Team for Free • Ops4 Team"
       />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
@@ -109,7 +109,7 @@ const OrganizationDetails = () => {
           </div>
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full relative pb-2">
-              <label htmlFor="orgName" className="text-black text-sm">
+              <label htmlFor="orgName" className="text-black font-medium text-sm">
                 Organization Name
               </label>
               <BaseInput
@@ -120,13 +120,13 @@ const OrganizationDetails = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
               {errors.organizationName && (
-                <p className="text-red-500 text-sm absolute">
+                <p className=" text-destructive font-medium text-sm absolute pt-2">
                   {errors.organizationName.message}
                 </p>
               )}
             </div>
-            <div className="w-full pt-3 pb-6 relative">
-              <label htmlFor="domain" className="text-black text-sm">
+            <div className="w-full pt-6 pb-6 relative">
+              <label htmlFor="domain" className="text-black font-medium text-sm">
                 Domain
               </label>
               <div className="flex items-center gap-x-[8px] w-full">
@@ -142,12 +142,12 @@ const OrganizationDetails = () => {
                 </span>
               </div>
               {errors.domainName ? (
-                <p className="text-red-500 font-medium text-sm absolute">
+                <p className="text-destructive  font-medium text-sm absolute pt-2">
                   {errors.domainName.message}
                 </p>
               ):
               (orgError ? (
-                <p className="text-red-500 text-sm absolute">{orgError}</p>
+                <p className="text-destructive font-medium text-sm absolute pt-2">{orgError}</p>
               ) : null)}
             </div>
 

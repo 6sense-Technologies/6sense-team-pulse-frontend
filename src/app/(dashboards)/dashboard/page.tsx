@@ -20,8 +20,7 @@ const Dashboard = () => {
   return (
     <div>
       <PageTitle
-        pageName="Ops4 Team"
-        title="Dashboard  - Try Ops4 Team for Free"
+        title="Dashboard • Ops4 Team"
       />
 
       <Button onClick={handleLogout}>Logout</Button>

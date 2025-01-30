@@ -113,7 +113,7 @@ const SignIn = () => {
 
   return (
     <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 ">
-      <PageTitle pageName="Ops4 Team" title="Log in" />
+      <PageTitle title="Log in • Ops4 Team" />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />

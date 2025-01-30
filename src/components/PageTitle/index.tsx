@@ -1,6 +1,6 @@
-const PageTitle = ({ pageName, title }: { pageName: string, title: string }): JSX.Element => {
+const PageTitle = ({ pageName, title }: { pageName?: string, title: string }): JSX.Element => {
     return (
-        <title>{`${pageName} - ${title}`}</title>
+        <title>{pageName ? `${pageName} - ${title}` : title}</title>
     )
 }
 

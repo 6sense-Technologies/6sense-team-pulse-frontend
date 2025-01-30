@@ -55,6 +55,7 @@ const SignUp = () => {
       });
     },
     onError: (error: any) => {
+      // console.log(error.message);
       if (error.message) {
         setErrorMessage("Email already exists.");
       }
@@ -90,10 +91,10 @@ const SignUp = () => {
   }
 
   return (
-    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 ">
+    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 overflow-y-hidden">
       <PageTitle
-        pageName="Ops4 Team"
-        title="Create Account - Try Ops4 Team for Free"
+        pageName="Create Account"
+        title="Try Ops4 Team for Free • Ops4 Team"
       />
       <div className="bg-blackishBg w-full  md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
@@ -105,7 +106,7 @@ const SignUp = () => {
           subHeading="Sofia Davis"
         />
       </div>
-      <div className="bg-white w-full">
+      <div className="bg-white w-full overflow-y-auto">
         <div className="flex justify-between md:justify-end mt-9 mx-4 md:mr-9  md:gap-0">
           <div className="block md:hidden bg-black text-center px-3">
             <Image src={Logo} alt="Ops4Team Logo" />
@@ -149,11 +150,11 @@ const SignUp = () => {
                   alt="facebookLogo"
                 />
               </Button>
-              <Button variant="extralight" size="exSmall">
+              <Button variant="extralight" size="smallest">
                 <Image
                   src={AppleLogo}
-                  width={36}
-                  height={36}
+                  width={24}
+                  height={24}
                   alt="applelogo"
                 />
               </Button>
@@ -170,7 +171,7 @@ const SignUp = () => {
                 htmlFor="displayName"
                 className="text-black font-medium text-sm"
               >
-                Name
+                Full Name
               </label>
               <BaseInput
                 control={control}

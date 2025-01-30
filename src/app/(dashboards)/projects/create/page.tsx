@@ -87,7 +87,7 @@ const ProjectCreate = () => {
   console.log("Root", errors);
   return (
     <div className="w-full">
-      <PageTitle pageName="Ops4 Team" title="Create Project" />
+      <PageTitle title="Create Project • Ops4 Team" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="pl-[24px] pr-[14px] pt-8 pb-8 w-full">
           <GlobalBreadCrumb

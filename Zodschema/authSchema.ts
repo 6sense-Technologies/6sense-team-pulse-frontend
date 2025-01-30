@@ -22,7 +22,7 @@ export const SignupSchema = z
       .email('Incorrect email.'),
     password: z
       .string({ required_error: 'Password is required.' })
-      .regex(passwordRegex, 'Must contain uppercase, lower case and special character.'),
+      .regex(passwordRegex, 'Password must contain uppercase, lower case and special character.'),
   });
 
 

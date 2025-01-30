@@ -60,7 +60,7 @@ const ProjectList = () => {
 
   return (
     <div className="w-full">
-      <PageTitle pageName="Ops4 Team" title="Projects" />
+      <PageTitle title="Projects • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
