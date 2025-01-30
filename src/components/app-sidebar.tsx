@@ -61,7 +61,7 @@ const defaultData = {
         items: [
             { title: "Dashboard", url: "/dashboard" },
             {title: "Projects", url: "/projects"},
-          {title:"Team" , url:"/team-efficiency"}  ],
+          {title:"Team" , url:"/efficiency"}  ],
     },
 ]
 

@@ -12,7 +12,7 @@ import WorkspaceURL from "./_components/WorkspaceURL";
 import { Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
-import {CreateProject} from "../../../../../api/projects/projectApi";
+import { CreateProject } from "../../../../../api/projects/projectApi";
 
 const ProjectCreate = () => {
   const router = useRouter();
@@ -45,25 +45,58 @@ const ProjectCreate = () => {
   const validate = (data: ProjectTools) => {
     let valid = true;
     if (!data.name) {
-      setError("name", { type: "manual", message: "Project name is required." });
+      setError("name", {
+        type: "manual",
+        message: "Project name is required.",
+      });
       valid = false;
     } else {
       clearErrors("name");
     }
 
     data.tools.forEach((tool, index) => {
-      if (!tool.toolName) {
-        setError(`tools.${index}.toolName`, { type: "manual", message: "Tool name is required." });
-        valid = false;
-      } else {
-        clearErrors(`tools.${index}.toolName`);
-      }
+      if (index === 0) {
+        // First pair is mandatory
+        if (!tool.toolName) {
+          setError(`tools.${index}.toolName`, {
+            type: "manual",
+            message: "Tool name is required.",
+          });
+          valid = false;
+        } else {
+          clearErrors(`tools.${index}.toolName`);
+        }
 
-      if (!tool.toolUrl) {
-        setError(`tools.${index}.toolUrl`, { type: "manual", message: "Workspace URL is required." });
-        valid = false;
+        if (!tool.toolUrl) {
+          setError(`tools.${index}.toolUrl`, {
+            type: "manual",
+            message: "Workspace URL is required.",
+          });
+          valid = false;
+        } else {
+          clearErrors(`tools.${index}.toolUrl`);
+        }
       } else {
-        clearErrors(`tools.${index}.toolUrl`);
+        // Subsequent pairs are optional but must be provided together
+        if (tool.toolName && !tool.toolUrl) {
+          setError(`tools.${index}.toolUrl`, {
+            type: "manual",
+            message: "Workspace URL is required if tool name is provided.",
+          });
+          valid = false;
+        } else {
+          clearErrors(`tools.${index}.toolUrl`);
+        }
+
+        if (!tool.toolName && tool.toolUrl) {
+          setError(`tools.${index}.toolName`, {
+            type: "manual",
+            message: "Tool name is required if workspace URL is provided.",
+          });
+          valid = false;
+        } else {
+          clearErrors(`tools.${index}.toolName`);
+        }
       }
     });
 
@@ -75,12 +108,18 @@ const ProjectCreate = () => {
     onSuccess: () => {
       router.push("/projects");
     },
-  })
+  });
 
   const onSubmit = (data: ProjectTools) => {
     if (validate(data)) {
-      projectMutation.mutate(data);
-      // Add your form submission logic here
+      const filteredData = {
+        ...data,
+        tools: data.tools.filter(
+          (tool) => tool.toolName.trim() !== "" && tool.toolUrl.trim() !== ""
+        ),
+      };
+      // console.log("Filtered Data", filteredData);
+      projectMutation.mutate(filteredData);
     }
   };
 
@@ -96,10 +135,7 @@ const ProjectCreate = () => {
             secondayData="Create"
             secondayLink="/projects/create"
           />
-          <PageHeading
-            title="Create Project"
-            className="pl-[5px] pt-3"
-          />
+          <PageHeading title="Create Project" className="pl-[5px] pt-3" />
 
           <div className="flex items-center justify-between w-full max-w-[872px] pt-4">
             <div className="pl-[6px]">
@@ -108,7 +144,10 @@ const ProjectCreate = () => {
               </h1>
             </div>
             <div className="w-full max-w-[553px] pt-10">
-              <label htmlFor="projectName" className="text-sm font-medium text-black">
+              <label
+                htmlFor="projectName"
+                className="text-sm font-medium text-black"
+              >
                 Project Name
               </label>
               <BaseInput
@@ -129,10 +168,21 @@ const ProjectCreate = () => {
                 Project Management Tool
               </h1>
             </div>
-            <ToolDropdown control={control} name="tools[0].toolName" placeholder="Select" errors={errors.tools?.[0]?.toolName?.message} />
+            <ToolDropdown
+              control={control}
+              name="tools[0].toolName"
+              placeholder="Select"
+              errors={errors.tools?.[0]?.toolName?.message}
+              index={0}
+            />
           </div>
           <div className="w-full h-full pl-[320px]">
-            <WorkspaceURL control={control} name="tools[0].toolUrl"  errors={errors.tools?.[0]?.toolUrl?.message} />
+            <WorkspaceURL
+              control={control}
+              name="tools[0].toolUrl"
+              errors={errors.tools?.[0]?.toolUrl?.message}
+              index={0}
+            />
           </div>
 
           {fields.slice(1).map((field, index) => (
@@ -141,7 +191,12 @@ const ProjectCreate = () => {
               className="w-full h-full pl-[320px] flex-col items-center"
             >
               <div className="flex items-end justify-start gap-x-[6px]">
-                <ToolDropdown control={control} name={`tools[${index + 1}].toolName`} errors={errors.tools?.[index+1]?.toolName?.message}/>
+                <ToolDropdown
+                  control={control}
+                  name={`tools[${index + 1}].toolName`}
+                  errors={errors.tools?.[index + 1]?.toolName?.message}
+                  index={index + 1}
+                />
                 <div className="relative border w-10 h-9 rounded-lg">
                   <Trash2
                     className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-3"
@@ -150,7 +205,12 @@ const ProjectCreate = () => {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <WorkspaceURL control={control} name={`tools[${index + 1}].toolUrl`} errors={errors.tools?.[index+1]?.toolUrl?.message}/>
+                <WorkspaceURL
+                  control={control}
+                  name={`tools[${index + 1}].toolUrl`}
+                  errors={errors.tools?.[index + 1]?.toolUrl?.message}
+                  index={index + 1}
+                />
               </div>
             </div>
           ))}

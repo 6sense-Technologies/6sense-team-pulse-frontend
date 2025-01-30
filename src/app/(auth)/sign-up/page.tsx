@@ -209,7 +209,7 @@ const SignUp = () => {
                 name="password"
                 type="password"
                 errors={errors}
-                placeholder="password"
+                placeholder="Password"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>

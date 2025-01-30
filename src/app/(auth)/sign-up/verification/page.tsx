@@ -166,7 +166,7 @@ const Verify = () => {
                 <Otpfields control={control} />
               </div>
               <div className="flex justify-between items-center relative max-w-[240px]">
-                <p className="text-sm text-errorColor font-medium pt-2">
+                <p className="text-sm text-destructive font-medium pt-2">
                   {isExpired
                     ? "OTP is expired."
                     : errors.token

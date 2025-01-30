@@ -483,7 +483,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
               <div className="space-y-4">
                 <div>
                   <label className="block">
-                    Projects <span className="text-red-500">*</span>
+                    Projects <span className="text-destructive">*</span>
                   </label>
                   <select
                     multiple
@@ -514,7 +514,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
 
                 <div>
                   <label className="block">
-                    Designation <span className="text-red-500">*</span>
+                    Designation <span className="text-destructive">*</span>
                   </label>
                   <select
                     {...register("designation")}
@@ -542,7 +542,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                 ) && (
                   <div>
                     <label className="block">
-                      Jira ID <span className="text-red-500">*</span>
+                      Jira ID <span className="text-destructive">*</span>
                     </label>
                     <input
                       {...register("jiraId")}
@@ -564,7 +564,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                 ) && (
                   <div>
                     <label className="block">
-                      Trello ID <span className="text-red-500">*</span>
+                      Trello ID <span className="text-destructive">*</span>
                     </label>
                     <input
                       {...register("trelloId")}

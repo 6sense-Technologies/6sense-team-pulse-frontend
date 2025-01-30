@@ -49,6 +49,7 @@ const config: Config = {
 			inputFooterColor: '#64748B',
 			lightborderColor:'#E2E8F0',
 			lightRedBg: '#FEE2E2',
+			miniSubheadingColor:"#334155",
 			
   			sidebar: {
   				DEFAULT: 'hsl(var(--sidebar-background))',

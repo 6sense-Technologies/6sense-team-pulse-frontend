@@ -22,105 +22,106 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import ManagementToolBadge from "./managementToolBadge";
 import { EllipsisVertical } from "lucide-react";
-import { Projects } from "@/types/Project.types";
-import { ProjectPagination } from "./projectPagination";
+import { TeamPagination } from "./teamPagination";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
-import CustomMenu from "@/components/customMenu"; // Import the menu component
-import ProjectCustomMenuItems from "./projectCustomMenuItems";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import TeamProgress from "./teamProgress";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
-
-const handleDetails = (project: Projects): void => {
-  localStorage.setItem("projectId", project._id);
-  window.location.href = `/projects/${project._id}?page=1`;
+type TeamMember = {
+  teamMember: {
+    name: string;
+    avatar: string;
+  };
+  role: string;
+  designation: string;
+  email: string;
+  performance: string;
 };
 
-export const columns: ColumnDef<Projects>[] = [
+export const columns: ColumnDef<TeamMember>[] = [
   {
-    accessorKey: "name",
-    header: () => <div className="text-bold">Project Name</div>,
+    accessorKey: "teamMember",
+    header: () => <div className="text-bold">Team Members</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("name") || "-"}</div>
+      <div className="flex items-center">
+        <Avatar className="w-8 h-8 mr-2">
+          <AvatarImage src={row.getValue("teamMember").avatar} alt="Avatar" />
+          <AvatarFallback>
+            {row.getValue("teamMember").name.charAt(0)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="text-medium">
+          {row.getValue("teamMember").name || "-"}
+        </div>
+      </div>
     ),
   },
   {
-    accessorKey: "tools",
-    header: (): JSX.Element => <div className="text-bold">Management Tool</div>,
-    cell: ({ row }: { row: any }): JSX.Element => {
-      const tools = row.getValue("tools") || [];
-      const displayedTools = tools.slice(0, MAX_MANAGEMENT_TOOLS_DISPLAY);
-      const remainingToolsCount = tools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
-
-      return (
-        <div className="flex items-center space-x-2">
-          {displayedTools.map((tool: any, index: number) => (
-            <ManagementToolBadge key={index} className="text-medium">
-              {tool.toolName}
-            </ManagementToolBadge>
-          ))}
-          {remainingToolsCount > 0 && (
-            <ManagementToolBadge className="text-medium">
-              +{remainingToolsCount}
-            </ManagementToolBadge>
-          )}
-        </div>
-      );
-    },
+    accessorKey: "role",
+    header: () => <div className="text-bold">Role</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("role") || "-"}</div>
+    ),
   },
   {
-    accessorKey: "teamSize",
-    header: () => <div className="text-bold">Team Size</div>,
-    cell: ({ row }: { row: any }): JSX.Element => (
-      <div className="text-medium">{row.getValue("teamSize") || "-"}</div>
+    accessorKey: "designation",
+    header: () => <div className="text-bold">Designation</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("designation") || "-"}</div>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: () => <div className="text-bold">Email</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("email") || "-"}</div>
+    ),
+  },
+  {
+    accessorKey: "performance",
+    header: () => <div className="text-bold">Performance</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="flex items-center">
+        <div className="text-medium mr-2">
+          {row.getValue("performance") || "-"}
+        </div>
+        <TeamProgress
+          teamPercentage={parseFloat(row.getValue("performance"))}
+        />
+      </div>
     ),
   },
   {
     id: "actions",
-    header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
+    header: () => <div className="text-bold text-right pr-4">Action</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const project = row.original;
-      const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-      const ellipsisRef = React.useRef<HTMLDivElement>(null);
-
-      const handleOpenMenu = () => {
-        setIsMenuOpen(true);
-      };
-
-      const handleCloseMenu = () => {
-        setIsMenuOpen(false);
-      };
+      const member = row.original;
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <div ref={ellipsisRef}>
-            <EllipsisVertical className="cursor-pointer w-4 h-4" onClick={handleOpenMenu} />
-          </div>
-          <CustomMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchorRef={ellipsisRef}>
-            <ProjectCustomMenuItems 
-            firstText="View"
-            secondText="Edit"
-            ThirdText="Delete"
-            />
-          </CustomMenu>
+          <Link href={"/efficiency/12/member-details"}>
+            <Button variant="outline">View</Button>
+          </Link>
         </div>
       );
     },
   },
 ];
 
-type TProjectTableProps = {
-  projects?: Projects[];
+type TTeamTableProps = {
+  teamMembers?: TeamMember[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
   loading?: boolean;
 };
 
-export const ProjectTable: React.FC<TProjectTableProps> = ({
-  projects = [],
+export const TeamTable: React.FC<TTeamTableProps> = ({
+  teamMembers = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
@@ -146,7 +147,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
     : 0;
 
   const table = useReactTable({
-    data: projects,
+    data: teamMembers,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -168,7 +169,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true);
+    setIsLoading(true); // Set loading state to true
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -176,18 +177,19 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false);
+      setIsLoading(false); // Set loading state to false when data is loaded
     }
   }, [loading]);
 
-  const displayedRowsCount = currentPageState > 1
-    ? (currentPageState - 1) * pagination.pageSize + projects.length
-    : projects.length;
+  const displayedRowsCount =
+    currentPageState > 1
+      ? (currentPageState - 1) * pagination.pageSize + teamMembers.length
+      : teamMembers.length;
 
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton />
+        <EmptyTableSkeleton /> // Show skeleton loader when loading
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -257,10 +259,11 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
           </div>
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
-              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing.
+              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
+              showing.
             </div>
             <div className="flex justify-end mb-2">
-              <ProjectPagination
+              <TeamPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
                 onPageChange={onPageChange}

@@ -23,85 +23,167 @@ import {
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
 import { EllipsisVertical } from "lucide-react";
-import { TeamPagination } from "./teamPagination";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import TeamProgress from "./teamProgress";
 import { Button } from "@/components/ui/button";
+import { TeamPagination } from "../../../_components/teamPagination";
+import Link from "next/link";
+
+type Task = {
+  planned: number;
+  unplanned: number;
+  TCR: number;
+};
+
+type Story = {
+  No: number;
+  USCR: number;
+};
 
 type TeamMember = {
-  teamMember: {
-    name: string;
-    avatar: string;
-  };
-  role: string;
-  designation: string;
-  email: string;
-  performance: string;
+  date: string;
+  tasks: Task;
+  bugs: number;
+  stories: Story;
+  score: number;
+  insight: string;
 };
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
-    accessorKey: "teamMember",
-    header: () => <div className="text-bold">Team Members</div>,
+    accessorKey: "date",
+    header: () => <div className="text-bold">Date</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="flex items-center">
-        <Avatar className="w-8 h-8 mr-2">
-          <AvatarImage src={row.getValue("teamMember").avatar} alt="Avatar" />
-          <AvatarFallback>{row.getValue("teamMember").name.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <div className="text-medium">{row.getValue("teamMember").name || "-"}</div>
+      <div className="text-medium">{row.getValue("date") || "-"}</div>
+    ),
+  },
+  {
+    accessorKey: "tasks",
+    header: () => (
+      <div className="text-bold pl-4">
+        Tasks
+        <div className="flex justify-between border-t mt-1 pt-1">
+          <span className="py-2">Planned</span>
+          <span className="py-2">Unplanned</span>
+          <span className="py-2">TCR</span>
+        </div>
+      </div>
+    ),
+    cell: ({ row }: { row: any }) => (
+      <div className="flex justify-between">
+        <span>{row.getValue("tasks").planned}</span>
+        <span>{row.getValue("tasks").unplanned}</span>
+        <span>{row.getValue("tasks").TCR}</span>
       </div>
     ),
   },
   {
-    accessorKey: "role",
-    header: () => <div className="text-bold">Role</div>,
+    accessorKey: "bugs",
+    header: () => <div className="text-bold">Bugs</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("role") || "-"}</div>
+      <div className="text-medium">{row.getValue("bugs") || "-"}</div>
     ),
   },
   {
-    accessorKey: "designation",
-    header: () => <div className="text-bold">Designation</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("designation") || "-"}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: () => <div className="text-bold">Email</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("email") || "-"}</div>
-    ),
-  },
-  {
-    accessorKey: "performance",
-    header: () => <div className="text-bold">Performance</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="flex items-center">
-        <div className="text-medium mr-2">{row.getValue("performance") || "-"}</div>
-        <TeamProgress teamPercentage={parseFloat(row.getValue("performance"))} />
+    accessorKey: "stories",
+    header: () => (
+      <div className="text-bold">
+        Stories
+        <div className="flex justify-between border-t mt-1 pt-1">
+          <span className="py-2">No</span>
+          <span className="py-2">USCR</span>
+        </div>
       </div>
+    ),
+    cell: ({ row }: { row: any }) => (
+      <div className="flex justify-between">
+        <span>{row.getValue("stories").No}</span>
+        <span>{row.getValue("stories").USCR}</span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "score",
+    header: () => <div className="text-bold">Score</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("score") || "-"}</div>
+    ),
+  },
+  {
+    accessorKey: "insight",
+    header: () => <div className="text-bold">Insight</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("insight") || "-"}</div>
     ),
   },
   {
     id: "actions",
-    header: () => <div className="text-bold text-right pr-4">Action</div>,
+    header: () => <div className="text-bold text-right pr-4">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const member = row.original;
+      const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+      const handleIconClick = () => {
+        setIsModalOpen(!isModalOpen);
+      };
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          event.target instanceof Node &&
+          !event.target.closest(".modal-content")
+        ) {
+          setIsModalOpen(false);
+        }
+      };
+
+      React.useEffect(() => {
+        if (isModalOpen) {
+          document.addEventListener("mousedown", handleClickOutside);
+        } else {
+          document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [isModalOpen]);
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <Button variant="outline">View</Button>
+          <EllipsisVertical
+            className="cursor-pointer w-4 h-4"
+            onClick={handleIconClick}
+          />
+          {isModalOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+              <ul>
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                  <Link href={`/efficiency/12/member-details/${row.original.date}`}>
+                    View
+                  </Link>
+                </li>
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                  Add Comment
+                </li>
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                  Report Bug
+                </li>
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                  Project
+                </li>
+                <hr className="my-1" />
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer text-red-600">
+                  Remove
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       );
     },
   },
 ];
 
-type TTeamTableProps = {
+type TTeamDetailsTableProps = {
   teamMembers?: TeamMember[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
@@ -109,7 +191,7 @@ type TTeamTableProps = {
   loading?: boolean;
 };
 
-export const TeamTable: React.FC<TTeamTableProps> = ({
+export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
   teamMembers = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
@@ -158,7 +240,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -166,18 +248,19 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false); // Set loading state to false when data is loaded
+      setIsLoading(false);
     }
   }, [loading]);
 
-  const displayedRowsCount = currentPageState > 1
-    ? (currentPageState - 1) * pagination.pageSize + teamMembers.length
-    : teamMembers.length;
+  const displayedRowsCount =
+    currentPageState > 1
+      ? (currentPageState - 1) * pagination.pageSize + teamMembers.length
+      : teamMembers.length;
 
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton /> // Show skeleton loader when loading
+        <EmptyTableSkeleton />
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -188,8 +271,20 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : ""
+                        className={`text-left h-[80px] pl-4 leading-none ${
+                          header.column.id === "actions"
+                            ? "text-right pb-9"
+                            : header.column.id === "bugs"
+                            ? "pb-8 w-20 text-center"
+                            : header.column.id === "date"
+                            ? "w-[100px]"
+                            : "pt-2"
+                        } ${
+                          ["date", "score", "insight"].includes(
+                            header.column.id
+                          )
+                            ? "pb-8"
+                            : "pt-2"
                         }`}
                       >
                         {header.isPlaceholder
@@ -217,10 +312,16 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : cell.column.id === "teamSize"
-                              ? "pl-5 text-start w-72"
-                              : cell.column.id === "tools"
+                              : cell.column.id === "bugs"
+                              ? "pl-7 text-start w-20"
+                              : cell.column.id === "date"
                               ? "pl-3 text-start"
+                              : cell.column.id === "score"
+                              ? "text-right"
+                              : cell.column.id === "insight"
+                              ? "text-start"
+                              : cell.column.id === "tasks"
+                              ? "text-start pl-4"
                               : "pl-4 text-start"
                           }`}
                         >
@@ -247,7 +348,8 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
           </div>
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
-              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing.
+              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
+              showing.
             </div>
             <div className="flex justify-end mb-2">
               <TeamPagination
@@ -262,3 +364,5 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
     </div>
   );
 };
+
+export default TeamDetailsTable;

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { Dropdown } from "@/components/dropdown";
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
@@ -9,10 +9,16 @@ type ToolDropdownProps = {
   name: string;
   placeholder?: string;
   errors?: any;
+  index?: number;
 };
 
-const ToolDropdown: FC<ToolDropdownProps> = ({ control, name, placeholder, errors }) => {
-
+const ToolDropdown: FC<ToolDropdownProps> = ({
+  control,
+  name,
+  placeholder,
+  errors,
+  index,
+}) => {
   const {
     data: tools,
     isFetching: toolsLoading,
@@ -22,17 +28,22 @@ const ToolDropdown: FC<ToolDropdownProps> = ({ control, name, placeholder, error
     queryFn: () => GetTools(),
   });
 
-  console.log("ToolDropdown", tools);
+  // console.log("ToolDropdown", tools);
 
-  const toolOptions = tools?.map((tool) => ({
-    value: tool.toolName,
-    label: tool.toolName,
-  })) || [];
+  const toolOptions =
+    tools?.map((tool) => ({
+      value: tool.toolName,
+      label: tool.toolName,
+    })) || [];
 
   return (
     <div className="w-full max-w-[553px] mt-10 relative">
-      <label htmlFor="projectName" className="text-sm font-medium text-black pb-[6px]">Tool
-        <span className="text-errorColor pl-1">*</span>
+      <label
+        htmlFor="projectName"
+        className="text-sm font-medium text-black pb-[6px]"
+      >
+        Tool
+        {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>
       <Dropdown
         control={control}
@@ -44,9 +55,11 @@ const ToolDropdown: FC<ToolDropdownProps> = ({ control, name, placeholder, error
         errors={errors}
         message={errors}
         options={toolOptions}
-    />
+      />
       {errors && (
-        <p className="text-errorColor text-sm font-medium absolute">{errors}</p>
+        <p className="text-destructive text-sm font-medium absolute">
+          {errors}
+        </p>
       )}
     </div>
   );

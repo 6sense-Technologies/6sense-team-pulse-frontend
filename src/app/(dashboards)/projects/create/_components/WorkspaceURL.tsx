@@ -5,16 +5,25 @@ type WorkspaceURLProps = {
   control: any;
   name: any;
   errors?: any;
+  index?: number;
 };
 
-const WorkspaceURL: React.FC<WorkspaceURLProps> = ({ control, name, errors }) => {
-  
+const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
+  control,
+  name,
+  errors,
+  index,
+}) => {
   console.log("WorkspaceURL", name);
 
   return (
     <div className="w-full max-w-[553px] pt-10 relative">
-      <label htmlFor="workspace" className="text-sm font-medium text-black pb-[6px]">Workspace URL
-        <span className="text-errorColor pl-1">*</span>
+      <label
+        htmlFor="workspace"
+        className="text-sm font-medium text-black pb-[6px]"
+      >
+        Workspace URL
+        {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>
       <BaseInput
         control={control}
@@ -26,7 +35,9 @@ const WorkspaceURL: React.FC<WorkspaceURLProps> = ({ control, name, errors }) =>
         message={errors}
       />
       {errors && (
-        <p className="text-errorColor text-sm font-medium absolute">{errors}</p>
+        <p className="text-destructive text-sm font-medium absolute">
+          {errors}
+        </p>
       )}
     </div>
   );

@@ -71,7 +71,7 @@ export function Dropdown({
         renderSelect({})
       )}
       {errors[name]?.message ? (
-        <p className="absolute mt-1 flex items-center text-sm font-medium text-red-500">
+        <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">
           {errors[name].message}
         </p>
       ) : message ? null : additionalText ? (

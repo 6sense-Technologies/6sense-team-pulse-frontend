@@ -22,105 +22,70 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import ManagementToolBadge from "./managementToolBadge";
-import { EllipsisVertical } from "lucide-react";
-import { Projects } from "@/types/Project.types";
-import { ProjectPagination } from "./projectPagination";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, CheckCircle } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
-import CustomMenu from "@/components/customMenu"; // Import the menu component
-import ProjectCustomMenuItems from "./projectCustomMenuItems";
+import Link from "next/link";
+import { TeamPagination } from "../../../_components/teamPagination";
 
-const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
-
-const handleDetails = (project: Projects): void => {
-  localStorage.setItem("projectId", project._id);
-  window.location.href = `/projects/${project._id}?page=1`;
+type PerformanceItem = {
+  category: string;
+  workItem: string;
+  linkedID: string;
+  status: string;
 };
 
-export const columns: ColumnDef<Projects>[] = [
+export const columns: ColumnDef<PerformanceItem>[] = [
   {
-    accessorKey: "name",
-    header: () => <div className="text-bold">Project Name</div>,
+    accessorKey: "category",
+    header: () => <div className="text-bold">Category</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("name") || "-"}</div>
+      <Link href={`/category/${row.getValue("category")}`}>
+        <Badge variant="outline" className="cursor-pointer flex items-center rounded">
+          <Calendar className="mr-2 w-4 h-4" />
+          {row.getValue("category")}
+        </Badge>
+      </Link>
     ),
   },
   {
-    accessorKey: "tools",
-    header: (): JSX.Element => <div className="text-bold">Management Tool</div>,
-    cell: ({ row }: { row: any }): JSX.Element => {
-      const tools = row.getValue("tools") || [];
-      const displayedTools = tools.slice(0, MAX_MANAGEMENT_TOOLS_DISPLAY);
-      const remainingToolsCount = tools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
-
-      return (
-        <div className="flex items-center space-x-2">
-          {displayedTools.map((tool: any, index: number) => (
-            <ManagementToolBadge key={index} className="text-medium">
-              {tool.toolName}
-            </ManagementToolBadge>
-          ))}
-          {remainingToolsCount > 0 && (
-            <ManagementToolBadge className="text-medium">
-              +{remainingToolsCount}
-            </ManagementToolBadge>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "teamSize",
-    header: () => <div className="text-bold">Team Size</div>,
-    cell: ({ row }: { row: any }): JSX.Element => (
-      <div className="text-medium">{row.getValue("teamSize") || "-"}</div>
+    accessorKey: "workItem",
+    header: () => <div className="text-bold">Work Item</div>,
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium flex items-center">
+        <CheckCircle className="mr-2 w-4 h-4" />
+        {row.getValue("workItem") || "-"}
+      </div>
     ),
   },
   {
-    id: "actions",
-    header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
-    enableHiding: false,
-    cell: ({ row }) => {
-      const project = row.original;
-      const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-      const ellipsisRef = React.useRef<HTMLDivElement>(null);
-
-      const handleOpenMenu = () => {
-        setIsMenuOpen(true);
-      };
-
-      const handleCloseMenu = () => {
-        setIsMenuOpen(false);
-      };
-
-      return (
-        <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <div ref={ellipsisRef}>
-            <EllipsisVertical className="cursor-pointer w-4 h-4" onClick={handleOpenMenu} />
-          </div>
-          <CustomMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchorRef={ellipsisRef}>
-            <ProjectCustomMenuItems 
-            firstText="View"
-            secondText="Edit"
-            ThirdText="Delete"
-            />
-          </CustomMenu>
-        </div>
-      );
-    },
+    accessorKey: "linkedID",
+    header: () => <div className="text-bold">Linked ID</div>,
+    cell: ({ row }: { row: any }) => (
+      <Link href={`/linked/${row.getValue("linkedID")}`}>
+        <div className="cursor-pointer">{row.getValue("linkedID")}</div>
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "status",
+    header: () => <div className="text-bold">Status</div>,
+    cell: ({ row }: { row: any }) => (
+      <Badge variant="outline" className="rounded">{row.getValue("status")}</Badge>
+    ),
   },
 ];
 
-type TProjectTableProps = {
-  projects?: Projects[];
+type TPerformanceTableProps = {
+  performanceItems?: PerformanceItem[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
   loading?: boolean;
 };
 
-export const ProjectTable: React.FC<TProjectTableProps> = ({
-  projects = [],
+export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
+  performanceItems = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
@@ -146,7 +111,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
     : 0;
 
   const table = useReactTable({
-    data: projects,
+    data: performanceItems,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -168,7 +133,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true);
+    setIsLoading(true); // Set loading state to true
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -176,18 +141,19 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false);
+      setIsLoading(false); // Set loading state to false when data is loaded
     }
   }, [loading]);
 
-  const displayedRowsCount = currentPageState > 1
-    ? (currentPageState - 1) * pagination.pageSize + projects.length
-    : projects.length;
+  const displayedRowsCount =
+    currentPageState > 1
+      ? (currentPageState - 1) * pagination.pageSize + performanceItems.length
+      : performanceItems.length;
 
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton />
+        <EmptyTableSkeleton /> // Show skeleton loader when loading
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -257,10 +223,11 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
           </div>
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
-              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing.
+              {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
+              showing.
             </div>
             <div className="flex justify-end mb-2">
-              <ProjectPagination
+              <TeamPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
                 onPageChange={onPageChange}
@@ -272,3 +239,5 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
     </div>
   );
 };
+
+export default PerformanceTable;

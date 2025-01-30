@@ -59,7 +59,7 @@ const SignIn = () => {
     onError: (error: any) => {
       console.log("Error:", error.message);
       if (error.message === "User not found") {
-        setErrorMessage("No account found with this user.");
+        setErrorMessage("No account found with this email.");
         setErrorFlag(false);
       }
       if (error.message === "Invalid credentials") {
