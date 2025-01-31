@@ -10,110 +10,114 @@ import Link from "next/link";
 import { TeamDropdown } from "./_components/teamDropdown";
 import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
+import { useQuery } from "@tanstack/react-query";
+import { GetTeamList } from "../../../../api/Efficiency/efficiencyApi";
+import { TeamList } from "@/types/Efficiency.types";
 
 const TeamListPage: React.FC = () => {
-  const TeamList = [
-    {
-      teamMember: {
-        name: "John Doe",
-        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
-      },
-      role: "Developer",
-      designation: "Frontend Developer",
-      email: "john.doe@example.com",
-      performance: "85%",
-    },
-    {
-      teamMember: {
-        name: "Jane Smith",
-        avatar: "https://randomuser.me/api/portraits/women/1.jpg",
-      },
-      role: "Developer",
-      designation: "Backend Developer",
-      email: "jane.smith@example.com",
-      performance: "90%",
-    },
-    {
-      teamMember: {
-        name: "Alice Johnson",
-        avatar: "https://randomuser.me/api/portraits/women/2.jpg",
-      },
-      role: "Designer",
-      designation: "UI/UX Designer",
-      email: "alice.johnson@example.com",
-      performance: "88%",
-    },
-    {
-      teamMember: {
-        name: "Bob Brown",
-        avatar: "https://randomuser.me/api/portraits/men/2.jpg",
-      },
-      role: "Manager",
-      designation: "Project Manager",
-      email: "bob.brown@example.com",
-      performance: "92%",
-    },
-    {
-      teamMember: {
-        name: "Charlie Davis",
-        avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-      },
-      role: "Tester",
-      designation: "QA Engineer",
-      email: "charlie.davis@example.com",
-      performance: "87%",
-    },
-    {
-      teamMember: {
-        name: "Emily Evans",
-        avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-      },
-      role: "Developer",
-      designation: "Full Stack Developer",
-      email: "emily.evans@example.com",
-      performance: "89%",
-    },
-    {
-      teamMember: {
-        name: "Frank Green",
-        avatar: "https://randomuser.me/api/portraits/men/4.jpg",
-      },
-      role: "Designer",
-      designation: "Graphic Designer",
-      email: "frank.green@example.com",
-      performance: "84%",
-    },
-    {
-      teamMember: {
-        name: "Grace Harris",
-        avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-      },
-      role: "Developer",
-      designation: "Mobile Developer",
-      email: "grace.harris@example.com",
-      performance: "91%",
-    },
-    {
-      teamMember: {
-        name: "Henry King",
-        avatar: "https://randomuser.me/api/portraits/men/5.jpg",
-      },
-      role: "Tester",
-      designation: "Automation Engineer",
-      email: "henry.king@example.com",
-      performance: "86%",
-    },
-    {
-      teamMember: {
-        name: "Irene Lee",
-        avatar: "https://randomuser.me/api/portraits/women/5.jpg",
-      },
-      role: "Manager",
-      designation: "Product Manager",
-      email: "irene.lee@example.com",
-      performance: "93%",
-    },
-  ];
+
+  // const TeamList = [
+  //   {
+  //     teamMember: {
+  //       name: "John Doe",
+  //       avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+  //     },
+  //     role: "Developer",
+  //     designation: "Frontend Developer",
+  //     email: "john.doe@example.com",
+  //     performance: "85%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Jane Smith",
+  //       avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+  //     },
+  //     role: "Developer",
+  //     designation: "Backend Developer",
+  //     email: "jane.smith@example.com",
+  //     performance: "90%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Alice Johnson",
+  //       avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+  //     },
+  //     role: "Designer",
+  //     designation: "UI/UX Designer",
+  //     email: "alice.johnson@example.com",
+  //     performance: "88%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Bob Brown",
+  //       avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+  //     },
+  //     role: "Manager",
+  //     designation: "Project Manager",
+  //     email: "bob.brown@example.com",
+  //     performance: "92%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Charlie Davis",
+  //       avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+  //     },
+  //     role: "Tester",
+  //     designation: "QA Engineer",
+  //     email: "charlie.davis@example.com",
+  //     performance: "87%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Emily Evans",
+  //       avatar: "https://randomuser.me/api/portraits/women/3.jpg",
+  //     },
+  //     role: "Developer",
+  //     designation: "Full Stack Developer",
+  //     email: "emily.evans@example.com",
+  //     performance: "89%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Frank Green",
+  //       avatar: "https://randomuser.me/api/portraits/men/4.jpg",
+  //     },
+  //     role: "Designer",
+  //     designation: "Graphic Designer",
+  //     email: "frank.green@example.com",
+  //     performance: "84%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Grace Harris",
+  //       avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+  //     },
+  //     role: "Developer",
+  //     designation: "Mobile Developer",
+  //     email: "grace.harris@example.com",
+  //     performance: "91%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Henry King",
+  //       avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+  //     },
+  //     role: "Tester",
+  //     designation: "Automation Engineer",
+  //     email: "henry.king@example.com",
+  //     performance: "86%",
+  //   },
+  //   {
+  //     teamMember: {
+  //       name: "Irene Lee",
+  //       avatar: "https://randomuser.me/api/portraits/women/5.jpg",
+  //     },
+  //     role: "Manager",
+  //     designation: "Product Manager",
+  //     email: "irene.lee@example.com",
+  //     performance: "93%",
+  //   },
+  // ];
 
   const [pages, setPages] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
@@ -148,10 +152,22 @@ const TeamListPage: React.FC = () => {
     });
   }, [searchParams]);
 
+  const {
+    data: teamList,
+    isFetching: teamListLoading,
+    refetch: teamListRefetch,
+  } = useQuery<TeamList>({
+    queryKey: ["teamList", pages, limit],
+    queryFn: () => GetTeamList({ page: pages, limit }),
+  });
+
+  console.log("Team",teamList);
+
   const totalCountAndLimit = {
-    totalCount: TeamList.length,
+    totalCount: teamList?.count ?? 0,
     size: pagination.size ?? 10,
   };
+
 
   return (
     <div className="w-full">
@@ -191,7 +207,9 @@ const TeamListPage: React.FC = () => {
         <div className="">
           <TeamTable
             totalCountAndLimit={totalCountAndLimit}
-            teamMembers={TeamList}
+            loading={teamListLoading}
+            refetch={teamListRefetch}
+            teamMembers={teamList?.data}
             currentPage={pages}
           />
         </div>

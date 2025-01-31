@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,92 +21,146 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { EllipsisVertical } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
 import { Button } from "@/components/ui/button";
 import { TeamPagination } from "../../../_components/teamPagination";
 import Link from "next/link";
-
-type Task = {
-  planned: number;
-  unplanned: number;
-  TCR: number;
-};
-
-type Story = {
-  No: number;
-  USCR: number;
-};
+import { TeamDetailsPagination } from "./teamDetailsPagination";
 
 type TeamMember = {
-  date: string;
-  tasks: Task;
-  bugs: number;
-  stories: Story;
+  _id: string;
+  doneTaskCountPlanned: number;
+  totalTaskPlanned: number;
+  notDoneTaskCountPlanned: number;
+  totalTaskUnPlanned: number;
+  taskCompletionRate: number;
+  doneBugCount: number;
+  totalBugCount: number;
+  doneStoryCount: number;
+  totalStoryCount: number;
+  storyCompletionRate: number;
   score: number;
   insight: string;
+  doneTaskCountUnplanned: number;
+  codeToBugRatio: number;
 };
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
-    accessorKey: "date",
+    accessorKey: "_id",
     header: () => <div className="text-bold">Date</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("date") || "-"}</div>
-    ),
+    cell: ({ row }: { row: any }) => {
+      const date = new Date(row.getValue("_id"));
+      const formattedDate = date
+        .toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+        .replace(/\//g, "-");
+      return <div className="text-medium">{formattedDate || "-"}</div>;
+    },
   },
   {
-    accessorKey: "tasks",
+    id: "tasks",
     header: () => (
       <div className="text-bold pl-4">
         Tasks
-        <div className="flex justify-between border-t mt-1 pt-1">
+        <div className="flex justify-between border-t mt-1 pt-1 gap-x-[14px]">
           <span className="py-2">Planned</span>
           <span className="py-2">Unplanned</span>
           <span className="py-2">TCR</span>
         </div>
       </div>
     ),
-    cell: ({ row }: { row: any }) => (
-      <div className="flex justify-between">
-        <span>{row.getValue("tasks").planned}</span>
-        <span>{row.getValue("tasks").unplanned}</span>
-        <span>{row.getValue("tasks").TCR}</span>
-      </div>
-    ),
+    cell: ({ row }: { row: any }) => {
+      const planned = row.original.doneTaskCountPlanned;
+      const totalPlanned = row.original.totalTaskPlanned;
+      const unplanned = row.original.doneTaskCountUnplanned;
+      const totalUnplanned = row.original.totalTaskUnPlanned;
+      const tcr = row.original.taskCompletionRate;
+
+      return (
+        <div className="flex justify-between">
+          <span>
+            {planned}/{totalPlanned}
+          </span>
+          <span>
+            {unplanned}/{totalUnplanned}
+          </span>
+          <span>
+            {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}%` : "-"}
+          </span>
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "bugs",
+    id: "bugs",
     header: () => <div className="text-bold">Bugs</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("bugs") || "-"}</div>
-    ),
+    cell: ({ row }: { row: any }) => {
+      const doneBugCount = row.original.doneBugCount;
+      const totalBugCount = row.original.totalBugCount;
+      return (
+        <div className="text-medium">
+          {doneBugCount}/{totalBugCount}
+        </div>
+      );
+    },
   },
   {
-    accessorKey: "stories",
+    id: "stories",
     header: () => (
       <div className="text-bold">
         Stories
-        <div className="flex justify-between border-t mt-1 pt-1">
+        <div className="flex justify-between border-t mt-1 pt-1 gap-x-[40px]">
           <span className="py-2">No</span>
           <span className="py-2">USCR</span>
         </div>
       </div>
     ),
-    cell: ({ row }: { row: any }) => (
-      <div className="flex justify-between">
-        <span>{row.getValue("stories").No}</span>
-        <span>{row.getValue("stories").USCR}</span>
-      </div>
-    ),
+    cell: ({ row }: { row: any }) => {
+      const doneStoryCount = row.original.doneStoryCount;
+      const totalStoryCount = row.original.totalStoryCount;
+      const uscr = row.original.storyCompletionRate;
+
+      return (
+        <div className="flex justify-between">
+          <span>
+            {doneStoryCount}/{totalStoryCount}
+          </span>
+          <span>
+            {uscr !== null && uscr !== undefined ? `${uscr.toFixed(2)}%` : "-"}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    id: "ctbr",
+    header: () => <div className="text-bold">CTBR</div>,
+    cell: ({ row }: { row: any }) => {
+      const ctbr = row.original.codeToBugRatio;
+      return (
+        <div className="text-medium">
+          {ctbr !== null && ctbr !== undefined ? ctbr.toFixed(2) : "-"}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "score",
     header: () => <div className="text-bold">Score</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("score") || "-"}</div>
-    ),
+    cell: ({ row }: { row: any }) => {
+      const score = row.getValue("score");
+      const formattedScore =
+        score !== null && score !== undefined
+          ? `${Math.ceil(score).toFixed(2)}%`
+          : "-";
+      return <div className="text-medium">{formattedScore}</div>;
+    },
   },
   {
     accessorKey: "insight",
@@ -129,13 +183,13 @@ export const columns: ColumnDef<TeamMember>[] = [
       const handleClickOutside = (event: MouseEvent) => {
         if (
           event.target instanceof Node &&
-          !event.target.closest(".modal-content")
+          !(event.target as Element).closest(".modal-content")
         ) {
           setIsModalOpen(false);
         }
       };
 
-      React.useEffect(() => {
+      useEffect(() => {
         if (isModalOpen) {
           document.addEventListener("mousedown", handleClickOutside);
         } else {
@@ -147,6 +201,8 @@ export const columns: ColumnDef<TeamMember>[] = [
         };
       }, [isModalOpen]);
 
+      const {id} = useParams();
+
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
           <EllipsisVertical
@@ -157,7 +213,11 @@ export const columns: ColumnDef<TeamMember>[] = [
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
                 <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                  <Link href={`/efficiency/12/member-details/${row.original.date}`}>
+                  <Link
+                    href={`/efficiency/${id}/member-details/${
+                      new Date(row.original._id).toISOString().split("T")[0]
+                    }`}
+                  >
                     View
                   </Link>
                 </li>
@@ -189,6 +249,7 @@ type TTeamDetailsTableProps = {
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
   loading?: boolean;
+  Memberid: string;
 };
 
 export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
@@ -197,6 +258,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
   loading,
+  Memberid,
 }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -276,7 +338,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                             ? "text-right pb-9"
                             : header.column.id === "bugs"
                             ? "pb-8 w-20 text-center"
-                            : header.column.id === "date"
+                            : header.column.id === "_id"
                             ? "w-[100px]"
                             : "pt-2"
                         } ${
@@ -300,39 +362,56 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                      className="h-12 leading-none"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          className={`py-1 leading-none ${
-                            cell.column.id === "actions"
-                              ? "text-right"
-                              : cell.column.id === "bugs"
-                              ? "pl-7 text-start w-20"
-                              : cell.column.id === "date"
-                              ? "pl-3 text-start"
-                              : cell.column.id === "score"
-                              ? "text-right"
-                              : cell.column.id === "insight"
-                              ? "text-start"
-                              : cell.column.id === "tasks"
-                              ? "text-start pl-4"
-                              : "pl-4 text-start"
-                          }`}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
+                  table.getRowModel().rows.map((row) => {
+                    const isHoliday = row.original.insight
+                      .toLowerCase()
+                      .includes("holidays/leave");
+                    return (
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && "selected"}
+                        className={`leading-none ${isHoliday ? "h-6" : "h-12"}`}
+                      >
+                        {row.getVisibleCells().map((cell: any) => (
+                          <TableCell
+                            key={cell.id}
+                            className={`leading-none ${
+                              isHoliday ? "py-0" : "py-1"
+                            } ${
+                              cell.column.id === "actions" && isHoliday
+                                ? "hidden"
+                                : cell.column.id === "actions"
+                                ? "text-right"
+                                : cell.column.id === "bugs"
+                                ? "pl-7 text-start w-20"
+                                : cell.column.id === "_id" && isHoliday
+                                ? "pl-4 text-start"
+                                : cell.column.id === "score"
+                                ? "text-right"
+                                : cell.column.id === "insight"
+                                ? "text-start"
+                                : cell.column.id === "tasks"
+                                ? "text-start pl-4"
+                                : cell.column.id === "ctbr" && isHoliday
+                                ? "text-center text-red-600"
+                                : "pl-4 text-start"
+                            }`}
+                          >
+                            {isHoliday &&
+                            cell.column.id !== "_id" &&
+                            cell.column.id !== "ctbr"
+                              ? null
+                              : isHoliday && cell.column.id === "ctbr"
+                              ? "Holiday"
+                              : flexRender(
+                                  cell.column.columnDef.cell,
+                                  cell.getContext()
+                                )}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })
                 ) : (
                   <TableRow className="py-1 leading-none">
                     <TableCell
@@ -352,10 +431,11 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
               showing.
             </div>
             <div className="flex justify-end mb-2">
-              <TeamPagination
+              <TeamDetailsPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
                 onPageChange={onPageChange}
+                Memberid={Memberid}
               />
             </div>
           </div>

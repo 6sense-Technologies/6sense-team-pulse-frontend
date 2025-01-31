@@ -3,12 +3,14 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import React, { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
+import { useQuery } from "@tanstack/react-query";
+import { GetDailyPerformance } from "../../../../../../../api/Efficiency/efficiencyApi";
 
 const performanceList = [
   {
@@ -78,9 +80,42 @@ const EfficiencyMemberDetails: React.FC = () => {
     });
   }, [searchParams]);
 
+  const { id: member_id, date } = useParams() as { id: string; date: string };
+
+  // console.log(date)
+
+  const {
+    data: dailyPerformance,
+    isFetching: dailyPerformanceLoading,
+    refetch: dailyPerformanceRefetch,
+  } = useQuery<any>({
+    queryKey: ["dailyPerformance", pages, limit],
+    queryFn: () => GetDailyPerformance({ member_id, page: pages, limit, date }),
+  });
+
+  const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;
+
+  console.log("Daily Performance", dailyPerformance?.dailyPerformance?.data);
+
   const totalCountAndLimit = {
-    totalCount: performanceList.length,
+    totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
     size: pagination.size ?? 10,
+  };
+
+  const individualAvatar =
+    dailyPerformance?.userData.avatarUrls;
+  const individualName =
+    dailyPerformance?.userData.displayName;
+  const individualDesignation =
+    dailyPerformance?.userData.designation;
+
+  const getInitials = (name: string) => {
+    if (!name) return "NA"; // Return default initials if name is undefined or empty
+    const parts = name.split(" ");
+    if (parts.length === 1) {
+      return parts[0][0].toUpperCase();
+    }
+    return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
   return (
@@ -92,7 +127,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           initialData="Profile"
           initalLink="/efficiency"
           secondayData="Daily Performance"
-          secondayLink="/team-efficiency/id/member-details/date"
+          secondayLink={`/team-efficiency/${member_id}/member-details/${date}`}
         />
         <PageHeading
           title="Daily Performance"
@@ -104,19 +139,21 @@ const EfficiencyMemberDetails: React.FC = () => {
             <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
               <div>
                 <Avatar className="w-16 h-16 rounded-full ml-4 mr-2 mt-8 mb-6">
-                  <AvatarImage
-                    src="https://randomuser.me/api/portraits/men/1.jpg"
-                    alt="Avatar"
-                  />
-                  <AvatarFallback>{"AA"}</AvatarFallback>
+                  {individualAvatar ? (
+                    <AvatarImage src={individualAvatar} alt="Avatar" />
+                  ) : (
+                    <AvatarFallback className="bg-primary text-white">
+                      {getInitials(individualName)}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
               </div>
               <div className="pt-1">
                 <h1 className="pb-[3px] text-sm font-semibold">
-                  Khan Atik Faisal
+                  {individualName}
                 </h1>
                 <p className="text-twelve text-miniSubheadingColor">
-                  Junior Software Engineer
+                  {individualDesignation}
                 </p>
               </div>
             </div>
@@ -154,7 +191,9 @@ const EfficiencyMemberDetails: React.FC = () => {
               </span>
               <PerformanceTable
                 totalCountAndLimit={totalCountAndLimit}
-                performanceItems={performanceList}
+                performanceItems={dailyPerformanceData}
+                loading={dailyPerformanceLoading}
+                refetch={dailyPerformanceRefetch}
                 currentPage={pages}
               />
             </>

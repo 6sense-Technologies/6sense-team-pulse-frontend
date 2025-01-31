@@ -7,7 +7,7 @@ interface ITeamProgressProps {
 
 const TeamProgress: FC<ITeamProgressProps> = ({ teamPercentage }) => {
   return (
-    <div className="w-full">
+    <div className="w-[128px]">
       <Progress value={teamPercentage || 0} />
     </div>
   );

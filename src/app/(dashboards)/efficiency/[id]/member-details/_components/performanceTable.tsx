@@ -21,57 +21,76 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, CheckCircle } from "lucide-react";
+import { Bookmark, Calendar, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
 import Link from "next/link";
 import { TeamPagination } from "../../../_components/teamPagination";
+import { PerformancePagination } from "../[date]/_components/performancePagination";
 
 type PerformanceItem = {
-  category: string;
-  workItem: string;
-  linkedID: string;
-  status: string;
+  issueType: string;
+  issueSummary: string;
+  issueIdUrl: string;
+  issueStatus: string;
 };
 
 export const columns: ColumnDef<PerformanceItem>[] = [
   {
-    accessorKey: "category",
+    accessorKey: "issueType",
     header: () => <div className="text-bold">Category</div>,
-    cell: ({ row }: { row: any }) => (
-      <Link href={`/category/${row.getValue("category")}`}>
-        <Badge variant="outline" className="cursor-pointer flex items-center rounded">
-          <Calendar className="mr-2 w-4 h-4" />
-          {row.getValue("category")}
+    cell: ({ row }: { row: any }) => {
+      const category = row.getValue("issueType");
+      const icon =
+        category === "Task" ? (
+          <CheckSquare className="mr-2 w-4 h-4" />
+        ) : (
+          <Bookmark className="mr-2 w-4 h-4" />
+        );
+      return (
+        <Badge
+          variant="rounded"
+          className="cursor-pointer flex items-center"
+        >
+          {icon}
+          {category}
         </Badge>
-      </Link>
-    ),
+      );
+    },
   },
   {
-    accessorKey: "workItem",
+    accessorKey: "issueSummary",
     header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium flex items-center">
-        <CheckCircle className="mr-2 w-4 h-4" />
-        {row.getValue("workItem") || "-"}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "linkedID",
-    header: () => <div className="text-bold">Linked ID</div>,
-    cell: ({ row }: { row: any }) => (
-      <Link href={`/linked/${row.getValue("linkedID")}`}>
-        <div className="cursor-pointer">{row.getValue("linkedID")}</div>
+      <Link href={row.getValue("issueIdUrl")} target="_blank">
+        <div className="text-medium flex items-center w-full max-w-[700px]">
+          <span>
+            <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
+          </span>
+          {row.getValue("issueSummary") || "-"}
+        </div>
       </Link>
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "issueIdUrl",
+    header: () => <div className="text-bold">Linked ID</div>,
+    cell: ({ row }: { row: any }) => (
+      <Link href={row.getValue("issueIdUrl")} target="_blank">
+        <div className="cursor-pointer">
+          {row.getValue("issueIdUrl").split("/").pop()}
+        </div>
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "issueStatus",
     header: () => <div className="text-bold">Status</div>,
     cell: ({ row }: { row: any }) => (
-      <Badge variant="outline" className="rounded">{row.getValue("status")}</Badge>
+      <Badge variant="rounded">
+        {row.getValue("issueStatus")}
+      </Badge>
     ),
   },
 ];
@@ -150,6 +169,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
       ? (currentPageState - 1) * pagination.pageSize + performanceItems.length
       : performanceItems.length;
 
+     const {id:member_id, date} = useParams() as {id: string; date: string};
   return (
     <div className="w-full">
       {isLoading ? (
@@ -227,10 +247,12 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
               showing.
             </div>
             <div className="flex justify-end mb-2">
-              <TeamPagination
+              <PerformancePagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
                 onPageChange={onPageChange}
+                member_id={member_id}
+                date={date}
               />
             </div>
           </div>

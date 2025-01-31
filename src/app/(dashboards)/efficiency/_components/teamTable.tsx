@@ -31,33 +31,41 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 type TeamMember = {
-  teamMember: {
-    name: string;
-    avatar: string;
-  };
-  role: string;
+  _id: string;
+  performance: number | null;
+  displayName: string;
+  emailAddress: string;
   designation: string;
-  email: string;
-  performance: string;
+  avatarUrls: string;
+  role: string;
 };
 
 export const columns: ColumnDef<TeamMember>[] = [
   {
-    accessorKey: "teamMember",
+    accessorKey: "displayName",
     header: () => <div className="text-bold">Team Members</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="flex items-center">
-        <Avatar className="w-8 h-8 mr-2">
-          <AvatarImage src={row.getValue("teamMember").avatar} alt="Avatar" />
-          <AvatarFallback>
-            {row.getValue("teamMember").name.charAt(0)}
-          </AvatarFallback>
-        </Avatar>
-        <div className="text-medium">
-          {row.getValue("teamMember").name || "-"}
+    cell: ({ row }: { row: any }) => {
+      const name = row.getValue("displayName");
+      const avatarUrl = row.original.avatarUrls;
+      const nameParts = name.split(" ");
+      let initials =
+        nameParts.length === 3
+          ? `${nameParts[0][0]}${nameParts[1][0]}`
+          : `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`;
+
+      return (
+        <div className="flex items-center">
+          <Avatar className="w-8 h-8 mr-2">
+            {avatarUrl ? (
+              <AvatarImage src={avatarUrl} alt="Avatar" />
+            ) : (
+              <AvatarFallback className="bg-primary text-white">{initials}</AvatarFallback>
+            )}
+          </Avatar>
+          <div className="text-medium">{name || "-"}</div>
         </div>
-      </div>
-    ),
+      );
+    },
   },
   {
     accessorKey: "role",
@@ -74,25 +82,28 @@ export const columns: ColumnDef<TeamMember>[] = [
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "emailAddress",
     header: () => <div className="text-bold">Email</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("email") || "-"}</div>
+      <div className="text-medium">{row.getValue("emailAddress") || "-"}</div>
     ),
   },
   {
     accessorKey: "performance",
     header: () => <div className="text-bold">Performance</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="flex items-center">
-        <div className="text-medium mr-2">
-          {row.getValue("performance") || "-"}
+    cell: ({ row }: { row: any }) => {
+      const performance = row.getValue("performance");
+      const performanceText =
+        performance !== null ? `${Math.round(performance)}%` : "-";
+      return (
+        <div className="flex items-center max-w-[128px] w-full">
+          <div className="text-medium mr-2">{performanceText}</div>
+          {performance !== null && (
+            <TeamProgress teamPercentage={parseFloat(performance)} />
+          )}
         </div>
-        <TeamProgress
-          teamPercentage={parseFloat(row.getValue("performance"))}
-        />
-      </div>
-    ),
+      );
+    },
   },
   {
     id: "actions",
@@ -103,7 +114,7 @@ export const columns: ColumnDef<TeamMember>[] = [
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <Link href={"/efficiency/12/member-details"}>
+          <Link href={`/efficiency/${member._id}/member-details`}>
             <Button variant="outline">View</Button>
           </Link>
         </div>
@@ -229,9 +240,9 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : cell.column.id === "teamSize"
-                              ? "pl-5 text-start w-72"
-                              : cell.column.id === "tools"
+                              : cell.column.id === "emailAddress"
+                              ? "text-start"
+                              : cell.column.id === "performance"
                               ? "pl-3 text-start"
                               : "pl-4 text-start"
                           }`}
