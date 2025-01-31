@@ -96,7 +96,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "actions",
-    header: () => <div className="text-bold text-right pr-4">Action</div>,
+    header: () => <div className="text-bold text-start pr-4">Action</div>,
     enableHiding: false,
     cell: ({ row }) => {
       const member = row.original;
