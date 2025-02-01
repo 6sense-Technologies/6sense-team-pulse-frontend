@@ -16,40 +16,73 @@ import { useMutation } from "@tanstack/react-query";
 import { handleOtp, handleResendOTP } from "../../../../../api/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
-import { set } from "zod";
 
 const Verify = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(120); // 2 minutes timer
   const [isExpired, setIsExpired] = useState<boolean>(false);
-
   const [verifyError, setVerifyError] = useState<string | null>(null);
 
   useEffect(() => {
     const email = localStorage.getItem("user-email");
     setUserEmail(email);
+
+    const endTime = localStorage.getItem("endTime");
+    const otpExpired = localStorage.getItem("otpExpired");
+
+    if (otpExpired === "true") {
+      setIsExpired(true);
+      setTimeLeft(0);
+    } else if (endTime) {
+      const remainingTime = Math.floor((parseInt(endTime, 10) - Date.now()) / 1000);
+      if (remainingTime > 0) {
+        setTimeLeft(remainingTime);
+      } else {
+        setIsExpired(true);
+        setTimeLeft(0);
+        localStorage.setItem("otpExpired", "true");
+      }
+    } else {
+      localStorage.setItem("endTime", (Date.now() + timeLeft * 1000).toString());
+    }
   }, []);
 
   useEffect(() => {
     if (timeLeft <= 0) {
       setIsExpired(true);
+      localStorage.removeItem("endTime");
+      localStorage.setItem("otpExpired", "true");
       return;
     }
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1);
+      setTimeLeft((prevTime) => {
+        const newTime = prevTime - 1;
+        if (newTime <= 0) {
+          clearInterval(timer);
+          setIsExpired(true);
+          localStorage.removeItem("endTime");
+          localStorage.setItem("otpExpired", "true");
+        }
+        return newTime;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-
   const resetTimer = () => {
+    const newEndTime = Date.now() + 120 * 1000;
     setTimeLeft(120);
     setIsExpired(false);
+    localStorage.setItem("endTime", newEndTime.toString());
+    localStorage.setItem("otpExpired", "false");
   };
 
   const formatTime = (seconds: number) => {
+    if (seconds <= 0) {
+      return "00:00";
+    }
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds
@@ -66,8 +99,6 @@ const Verify = () => {
   });
 
   const { data: session, status, update } = useSession();
-
-  // console.log("🚀 ~ useEffect ~ session:", session)
 
   const otpMutation = useMutation({
     mutationFn: handleOtp,
@@ -109,7 +140,6 @@ const Verify = () => {
   if (status === "authenticated") {
     if (!session.isVerified && !session.hasOrganization) {
       router.push("/sign-up/verification");
-      // return <Loader />;
     }
     if (session.isVerified && !session.hasOrganization) {
       router.push("/sign-up/create-organization");

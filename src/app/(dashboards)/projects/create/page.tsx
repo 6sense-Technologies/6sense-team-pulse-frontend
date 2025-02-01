@@ -60,7 +60,7 @@ const ProjectCreate = () => {
         if (!tool.toolName) {
           setError(`tools.${index}.toolName`, {
             type: "manual",
-            message: "Tool name is required.",
+            message: "Minimum one tool must be selected.",
           });
           valid = false;
         } else {
@@ -132,7 +132,7 @@ const ProjectCreate = () => {
           <GlobalBreadCrumb
             initialData="Projects"
             initalLink="/projects"
-            secondayData="Create"
+            secondayData="Create Project"
             secondayLink="/projects/create"
           />
           <PageHeading title="Create Project" className="pl-[5px] pt-3" />
@@ -143,12 +143,12 @@ const ProjectCreate = () => {
                 Project Info
               </h1>
             </div>
-            <div className="w-full max-w-[553px] pt-10">
+            <div className="w-full max-w-[553px] pt-9">
               <label
                 htmlFor="projectName"
                 className="text-sm font-medium text-black"
               >
-                Project Name
+                Project Name <span className="text-destructive">*</span>
               </label>
               <BaseInput
                 control={control}

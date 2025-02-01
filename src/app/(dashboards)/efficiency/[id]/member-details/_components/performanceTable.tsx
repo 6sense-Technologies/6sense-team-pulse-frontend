@@ -240,7 +240,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
-              showing.
+              showing
             </div>
             <div className="flex justify-end mb-2">
               <PerformancePagination

@@ -14,7 +14,7 @@ import {
     totalPage: number;
     onPageChange: (page: number) => void;
     date: string;
-    id: string;
+    member_id: string;
   }
   
   const CustomPagination: React.FC<{ children: React.ReactNode }> = ({
@@ -28,7 +28,7 @@ import {
     totalPage,
     onPageChange,
     date,
-    id,
+    member_id,
   }: PaginationProps) {
     const router = useRouter();
   

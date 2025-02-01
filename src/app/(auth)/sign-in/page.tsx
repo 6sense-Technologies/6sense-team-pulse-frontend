@@ -57,7 +57,7 @@ const SignIn = () => {
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      console.log("Error:", error.message);
+      console.log("Error:", error);
       if (error.message === "User not found") {
         setErrorMessage("No account found with this email.");
         setErrorFlag(false);
@@ -67,6 +67,8 @@ const SignIn = () => {
       }
     },
   });
+
+  console.log("Error Messages", errorMessage);
 
   const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
     setErrorMessage(null);

@@ -29,9 +29,9 @@ const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
         control={control}
         type="text"
         name={name}
-        placeholder="Workspace URL"
+        placeholder="https://"
         className="placeholder:text-subHeading w-full mt-[6px]"
-        additionalText="The URL of the workspace you use for this project"
+        additionalText="Project URL of the selected tool"
         message={errors}
       />
       {errors && (

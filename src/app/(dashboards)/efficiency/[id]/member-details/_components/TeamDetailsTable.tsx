@@ -81,15 +81,15 @@ export const columns: ColumnDef<TeamMember>[] = [
       const tcr = row.original.taskCompletionRate;
 
       return (
-        <div className="flex justify-between">
-          <span>
+        <div className="flex gap-[60px]">
+          <span className="w-[21px]">
             {planned}/{totalPlanned}
           </span>
           <span>
             {unplanned}/{totalUnplanned}
           </span>
-          <span className="pr-6">
-            {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}%` : "-"}
+          <span className="pl-6">
+            {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}` : "-"}
           </span>
         </div>
       );
@@ -129,8 +129,8 @@ export const columns: ColumnDef<TeamMember>[] = [
           <span>
             {doneStoryCount}/{totalStoryCount}
           </span>
-          <span>
-            {uscr !== null && uscr !== undefined ? `${uscr.toFixed(2)}%` : "-"}
+          <span className="w-[38px]">
+            {uscr !== null && uscr !== undefined ? `${uscr.toFixed(2)}` : "-"}
           </span>
         </div>
       );
@@ -155,7 +155,7 @@ export const columns: ColumnDef<TeamMember>[] = [
       const score = row.getValue("score");
       const formattedScore =
         score !== null && score !== undefined
-          ? `${Math.ceil(score).toFixed(2)}%`
+          ? `${Math.ceil(score).toFixed(2)}`
           : "-";
       return <div className="text-medium">{formattedScore}</div>;
     },
@@ -349,7 +349,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                             : header.column.id === "score"
                             ? "pl-2 pb-8 text-start"
                             : header.column.id === "insight"
-                            ? "pl-6 pb-8  text-start"
+                            ? "pl-6 pb-8  text-start w-[250px]"
                             : "pb-8 pt-2"
                         } `}
                       >
@@ -367,9 +367,11 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => {
-                    const isHoliday = row.original.insight
-                      .toLowerCase()
-                      .includes("holidays/leave");
+                    const isHoliday =
+                      row.original.insight &&
+                      row.original.insight
+                        .toLowerCase()
+                        .includes("holidays/leave");
                     return (
                       <TableRow
                         key={row.id}
@@ -391,11 +393,11 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                 : cell.column.id === "_id" && isHoliday
                                 ? "pl-4 text-start"
                                 : cell.column.id === "score"
-                                ? "text-right"
+                                ? "text-left"
                                 : cell.column.id === "insight"
                                 ? "text-start pl-6"
                                 : cell.column.id === "tasks"
-                                ? "text-start pl-4"
+                                ? "text-left pl-4"
                                 : cell.column.id === "stories"
                                 ? "text-start pl-0 pr-5"
                                 : cell.column.id === "ctbr" && isHoliday
@@ -436,7 +438,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
-              showing.
+              showing
             </div>
             <div className="flex justify-end mb-2">
               <TeamDetailsPagination

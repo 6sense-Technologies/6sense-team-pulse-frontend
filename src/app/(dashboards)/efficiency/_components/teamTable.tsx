@@ -22,7 +22,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import { EllipsisVertical } from "lucide-react";
 import { TeamPagination } from "./teamPagination";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -59,7 +58,9 @@ export const columns: ColumnDef<TeamMember>[] = [
             {avatarUrl ? (
               <AvatarImage src={avatarUrl} alt="Avatar" />
             ) : (
-              <AvatarFallback className="bg-primary text-white">{initials}</AvatarFallback>
+              <AvatarFallback className="bg-primary text-white">
+                {initials}
+              </AvatarFallback>
             )}
           </Avatar>
           <div className="text-medium">{name || "-"}</div>
@@ -240,10 +241,12 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
+                              : cell.column.id === "displayName"
+                              ? "text-start font-semibold"
                               : cell.column.id === "emailAddress"
-                              ? "text-start"
+                              ? "text-start pl-4"
                               : cell.column.id === "performance"
-                              ? "pl-3 text-start"
+                              ? "pl-5 text-start"
                               : "pl-4 text-start"
                           }`}
                         >
@@ -271,7 +274,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
           <div className="flex items-center justify-between space-x-3 py-4">
             <div className="text-sm text-subHeading pl-2">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
-              showing.
+              showing
             </div>
             <div className="flex justify-end mb-2">
               <TeamPagination

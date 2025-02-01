@@ -53,7 +53,7 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
               {...props}
             />
             {errors[name]?.message || externalError ? (
-              <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">
+              <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive text-nowrap">
                 {errors[name]?.message || externalError}
               </p>
             ) : message ? null : additionalText ? (

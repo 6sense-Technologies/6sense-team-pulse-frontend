@@ -43,7 +43,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
             </BreadcrumbItem>
             {secondayData ? (
               <>
-                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbSeparator className="hidden md:block text-subHeading" />
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={secondayLink}

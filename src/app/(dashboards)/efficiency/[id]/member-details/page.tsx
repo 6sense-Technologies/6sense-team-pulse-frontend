@@ -71,6 +71,7 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   const individualAvatar = individualOverview?.userData.avatarUrls;
   const individualName = individualOverview?.userData.displayName;
+  const firstName = individualName?.split(' ')[0];
   const individualDesignation = individualOverview?.userData.designation;
   const individualCurrentMonthPerformance =
     individualOverview?.currentMonthScore;
@@ -97,7 +98,7 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   return (
     <div className="w-full">
-      <PageTitle title="Team Efficiency • Ops4 Team" />
+      <PageTitle title="Member Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
@@ -107,7 +108,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           secondayLink="/team-efficiency/id/profile"
         />
         <PageHeading
-          title={`${individualName}'s Profile`}
+          title={`${firstName}'s Profile`}
           titleclassName="font-medium"
           className="pl-2 pt-3"
         />
@@ -126,10 +127,10 @@ const EfficiencyMemberDetails: React.FC = () => {
                 </Avatar>
               </div>
               <div className="pt-1">
-                <h1 className="pb-[3px] text-sm font-semibold">
+                <h1 className="pb-[3px] text-sm text-[#334155] font-semibold">
                   {individualName}
                 </h1>
-                <p className="text-twelve text-miniSubheadingColor">
+                <p className="text-twelve text-[#334155]">
                   {individualDesignation}
                 </p>
               </div>

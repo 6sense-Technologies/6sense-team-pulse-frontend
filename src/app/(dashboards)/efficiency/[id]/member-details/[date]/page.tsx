@@ -86,7 +86,7 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   return (
     <div className="w-full">
-      <PageTitle title="Team Efficiency • Ops4 Team" />
+      <PageTitle title="Performance Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
