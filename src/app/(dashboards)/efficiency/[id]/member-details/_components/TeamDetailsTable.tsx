@@ -347,7 +347,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                             : header.column.id === "ctbr"
                             ? "pl-3 pr-3"
                             : header.column.id === "score"
-                            ? "pl-6 pb-8 text-start"
+                            ? "pl-2 pb-8 text-start"
                             : header.column.id === "insight"
                             ? "pl-6 pb-8  text-start"
                             : "pb-8 pt-2"
@@ -399,7 +399,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                 : cell.column.id === "stories"
                                 ? "text-start pl-0 pr-5"
                                 : cell.column.id === "ctbr" && isHoliday
-                                ? "text-center text-red-600"
+                                ? "text-center italic text-[#D97706]"
                                 : cell.column.id === "ctbr"
                                 ? "pl-4 text-start"
                                 : "pl-4 text-start"
@@ -410,7 +410,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                             cell.column.id !== "ctbr"
                               ? null
                               : isHoliday && cell.column.id === "ctbr"
-                              ? "Holiday"
+                              ? "Holiday/Leave"
                               : flexRender(
                                   cell.column.columnDef.cell,
                                   cell.getContext()
