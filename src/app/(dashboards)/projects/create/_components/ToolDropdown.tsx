@@ -37,7 +37,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
     })) || [];
 
   return (
-    <div className="w-full max-w-[553px] mt-10 relative">
+    <div className="w-full max-w-[553px] mt-8 relative">
       <label
         htmlFor="projectName"
         className="text-sm font-medium text-black pb-[6px]"

@@ -9,7 +9,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ButtonComponent";
 import ToolDropdown from "./_components/ToolDropdown";
 import WorkspaceURL from "./_components/WorkspaceURL";
-import { Trash2 } from "lucide-react";
+import { Circle, Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
 import { CreateProject } from "../../../../../api/projects/projectApi";
@@ -118,12 +118,12 @@ const ProjectCreate = () => {
           (tool) => tool.toolName.trim() !== "" && tool.toolUrl.trim() !== ""
         ),
       };
-      // console.log("Filtered Data", filteredData);
+
       projectMutation.mutate(filteredData);
     }
   };
 
-  console.log("Root", errors);
+  // console.log("Root", errors);
   return (
     <div className="w-full">
       <PageTitle title="Create Project • Ops4 Team" />
@@ -143,7 +143,7 @@ const ProjectCreate = () => {
                 Project Info
               </h1>
             </div>
-            <div className="w-full max-w-[553px] pt-9">
+            <div className="w-full max-w-[553px] pt-8">
               <label
                 htmlFor="projectName"
                 className="text-sm font-medium text-black"
@@ -162,7 +162,7 @@ const ProjectCreate = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between w-full max-w-[872px]">
+          <div className="flex items-center justify-between w-full max-w-[872px] mt-5">
             <div className="pl-[6px]">
               <h1 className="text-headingXXS font-semibold pb-1">
                 Project Management Tool
@@ -222,7 +222,11 @@ const ProjectCreate = () => {
               onClick={handleAddtools}
               className="mb-6"
             >
-              Add Tool
+              {projectMutation.isPending ? (
+                <Circle className="animate-spin" />
+              ) : (
+                "Add Tool"
+              )}
             </Button>
             <Button
               variant="darkish"
