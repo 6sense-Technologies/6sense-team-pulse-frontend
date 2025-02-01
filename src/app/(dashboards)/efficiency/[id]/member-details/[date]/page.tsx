@@ -5,45 +5,11 @@ import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
 import { useParams, useSearchParams } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
-import { Button } from "@/components/ButtonComponent";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
 import { GetDailyPerformance } from "../../../../../../../api/Efficiency/efficiencyApi";
 
-const performanceList = [
-  {
-    category: "Development",
-    workItem: "Feature Implementation",
-    linkedID: "DEV-123",
-    status: "Completed",
-  },
-  {
-    category: "Testing",
-    workItem: "Unit Testing",
-    linkedID: "TEST-789",
-    status: "In Progress",
-  },
-  {
-    category: "Bug Fixing",
-    workItem: "Critical Bug Fix",
-    linkedID: "BUG-112",
-    status: "Pending",
-  },
-  {
-    category: "Deployment",
-    workItem: "Production Deployment",
-    linkedID: "DEP-114",
-    status: "Completed",
-  },
-  {
-    category: "Code Review",
-    workItem: "Peer Review",
-    linkedID: "CR-116",
-    status: "In Progress",
-  },
-];
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);

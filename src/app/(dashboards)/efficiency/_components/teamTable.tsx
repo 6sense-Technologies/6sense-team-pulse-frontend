@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -97,7 +97,7 @@ export const columns: ColumnDef<TeamMember>[] = [
         performance !== null ? `${Math.round(performance)}%` : "-";
       return (
         <div className="flex items-center max-w-[128px] w-full">
-          <div className="text-medium mr-2">{performanceText}</div>
+          <div className="text-medium mr-2 w-9">{performanceText}</div>
           {performance !== null && (
             <TeamProgress teamPercentage={parseFloat(performance)} />
           )}
@@ -151,8 +151,8 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
-  const [currentPageState, setCurrentPageState] = React.useState(page);
-  const [isLoading, setIsLoading] = React.useState(false); // State to manage loading
+  const [currentPageState, setCurrentPageState] = useState(page);
+  const [isLoading, setIsLoading] = React.useState(false);
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
     : 0;
@@ -180,7 +180,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true); // Set loading state to true
+    setIsLoading(true);
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -188,7 +188,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false); // Set loading state to false when data is loaded
+      setIsLoading(false);
     }
   }, [loading]);
 
@@ -200,7 +200,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton /> // Show skeleton loader when loading
+        <EmptyTableSkeleton />
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">

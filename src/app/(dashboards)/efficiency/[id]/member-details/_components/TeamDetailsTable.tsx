@@ -24,8 +24,6 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import { EllipsisVertical } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
-import { Button } from "@/components/ui/button";
-import { TeamPagination } from "../../../_components/teamPagination";
 import Link from "next/link";
 import { TeamDetailsPagination } from "./teamDetailsPagination";
 
@@ -50,7 +48,7 @@ type TeamMember = {
 export const columns: ColumnDef<TeamMember>[] = [
   {
     accessorKey: "_id",
-    header: () => <div className="text-bold">Date</div>,
+    header: () => <div className="text-bold pb-9 pl-4">Date</div>,
     cell: ({ row }: { row: any }) => {
       const date = new Date(row.getValue("_id"));
       const formattedDate = date
@@ -71,7 +69,7 @@ export const columns: ColumnDef<TeamMember>[] = [
         <div className="flex justify-between border-t mt-1 pt-1 gap-x-[14px]">
           <span className="py-2">Planned</span>
           <span className="py-2">Unplanned</span>
-          <span className="py-2">TCR</span>
+          <span className="py-2 pr-12">TCR</span>
         </div>
       </div>
     ),
@@ -90,7 +88,7 @@ export const columns: ColumnDef<TeamMember>[] = [
           <span>
             {unplanned}/{totalUnplanned}
           </span>
-          <span>
+          <span className="pr-6">
             {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}%` : "-"}
           </span>
         </div>
@@ -99,12 +97,12 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "bugs",
-    header: () => <div className="text-bold">Bugs</div>,
+    header: () => <div className="text-bold pb-1">Bugs</div>,
     cell: ({ row }: { row: any }) => {
       const doneBugCount = row.original.doneBugCount;
       const totalBugCount = row.original.totalBugCount;
       return (
-        <div className="text-medium">
+        <div className="text-medium pr-9">
           {doneBugCount}/{totalBugCount}
         </div>
       );
@@ -113,11 +111,11 @@ export const columns: ColumnDef<TeamMember>[] = [
   {
     id: "stories",
     header: () => (
-      <div className="text-bold">
+      <div className="text-bold pt-1">
         Stories
         <div className="flex justify-between border-t mt-1 pt-1 gap-x-[40px]">
           <span className="py-2">No</span>
-          <span className="py-2">USCR</span>
+          <span className="py-2 pr-4">USCR</span>
         </div>
       </div>
     ),
@@ -140,7 +138,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "ctbr",
-    header: () => <div className="text-bold">CTBR</div>,
+    header: () => <div className="text-bold pb-8">CTBR</div>,
     cell: ({ row }: { row: any }) => {
       const ctbr = row.original.codeToBugRatio;
       return (
@@ -166,7 +164,9 @@ export const columns: ColumnDef<TeamMember>[] = [
     accessorKey: "insight",
     header: () => <div className="text-bold">Insight</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("insight") || "-"}</div>
+      <div className="text-medium line-clamp-2 justify-text">
+        {row.getValue("insight") || "-"}
+      </div>
     ),
   },
   {
@@ -201,7 +201,7 @@ export const columns: ColumnDef<TeamMember>[] = [
         };
       }, [isModalOpen]);
 
-      const {id} = useParams();
+      const { id } = useParams();
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
@@ -333,21 +333,25 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-[80px] pl-4 leading-none ${
+                        className={`text-left h-[80px] pl-0 leading-none ${
                           header.column.id === "actions"
                             ? "text-right pb-9"
                             : header.column.id === "bugs"
                             ? "pb-8 w-20 text-center"
                             : header.column.id === "_id"
                             ? "w-[100px]"
-                            : "pt-2"
-                        } ${
-                          ["date", "score", "insight"].includes(
-                            header.column.id
-                          )
-                            ? "pb-8"
-                            : "pt-2"
-                        }`}
+                            : header.column.id === "tasks"
+                            ? "w-[282px]"
+                            : header.column.id === "stories"
+                            ? "w-[158px]"
+                            : header.column.id === "ctbr"
+                            ? "pl-3 pr-3"
+                            : header.column.id === "score"
+                            ? "pl-6 pb-8 text-start"
+                            : header.column.id === "insight"
+                            ? "pl-6 pb-8  text-start"
+                            : "pb-8 pt-2"
+                        } `}
                       >
                         {header.isPlaceholder
                           ? null
@@ -389,11 +393,15 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                 : cell.column.id === "score"
                                 ? "text-right"
                                 : cell.column.id === "insight"
-                                ? "text-start"
+                                ? "text-start pl-6"
                                 : cell.column.id === "tasks"
                                 ? "text-start pl-4"
+                                : cell.column.id === "stories"
+                                ? "text-start pl-0 pr-5"
                                 : cell.column.id === "ctbr" && isHoliday
                                 ? "text-center text-red-600"
+                                : cell.column.id === "ctbr"
+                                ? "pl-4 text-start"
                                 : "pl-4 text-start"
                             }`}
                           >

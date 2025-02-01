@@ -51,7 +51,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
       return (
         <Badge
           variant="rounded"
-          className="cursor-pointer flex items-center"
+          className="flex items-center"
         >
           {icon}
           {category}
@@ -64,7 +64,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
     header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
       <Link href={row.getValue("issueIdUrl")} target="_blank">
-        <div className="text-medium flex items-center w-full max-w-[700px]">
+        <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
           <span>
             <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
           </span>
@@ -78,7 +78,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
     header: () => <div className="text-bold">Linked ID</div>,
     cell: ({ row }: { row: any }) => (
       <Link href={row.getValue("issueIdUrl")} target="_blank">
-        <div className="cursor-pointer">
+        <div className="cursor-pointer hover:underline">
           {row.getValue("issueIdUrl").split("/").pop()}
         </div>
       </Link>
@@ -213,10 +213,6 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : cell.column.id === "teamSize"
-                              ? "pl-5 text-start w-72"
-                              : cell.column.id === "tools"
-                              ? "pl-3 text-start"
                               : "pl-4 text-start"
                           }`}
                         >

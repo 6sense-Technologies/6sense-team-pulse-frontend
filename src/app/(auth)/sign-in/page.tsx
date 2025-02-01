@@ -112,9 +112,9 @@ const SignIn = () => {
   }
 
   return (
-    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 ">
+    <div className="w-full h-screen grid grid-cols-1 md:grid-cols-2 overflow-y-hidden">
       <PageTitle title="Log in • Ops4 Team" />
-      <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
+      <div className="bg-blackishBg w-full md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
         </div>
@@ -124,7 +124,7 @@ const SignIn = () => {
           subHeading="Sofia Davis"
         />
       </div>
-      <div className="bg-white w-full">
+      <div className="bg-white w-full overflow-y-auto pb-4">
         <div className="flex justify-between md:justify-end mt-9 mx-4 md:mr-9  md:gap-0">
           <div className="block md:hidden bg-black text-center px-3">
             <Image src={Logo} alt="Ops4Team Logo" />
@@ -138,7 +138,9 @@ const SignIn = () => {
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-3 md:px-5">
-          <p className="text-3xl text-black font-semibold pt-4 md:pt-0">Sign in</p>
+          <p className="text-3xl text-black font-semibold pt-4 md:pt-0">
+            Sign in
+          </p>
           <div>
             <AuthPageHeader
               title="You are one click away"
@@ -149,7 +151,9 @@ const SignIn = () => {
           </div>
           <div className="flex gap-x-4">
             <Link href={"/sign-in/sso"}>
-              <Button variant="extralight"size="minixl" >SSO</Button>
+              <Button variant="extralight" size="minixl">
+                SSO
+              </Button>
             </Link>
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest">
@@ -169,12 +173,7 @@ const SignIn = () => {
                 />
               </Button>
               <Button variant="extralight" size="smallest">
-                <Image
-                  src={AppleLogo}
-                  width={24}
-                  height={24}
-                  alt="appleLogo"
-                />
+                <Image src={AppleLogo} width={24} height={24} alt="appleLogo" />
               </Button>
             </div>
           </div>
