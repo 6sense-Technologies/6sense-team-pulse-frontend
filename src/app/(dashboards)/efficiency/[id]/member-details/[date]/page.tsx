@@ -125,6 +125,9 @@ const EfficiencyMemberDetails: React.FC = () => {
             </div>
           </div>
         </div>
+        <span className="flex justify-end mb-4">
+                <CustomSingleDatePicker />
+              </span>
         <div className="tab">
           <div className="flex space-x-4 border-b">
             <button
@@ -151,10 +154,8 @@ const EfficiencyMemberDetails: React.FC = () => {
         </div>
         <div className="mt-4">
           {activeTab === "performance" ? (
-            <>
-              <span className="flex justify-end mb-4">
-                <CustomSingleDatePicker />
-              </span>
+            
+
               <PerformanceTable
                 totalCountAndLimit={totalCountAndLimit}
                 performanceItems={dailyPerformanceData}
@@ -162,7 +163,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 refetch={dailyPerformanceRefetch}
                 currentPage={pages}
               />
-            </>
+          
           ) : (
             <div>Comments Content Coming Soon</div>
           )}

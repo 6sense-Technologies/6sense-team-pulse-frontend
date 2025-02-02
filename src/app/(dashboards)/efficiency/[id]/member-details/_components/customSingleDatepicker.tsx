@@ -26,7 +26,7 @@ export function CustomSingleDatePicker() {
 
   return (
     <div className="flex items-center space-x-2">
-      <Button variant="outline" onClick={handlePreviousDay}>
+      <Button variant="outline" onClick={handlePreviousDay} disabled>
         <ChevronLeft className="w-4 h-4" />
       </Button>
       <Popover>
@@ -37,6 +37,7 @@ export function CustomSingleDatePicker() {
               "w-[220px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
+            disabled
           >
             <CalendarIcon className="mr-2 w-4 h-4" />
             {date ? format(date, "PPP") : <span>Pick a date</span>}
@@ -51,7 +52,7 @@ export function CustomSingleDatePicker() {
           />
         </PopoverContent>
       </Popover>
-      <Button variant="outline" onClick={handleNextDay}>
+      <Button variant="outline" onClick={handleNextDay} disabled>
         <ChevronRight className="w-4 h-4" />
       </Button>
     </div>

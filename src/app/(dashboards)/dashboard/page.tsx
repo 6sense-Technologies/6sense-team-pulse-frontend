@@ -3,7 +3,6 @@ import PageTitle from "@/components/PageTitle";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import Loader from "../../../components/loader";
 import { Button } from "@/components/ButtonComponent";
 
 const Dashboard = () => {

@@ -222,19 +222,19 @@ const ProjectCreate = () => {
               onClick={handleAddtools}
               className="mb-6"
             >
-              {projectMutation.isPending ? (
-                <Circle className="animate-spin" />
-              ) : (
-                "Add Tool"
-              )}
+                Add Tool
             </Button>
             <Button
               variant="darkish"
               size="lgExtended"
               type="submit"
-              className="mt-3"
+              className="mt-3 w-full max-w-[128px]"
             >
-              Create Project
+              {projectMutation.isPending ? (
+                <Circle className="animate-spin" size={14} />
+              ) : (
+                "Create Project"
+              )}
             </Button>
           </div>
         </div>

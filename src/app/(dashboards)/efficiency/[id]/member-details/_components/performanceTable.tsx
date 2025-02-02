@@ -75,7 +75,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
   },
   {
     accessorKey: "issueIdUrl",
-    header: () => <div className="text-bold">Linked ID</div>,
+    header: () => <div className="text-bold">Linked IDs</div>,
     cell: ({ row }: { row: any }) => (
       <Link href={row.getValue("issueIdUrl")} target="_blank">
         <div className="cursor-pointer hover:underline">

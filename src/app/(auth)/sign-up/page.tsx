@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -7,7 +7,7 @@ import GoogleLogo from "../../../../public/logo/googleLogo.svg";
 import FacebookLogo from "../../../../public/logo/facebookLogo.svg";
 import AppleLogo from "../../../../public/logo/appleLogo.svg";
 import OrDivider from "../_components/orDivider";
-import { redirect, useRouter } from "next/navigation";
+import {useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,8 +20,7 @@ import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
-import Cookies from "js-cookie";
-import { getSession, signIn, useSession } from "next-auth/react";
+import {signIn, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const SignUp = () => {
@@ -189,6 +188,7 @@ const SignUp = () => {
                 Email
               </label>
               <BaseInput
+                type="email"
                 control={control}
                 name="emailAddress"
                 errors={errors}

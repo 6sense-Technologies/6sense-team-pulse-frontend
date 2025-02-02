@@ -30,9 +30,10 @@ export function CustomDatePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              "w-[280px] justify-start text-left font-normal ",
+              !date && "text-muted-foreground cursor-not-allowed"
             )}
+            disabled
           >
             <CalendarIcon />
             {date?.from ? (

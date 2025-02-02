@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
-import { Input } from "@/components/ui/input";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import FooterTexts from "@/app/(auth)/_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import PageTitle from "@/components/PageTitle";
@@ -15,7 +14,7 @@ import { OrganizationSchema } from "../../../../../Zodschema/authSchema";
 import { TOrgazinationDetails } from "@/types/Auth.types";
 import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../api/Auth/authApi";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 
 const OrganizationDetails = () => {
@@ -47,7 +46,12 @@ const OrganizationDetails = () => {
 
   const handleSubmission: SubmitHandler<TOrgazinationDetails> = (data) => {
     setOrgError("");
-    OrganizationMutation.mutate(data);
+    // Convert the domain name to lowercase before submitting
+    const updatedData = {
+      ...data,
+      domainName: data.domainName.toLowerCase(),
+    };
+    OrganizationMutation.mutate(updatedData);
   };
 
   if (status === "loading") {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -193,6 +193,7 @@ const SignIn = () => {
                 Email
               </label>
               <BaseInput
+                type="email"
                 control={control}
                 name="emailAddress"
                 errors={errors}

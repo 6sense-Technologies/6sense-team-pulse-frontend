@@ -58,7 +58,7 @@ export const columns: ColumnDef<TeamMember>[] = [
           year: "numeric",
         })
         .replace(/\//g, "-");
-      return <div className="text-medium">{formattedDate || "-"}</div>;
+      return <div className="text-medium w-[120px]">{formattedDate || "-"}</div>;
     },
   },
   {
@@ -212,15 +212,16 @@ export const columns: ColumnDef<TeamMember>[] = [
           {isModalOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                  <Link
+              <Link
                     href={`/efficiency/${id}/member-details/${
                       new Date(row.original._id).toISOString().split("T")[0]
                     }`}
                   >
-                    View
-                  </Link>
+                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+
+                    View 
                 </li>
+                </Link>
                 <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
                   Add Comment
                 </li>
@@ -230,8 +231,8 @@ export const columns: ColumnDef<TeamMember>[] = [
                 <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
                   Project
                 </li>
-                <hr className="my-1" />
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer text-red-600">
+                <hr className="mt-1" />
+                <li className="px-4 py-3 text-start hover:bg-gray-100 cursor-pointer text-red-600 font-semibold">
                   Remove
                 </li>
               </ul>
