@@ -13,11 +13,7 @@ jest.mock('../src/components/loader', () => {
     return jest.fn(() => <div data-testid="mock-loader">Mock Loader</div>);
   });
 
-jest.mock('../api/auth/authApi', () => ({
-  handleOtp: jest.fn(() => Promise.resolve({ isValidated: true })),
-  handleResendOTP: jest.fn(() => Promise.resolve()),
-}));
-
+  
 global.ResizeObserver = jest.fn().mockImplementation(() => ({
     observe: jest.fn(),
     unobserve: jest.fn(),
