@@ -1,4 +1,3 @@
-import { Button } from "@/components/ButtonComponent";
 import { Input } from "@/components/ui/input";
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,7 @@ type SearchbarProps = {
   className?: string;
 };
 
-const TeamSearchbar: FC<SearchbarProps> = ({ placeholder, name, btntext, variant, className }) => {
+const TeamSearchbar: FC<SearchbarProps> = ({ placeholder, name, className }) => {
   return (
     <div className={cn("flex", className)}>
       <Search size={14} className="absolute text-subHeading mt-3 ml-[14px]"/>

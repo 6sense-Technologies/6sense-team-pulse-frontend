@@ -13,8 +13,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -127,7 +125,7 @@ export const MemberTable = ({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({ pageIndex: 0, pageSize: 10 });
+  const [pagination] = React.useState({ pageIndex: 0, pageSize: 10 });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPage, setCurrentPage] = React.useState(page);

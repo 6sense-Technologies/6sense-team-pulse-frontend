@@ -1,4 +1,3 @@
-import { COLOR_PRIMARY } from "@/app/utils/colorUtils";
 import GitContributionTable from "../GitContributionTable";
 import axios, { AxiosResponse } from "axios";
 import { useQuery } from "@tanstack/react-query";

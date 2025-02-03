@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import React, { useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -32,10 +32,10 @@ import ProjectCustomMenuItems from "./projectCustomMenuItems";
 
 const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
-const handleDetails = (project: Projects): void => {
-  localStorage.setItem("projectId", project._id);
-  window.location.href = `/projects/${project._id}?page=1`;
-};
+// const handleDetails = (project: Projects): void => {
+//   localStorage.setItem("projectId", project._id);
+//   window.location.href = `/projects/${project._id}?page=1`;
+// };
 
 export const columns: ColumnDef<Projects>[] = [
   {
@@ -80,9 +80,8 @@ export const columns: ColumnDef<Projects>[] = [
     id: "actions",
     header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
     enableHiding: false,
-    cell: ({ row }) => {
-      const project = row.original;
-      const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    cell: () => {
+      const [isMenuOpen, setIsMenuOpen] = useState(false);
       const ellipsisRef = React.useRef<HTMLDivElement>(null);
 
       const handleOpenMenu = () => {
@@ -133,7 +132,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [pagination] = React.useState({
     pageIndex: currentPage - 1,
     pageSize: 10,
   });

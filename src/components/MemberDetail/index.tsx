@@ -5,7 +5,6 @@ import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberInfo } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";

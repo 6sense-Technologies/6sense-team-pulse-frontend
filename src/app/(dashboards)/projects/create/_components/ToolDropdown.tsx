@@ -21,8 +21,6 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
 }) => {
   const {
     data: tools,
-    isFetching: toolsLoading,
-    refetch: toolsaRefetch,
   } = useQuery<ToolOptionList>({
     queryKey: ["getTools"],
     queryFn: () => GetTools(),

@@ -2,8 +2,6 @@ import Providers from "@/app/utils/react-query/providers/provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
 import { SessionProvider } from "next-auth/react";
 
 const Inter = localFont({

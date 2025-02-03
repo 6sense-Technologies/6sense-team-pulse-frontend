@@ -11,13 +11,11 @@ import AppleLogo from "../../../../../public/logo/appleLogo.svg";
 import { Input } from "@/components/ui/input";
 
 import OrDivider from "../../_components/orDivider";
-import { useRouter } from "next/navigation";
 import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 const SSOSignIn = () => {
-  const router = useRouter();
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">

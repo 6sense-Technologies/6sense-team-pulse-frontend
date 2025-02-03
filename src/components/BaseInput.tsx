@@ -22,7 +22,6 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
       errors = {},
       type = "text",
       externalError,
-      index,
       message,
       ...props
     },

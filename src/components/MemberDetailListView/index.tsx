@@ -2,10 +2,10 @@
 
 import { COLOR_TEXT_PRIMARY } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
-import { IIssueHistory, IMemberHistoryDetails } from "@/types/types";
+import { IMemberHistoryDetails } from "@/types/types";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { Button } from "../ButtonComponent";
 import PaginationComponent from "../Pagination";
@@ -32,7 +32,6 @@ const MemberDetailListView = ({
   const [isOpenCommentDialog, setIsOpenCommentDialog] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
 
-  const router = useRouter();
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit?.size)
     : 0;

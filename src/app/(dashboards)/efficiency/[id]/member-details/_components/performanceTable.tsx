@@ -26,7 +26,6 @@ import { Badge } from "@/components/ui/badge";
 import { Bookmark, Calendar, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
 import Link from "next/link";
-import { TeamPagination } from "../../../_components/teamPagination";
 import { PerformancePagination } from "../[date]/_components/performancePagination";
 
 type PerformanceItem = {
@@ -118,7 +117,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [pagination] = React.useState({
     pageIndex: currentPage - 1,
     pageSize: 10,
   });

@@ -214,7 +214,7 @@ const Verify = () => {
 
             <div>
               <p className="text-sm text-textMuted pt-4 text-start">
-                Didn't receive an email? Try checking your junk folder.
+              Didn&apos;t receive an email? Try checking your junk folder.
               </p>
               {isExpired && (
                 <p

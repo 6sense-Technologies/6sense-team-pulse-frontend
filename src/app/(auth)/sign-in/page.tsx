@@ -30,7 +30,6 @@ const SignIn = () => {
     handleSubmit,
     control,
     formState: { errors },
-    watch,
   } = useForm<TBasicSignInFormInputs>({
     resolver: zodResolver(LoginSchema),
   });

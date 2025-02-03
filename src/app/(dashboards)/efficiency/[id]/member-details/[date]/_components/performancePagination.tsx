@@ -1,5 +1,4 @@
 import {
-    Pagination,
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,
@@ -7,7 +6,7 @@ import {
     PaginationNext,
     PaginationPrevious,
   } from "@/components/ui/pagination";
-  import { useRouter } from "next/navigation";
+  import { useParams, useRouter } from "next/navigation";
   
   interface PaginationProps {
     currentPage: number;
@@ -28,7 +27,6 @@ import {
     totalPage,
     onPageChange,
     date,
-    member_id,
   }: PaginationProps) {
     const router = useRouter();
   
@@ -67,6 +65,8 @@ import {
     };
   
     const pagination = getPagination();
+
+    const {id} = useParams() as {id: string};
   
     return (
       <CustomPagination>

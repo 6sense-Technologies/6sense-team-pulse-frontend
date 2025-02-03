@@ -16,7 +16,6 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 
 const SSOSignUp = () => {
-  const router = useRouter();
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">

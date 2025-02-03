@@ -7,7 +7,6 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Button } from '../ButtonComponent';
 import { CommentSchema } from '../../../Zodschema/commentSchema';
 

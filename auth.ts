@@ -145,7 +145,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
-    async session({ trigger, session, token }) {
+    async session({session, token }) {
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
       session.isVerified = token.isVerified as boolean;

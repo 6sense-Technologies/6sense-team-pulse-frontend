@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -174,7 +174,7 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: () => <div className="text-bold text-right pr-4">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      const [isModalOpen, setIsModalOpen] = React.useState(false);
+      const [isModalOpen, setIsModalOpen] = useState(false);
 
       const handleIconClick = () => {
         setIsModalOpen(!isModalOpen);

@@ -15,7 +15,7 @@ import Link from "next/link";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
 
   const [pagination, setPagination] = useState({
     page: 1,

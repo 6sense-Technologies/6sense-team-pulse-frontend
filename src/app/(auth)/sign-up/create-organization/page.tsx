@@ -32,7 +32,7 @@ const OrganizationDetails = () => {
 
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
-    onSuccess: (data) => {
+    onSuccess: () => {
       update({ hasOrganization: true }).then(() => {
         router.push("/dashboard");
       });

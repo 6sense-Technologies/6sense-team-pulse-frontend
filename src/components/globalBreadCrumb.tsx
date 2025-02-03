@@ -7,7 +7,6 @@ import {
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
 import { Separator } from "@radix-ui/react-separator";
-import { SidebarTrigger } from "./ui/sidebar";
 
 type GlobalBreadCrumbProps = {
   initialData?: string;

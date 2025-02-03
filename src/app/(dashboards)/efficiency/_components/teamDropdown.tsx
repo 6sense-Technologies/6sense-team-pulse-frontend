@@ -26,8 +26,6 @@ export function TeamDropdown({
   placeholder,
   control,
   name,
-  errors = {},
-  additionalText,
   active = false,
 }: DropdownProps) {
   const renderSelect = (field: any) => (

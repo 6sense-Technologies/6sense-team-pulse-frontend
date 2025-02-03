@@ -4,12 +4,6 @@ import * as React from "react";
 
 import {
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,

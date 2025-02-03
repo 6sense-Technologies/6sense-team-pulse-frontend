@@ -1,5 +1,4 @@
 import {
-    Pagination,
     PaginationContent,
     PaginationEllipsis,
     PaginationItem,

@@ -3,15 +3,10 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Command,
-  Frame,
+
   GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+
 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { NavMain } from "@/components/nav-main"
@@ -24,7 +19,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { NavProjects } from "./nav-projects"
 import { NavUser } from "./nav-user"
 import { Users } from "@phosphor-icons/react"
 

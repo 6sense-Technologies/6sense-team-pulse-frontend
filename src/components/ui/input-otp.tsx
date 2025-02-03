@@ -39,7 +39,7 @@ const InputOTPSlot = React.forwardRef<
 >(({ index, className, ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext)
   const slot = inputOTPContext.slots[index] || { char: "", hasFakeCaret: false, isActive: false }
-  const { char, hasFakeCaret, isActive } = slot
+  const { char,isActive } = slot
 
   return (
     <input
@@ -49,7 +49,7 @@ const InputOTPSlot = React.forwardRef<
         isActive && "z-10 ring-1 border-y border-r border-input ring-black ",
         className
       )}
-      value={char}
+      value={char || ""}
       {...props}
     />
   )

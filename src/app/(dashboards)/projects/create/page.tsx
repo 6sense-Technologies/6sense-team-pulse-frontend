@@ -21,7 +21,6 @@ const ProjectCreate = () => {
     handleSubmit,
     control,
     formState: { errors },
-    register,
     setError,
     clearErrors,
   } = useForm<ProjectTools>({

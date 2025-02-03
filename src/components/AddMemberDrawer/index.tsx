@@ -317,15 +317,15 @@ import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IDesignation, IProject } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Warning, X } from "@phosphor-icons/react";
+import { X } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
-import { z } from "zod";
 import { Button } from "../ButtonComponent";
+import { MemberSchema } from "../../../Zodschema/memberSchema";
 
 interface IProps {
   isOpen: boolean;
@@ -419,7 +419,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   });
 
   const handleProjectChange = (selectedIds: string[]) => {
-    const selected = projects.filter((project: IProject) =>
+    const selected = (Array.isArray(projects) ? projects : projects.projects).filter((project: IProject) =>
       selectedIds.includes(project._id)
     );
 
@@ -499,7 +499,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       errors.projects ? "border-red-400" : ""
                     )}
                   >
-                    {projects.map((project) => (
+                    {(Array.isArray(projects) ? projects : projects.projects).map((project) => (
                       <option key={project._id} value={project._id}>
                         {project.name}
                       </option>

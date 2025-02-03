@@ -2,13 +2,10 @@ import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import {
   TBasicSignupFormInputs,
   TOrgazinationDetails,
-  TResndOtp,
   TVerifyEmail,
 } from "@/types/Auth.types";
 import axios from "axios";
 
-
-const accessToken = localStorage.getItem("accessToken");
 
 
 export const handleBasicSignup = async (data: TBasicSignupFormInputs) => {

@@ -13,8 +13,8 @@ import { GetDailyPerformance } from "../../../../../../../api/Efficiency/efficie
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [activeTab, setActiveTab] = useState<string>("performance");
+  const [limit] = useState<number>(10);
 
   interface Pagination {
     page: number;
