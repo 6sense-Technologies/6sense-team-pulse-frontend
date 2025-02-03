@@ -221,7 +221,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )}
+                        )}                    ` ` ¬
                         </TableCell>
                       ))}
                     </TableRow>
