@@ -14,7 +14,7 @@ import { TeamList } from "@/types/Efficiency.types";
 const TeamListPage: React.FC = () => {
 
   const [pages, setPages] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit] = useState<number>(10);
 
   interface Pagination {
     page: number;

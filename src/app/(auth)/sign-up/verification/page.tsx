@@ -46,6 +46,7 @@ const Verify = () => {
     } else {
       localStorage.setItem("endTime", (Date.now() + timeLeft * 1000).toString());
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

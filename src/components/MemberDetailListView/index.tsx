@@ -4,7 +4,7 @@ import { COLOR_TEXT_PRIMARY } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberHistoryDetails } from "@/types/types";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { Button } from "../ButtonComponent";

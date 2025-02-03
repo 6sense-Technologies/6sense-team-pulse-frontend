@@ -27,7 +27,7 @@ export function TeamSwitcher({
   }[];
 }) {
   const { isMobile, open } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  // const [activeTeam, setActiveTeam] = React.useState(teams[0]);
 
   console.log("🚀 ~ open:", open);
   console.log(isMobile);

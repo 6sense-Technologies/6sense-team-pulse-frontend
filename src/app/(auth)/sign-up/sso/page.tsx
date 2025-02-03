@@ -8,7 +8,6 @@ import FacebookLogo from "../../../../../public/logo/facebookLogo.svg";
 import AppleLogo from "../../../../../public/logo/appleLogo.svg";
 
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import OrDivider from "../../_components/orDivider";
 import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";

@@ -146,7 +146,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [pagination] = React.useState({
     pageIndex: currentPage - 1,
     pageSize: 10,
   });

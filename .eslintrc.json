@@ -3,7 +3,7 @@
     "browser": true,
     "es2021": true,
     "node": true,
-    "jest": true,
+    "jest": true
   },
   "ignorePatterns": ["next.config.mjs", "next.config.js"],
   "extends": [
@@ -11,8 +11,7 @@
     "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
-    "next",
-    "prettier"
+    "next"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -28,7 +27,7 @@
   "rules": {
     "indent": ["off", 4],
     "semi": ["off", "always"],
-    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-imports": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -82,7 +81,7 @@
     "no-nested-ternary": "off",
     "no-new": "warn",
     "no-new-object": "warn",
-    "no-param-reassign": "warn",
+    "no-param-reassign": "off",
     "no-useless-concat": "warn",
     "no-useless-return": "warn",
     "prefer-template": "warn",

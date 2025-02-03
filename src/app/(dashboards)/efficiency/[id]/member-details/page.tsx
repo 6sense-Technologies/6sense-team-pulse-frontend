@@ -23,7 +23,7 @@ const getInitials = (name: string) => {
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit] = useState<number>(10);
   const [activeTab, setActiveTab] = useState<string>("performance");
 
   const { id } = useParams() as { id: string };

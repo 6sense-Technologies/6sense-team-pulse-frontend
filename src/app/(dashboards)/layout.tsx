@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${Inter.className} antialiased`}>
         <SessionProvider>
-          <Sidebar children={children} />
+          <Sidebar>{children}</Sidebar>
         </SessionProvider>
       </body>
     </html>

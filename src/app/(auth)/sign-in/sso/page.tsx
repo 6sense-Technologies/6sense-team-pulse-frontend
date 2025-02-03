@@ -15,6 +15,7 @@ import FooterTexts from "../../_components/footerTexts";
 import AuthPageHeader from "../../_components/authPageHeader";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
+
 const SSOSignIn = () => {
 
   return (

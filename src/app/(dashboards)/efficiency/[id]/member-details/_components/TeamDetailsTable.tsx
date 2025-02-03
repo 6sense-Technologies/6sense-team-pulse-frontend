@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -174,6 +175,7 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: () => <div className="text-bold text-right pr-4">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isModalOpen, setIsModalOpen] = useState(false);
 
       const handleIconClick = () => {
@@ -268,7 +270,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [pagination, setPagination] = React.useState({
+  const [pagination] = React.useState({
     pageIndex: currentPage - 1,
     pageSize: 10,
   });

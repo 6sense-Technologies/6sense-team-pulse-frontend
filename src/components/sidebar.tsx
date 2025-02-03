@@ -48,9 +48,7 @@ const Sidebar: FC<TSidebarprop> = ({ children }) => {
   } else if (session.status == "unauthenticated") {
     router.push("/sign-in");
     return <Loader />;
-  } else {
-    return <Loader />;
-  }
+  } 
 };
 
 export default Sidebar;
