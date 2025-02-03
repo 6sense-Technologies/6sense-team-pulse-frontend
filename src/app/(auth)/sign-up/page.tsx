@@ -230,10 +230,7 @@ const SignUp = () => {
                 Terms of Service
               </span>{" "}
               and{" "}
-              <span className="cursor-pointer border-b-[1px] border-subHeading">
-                Privacy Policy
-              </span>
-              .
+              <span className="underline cursor-pointer">Privacy Policy</span>.
             </p>
           </div>
         </div>

@@ -56,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log("CREDENTIALS:", credentials);
 
           const response = await axios.post(
-            "http://localhost:8000/auth/login",
+            "http://192.168.0.158:8000/auth/login",
             {
               emailAddress: credentials?.emailAddress,
               password: credentials?.password,
@@ -127,7 +127,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Google login flow
         // console.log("FOUND GOOGLE AUTH FLOW");
         const response = await axios.post(
-          "http://localhost:8000/auth/social-login",
+          "http://192.168.0.158:8000/auth/social-login",
           {
             idToken: account.id_token,
             provider: "google",

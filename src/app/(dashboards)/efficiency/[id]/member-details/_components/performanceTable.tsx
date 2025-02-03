@@ -34,6 +34,7 @@ type PerformanceItem = {
   issueSummary: string;
   issueIdUrl: string;
   issueStatus: string;
+  linkedId: string;
 };
 
 export const columns: ColumnDef<PerformanceItem>[] = [
@@ -213,7 +214,9 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : "pl-4 text-start"
+                              : cell.column.id === "issueIdUrl"? "w-[150px]"
+                              : cell.column.id === "issueStatus"? "w-[150px] text-nowrap"
+                              :"pl-4 text-start"
                           }`}
                         >
                           {flexRender(
