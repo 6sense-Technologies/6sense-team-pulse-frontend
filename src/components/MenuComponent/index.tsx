@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/app/components/UI/ButtonComponent";
-import IconComponent from "@/app/components/UI/IconComponent";
-import ImageComponent from "@/app/components/UI/ImageComponent";
+import { Button } from "@/components/ButtonComponent";
+import IconComponent from "@/components/IconComponent";
+import ImageComponent from "@/components/ImageComponent";
 import { COLOR_MENU_TEXT, COLOR_PRIMARY } from "@/app/utils/colorUtils";
 import { cn } from "@/app/utils/tailwindMerge";
 import Link from "next/link";

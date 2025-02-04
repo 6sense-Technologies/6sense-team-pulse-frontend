@@ -1,11 +1,12 @@
 "use client";
-import { Button } from "@/app/components/UI/ButtonComponent";
-import ImageComponent from "@/app/components/UI/ImageComponent";
-import PaginationComponent from "@/app/components/UI/Pagination";
+import { Button } from "@/components/ButtonComponent";
+import ImageComponent from "@/components/ImageComponent";
+import PaginationComponent from "@/components/Pagination";
 import { cn } from "@/app/utils/tailwindMerge";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+///
 interface IProps {
     _id: string;
     accountId: string;

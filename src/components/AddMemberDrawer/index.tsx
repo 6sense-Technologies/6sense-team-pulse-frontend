@@ -1,5 +1,5 @@
 // "use client";
-// import { Button } from "@/app/components/UI/ButtonComponent";
+// import { Button } from "@/components/UI/ButtonComponent";
 // import { BACKEND_URI } from "@/app/utils/constants/constants";
 // import { cn } from "@/app/utils/tailwindMerge";
 // import { IDesignation, IProjects } from "@/types/types";

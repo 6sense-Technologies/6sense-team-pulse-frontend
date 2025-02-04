@@ -156,7 +156,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async redirect({ baseUrl }) {
-      return `${baseUrl}/dashboard`;
+
+    return `${baseUrl}/dashboard`;
+
     },
   },
 });
+//updated
