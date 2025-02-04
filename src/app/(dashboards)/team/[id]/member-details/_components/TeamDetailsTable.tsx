@@ -27,6 +27,7 @@ import { EllipsisVertical } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
 import Link from "next/link";
 import { TeamDetailsPagination } from "./teamDetailsPagination";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type TeamMember = {
   _id: string;
@@ -165,9 +166,18 @@ export const columns: ColumnDef<TeamMember>[] = [
     accessorKey: "insight",
     header: () => <div className="text-bold">Insight</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium line-clamp-2 justify-text">
-        {row.getValue("insight") || "-"}
-      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="text-medium line-clamp-2 justify-text">
+              {row.getValue("insight") || "-"}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="bg-primary text-white w-[200px]">
+            {row.getValue("insight") || "-"}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
@@ -214,15 +224,14 @@ export const columns: ColumnDef<TeamMember>[] = [
           {isModalOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
-              <Link
-                    href={`/efficiency/${id}/member-details/${
-                      new Date(row.original._id).toISOString().split("T")[0]
-                    }`}
-                  >
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-
-                    View 
-                </li>
+                <Link
+                  href={`/team/${id}/member-details/${
+                    new Date(row.original._id).toISOString().split("T")[0]
+                  }`}
+                >
+                  <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                    View
+                  </li>
                 </Link>
                 <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
                   Add Comment

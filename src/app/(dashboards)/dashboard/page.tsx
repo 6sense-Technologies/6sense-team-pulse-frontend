@@ -16,6 +16,8 @@ const Dashboard = () => {
   
   localStorage.setItem("accessToken", session.data?.accessToken as string);
 
+  console.log("Session Data", session.data);
+
   return (
     <div>
       <PageTitle

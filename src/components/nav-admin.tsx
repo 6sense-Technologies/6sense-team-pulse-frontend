@@ -8,11 +8,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
-export function NavMain({
+export function NavAdmin({
   items,
   selectedItem,
   onItemClick,
@@ -33,7 +34,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className='text-sidebarSecondaryColor'>Platform</SidebarGroupLabel>
+      <SidebarGroupLabel className='text-sidebarSecondaryColor'>Admin Area</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>

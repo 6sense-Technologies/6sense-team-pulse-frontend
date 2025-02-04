@@ -8,7 +8,7 @@ import { ProjectTable } from "../_components/projectTable";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
 import { useQuery } from "@tanstack/react-query";
-import { GetProjectList } from "../../../../../api/projects/projectApi";
+import { GetProjectList } from "../../../../../helpers/projects/projectApi";
 import { useSearchParams } from "next/navigation";
 import { FolderPlus } from "lucide-react";
 import Link from "next/link";

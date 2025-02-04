@@ -1,71 +1,132 @@
-"use client"
-
-import * as React from "react"
+'use client';
 import {
-  AudioWaveform,
-  Command,
-
+  Bot,
+  Boxes,
+  Ellipsis,
+  Frame,
   GalleryVerticalEnd,
+  KeyRound,
+  MessageSquareWarning,
+  SquareTerminal,
+  Users,
+} from 'lucide-react';
 
-} from "lucide-react"
-import { useSession } from "next-auth/react"
-import { NavMain } from "@/components/nav-main"
+import { NavMain } from '@/components/nav-main';
 
-import { TeamSwitcher } from "@/components/team-switcher"
+import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import { NavUser } from "./nav-user"
-import { Users } from "@phosphor-icons/react"
+} from '@/components/ui/sidebar';
+import { useSession } from 'next-auth/react';
+import { NavAdmin } from './nav-admin';
+import { useState, useEffect } from 'react';
 
-// This is sample data.
 const defaultData = {
   user: {
     name: 'Khan Atik Faisal',
-    email: 'Khanatik1176@gmail.com',
+    email: '',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: "Acme Inc",
+      name: 'Ops4Team',
       logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
+      plan: 'Admin',
     },
   ],
   navMain: [
     {
-      title: "Members",
-      url: "#",
-      icon: Users,
+      title: 'Dashboard',
+      url: '/dashboard',
+      icon: SquareTerminal,
       isActive: true,
-        items: [
-            { title: "Dashboard", url: "/dashboard" },
-            {title: "Projects", url: "/projects"},
-          {title:"Team" , url:"/efficiency"}  ],
     },
-]
-
-
-}
+    {
+      title: 'Projects',
+      url: '/projects',
+      icon: Bot,
+    },
+    {
+      title: 'Team',
+      url: '/team',
+      icon: Users,
+    },
+    {
+      title: 'Feedback',
+      url: '#',
+      icon: MessageSquareWarning,
+      items: [
+        {
+          title: 'Peers',
+          url: '#',
+        },
+        {
+          title: 'Clients',
+          url: '#',
+        },
+      ],
+    },
+  ],
+  navAdmin: [
+    {
+      title: 'Organizations',
+      url: '/',
+      icon: Frame,
+      isActive: true,
+    },
+    {
+      title: 'Members',
+      url: '/',
+      icon: Users,
+    },
+    {
+      title: 'Access Control',
+      url: '#',
+      icon: KeyRound,
+      items: [
+        {
+          title: 'Roles',
+          url: '#',
+        },
+        {
+          title: 'Permissions',
+          url: '#',
+        },
+      ],
+    },
+    {
+      title: 'Integrations',
+      url: '#',
+      icon: Boxes,
+    },
+    {
+      title: 'Settings',
+      url: '#',
+      icon: Ellipsis,
+    },
+  ],
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const session = useSession();
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
-  console.log("🚀 ~ file: app-sidebar.tsx ~ line 70 ~ AppSidebar ~ session", session)
+  useEffect(() => {
+    const savedSelectedItem = localStorage.getItem('selectedItem');
+    if (savedSelectedItem) {
+      setSelectedItem(savedSelectedItem);
+    } else {
+      setSelectedItem('Dashboard');
+    }
+  }, []);
+
+  const handleItemClick = (title: string) => {
+    setSelectedItem(title);
+    localStorage.setItem('selectedItem', title);
+  };
 
   const userData = {
     name: session?.data?.user?.name || defaultData.user.name,
@@ -77,18 +138,17 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     ...defaultData,
     user: userData,
   };
+
   return (
-<Sidebar collapsible='icon' {...props} className="bg-[#FAFBFC]">
-<SidebarHeader className="bg-[#FAFBFC]">
-  <TeamSwitcher teams={data.teams} />
-</SidebarHeader>
-<SidebarContent className="bg-[#FAFBFC]">
-  <NavMain items={data.navMain} />
-</SidebarContent>
-<SidebarFooter>
-  <NavUser user={data.user} />
-</SidebarFooter>
-<SidebarRail />
-</Sidebar>
-  )
+    <Sidebar collapsible='icon' {...props}>
+      <SidebarHeader>
+        <TeamSwitcher teams={data.teams} />
+      </SidebarHeader>
+      <SidebarContent>
+        <NavMain items={data.navMain} selectedItem={selectedItem} onItemClick={handleItemClick} />
+        <NavAdmin items={data.navAdmin} selectedItem={selectedItem} onItemClick={handleItemClick} />
+      </SidebarContent>
+      <SidebarRail />
+    </Sidebar>
+  );
 }
