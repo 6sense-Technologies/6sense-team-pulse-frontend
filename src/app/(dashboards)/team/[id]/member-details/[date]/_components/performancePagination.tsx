@@ -80,7 +80,7 @@ import {
                 e.preventDefault();
                 if (currentPage > 1) {
                   onPageChange(currentPage - 1);
-                  router.push(`/efficiency/${id}/member-details/${date}?page=${currentPage - 1}`);
+                  router.push(`/team/${id}/member-details/${date}?page=${currentPage - 1}`);
                 }
               }}
             />
@@ -96,7 +96,7 @@ import {
                   onClick={(e) => {
                     e.preventDefault();
                     onPageChange(page);
-                    router.push(`/efficiency/${id}/member-details/${date}?page=${page}`);
+                    router.push(`/team/${id}/member-details/${date}?page=${page}`);
                   }}
                 >
                   {page}
@@ -115,7 +115,7 @@ import {
                 e.preventDefault();
                 if (currentPage < totalPage) {
                   onPageChange(currentPage + 1);
-                  router.push(`/efficiency/${id}/member-details/${date}?page=${currentPage + 1}`);
+                  router.push(`/team/${id}/member-details/${date}?page=${currentPage + 1}`);
                 }
               }}
             />

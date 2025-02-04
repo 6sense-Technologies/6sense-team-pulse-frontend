@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom';
 import { render, screen} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import EfficiencyMemberDetails from '../src/app/(dashboards)/efficiency/[id]/member-details/page'; // Adjust import as needed
-import { GetIndividualOverview } from '../api/Efficiency/efficiencyApi'; // Adjust import as needed
+import EfficiencyMemberDetails from '../src/app/(dashboards)/team/[id]/member-details/page'; // Adjust import as needed
+import { GetIndividualOverview } from '../api/Team/teamApi'; // Adjust import as needed
 
 // Mock external libraries
 jest.mock('lucide-react', () => ({
@@ -35,16 +35,16 @@ jest.mock('../src/components/ui/avatar', () => ({
   AvatarFallback: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-jest.mock('../src/app/(dashboards)/efficiency/[id]/member-details/_components/TeamDetailsTable', () => ({
+jest.mock('../src/app/(dashboards)/team/[id]/member-details/_components/TeamDetailsTable', () => ({
   TeamDetailsTable: () => <div data-testid="team-details-table">Mock Team Table</div>,
 }));
 
-jest.mock('../src/app/(dashboards)/efficiency/[id]/member-details/_components/customDatePicker', () => ({
+jest.mock('../src/app/(dashboards)/team/[id]/member-details/_components/customDatePicker', () => ({
   CustomDatePicker: () => <div data-testid="custom-date-picker">Mock Date Picker</div>,
 }));
 
 // Mock API functions
-jest.mock('../api/Efficiency/efficiencyApi', () => ({
+jest.mock('../api/Efficiency/teamApi', () => ({
   GetIndividualOverview: jest.fn(),
 }));
 

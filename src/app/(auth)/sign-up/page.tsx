@@ -22,11 +22,17 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import {signIn, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignUp = () => {
   const router = useRouter();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handlePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const {
     handleSubmit,
@@ -203,14 +209,33 @@ const SignUp = () => {
               >
                 Password
               </label>
-              <BaseInput
-                control={control}
-                name="password"
-                type="password"
-                errors={errors}
-                placeholder="Password"
-                className="placeholder:text-subHeading w-full mt-[4px]"
-              />
+              <div className="relative">
+        <BaseInput
+          control={control}
+          name="password"
+          type={passwordVisible ? 'text' : 'password'}
+          errors={errors}
+          placeholder="Password"
+          className="placeholder:text-subHeading w-full mt-[4px]"
+        />
+        <button
+          type="button"
+          onClick={handlePasswordVisibility}
+          className="absolute right-5 top-2.5"
+        >
+          {passwordVisible ? (
+            <Eye
+              size={20}
+              className="text-xl text-deepBlackColor"
+            />
+          ) : (
+            <EyeOff
+              size={20}
+              className="text-xl text-deepBlackColor font-normal"
+            />
+          )}
+        </button>
+      </div>
             </div>
 
             <Button variant="dark" className="mt-8 w-full">

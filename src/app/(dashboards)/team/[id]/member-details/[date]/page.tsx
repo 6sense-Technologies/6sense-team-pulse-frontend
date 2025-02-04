@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance } from "../../../../../../../api/Efficiency/efficiencyApi";
+import { GetDailyPerformance } from "../../../../../../../api/Team/teamApi";
 
 
 const EfficiencyMemberDetails: React.FC = () => {
@@ -90,10 +90,12 @@ const EfficiencyMemberDetails: React.FC = () => {
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
-          initialData="Profile"
-          initalLink="/efficiency"
-          secondayData="Daily Performance"
-          secondayLink={`/team-efficiency/${member_id}/member-details/${date}`}
+          initialData="Team"
+          initalLink="/team"
+          secondayData="Profile"
+          secondayLink={`/team/${member_id}/member-details`}
+          thirdData="Daily Performance"
+          thirdLink={`/team/${member_id}/member-details/${date}`}
         />
         <PageHeading
           title="Daily Performance"
@@ -126,26 +128,24 @@ const EfficiencyMemberDetails: React.FC = () => {
           </div>
         </div>
         <span className="flex justify-end mb-4">
-                <CustomSingleDatePicker />
-              </span>
+          <CustomSingleDatePicker />
+        </span>
         <div className="tab">
           <div className="flex space-x-4 border-b">
             <button
-              className={`py-2 px-4 ${
-                activeTab === "performance"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 ${activeTab === "performance"
+                ? "border-b-2 border-black font-semibold"
+                : ""
+                }`}
               onClick={() => setActiveTab("performance")}
             >
               Performance
             </button>
             <button
-              className={`py-2 px-4 ${
-                activeTab === "comments"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 ${activeTab === "comments"
+                ? "border-b-2 border-black font-semibold"
+                : ""
+                }`}
               onClick={() => setActiveTab("comments")}
             >
               Comments
@@ -154,16 +154,16 @@ const EfficiencyMemberDetails: React.FC = () => {
         </div>
         <div className="mt-4">
           {activeTab === "performance" ? (
-            
 
-              <PerformanceTable
-                totalCountAndLimit={totalCountAndLimit}
-                performanceItems={dailyPerformanceData}
-                loading={dailyPerformanceLoading}
-                refetch={dailyPerformanceRefetch}
-                currentPage={pages}
-              />
-          
+
+            <PerformanceTable
+              totalCountAndLimit={totalCountAndLimit}
+              performanceItems={dailyPerformanceData}
+              loading={dailyPerformanceLoading}
+              refetch={dailyPerformanceRefetch}
+              currentPage={pages}
+            />
+
           ) : (
             <div>Comments Content Coming Soon</div>
           )}

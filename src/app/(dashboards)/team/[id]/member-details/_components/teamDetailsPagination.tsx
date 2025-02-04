@@ -12,6 +12,7 @@ import {
     currentPage: number;
     totalPage: number;
     onPageChange: (page: number) => void;
+    Memberid: string;
   }
   
   const CustomPagination: React.FC<{ children: React.ReactNode }> = ({
@@ -20,10 +21,11 @@ import {
     return <div>{children}</div>;
   };
   
-  export function TeamPagination({
+  export function TeamDetailsPagination({
     currentPage,
     totalPage,
     onPageChange,
+    Memberid,
   }: PaginationProps) {
     const router = useRouter();
   
@@ -75,7 +77,7 @@ import {
                 e.preventDefault();
                 if (currentPage > 1) {
                   onPageChange(currentPage - 1);
-                  router.push(`/efficiency?page=${currentPage - 1}`);
+                  router.push(`/team/${Memberid}/member-details?page=${currentPage - 1}`);
                 }
               }}
             />
@@ -91,7 +93,7 @@ import {
                   onClick={(e) => {
                     e.preventDefault();
                     onPageChange(page);
-                    router.push(`/efficiency?page=${page}`);
+                    router.push(`/team/${Memberid}/member-details?page=${page}`);
                   }}
                 >
                   {page}
@@ -110,7 +112,7 @@ import {
                 e.preventDefault();
                 if (currentPage < totalPage) {
                   onPageChange(currentPage + 1);
-                  router.push(`/efficiency?page=${currentPage + 1}`);
+                  router.push(`/team/${Memberid}/member-details?page=${currentPage + 1}`);
                 }
               }}
             />

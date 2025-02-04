@@ -1,6 +1,6 @@
 import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import axios from "axios";
-import { TeamList } from "@/types/Efficiency.types";
+import { TeamList } from "@/types/Team.types";
 
 interface TPaginationProps {
   page: number;
@@ -30,7 +30,7 @@ export const GetTeamList = async ({ page, limit }: TPaginationProps) => {
     }
   );
 
-  // console.log("Team Data",response.data);
+  console.log("Team Data",response.data);
   return response.data as TeamList;
 };
 
