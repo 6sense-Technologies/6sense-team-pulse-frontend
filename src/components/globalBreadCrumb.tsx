@@ -55,7 +55,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
             ) : null}
             {thirdData ? (
               <>
-                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbSeparator className="hidden md:block text-subHeading" />
                 <BreadcrumbItem>
                   <BreadcrumbLink href={thirdLink} className="!text-black text-sm">
                     {thirdData}

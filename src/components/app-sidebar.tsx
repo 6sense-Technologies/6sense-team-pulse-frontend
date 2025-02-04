@@ -140,11 +140,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar collapsible='icon' {...props}>
-      <SidebarHeader>
+    <Sidebar collapsible='icon' {...props} className='border-none'>
+      <SidebarHeader className='bg-[#F1F5F9]'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='bg-[#F1F5F9]'>
         <NavMain items={data.navMain} selectedItem={selectedItem} onItemClick={handleItemClick} />
         <NavAdmin items={data.navAdmin} selectedItem={selectedItem} onItemClick={handleItemClick} />
       </SidebarContent>
