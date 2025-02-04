@@ -15,7 +15,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { TBasicSignupFormInputs } from "@/types/Auth.types";
 import { SignupSchema } from "../../../../Zodschema/authSchema";
 import { useMutation } from "@tanstack/react-query";
-import { handleBasicSignup } from "../../../../api/Auth/authApi";
+import { handleBasicSignup } from "../../../../helpers/Auth/authApi";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";

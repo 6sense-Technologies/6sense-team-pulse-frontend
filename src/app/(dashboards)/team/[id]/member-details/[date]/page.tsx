@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance } from "../../../../../../../api/Team/teamApi";
+import { GetDailyPerformance } from "../../../../../../../helpers/Team/teamApi"
 
 
 const EfficiencyMemberDetails: React.FC = () => {

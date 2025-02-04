@@ -8,7 +8,7 @@ import { TeamDropdown } from "./_components/teamDropdown";
 import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetTeamList } from "../../../../api/Team/teamApi";
+import { GetTeamList } from "../../../../helpers/Team/teamApi";
 import { TeamList } from "@/types/Team.types";
 
 const TeamListPage: React.FC = () => {

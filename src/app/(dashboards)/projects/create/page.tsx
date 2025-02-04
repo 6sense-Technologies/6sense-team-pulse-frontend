@@ -12,7 +12,7 @@ import WorkspaceURL from "./_components/WorkspaceURL";
 import { Circle, Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
-import { CreateProject } from "../../../../../api/projects/projectApi";
+import { CreateProject } from "../../../../../helpers/projects/projectApi";
 
 const ProjectCreate = () => {
   const router = useRouter();

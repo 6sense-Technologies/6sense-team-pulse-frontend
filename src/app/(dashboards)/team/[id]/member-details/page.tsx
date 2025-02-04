@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview } from "../../../../../../api/Team/teamApi";
+import { GetIndividualOverview } from "../../../../../../helpers/Team/teamApi"
 import { useQuery } from "@tanstack/react-query";
 
 const getInitials = (name: string) => {
