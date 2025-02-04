@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
@@ -28,8 +29,9 @@ const OrganizationDetails = () => {
     resolver: zodResolver(OrganizationSchema),
   });
   const { data: session, status, update } = useSession();
-  localStorage.setItem("accessToken", session?.accessToken as string);
-
+  if(typeof window !== 'undefined'){
+    localStorage.setItem("accessToken", session?.accessToken as string);
+  }
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
     onSuccess: () => {

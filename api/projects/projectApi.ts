@@ -6,14 +6,19 @@ interface TPaginationProps {
   page: number;
   limit: number;
 }
-
-const accessToken = localStorage.getItem("accessToken");
-
+let accessToken =null;
+if(typeof window!=='undefined'){
+  accessToken=localStorage.getItem("accessToken");
+}
 export const GetProjectList = async ( {page, limit} : TPaginationProps) => {
+  let accessToken = null;
+  if(typeof window!=='undefined'){
+    accessToken=localStorage.getItem('accessToken')
+  }
   const response = await axios.get(`${TEMP_BACKEND_URI}/projects?page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
