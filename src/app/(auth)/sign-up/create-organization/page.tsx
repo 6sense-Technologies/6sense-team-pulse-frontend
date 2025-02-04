@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Logo from "../../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -21,17 +20,37 @@ import Loader from "@/components/loader";
 const OrganizationDetails = () => {
   const router = useRouter();
   const [orgError, setOrgError] = useState<string>("");
+  const domainInputRef = useRef<HTMLInputElement>(null);
   const {
     handleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<TOrgazinationDetails>({
     resolver: zodResolver(OrganizationSchema),
   });
   const { data: session, status, update } = useSession();
-  if(typeof window !== 'undefined'){
+  if (typeof window !== 'undefined') {
+
     localStorage.setItem("accessToken", session?.accessToken as string);
   }
+  const organizationName = watch("organizationName");
+
+  useEffect(() => {
+    if (domainInputRef.current) {
+      if (organizationName) {
+        const domainValue = organizationName.toLowerCase().replace(/\s+/g, "");
+        domainInputRef.current.value = domainValue;
+        setValue("domainName", domainValue);
+      } else {
+        domainInputRef.current.value = "";
+        setValue("domainName", "");
+      }
+    }
+  }, [organizationName, setValue]);
+
+
   const OrganizationMutation = useMutation({
     mutationFn: handleOrganizationDetails,
     onSuccess: () => {
@@ -142,6 +161,7 @@ const OrganizationDetails = () => {
                   type="text"
                   placeholder="Domain"
                   className="placeholder:text-subHeading w-full mt-[4px]"
+                  ref={domainInputRef}
                 />
                 <span className="text-sm border text-black bg-lightAquaBg h-9 w-full max-w-[85px] rounded-md py-2 px-2 mt-1 text-center">
                   .ops4.ai
@@ -151,10 +171,11 @@ const OrganizationDetails = () => {
                 <p className="text-destructive  font-medium text-sm absolute pt-2">
                   {errors.domainName.message}
                 </p>
-              ):
-              (orgError ? (
-                <p className="text-destructive font-medium text-sm absolute pt-2">{orgError}</p>
-              ) : null)}
+              ) : orgError ? (
+                <p className="text-destructive font-medium text-sm absolute pt-2">
+                  {orgError}
+                </p>
+              ) : null}
             </div>
 
             <Button
