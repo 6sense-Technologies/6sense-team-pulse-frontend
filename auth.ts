@@ -56,7 +56,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log("CREDENTIALS:", credentials);
 
           const response = await axios.post(
-            "http://192.168.0.158:8000/auth/login",
+            "https://6sense-team-pulse-backend.vercel.app/auth/login",
             {
               emailAddress: credentials?.emailAddress,
               password: credentials?.password,
@@ -70,16 +70,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           // console.log('RESPONSE:', response);
           // console.log('RESPONSE-STATUS:', response.status);
           const data = response.data;
-          console.log(data);
+          // console.log(data);
 
           // console.log('DATA:', response.data);
           // console.log(data?.userInfo?.name);
           // Ensure tokens are included in the returned object
           if (data?.accessToken) {
-            console.log(data);
+            // console.log(data);
             return {
               emailAddress: credentials.emailAddress,
-              name: data?.userInfo?.name,
+              name: data?.userInfo?.displayName,
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
               isVerified: data?.userInfo?.isVerified,
@@ -114,7 +114,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
       // Merge tokens for both Google and Credential-based logins
-
+      // console.log("Session User",user);
+      
       if (user) {
         console.log("SESSION FLOW");
         token.accessToken = user.accessToken || token.accessToken;
@@ -127,7 +128,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Google login flow
         // console.log("FOUND GOOGLE AUTH FLOW");
         const response = await axios.post(
-          "http://192.168.0.158:8000/auth/social-login",
+          "https://6sense-team-pulse-backend.vercel.app/auth/social-login",
           {
             idToken: account.id_token,
             provider: "google",
@@ -155,7 +156,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async redirect({ baseUrl }) {
-      return baseUrl + "/dashboard";
+      return `${baseUrl}/dashboard`;
     },
   },
 });

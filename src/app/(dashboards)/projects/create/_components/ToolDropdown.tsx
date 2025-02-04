@@ -35,7 +35,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
     })) || [];
 
   return (
-    <div className="w-full max-w-[553px] mt-8 relative">
+    <div className="w-full max-w-[553px] pl-2 lg:pl-0 mt-3 lg:mt-8 relative">
       <label
         htmlFor="projectName"
         className="text-sm font-medium text-black pb-[6px]"
@@ -55,7 +55,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
         options={toolOptions}
       />
       {errors && (
-        <p className="text-destructive text-sm font-medium absolute">
+        <p className="text-destructive text-sm font-medium absolute pt-1">
           {errors}
         </p>
       )}

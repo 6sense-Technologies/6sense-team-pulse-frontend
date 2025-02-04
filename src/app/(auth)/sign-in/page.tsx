@@ -22,6 +22,7 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
 import InvalidErrorBanner from "./_components/invalidErrorBanner";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignIn = () => {
   const router = useRouter();
@@ -38,6 +39,11 @@ const SignIn = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorFlag, setErrorFlag] = useState<boolean>(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const handlePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const BasicSignInMutation = useMutation({
     mutationFn: async (data: TBasicSignInFormInputs) => {
@@ -208,14 +214,35 @@ const SignIn = () => {
               >
                 Password
               </label>
-              <BaseInput
-                control={control}
-                type="password"
-                name="password"
-                errors={errors}
-                placeholder="Enter your password"
-                className="placeholder:text-subHeading w-full mt-[4px]"
+      <div className='relative'>
+        <div className='mt-[4px]'>
+          <BaseInput
+            control={control}
+            type={passwordVisible ? 'text' : 'password'}
+            name='password'
+            placeholder='Password'
+            errors={errors}
+            className='placeholder:text-subHeading w-full mt-[4px]'
+          />
+          <button
+            type='button'
+            onClick={handlePasswordVisibility}
+            className='absolute right-5 top-2.5'
+          >
+            {passwordVisible ? (
+              <Eye
+                size={20}
+                className='text-xl text-deepBlackColor'
               />
+            ) : (
+              <EyeOff
+                size={20}
+                className='text-xl text-deepBlackColor'
+              />
+            )}
+          </button>
+        </div>
+      </div>
             </div>
 
             {errorFlag ? <InvalidErrorBanner /> : null}

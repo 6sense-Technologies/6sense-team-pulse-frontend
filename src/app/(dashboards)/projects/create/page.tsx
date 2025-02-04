@@ -136,13 +136,13 @@ const ProjectCreate = () => {
           />
           <PageHeading title="Create Project" className="pl-[5px] pt-3" />
 
-          <div className="flex items-center justify-between w-full max-w-[872px] pt-4">
-            <div className="pl-[6px]">
-              <h1 className="text-headingXXS font-semibold pb-2">
+          <div className="flex flex-col lg:flex-row items-start  lg:items-center lg:justify-between w-full max-w-[872px] lg:pt-4">
+            <div className="pl-[6px] pt-2 lg:pt-0">
+              <h1 className="text-headingXXS font-semibold lg:pb-2">
                 Project Info
               </h1>
             </div>
-            <div className="w-full max-w-[553px] pt-8">
+            <div className="w-full max-w-[553px] pl-2 lg:pl-0 pt-4 lg:pt-8">
               <label
                 htmlFor="projectName"
                 className="text-sm font-medium text-black"
@@ -157,12 +157,13 @@ const ProjectCreate = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
                 additionalText="The project name you used in your code project"
                 errors={errors}
+                errorclassName="mt-1"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between w-full max-w-[872px] mt-5">
-            <div className="pl-[6px]">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center lg:justify-between w-full lg:max-w-[872px] mt-8 lg:mt-5">
+            <div className="pl-2 lg:pl-[6px] pt-3 lg:pt-4">
               <h1 className="text-headingXXS font-semibold pb-1">
                 Project Management Tool
               </h1>
@@ -175,7 +176,7 @@ const ProjectCreate = () => {
               index={0}
             />
           </div>
-          <div className="w-full h-full pl-[320px]">
+          <div className="w-full h-full pl-2 lg:pl-[320px]">
             <WorkspaceURL
               control={control}
               name="tools[0].toolUrl"
@@ -187,7 +188,7 @@ const ProjectCreate = () => {
           {fields.slice(1).map((field, index) => (
             <div
               key={field.id}
-              className="w-full h-full pl-[320px] flex-col items-center"
+              className="w-full h-full pl-1 pt-6 lg:pl-[320px] flex-col items-center"
             >
               <div className="flex items-end justify-start gap-x-[6px]">
                 <ToolDropdown
@@ -203,7 +204,7 @@ const ProjectCreate = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 pl-2 pt-3 lg:pl-0 lg:pt-0">
                 <WorkspaceURL
                   control={control}
                   name={`tools[${index + 1}].toolUrl`}
@@ -214,7 +215,7 @@ const ProjectCreate = () => {
             </div>
           ))}
 
-          <div className="mt-14 mb-10 ml-[320px] flex-col items-center">
+          <div className="mt-14 mb-10  lg:ml-[320px] flex-col items-start lg:items-center">
             <Button
               variant="extralight"
               size="xsExtended"

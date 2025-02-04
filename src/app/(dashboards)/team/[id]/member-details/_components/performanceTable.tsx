@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -21,119 +21,90 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useSearchParams } from "next/navigation";
-import { TeamPagination } from "./teamPagination";
+import { useParams, useSearchParams } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
+import { Bookmark, Calendar, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import TeamProgress from "./teamProgress";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { PerformancePagination } from "../[date]/_components/performancePagination";
 
-type TeamMember = {
-  _id: string;
-  performance: number | null;
-  displayName: string;
-  emailAddress: string;
-  designation: string;
-  avatarUrls: string;
-  role: string;
+type PerformanceItem = {
+  issueType: string;
+  issueSummary: string;
+  issueIdUrl: string;
+  issueStatus: string;
+  linkedId: string;
 };
 
-export const columns: ColumnDef<TeamMember>[] = [
+export const columns: ColumnDef<PerformanceItem>[] = [
   {
-    accessorKey: "displayName",
-    header: () => <div className="text-bold">Team Members</div>,
+    accessorKey: "issueType",
+    header: () => <div className="text-bold">Category</div>,
     cell: ({ row }: { row: any }) => {
-      const name = row.getValue("displayName");
-      const avatarUrl = row.original.avatarUrls;
-      const nameParts = name.split(" ");
-      let initials =
-        nameParts.length === 3
-          ? `${nameParts[0][0]}${nameParts[1][0]}`
-          : `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`;
-
+      const category = row.getValue("issueType");
+      const icon =
+        category === "Task" ? (
+          <CheckSquare className="mr-2 w-4 h-4" />
+        ) : (
+          <Bookmark className="mr-2 w-4 h-4" />
+        );
       return (
-        <div className="flex items-center">
-          <Avatar className="w-8 h-8 mr-2">
-            {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="Avatar" />
-            ) : (
-              <AvatarFallback className="bg-primary text-white">
-                {initials}
-              </AvatarFallback>
-            )}
-          </Avatar>
-          <div className="text-medium">{name || "-"}</div>
-        </div>
+        <Badge
+          variant="rounded"
+          className="flex items-center"
+        >
+          {icon}
+          {category}
+        </Badge>
       );
     },
   },
   {
-    accessorKey: "role",
-    header: () => <div className="text-bold">Role</div>,
+    accessorKey: "issueSummary",
+    header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("role") || "-"}</div>
-    ),
-  },
-  {
-    accessorKey: "designation",
-    header: () => <div className="text-bold">Designation</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("designation") || "-"}</div>
-    ),
-  },
-  {
-    accessorKey: "emailAddress",
-    header: () => <div className="text-bold">Email</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("emailAddress") || "-"}</div>
-    ),
-  },
-  {
-    accessorKey: "performance",
-    header: () => <div className="text-bold">Performance</div>,
-    cell: ({ row }: { row: any }) => {
-      const performance = row.getValue("performance");
-      const performanceText =
-        performance !== null ? `${Math.round(performance)}%` : "-";
-      return (
-        <div className="flex items-center max-w-[128px] w-full">
-          <div className="text-medium mr-2 w-9">{performanceText}</div>
-          {performance !== null && (
-            <TeamProgress teamPercentage={parseFloat(performance)} />
-          )}
+      <Link href={row.getValue("issueIdUrl")} target="_blank">
+        <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
+          <span>
+            <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
+          </span>
+          {row.getValue("issueSummary") || "-"}
         </div>
-      );
-    },
+      </Link>
+    ),
   },
   {
-    id: "actions",
-    header: () => <div className="text-bold text-start pr-4">Action</div>,
-    enableHiding: false,
-    cell: ({ row }) => {
-      const member = row.original;
-
-      return (
-        <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <Link href={`/efficiency/${member._id}/member-details`}>
-            <Button variant="outline">View</Button>
-          </Link>
+    accessorKey: "issueIdUrl",
+    header: () => <div className="text-bold">Linked IDs</div>,
+    cell: ({ row }: { row: any }) => (
+      <Link href={row.getValue("issueIdUrl")} target="_blank">
+        <div className="cursor-pointer hover:underline">
+          {row.getValue("issueIdUrl").split("-").pop()}
         </div>
-      );
-    },
+      </Link>
+    ),
+  },
+  {
+    accessorKey: "issueStatus",
+    header: () => <div className="text-bold">Status</div>,
+    cell: ({ row }: { row: any }) => (
+      <Badge variant="rounded">
+        {row.getValue("issueStatus")}
+      </Badge>
+    ),
   },
 ];
 
-type TTeamTableProps = {
-  teamMembers?: TeamMember[];
+type TPerformanceTableProps = {
+  performanceItems?: PerformanceItem[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
   loading?: boolean;
 };
 
-export const TeamTable: React.FC<TTeamTableProps> = ({
-  teamMembers = [],
+export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
+  performanceItems = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
@@ -152,14 +123,14 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   });
   const searchParams = useSearchParams();
   const page = parseInt(searchParams?.get("page") || "1");
-  const [currentPageState, setCurrentPageState] = useState(page);
+  const [currentPageState, setCurrentPageState] = React.useState(page);
   const [isLoading, setIsLoading] = React.useState(false);
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
     : 0;
 
   const table = useReactTable({
-    data: teamMembers,
+    data: performanceItems,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -181,7 +152,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true);
+    setIsLoading(true); 
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -189,19 +160,20 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false);
+      setIsLoading(false); 
     }
   }, [loading]);
 
   const displayedRowsCount =
     currentPageState > 1
-      ? (currentPageState - 1) * pagination.pageSize + teamMembers.length
-      : teamMembers.length;
+      ? (currentPageState - 1) * pagination.pageSize + performanceItems.length
+      : performanceItems.length;
 
+     const {id:member_id, date} = useParams() as {id: string; date: string};
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton />
+        <EmptyTableSkeleton /> 
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -212,7 +184,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none ${
+                        className={`text-left h-12 pl-4 leading-none text-nowrap ${
                           header.column.id === "actions" ? "text-right" : ""
                         }`}
                       >
@@ -241,19 +213,14 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : cell.column.id === "displayName"
-                              ? "text-start font-semibold"
-                              : cell.column.id === "emailAddress"
-                              ? "text-start pl-4"
-                              : cell.column.id === "performance"
-                              ? "pl-5 text-start"
-                              : "pl-4 text-start"
+                              : cell.column.id === "issueStatus"? "w-[150px] text-nowrap"
+                              :"pl-4 text-start"
                           }`}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )}
+                        )}       
                         </TableCell>
                       ))}
                     </TableRow>
@@ -277,10 +244,12 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
               showing
             </div>
             <div className="flex justify-end mb-2">
-              <TeamPagination
+              <PerformancePagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
                 onPageChange={onPageChange}
+                member_id={member_id}
+                date={date}
               />
             </div>
           </div>
@@ -289,3 +258,5 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
     </div>
   );
 };
+
+export default PerformanceTable;

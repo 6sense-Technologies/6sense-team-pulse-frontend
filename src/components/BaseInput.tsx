@@ -10,6 +10,7 @@ interface InputProps extends React.ComponentProps<"input"> {
   externalError?: string | null | undefined;
   index?: number;
   message?: any;
+  errorclassName?: string;
 }
 
 const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
@@ -23,6 +24,8 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
       type = "text",
       externalError,
       message,
+      errorclassName,
+      
       ...props
     },
     ref
@@ -52,7 +55,7 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
               {...props}
             />
             {errors[name]?.message || externalError ? (
-              <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive text-nowrap">
+              <p className={`absolute ${errorclassName ? errorclassName : "mt-1"} flex items-center text-sm font-medium text-destructive text-nowrap`}>
                 {errors[name]?.message || externalError}
               </p>
             ) : message ? null : additionalText ? (

@@ -8,8 +8,8 @@ import { TeamDropdown } from "./_components/teamDropdown";
 import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetTeamList } from "../../../../api/Efficiency/efficiencyApi";
-import { TeamList } from "@/types/Efficiency.types";
+import { GetTeamList } from "../../../../api/Team/teamApi";
+import { TeamList } from "@/types/Team.types";
 
 const TeamListPage: React.FC = () => {
 
@@ -72,7 +72,7 @@ const TeamListPage: React.FC = () => {
           initialData="Home"
           initalLink="/"
           secondayData="Team"
-          secondayLink="/team-efficiency"
+          secondayLink="/team"
         />
         <PageHeading title="Team" className="pl-2 pt-3" />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">

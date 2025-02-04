@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview } from "../../../../../../api/Efficiency/efficiencyApi";
+import { GetIndividualOverview } from "../../../../../../api/Team/teamApi";
 import { useQuery } from "@tanstack/react-query";
 
 const getInitials = (name: string) => {
@@ -103,9 +103,9 @@ const EfficiencyMemberDetails: React.FC = () => {
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <GlobalBreadCrumb
           initialData="Team"
-          initalLink="/efficiency"
+          initalLink="/team"
           secondayData="Profile"
-          secondayLink="/team-efficiency/id/profile"
+          secondayLink="/team/id/profile"
         />
         <PageHeading
           title={`${firstName}'s Profile`}
@@ -166,16 +166,6 @@ const EfficiencyMemberDetails: React.FC = () => {
           <div className="flex space-x-4 border-b">
             <button
               className={`py-2 px-4 ${
-                activeTab === "profile"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
-              onClick={() => setActiveTab("profile")}
-            >
-              Profile
-            </button>
-            <button
-              className={`py-2 px-4 ${
                 activeTab === "performance"
                   ? "border-b-2 border-black font-semibold"
                   : ""
@@ -184,25 +174,37 @@ const EfficiencyMemberDetails: React.FC = () => {
             >
               Performance
             </button>
+            <button
+              className={`py-2 px-4 ${
+                activeTab === "profile"
+                  ? "border-b-2 border-black font-semibold"
+                  : ""
+              }`}
+              onClick={() => setActiveTab("profile")}
+            >
+              Profile
+            </button>
           </div>
         </div>
         <div className="mt-4">
-          {activeTab === "profile" ? (
-            <div>Coming Soon</div>
-          ) : (
+          {activeTab === "performance" ? (
+
             <>
-              <span className="flex justify-end mb-4">
-                <CustomDatePicker />
-              </span>
-              <TeamDetailsTable
-                totalCountAndLimit={totalCountAndLimit}
-                teamMembers={individualOverview?.history.data ?? []}
-                loading={individualOverviewLoading}
-                refetch={individualOverviewRefetch}
-                currentPage={pages}
-                Memberid={id}
-              />
+            <span className="flex justify-end mb-4">
+            <CustomDatePicker />
+            </span>
+            <TeamDetailsTable
+            totalCountAndLimit={totalCountAndLimit}
+            teamMembers={individualOverview?.history.data ?? []}
+            loading={individualOverviewLoading}
+            refetch={individualOverviewRefetch}
+            currentPage={pages}
+            Memberid={id}
+            />
             </>
+            
+          ) : (
+            <div>Coming Soon</div>
           )}
         </div>
       </div>
@@ -211,3 +213,5 @@ const EfficiencyMemberDetails: React.FC = () => {
 };
 
 export default EfficiencyMemberDetails;
+
+
