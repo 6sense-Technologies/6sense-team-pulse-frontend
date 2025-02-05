@@ -16,6 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
+import { Circle } from "lucide-react";
 
 const OrganizationDetails = () => {
   const router = useRouter();
@@ -183,7 +184,11 @@ const OrganizationDetails = () => {
               variant="submit"
               className="mt-6 bg-primary hover:bg-primary"
             >
-              Submit
+              {OrganizationMutation.isPending ?(
+                <Circle className="animate-spin" />
+              ):(
+              "Submit"
+            )}
             </Button>
           </form>
         </div>

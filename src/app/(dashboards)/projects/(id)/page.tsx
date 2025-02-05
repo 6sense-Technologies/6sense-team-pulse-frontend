@@ -13,6 +13,9 @@ import { useSearchParams } from "next/navigation";
 import { FolderPlus } from "lucide-react";
 import Link from "next/link";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
+import Image from "next/image";
+import EmptyProjectView from "@/components/emptyProjectView";
+
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
@@ -75,33 +78,35 @@ const ProjectList = () => {
           className="pl-2 pt-3"
         />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
-        <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
-          <Searchbar
-            placeholder="Search by project name"
-            name="search"
-            btntext="Search"
-            className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
-            variant="light"
-          />
-          <ProjectDropdown            
-            placeholder="Filter by Tool"
-            name="tool"
-            active={false}
-            className="mb-[26px]"
-          />
-        </div>
-        <Link href={`/projects/create`}>
-        <Button>
-          <FolderPlus size={16} className="mr-1" />
-          Create Project
-          </Button>
+          <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
+            <Searchbar
+              placeholder="Search by project name"
+              name="search"
+              btntext="Search"
+              className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
+              variant="light"
+            />
+            <ProjectDropdown
+              placeholder="Filter by Tool"
+              name="tool"
+              active={false}
+              className="mb-[26px]"
+            />
+          </div>
+          <Link href={`/projects/create`}>
+            <Button>
+              <FolderPlus size={16} className="mr-1" />
+              Create Project
+            </Button>
           </Link>
         </div>
         <div className="lg:ml-2">
-        {projectListLoading ? (
+          {projectListLoading ? (
             <EmptyTableSkeleton /> // Show loader while data is being fetched
+          ) : projectList?.data?.length === 0 ? (
+            <EmptyProjectView/>
           ) : (
-            // Empty state when there is no data
+            // Render the project table when there is data
             <ProjectTable
               totalCountAndLimit={totalCountAndLimit}
               projects={projectList?.data ?? []}

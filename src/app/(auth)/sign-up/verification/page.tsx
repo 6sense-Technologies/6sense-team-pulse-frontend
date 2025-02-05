@@ -16,7 +16,8 @@ import { useMutation } from "@tanstack/react-query";
 import { handleOtp, handleResendOTP } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
-
+import { Circle } from "lucide-react";
+import SmallLogo from "../../../../../public/logo/Ops4TeamLogo.svg";
 const Verify = () => {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -172,9 +173,9 @@ const Verify = () => {
         />
       </div>
       <div className="bg-white w-full my-auto">
-        <div className="flex justify-start md:hidden mt-9 mx-4 md:mr-9  md:gap-0">
-          <div className="block md:hidden bg-black text-center px-3">
-            <Image src={Logo} alt="Ops4Team Logo" />
+        <div className="flex justify-center lg:justify-start md:hidden mt-9 mx-4 md:mr-9  md:gap-0">
+          <div className="block md:hidden text-center px-3">
+            <Image src={SmallLogo} alt="Ops4Team Logo" />
           </div>
         </div>
 
@@ -233,7 +234,11 @@ const Verify = () => {
               variant="submit"
               className="mt-6 bg-primary hover:bg-primary"
             >
-              Submit
+              {otpMutation.isPending ?(
+                <Circle className="animate-spin" />
+              ):(
+              "Submit"
+              )}
             </Button>
           </form>
         </div>

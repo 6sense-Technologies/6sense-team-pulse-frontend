@@ -23,6 +23,7 @@ import PageTitle from "@/components/PageTitle";
 import {signIn, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 import { Eye, EyeOff } from "lucide-react";
+import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 
 const SignUp = () => {
   const router = useRouter();
@@ -110,22 +111,22 @@ const SignUp = () => {
           subHeading="Sofia Davis"
         />
       </div>
-      <div className="bg-white w-full overflow-y-auto">
-        <div className="flex justify-between md:justify-end mt-9 mx-4 md:mr-9  md:gap-0">
-          <div className="block md:hidden bg-black text-center px-3">
-            <Image src={Logo} alt="Ops4Team Logo" />
+      <div className="bg-white w-full overflow-y-auto pb-4">
+        <div className="lg:flex lg:justify-end mt-9 mx-4 mr-9 lg:gap-0">
+          <div className="flex justify-center md:hidden text-center px-3">
+            <Image src={SmallLogo} alt="Ops4Team Logo" />
           </div>
 
           <Link href="/sign-in">
-            <Button variant="light" className="text-sm">
+            <Button variant="light" className="text-sm hidden lg:block">
               Sign in
             </Button>
           </Link>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-3 md:px-5 pb-5">
+        <div className="w-full max-w-[465px] mx-auto px-4 lg:px-5 pb-5">
           <div>
-          <p className="text-3xl text-black font-semibold pb-6">Sign up</p>
+          <p className="text-3xl text-black font-semibold pt-6 lg:pb-6">Sign up</p>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
@@ -170,7 +171,7 @@ const SignUp = () => {
           />
 
           <form onSubmit={handleSubmit(handleSubmission)}>
-            <div className="w-full">
+            <div className="w-full pt-2 lg:pt-0">
               <label
                 htmlFor="displayName"
                 className="text-black font-medium text-sm"
@@ -185,7 +186,7 @@ const SignUp = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
-            <div className="w-full pt-5">
+            <div className="w-full pt-6 lg:pt-5">
               <label
                 htmlFor="emailAddress"
                 className="text-black font-medium  text-sm"
@@ -202,7 +203,7 @@ const SignUp = () => {
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
             </div>
-            <div className="pt-5 w-full">
+            <div className="pt-6 lg:pt-5 w-full">
               <label
                 htmlFor="password"
                 className="text-black font-medium text-sm"
@@ -246,6 +247,14 @@ const SignUp = () => {
               )}
             </Button>
           </form>
+
+          <div className="block lg:hidden mt-4">
+            <Link href={"/sign-in"}>
+              <Button variant="light" className="text-sm w-full">
+                Sign in
+              </Button>
+            </Link>
+          </div>
 
           <div>
           <Link href='/comingsoon'>

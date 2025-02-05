@@ -124,6 +124,15 @@ const ProjectCreate = () => {
     onSuccess: () => {
       router.push("/projects");
     },
+    onError: (error) => {
+      if(error.message === "Request failed with status code 409")
+      {
+        setError("name", {
+          type: "manual",
+          message: "Project name already exists.",
+        });
+      }
+    }
   });
 
   const onSubmit = (data: ProjectTools) => {
