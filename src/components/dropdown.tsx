@@ -1,0 +1,83 @@
+import * as React from "react";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Controller } from "react-hook-form";
+
+type Options = {
+  value: string;
+  label: string;
+};
+
+type DropdownProps = {
+  className?: string;
+  placeholder: string;
+  control?: any;
+  name: string;
+  errors?: any;
+  additionalText?: string;
+  active?: boolean;
+  message?: any;
+  options?: Options[];
+};
+
+export function Dropdown({
+  className,
+  placeholder,
+  control,
+  name,
+  errors = {},
+  additionalText,
+  active = false,
+  message,
+  options = [],
+}: DropdownProps) {
+  const renderSelect = (field: any) => (
+    <Select
+      value={field.value}
+      onValueChange={(value) => field.onChange(value)}
+    >
+      <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup className={cn("bg-white !z-50 ", className)}>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+  );
+
+  return (
+    <div className="relative">
+      {control ? (
+        <Controller
+          control={control}
+          name={name}
+          render={({ field }) => renderSelect(field)}
+        />
+      ) : (
+        renderSelect({})
+      )}
+      {errors[name]?.message ? (
+        <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">
+          {errors[name].message}
+        </p>
+      ) : message ? null : additionalText ? (
+        <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
+          {additionalText}
+        </p>
+      ) : null}
+    </div>
+  );
+}
