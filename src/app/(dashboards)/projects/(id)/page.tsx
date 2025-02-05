@@ -101,6 +101,7 @@ const ProjectList = () => {
         {projectListLoading ? (
             <EmptyTableSkeleton /> // Show loader while data is being fetched
           ) : (
+            // Empty state when there is no data
             <ProjectTable
               totalCountAndLimit={totalCountAndLimit}
               projects={projectList?.data ?? []}
