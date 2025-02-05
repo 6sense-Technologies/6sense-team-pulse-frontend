@@ -13,9 +13,8 @@ import { useSearchParams } from "next/navigation";
 import { FolderPlus } from "lucide-react";
 import Link from "next/link";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
-import Image from "next/image";
 import EmptyProjectView from "@/components/emptyProjectView";
-
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
@@ -67,6 +66,7 @@ const ProjectList = () => {
       <PageTitle title="Projects • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
+        <span className="lg:hidden"><SidebarTrigger /></span>
         <GlobalBreadCrumb
           initialData="Home"
           initalLink="/"

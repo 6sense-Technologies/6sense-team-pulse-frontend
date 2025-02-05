@@ -19,6 +19,7 @@ import {
   SidebarContent,
   SidebarHeader,
   SidebarRail,
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { useSession } from 'next-auth/react';
 import { NavAdmin } from './nav-admin';
