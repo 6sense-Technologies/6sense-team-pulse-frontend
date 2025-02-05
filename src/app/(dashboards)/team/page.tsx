@@ -8,8 +8,9 @@ import { TeamDropdown } from "./_components/teamDropdown";
 import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetTeamList } from "../../../../api/Team/teamApi";
+import { GetTeamList } from "../../../../helpers/Team/teamApi";
 import { TeamList } from "@/types/Team.types";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 
 const TeamListPage: React.FC = () => {
 
@@ -76,7 +77,7 @@ const TeamListPage: React.FC = () => {
         />
         <PageHeading title="Team" className="pl-2 pt-3" />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
-          <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full">
+          <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <TeamSearchbar
               placeholder="Search by name, email"
               name="search"
@@ -98,7 +99,10 @@ const TeamListPage: React.FC = () => {
             /> 
           </div>
         </div>
-        <div className="">
+        <div className="lg:ml-2">
+        {teamListLoading ? (
+            <EmptyTableSkeleton />
+          ) : (
           <TeamTable
             totalCountAndLimit={totalCountAndLimit}
             loading={teamListLoading}
@@ -106,6 +110,7 @@ const TeamListPage: React.FC = () => {
             teamMembers={teamList?.data}
             currentPage={pages}
           />
+          )}
         </div>
       </div>
     </div>

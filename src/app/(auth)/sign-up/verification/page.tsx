@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VerifyEmailSchema } from "../../../../../Zodschema/authSchema";
 import Otpfields from "./_components/otpfields";
 import { useMutation } from "@tanstack/react-query";
-import { handleOtp, handleResendOTP } from "../../../../../api/Auth/authApi";
+import { handleOtp, handleResendOTP } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 

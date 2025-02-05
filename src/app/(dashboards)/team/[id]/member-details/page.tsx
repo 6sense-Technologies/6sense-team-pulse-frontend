@@ -9,8 +9,11 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview } from "../../../../../../api/Team/teamApi";
+import { GetIndividualOverview } from "../../../../../../helpers/Team/teamApi";
 import { useQuery } from "@tanstack/react-query";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
+import TextSkeleton from "@/components/textSkeleton";
+import SummarySkeleton from "@/components/summarySkeleton";
 
 const getInitials = (name: string) => {
   if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -107,62 +110,72 @@ const EfficiencyMemberDetails: React.FC = () => {
           secondayData="Profile"
           secondayLink="/team/id/profile"
         />
-        <PageHeading
-          title={`${firstName}'s Profile`}
-          titleclassName="font-medium"
-          className="pl-2 pt-3"
-        />
+        {individualOverviewLoading ? (
+          <TextSkeleton className="h-8 w-48 pl-2 mt-3 mb-4" />
+        ) : (
+          <PageHeading
+            title={`${firstName}'s Profile`}
+            titleclassName="font-medium"
+            className="pl-2 pt-3"
+          />
+        )}
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-3 md:mb-0">
-            <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
-              <div>
-                <Avatar className="w-16 h-16 rounded-full ml-4 mr-2 mt-8 mb-6">
-                  {individualAvatar ? (
-                    <AvatarImage src={individualAvatar} alt="Avatar" />
-                  ) : (
-                    <AvatarFallback className="bg-primary text-white">
-                      {getInitials(individualName)}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-              </div>
-              <div className="pt-1">
-                <h1 className="pb-[3px] text-sm text-[#334155] font-semibold">
-                  {individualName}
-                </h1>
-                <p className="text-twelve text-[#334155]">
-                  {individualDesignation}
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-x-[10px]">
-              <div>
-                <div className="flex items-center gap-x-[6px]">
-                  <CalendarCheck2 size={16} />
-                  <h1 className="text-[18px] font-semibold">
-                    {formattedCurrentMonthPerformance}
-                  </h1>
+            {individualOverviewLoading ? (
+              <SummarySkeleton />
+            ) : (
+              <>
+                <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
+                  <div>
+                    <Avatar className="w-16 h-16 rounded-full ml-4 mr-2 mt-8 mb-6">
+                      {individualAvatar ? (
+                        <AvatarImage src={individualAvatar} alt="Avatar" />
+                      ) : (
+                        <AvatarFallback className="bg-primary text-white">
+                          {getInitials(individualName)}
+                        </AvatarFallback>
+                      )}
+                    </Avatar>
+                  </div>
+                  <div className="pt-1">
+                    <h1 className="pb-[3px] text-sm text-[#334155] font-semibold">
+                      {individualName}
+                    </h1>
+                    <p className="text-twelve text-[#334155]">
+                      {individualDesignation}
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-miniSubheadingColor">
-                  Current Month Performance
-                </p>
-              </div>
-              <div>
-                <div className="flex items-center gap-x-[6px]">
-                  <CalendarArrowDown size={16} />
-                  <h1 className="text-[18px] font-semibold">
-                    {formattedLastMonthPerformance}
-                  </h1>
+                <div className="flex gap-x-[10px]">
+                  <div>
+                    <div className="flex items-center gap-x-[6px]">
+                      <CalendarCheck2 size={16} />
+                      <h1 className="text-[18px] font-semibold">
+                        {formattedCurrentMonthPerformance}
+                      </h1>
+                    </div>
+                    <p className="text-sm text-miniSubheadingColor">
+                      Current Month Performance
+                    </p>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-x-[6px]">
+                      <CalendarArrowDown size={16} />
+                      <h1 className="text-[18px] font-semibold">
+                        {formattedLastMonthPerformance}
+                      </h1>
+                    </div>
+                    <p className="text-sm text-miniSubheadingColor">
+                      Last Month Performance
+                    </p>
+                  </div>
                 </div>
-                <p className="text-sm text-miniSubheadingColor">
-                  Last Month Performance
-                </p>
-              </div>
-            </div>
+              </>
+            )}
           </div>
           <Button variant="light">Edit Profile</Button>
         </div>
-        <div className="tab">
+        <div className="tab lg:ml-2">
           <div className="flex space-x-4 border-b">
             <button
               className={`py-2 px-4 ${
@@ -175,34 +188,38 @@ const EfficiencyMemberDetails: React.FC = () => {
               Performance
             </button>
             <button
-              className={`py-2 px-4 ${
+              className={`py-2 px-4 cursor-not-allowed text-gray-400${
                 activeTab === "profile"
                   ? "border-b-2 border-black font-semibold"
                   : ""
               }`}
-              onClick={() => setActiveTab("profile")}
+              onClick={(e) => e.preventDefault()}
             >
               Profile
             </button>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 lg:ml-2">
           {activeTab === "performance" ? (
-
             <>
-            <span className="flex justify-end mb-4">
-            <CustomDatePicker />
-            </span>
-            <TeamDetailsTable
-            totalCountAndLimit={totalCountAndLimit}
-            teamMembers={individualOverview?.history.data ?? []}
-            loading={individualOverviewLoading}
-            refetch={individualOverviewRefetch}
-            currentPage={pages}
-            Memberid={id}
-            />
+              <span className="flex justify-end mb-4">
+                <span className="cursor-not-allowed">
+                <CustomDatePicker />
+                </span>
+              </span>
+              {individualOverviewLoading ? (
+                <EmptyTableSkeleton />
+              ) : (
+                <TeamDetailsTable
+                  totalCountAndLimit={totalCountAndLimit}
+                  teamMembers={individualOverview?.history.data ?? []}
+                  loading={individualOverviewLoading}
+                  refetch={individualOverviewRefetch}
+                  currentPage={pages}
+                  Memberid={id}
+                />
+              )}
             </>
-            
           ) : (
             <div>Coming Soon</div>
           )}
@@ -213,5 +230,3 @@ const EfficiencyMemberDetails: React.FC = () => {
 };
 
 export default EfficiencyMemberDetails;
-
-

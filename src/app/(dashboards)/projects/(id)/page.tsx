@@ -8,10 +8,11 @@ import { ProjectTable } from "../_components/projectTable";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
 import { useQuery } from "@tanstack/react-query";
-import { GetProjectList } from "../../../../../api/projects/projectApi";
+import { GetProjectList } from "../../../../../helpers/projects/projectApi";
 import { useSearchParams } from "next/navigation";
 import { FolderPlus } from "lucide-react";
 import Link from "next/link";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
@@ -74,7 +75,7 @@ const ProjectList = () => {
           className="pl-2 pt-3"
         />
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
-        <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full">
+        <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
           <Searchbar
             placeholder="Search by project name"
             name="search"
@@ -96,14 +97,18 @@ const ProjectList = () => {
           </Button>
           </Link>
         </div>
-        <div className="">
-          <ProjectTable
-            totalCountAndLimit={totalCountAndLimit}
-            projects={projectList?.data ?? []}
-            loading={projectListLoading}
-            refetch={projectListRefetch}
-            currentPage={pages}
-          />
+        <div className="lg:ml-2">
+        {projectListLoading ? (
+            <EmptyTableSkeleton /> // Show loader while data is being fetched
+          ) : (
+            <ProjectTable
+              totalCountAndLimit={totalCountAndLimit}
+              projects={projectList?.data ?? []}
+              loading={projectListLoading}
+              refetch={projectListRefetch}
+              currentPage={pages}
+            />
+          )}
         </div>
       </div>
     </div>

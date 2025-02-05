@@ -24,7 +24,7 @@ import {
 import { useParams, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Bookmark, Calendar, CheckSquare } from "lucide-react";
-import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { PerformancePagination } from "../[date]/_components/performancePagination";
 

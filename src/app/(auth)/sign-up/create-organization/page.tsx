@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { OrganizationSchema } from "../../../../../Zodschema/authSchema";
 import { TOrgazinationDetails } from "@/types/Auth.types";
 import { useMutation } from "@tanstack/react-query";
-import { handleOrganizationDetails } from "../../../../../api/Auth/authApi";
+import { handleOrganizationDetails } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 

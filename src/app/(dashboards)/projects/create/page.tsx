@@ -12,7 +12,7 @@ import WorkspaceURL from "./_components/WorkspaceURL";
 import { Circle, Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
-import { CreateProject } from "../../../../../api/projects/projectApi";
+import { CreateProject } from "../../../../../helpers/projects/projectApi";
 
 const ProjectCreate = () => {
   const router = useRouter();
@@ -39,6 +39,11 @@ const ProjectCreate = () => {
   ): void => {
     e.preventDefault();
     append({ toolName: "", toolUrl: "" });
+  };
+
+  const validateURL = (url: string) => {
+    const urlRegex = /^https:\/\/((?!-)(?!.*--)[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,63}(\/[^\s]*)?$/;
+    return urlRegex.test(url);
   };
 
   const validate = (data: ProjectTools) => {
@@ -72,6 +77,12 @@ const ProjectCreate = () => {
             message: "Workspace URL is required.",
           });
           valid = false;
+        } else if (!validateURL(tool.toolUrl)) {
+          setError(`tools.${index}.toolUrl`, {
+            type: "manual",
+            message: "Invalid URL.",
+          });
+          valid = false;
         } else {
           clearErrors(`tools.${index}.toolUrl`);
         }
@@ -80,7 +91,13 @@ const ProjectCreate = () => {
         if (tool.toolName && !tool.toolUrl) {
           setError(`tools.${index}.toolUrl`, {
             type: "manual",
-            message: "Workspace URL is required if tool name is provided.",
+            message: "Workspace URL is required.",
+          });
+          valid = false;
+        } else if (tool.toolUrl && !validateURL(tool.toolUrl)) {
+          setError(`tools.${index}.toolUrl`, {
+            type: "manual",
+            message: "Invalid URL.",
           });
           valid = false;
         } else {
@@ -90,7 +107,7 @@ const ProjectCreate = () => {
         if (!tool.toolName && tool.toolUrl) {
           setError(`tools.${index}.toolName`, {
             type: "manual",
-            message: "Tool name is required if workspace URL is provided.",
+            message: "Minimum one tool must be selected.",
           });
           valid = false;
         } else {
@@ -122,7 +139,6 @@ const ProjectCreate = () => {
     }
   };
 
-  // console.log("Root", errors);
   return (
     <div className="w-full">
       <PageTitle title="Create Project • Ops4 Team" />

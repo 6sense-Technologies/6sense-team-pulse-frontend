@@ -157,13 +157,14 @@ const SignIn = () => {
             />
           </div>
           <div className="flex gap-x-4">
-            <Link href={"/sign-in/sso"}>
-              <Button variant="extralight" size="minixl">
+            {/* <Link href={"/sign-in/sso"}> */}
+              <Button variant="extralight" size="minixl" className=" cursor-not-allowed">
                 SSO
               </Button>
-            </Link>
+            {/* </Link> */}
             <div className="flex gap-x-[16px]">
-              <Button variant="extralight" size="smallest">
+              <Button variant="extralight" size="smallest"
+               className=" cursor-not-allowed">
                 <Image
                   src={GoogleLogo}
                   width={24}
@@ -171,16 +172,21 @@ const SignIn = () => {
                   alt="googleLogo"
                 />
               </Button>
-              <Button variant="extralight" size="smallest">
+              <Button variant="extralight" size="smallest"
+               className=" cursor-not-allowed">
                 <Image
                   src={FacebookLogo}
                   width={24}
                   height={24}
                   alt="facebookLogo"
+                 
                 />
               </Button>
-              <Button variant="extralight" size="smallest">
-                <Image src={AppleLogo} width={24} height={24} alt="appleLogo" />
+              <Button variant="extralight" size="smallest"
+               className=" cursor-not-allowed">
+                <Image src={AppleLogo} width={24} height={24} alt="appleLogo" 
+      
+                />
               </Button>
             </div>
           </div>
@@ -260,12 +266,14 @@ const SignIn = () => {
           </form>
 
           <div>
+            <Link href='/comingsoon'>
             <p className="text-sm text-textMuted px-10 text-center pt-5">
               By clicking continue, you agree to our{" "}
               <span className="underline cursor-pointer">Terms of Service</span>{" "}
               and{" "}
               <span className="underline cursor-pointer">Privacy Policy</span>.
             </p>
+            </Link>
           </div>
         </div>
       </div>

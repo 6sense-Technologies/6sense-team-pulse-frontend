@@ -53,6 +53,7 @@ const config: Config = {
 			sidebarSecondaryColor: '#334155B2',
 			sidebarHoverBg: '#DBE5F0',
 			navbartextColor: '#334155',
+			lightShadeWhiteColor: '#B8B8BA',
 			
 			sidebar: {
 				DEFAULT: 'hsl(var(--sidebar-background))',

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ProjectCreate from '../src/app/(dashboards)/projects/create/page';
-import { GetTools, CreateProject } from '../api/projects/projectApi';
+import { GetTools, CreateProject } from '../helpers/projects/projectApi';
 
 // Mock external libraries
 jest.mock('lucide-react', () => ({

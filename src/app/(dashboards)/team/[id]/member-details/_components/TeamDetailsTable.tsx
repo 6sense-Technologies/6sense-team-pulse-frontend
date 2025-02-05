@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table";
 import { useParams, useSearchParams } from "next/navigation";
 import { EllipsisVertical } from "lucide-react";
-import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { TeamDetailsPagination } from "./teamDetailsPagination";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -173,7 +173,7 @@ export const columns: ColumnDef<TeamMember>[] = [
               {row.getValue("insight") || "-"}
             </div>
           </TooltipTrigger>
-          <TooltipContent className="bg-primary text-white w-[200px]">
+          <TooltipContent className="bg-primary text-white w-full max-w-[150px] lg:max-w-[200px] xl:max-w-[220px]">
             {row.getValue("insight") || "-"}
           </TooltipContent>
         </Tooltip>
@@ -222,33 +222,33 @@ export const columns: ColumnDef<TeamMember>[] = [
             onClick={handleIconClick}
           />
           {isModalOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
-              <ul>
-                <Link
-                  href={`/team/${id}/member-details/${
-                    new Date(row.original._id).toISOString().split("T")[0]
-                  }`}
-                >
-                  <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                    View
-                  </li>
-                </Link>
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                  Add Comment
-                </li>
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                  Report Bug
-                </li>
-                <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-                  Project
-                </li>
-                <hr className="mt-1" />
-                <li className="px-4 py-3 text-start hover:bg-gray-100 cursor-pointer text-red-600 font-semibold">
-                  Remove
-                </li>
-              </ul>
-            </div>
-          )}
+  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+    <ul>
+      <Link
+        href={`/team/${id}/member-details/${
+          new Date(row.original._id).toISOString().split("T")[0]
+        }`}
+      >
+        <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+          View
+        </li>
+      </Link>
+      <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
+        Add Comment
+      </li>
+      <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
+        Report Bug
+      </li>
+      <li className="px-4 py-2 text-start   cursor-not-allowed text-gray-400">
+        Project
+      </li>
+      <hr className="mt-1" />
+      <li className="px-4 py-3 text-start  cursor-not-allowed text-gray-400">
+        Remove
+      </li>
+    </ul>
+  </div>
+)}
         </div>
       );
     },

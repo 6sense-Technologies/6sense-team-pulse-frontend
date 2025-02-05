@@ -23,7 +23,8 @@ const buttonVariants = cva(
         extralight: "text-black bg-white hover:bg-white border rounded-lg",
         dark: "text-white bg-blackishBg hover:bg-blackishBg",
         submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
-        darkish: 'text-white bg-primary font-normal'
+        darkish: 'text-white bg-primary font-normal',
+        blackWhite: "text-white bg-black border border-white"
       },
       size: {
         exSmall: "text-sm px-1 h-10",

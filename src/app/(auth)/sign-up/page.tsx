@@ -15,7 +15,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { TBasicSignupFormInputs } from "@/types/Auth.types";
 import { SignupSchema } from "../../../../Zodschema/authSchema";
 import { useMutation } from "@tanstack/react-query";
-import { handleBasicSignup } from "../../../../api/Auth/authApi";
+import { handleBasicSignup } from "../../../../helpers/Auth/authApi";
 import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -134,11 +134,11 @@ const SignUp = () => {
             />
           </div>
           <div className="flex gap-x-4">
-            <Link href={"/sign-up/sso"}>
-              <Button variant="extralight" size="minixl">SSO</Button>
-            </Link>
+            {/* <Link href={"/sign-up/sso"}> */}
+              <Button variant="extralight" size="minixl"  className=" cursor-not-allowed">SSO</Button>
+            {/* </Link> */}
             <div className="flex gap-x-[16px]">
-              <Button variant="extralight" size="smallest">
+              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
                 <Image
                   src={GoogleLogo}
                   width={24}
@@ -146,7 +146,7 @@ const SignUp = () => {
                   alt="googleLogo"
                 />
               </Button>
-              <Button variant="extralight" size="smallest">
+              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
                 <Image
                   src={FacebookLogo}
                   width={24}
@@ -154,7 +154,7 @@ const SignUp = () => {
                   alt="facebookLogo"
                 />
               </Button>
-              <Button variant="extralight" size="smallest">
+              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
                 <Image
                   src={AppleLogo}
                   width={24}
@@ -248,6 +248,7 @@ const SignUp = () => {
           </form>
 
           <div>
+          <Link href='/comingsoon'>
             <p className="text-sm text-textMuted px-10 text-center pt-3">
               By clicking continue, you agree to our {""}
               <span className="underline cursor-pointer">
@@ -256,6 +257,7 @@ const SignUp = () => {
               and{" "}
               <span className="underline cursor-pointer">Privacy Policy</span>.
             </p>
+          </Link>
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EfficiencyMemberDetails from '../src/app/(dashboards)/team/[id]/member-details/page'; // Adjust import as needed
-import { GetIndividualOverview } from '../api/Team/teamApi'; // Adjust import as needed
+import { GetIndividualOverview } from '../helpers/Team/teamApi'; // Adjust import as needed
 
 // Mock external libraries
 jest.mock('lucide-react', () => ({

@@ -27,16 +27,12 @@ import ManagementToolBadge from "./managementToolBadge";
 import { EllipsisVertical } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import { ProjectPagination } from "./projectPagination";
-import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import CustomMenu from "@/components/customMenu"; // Import the menu component
 import ProjectCustomMenuItems from "./projectCustomMenuItems";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
-
-// const handleDetails = (project: Projects): void => {
-//   localStorage.setItem("projectId", project._id);
-//   window.location.href = `/projects/${project._id}?page=1`;
-// };
 
 export const columns: ColumnDef<Projects>[] = [
   {
@@ -52,7 +48,8 @@ export const columns: ColumnDef<Projects>[] = [
     cell: ({ row }: { row: any }): JSX.Element => {
       const tools = row.getValue("tools") || [];
       const displayedTools = tools.slice(0, MAX_MANAGEMENT_TOOLS_DISPLAY);
-      const remainingToolsCount = tools.length - MAX_MANAGEMENT_TOOLS_DISPLAY;
+      const remainingTools = tools.slice(MAX_MANAGEMENT_TOOLS_DISPLAY);
+      const remainingToolsCount = remainingTools.length;
 
       return (
         <div className="flex items-center space-x-2">
@@ -62,9 +59,18 @@ export const columns: ColumnDef<Projects>[] = [
             </ManagementToolBadge>
           ))}
           {remainingToolsCount > 0 && (
-            <ManagementToolBadge className="text-medium">
-              +{remainingToolsCount}
-            </ManagementToolBadge>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <ManagementToolBadge className="text-medium cursor-pointer">
+                    +{remainingToolsCount}
+                  </ManagementToolBadge>
+                </TooltipTrigger>
+                <TooltipContent className="bg-primary text-white w-full max-w-[100px] lg:max-w-[200px]">
+                  <p>{remainingTools.map((tool: any) => tool.toolName).join(", ")}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
       );

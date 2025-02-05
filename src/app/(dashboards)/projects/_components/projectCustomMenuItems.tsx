@@ -15,20 +15,23 @@ const ProjectCustomMenuItems: FC<TProjectCustomMenuItemsProps> = ({
   return (
     <div className="bg-white border rounded-md">
       <button
-        className="w-full text-left pl-8 pr-2 py-[6px] hover:bg-gray-100"
+        disabled
+        className="w-full text-left pl-8 pr-2 py-[6px] cursor-not-allowed text-gray-400"
        
       >
         {firstText}
       </button>
       <button
-        className="w-full text-left pl-8 pr-2 py-[6px] hover:bg-gray-100"
+      disabled
+        className="w-full text-left pl-8 pr-2 py-[6px] cursor-not-allowed text-gray-400"
         
       >
         {secondText}
       </button>
       <hr className="my-2" />
       <button
-        className="w-full text-left pl-8 pr-2 pt-[6px] pb-3 text-destructive hover:bg-gray-100"
+      disabled
+        className="w-full text-left pl-8 pr-2 pt-[6px] pb-3 cursor-not-allowed text-gray-400" 
        
       >
         {ThirdText}
@@ -38,3 +41,6 @@ const ProjectCustomMenuItems: FC<TProjectCustomMenuItemsProps> = ({
 };
 
 export default ProjectCustomMenuItems;
+
+
+//Delete color is text-destructive and hover is bg-gray-100

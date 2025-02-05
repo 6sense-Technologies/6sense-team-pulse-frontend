@@ -13,9 +13,9 @@ type SearchbarProps = {
 
 const Searchbar: FC<SearchbarProps> = ({ placeholder, name, className }) => {
   return (
-    <div className={cn("flex", className)}>
+    <div className={cn("flex cursor-not-allowed", className)}>
       <Search size={14} className="absolute text-subHeading mt-3 ml-[14px]"/>
-      <Input placeholder={placeholder} name={name} className="pl-8"/>
+      <Input placeholder={placeholder} name={name} className="pl-8" disabled/>
     </div>
   );
 };

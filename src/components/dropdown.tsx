@@ -46,7 +46,7 @@ export function Dropdown({
       <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent className="!z-50 bg-white">
         <SelectGroup className={cn("bg-white !z-50 ", className)}>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>

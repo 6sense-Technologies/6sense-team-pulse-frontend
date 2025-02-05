@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
 import { TeamPagination } from "./teamPagination";
-import EmptyTableSkeleton from "@/components/EmptyTableSkeleton";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import TeamProgress from "./teamProgress";
 import { Button } from "@/components/ui/button";
