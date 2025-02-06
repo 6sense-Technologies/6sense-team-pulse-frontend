@@ -27,7 +27,6 @@ import { Bookmark, Calendar, CalendarClock, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { PerformancePagination } from "../[date]/_components/performancePagination";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { TeamTooltip, TeamTooltipContent, TeamTooltipProvider, TeamTooltipTrigger } from "../[date]/_components/teamTooltip";
 
 type PerformanceItem = {
@@ -67,7 +66,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
     header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
       <TeamTooltipProvider>
-        <TeamTooltip>
+        <TeamTooltip >
           <TeamTooltipTrigger asChild>
             <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
               <span>
@@ -82,7 +81,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
               </Link>
             </div>
           </TeamTooltipTrigger>
-          <TeamTooltipContent side="left" className="ml-20">
+          <TeamTooltipContent side="left">
             <p>{row.original.planned ? "Planned" : "Unplanned"}</p>
           </TeamTooltipContent>
         </TeamTooltip>

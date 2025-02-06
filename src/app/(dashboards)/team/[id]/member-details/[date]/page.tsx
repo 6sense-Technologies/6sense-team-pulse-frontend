@@ -86,7 +86,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           className="pl-2 pt-3"
         />
         <div className="flex items-center justify-between mb-4">
-          <div className="flex flex-col md:flex-row items-start md:items-center mb-3 md:mb-0">
+          <div className="flex flex-col md:flex-row items-start md:items-center mb-1 md:mb-0">
             <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
               {individualMemberDataLoading ? (
                <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton/></span>
@@ -116,7 +116,7 @@ const EfficiencyMemberDetails: React.FC = () => {
             </div>
           </div>
         </div>
-        <span className="flex justify-end mb-4">
+        <span className="flex justify-end">
           <span className="cursor-not-allowed">
           <CustomSingleDatePicker />
           </span>
