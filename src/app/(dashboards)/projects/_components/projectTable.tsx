@@ -261,11 +261,11 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
               </TableBody>
             </Table>
           </div>
-          <div className="flex items-center justify-between space-x-3 py-4">
+          <div className="flex flex-col justify-center items-center lg:flex-row lg:items-center lg:justify-between lg:space-x-3 py-4 lg:py-4">
             <div className="text-sm text-subHeading pl-2">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing
             </div>
-            <div className="flex justify-end mb-2">
+            <div className="flex justify-end mb-2 pt-4 lg:pt-0">
               <ProjectPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}

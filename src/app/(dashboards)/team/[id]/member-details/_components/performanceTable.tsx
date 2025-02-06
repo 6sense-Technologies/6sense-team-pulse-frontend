@@ -23,11 +23,12 @@ import {
 } from "@/components/ui/table";
 import { useParams, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { Bookmark, Calendar, CheckSquare } from "lucide-react";
+import { Bookmark, Calendar, CalendarClock, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { PerformancePagination } from "../[date]/_components/performancePagination";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TeamTooltip, TeamTooltipContent, TeamTooltipProvider, TeamTooltipTrigger } from "../[date]/_components/teamTooltip";
 
 type PerformanceItem = {
   issueType: string;
@@ -65,27 +66,27 @@ export const columns: ColumnDef<PerformanceItem>[] = [
     accessorKey: "issueSummary",
     header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+      <TeamTooltipProvider>
+        <TeamTooltip>
+          <TeamTooltipTrigger asChild>
             <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
               <span>
                 {row.original.planned ? (
                   <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
                 ) : (
-                  <span className="pr-4 hover:no-underline">-</span> 
+                  <CalendarClock className="mr-2 w-4 h-4 text-[#64748B]" />
                 )}
               </span>
               <Link href={row.getValue("issueIdUrl")} target="_blank">
                 {row.getValue("issueSummary") || "-"}
               </Link>
             </div>
-          </TooltipTrigger>
-          <TooltipContent>
+          </TeamTooltipTrigger>
+          <TeamTooltipContent side="left" className="ml-20">
             <p>{row.original.planned ? "Planned" : "Unplanned"}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+          </TeamTooltipContent>
+        </TeamTooltip>
+      </TeamTooltipProvider>
     ),
   },
   {

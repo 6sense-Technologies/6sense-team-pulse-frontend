@@ -13,6 +13,7 @@ import { Circle, Trash2 } from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
 import { CreateProject } from "../../../../../helpers/projects/projectApi";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const ProjectCreate = () => {
   const router = useRouter();
@@ -125,8 +126,7 @@ const ProjectCreate = () => {
       router.push("/projects");
     },
     onError: (error) => {
-      if(error.message === "Request failed with status code 409")
-      {
+      if (error.message === "Request failed with status code 409") {
         setError("name", {
           type: "manual",
           message: "Project name already exists.",
@@ -153,21 +153,24 @@ const ProjectCreate = () => {
       <PageTitle title="Create Project • Ops4 Team" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="pl-[24px] pr-[14px] pt-8 pb-8 w-full">
+          <div className="md:hidden pb-4">
+            <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          </div>
           <GlobalBreadCrumb
             initialData="Projects"
             initalLink="/projects"
             secondayData="Create Project"
             secondayLink="/projects/create"
           />
-          <PageHeading title="Create Project" className="pl-[5px] pt-3" />
+          <PageHeading title="Create Project" className="pl-[7px] lg:pl-[5px] pt-3" />
 
           <div className="flex flex-col lg:flex-row items-start  lg:items-center lg:justify-between w-full max-w-[872px] lg:pt-4">
-            <div className="pl-[6px] pt-2 lg:pt-0">
-              <h1 className="text-headingXXS font-semibold lg:pb-2">
+            <div className="pl-[6px] py-4 lg:pt-0">
+              <h1 className="text-[16px] lg:text-headingXXS font-semibold lg:pb-2">
                 Project Info
               </h1>
             </div>
-            <div className="w-full max-w-[553px] pl-2 lg:pl-0 pt-4 lg:pt-8">
+            <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-8">
               <label
                 htmlFor="projectName"
                 className="text-sm font-medium text-black"
@@ -229,7 +232,7 @@ const ProjectCreate = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-4 pl-2 pt-3 lg:pl-0 lg:pt-0">
+              <div className="flex items-center gap-4 pl-2 pt-4 lg:pl-0 lg:pt-0">
                 <WorkspaceURL
                   control={control}
                   name={`tools[${index + 1}].toolUrl`}
@@ -247,7 +250,7 @@ const ProjectCreate = () => {
               onClick={handleAddtools}
               className="mb-6"
             >
-                Add Tool
+              Add Tool
             </Button>
             <Button
               variant="darkish"

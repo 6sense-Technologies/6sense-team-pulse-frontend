@@ -80,7 +80,7 @@ const ProjectList = () => {
           className="pl-2 pt-3"
         />
         
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <Searchbar
               placeholder="Search by project name"
@@ -96,6 +96,7 @@ const ProjectList = () => {
               className="mb-[26px]"
             />
           </div>
+          <div className="w-full md:w-auto">
           <Link href={`/projects/create`}>
             <Button variant="defaultEx">
               <span className="text-nowrap flex items-center gap-x-[6px]">
@@ -104,8 +105,9 @@ const ProjectList = () => {
               </span>
             </Button>
           </Link>
+          </div>
         </div>
-        <div className="lg:ml-2">
+        <div className="mt-6 lg:mt-0 lg:ml-2">
           {projectListLoading ? (
             <EmptyTableSkeleton /> // Show loader while data is being fetched
           ) : projectList?.data?.length === 0 ? (

@@ -33,7 +33,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
         <Breadcrumb>
           <BreadcrumbList>
           <BreadcrumbSeparator className="text-subHeading md:hidden"/>
-            <BreadcrumbItem className="hidden md:block">
+            <BreadcrumbItem>
               <BreadcrumbLink
                 href={initalLink}
                 className={secondayData || thirdData ? "text-subHeading text-sm" : "!text-black text-sm"}
@@ -43,7 +43,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
             </BreadcrumbItem>
             {secondayData ? (
               <>
-                <BreadcrumbSeparator className="hidden md:block text-subHeading" />
+                <BreadcrumbSeparator className="text-subHeading" />
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={secondayLink}
