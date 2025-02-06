@@ -205,7 +205,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "tools" ? "min-w-[200px]" : ""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "tools" ? "min-w-[140px]" : header.column.id === "name" ? "min-w-[140px]" : ""
                         }`}
                       >
                         {header.isPlaceholder

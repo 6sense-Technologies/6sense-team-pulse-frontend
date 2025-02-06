@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React from 'react';
 import { Button } from './ButtonComponent';
 import { FolderPlus } from 'lucide-react';
-import FolderOpen from "../../public/logo/FolderOpen.png";
+import FolderOpen from "../../public/logo/folderopen.png";
 
 const EmptyProjectView = () => {
   return (
