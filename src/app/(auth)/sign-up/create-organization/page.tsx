@@ -16,8 +16,8 @@ import { useMutation } from "@tanstack/react-query";
 import { handleOrganizationDetails } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
-import { Circle } from "lucide-react";
-
+import { Circle } from "@phosphor-icons/react";
+import SmallLogo from "../../../../../public/logo/Ops4TeamLogo.svg";
 const OrganizationDetails = () => {
   const router = useRouter();
   const [orgError, setOrgError] = useState<string>("");
@@ -118,13 +118,13 @@ const OrganizationDetails = () => {
         />
       </div>
       <div className="bg-white w-full my-auto">
-        <div className="flex justify-start md:hidden mt-9 mx-4 md:mr-9  md:gap-0">
-          <div className="block md:hidden bg-black text-center px-3">
-            <Image src={Logo} alt="Ops4Team Logo" />
+        <div className="flex justify-center lg:justify-start md:hidden mt-9 mx-4 md:mr-9  md:gap-0">
+          <div className="block md:hidden text-center px-3">
+            <Image src={SmallLogo} alt="Ops4Team Logo" />
           </div>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-3 md:px-6">
+        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 lg:px-6 lg:pt-0">
           <div>
             <AuthPageHeader
               title="Organization Details"
@@ -180,15 +180,25 @@ const OrganizationDetails = () => {
             </div>
 
             <Button
-              type="submit"
               variant="submit"
-              className="mt-6 bg-primary hover:bg-primary"
+              className="mt-6 bg-primary hover:bg-primary hidden lg:block"
             >
-              {OrganizationMutation.isPending ?(
+              {OrganizationMutation.isPending ? (
                 <Circle className="animate-spin" />
-              ):(
-              "Submit"
-            )}
+              ) : (
+                "Submit"
+              )}
+            </Button>
+
+            <Button
+              variant="submitExtended"
+              className="mt-6 bg-primary hover:bg-primary block lg:hidden"
+            >
+              {OrganizationMutation.isPending ? (
+                <Circle className="animate-spin mx-auto" />
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
         </div>

@@ -41,7 +41,7 @@ const Otpfields: FC<OtpfieldsProps> = ({ control }) => {
                   onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e, index, valueArray, field)}
                   onFocus={() => handleFocus(index)}
                   onBlur={handleBlur}
-                  className={`w-10 h-10 text-center text-lg border focus:outline-none focus:ring-2 ${
+                  className={`w-[52px] h-[52px] lg:w-10 lg:h-10 text-center text-lg border focus:outline-none focus:ring-2 ${
                     focusedIndex === index ? "border-black" : "border-gray-300"
                   }`}
                 />

@@ -65,8 +65,10 @@ const ProjectList = () => {
     <div className="w-full">
       <PageTitle title="Projects • Ops4 Team" />
 
-      <div className="pl-4 pt-8 pr-[14px] w-full">
-        <span className="lg:hidden"><SidebarTrigger /></span>
+      <div className="pl-4 pt-8 lg:pt-8 pr-[14px] w-full">
+        <div className="md:hidden pb-4">
+        <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+        </div>
         <GlobalBreadCrumb
           initialData="Home"
           initalLink="/"
@@ -77,13 +79,14 @@ const ProjectList = () => {
           title="Projects"
           className="pl-2 pt-3"
         />
+        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <Searchbar
               placeholder="Search by project name"
               name="search"
               btntext="Search"
-              className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
+              className="mt-10 lg:mt-[18px] mb-[26px] gap-x-2 w-full lg:max-w-[291px] relative"
               variant="light"
             />
             <ProjectDropdown
@@ -94,7 +97,7 @@ const ProjectList = () => {
             />
           </div>
           <Link href={`/projects/create`}>
-            <Button>
+            <Button variant="defaultEx">
               <FolderPlus size={16} className="mr-1" />
               Create Project
             </Button>

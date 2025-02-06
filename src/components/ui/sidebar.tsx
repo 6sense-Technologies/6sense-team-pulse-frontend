@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
-import { Menu, PanelLeft } from "lucide-react"
+import { Menu} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -278,7 +278,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <Menu className="!w-[24px] !h-[24px]"/>
+      <Menu className="!w-[24px] !h-[24px] md:!hidden"/>
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

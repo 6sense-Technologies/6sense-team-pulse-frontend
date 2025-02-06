@@ -1,6 +1,7 @@
-import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
+
 import axios from "axios";
 import { TeamList } from "@/types/Team.types";
+import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 interface TPaginationProps {
   page: number;
@@ -68,3 +69,17 @@ export const GetDailyPerformance = async ({
 
   return response.data;
 };
+
+
+export const GetIndividualTeamMember = async (member_id: string) => {
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/users/user-info?userId=${member_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
+
+  return response.data;
+}

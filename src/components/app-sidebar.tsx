@@ -1,4 +1,5 @@
 'use client';
+
 import {
   Bot,
   Boxes,
@@ -19,11 +20,11 @@ import {
   SidebarContent,
   SidebarHeader,
   SidebarRail,
-  SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { useSession } from 'next-auth/react';
 import { NavAdmin } from './nav-admin';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const defaultData = {
   user: {
@@ -113,6 +114,7 @@ const defaultData = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const session = useSession();
+  const pathname = usePathname();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   useEffect(() => {
@@ -123,6 +125,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       setSelectedItem('Dashboard');
     }
   }, []);
+
+  useEffect(() => {
+    const matchedItem = defaultData.navMain.find(item => pathname.startsWith(item.url));
+    if (matchedItem) {
+      setSelectedItem(matchedItem.title);
+    }
+  }, [pathname]);
 
   const handleItemClick = (title: string) => {
     setSelectedItem(title);

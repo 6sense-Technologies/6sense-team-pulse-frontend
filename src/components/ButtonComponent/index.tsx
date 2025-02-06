@@ -11,6 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "text-white bg-primary hover:opacity-90",
+        defaultEx: "text-white bg-primary hover:opacity-90 w-full lg:w-[140px] ",
         secondary: "text-black bg-secondary hover:bg-secondaryHover",
         outline:
           "text-black bg-transparent border-[1px] border-borderColor hover:bg-outlineHover focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
@@ -23,6 +24,7 @@ const buttonVariants = cva(
         extralight: "text-black bg-white hover:bg-white border rounded-lg",
         dark: "text-white bg-blackishBg hover:bg-blackishBg",
         submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
+        submitExtended: "text-white bg-lightBlueBg hover:bg-lightBlueBg w-full",
         darkish: 'text-white bg-primary font-normal',
         blackWhite: "text-white bg-black border border-white"
       },
@@ -140,7 +142,7 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
               fontSize={16}
             />
           ) : (
-            <div className="flex gap-x-2 items-center">
+            <div className="text-center lg:flex lg:gap-x-2 lg:items-center">
               {prefixIcon ? (
                 <IconComponent
                   name={prefixIcon}

@@ -1,6 +1,7 @@
-import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
+
 import axios from "axios";
 import { ProjectTools } from "@/types/Project.types";
+import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 interface TPaginationProps {
   page: number;

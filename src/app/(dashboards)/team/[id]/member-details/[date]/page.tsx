@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance } from "../../../../../../../helpers/Team/teamApi";
+import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../../helpers/Team/teamApi";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 
@@ -16,16 +16,6 @@ const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<string>("performance");
   const [limit] = useState<number>(10);
-
-  interface Pagination {
-    page: number;
-    size: number;
-  }
-
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    size: 10,
-  });
 
   const searchParams = useSearchParams();
 
@@ -35,19 +25,17 @@ const EfficiencyMemberDetails: React.FC = () => {
       : 1;
 
     setPages(newPage);
-    // Only update pagination if the new page is different from the current page
-    setPagination((prevPagination) => {
-      if (prevPagination.page !== newPage) {
-        return {
-          page: newPage,
-          size: prevPagination.size,
-        };
-      }
-      return prevPagination; // Return the previous state if no change
-    });
   }, [searchParams]);
 
   const { id: member_id, date } = useParams() as { id: string; date: string };
+
+  const {
+    data: individualMemberData,
+    isFetching: individualMemberDataLoading,
+  } = useQuery<any>({
+    queryKey: ["individualMemberData", member_id],
+    queryFn: () => GetIndividualTeamMember(member_id),
+  });
 
   const {
     data: dailyPerformance,
@@ -59,15 +47,16 @@ const EfficiencyMemberDetails: React.FC = () => {
   });
 
   const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;
+  console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData)
 
   const totalCountAndLimit = {
     totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
-    size: pagination.size ?? 10,
+    size: limit,
   };
 
-  const individualAvatar = dailyPerformance?.userData.avatarUrls;
-  const individualName = dailyPerformance?.userData.displayName;
-  const individualDesignation = dailyPerformance?.userData.designation;
+  const individualAvatar = individualMemberData?.userData.avatarUrls;
+  const individualName = individualMemberData?.userData.displayName;
+  const individualDesignation = individualMemberData?.userData.designation;
 
   const getInitials = (name: string) => {
     if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -99,7 +88,7 @@ const EfficiencyMemberDetails: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-3 md:mb-0">
             <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
-              {dailyPerformanceLoading ? (
+              {individualMemberDataLoading ? (
                <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton/></span>
               ) : (
                 <>

@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview } from "../../../../../../helpers/Team/teamApi";
+import { GetIndividualOverview, GetIndividualTeamMember } from "../../../../../../helpers/Team/teamApi";
 import { useQuery } from "@tanstack/react-query";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
@@ -31,16 +31,6 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   const { id } = useParams() as { id: string };
 
-  interface Pagination {
-    page: number;
-    size: number;
-  }
-
-  const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
-    size: 10,
-  });
-
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -49,17 +39,15 @@ const EfficiencyMemberDetails: React.FC = () => {
       : 1;
 
     setPages(newPage);
-    // Only update pagination if the new page is different from the current page
-    setPagination((prevPagination) => {
-      if (prevPagination.page !== newPage) {
-        return {
-          page: newPage,
-          size: prevPagination.size,
-        };
-      }
-      return prevPagination; // Return the previous state if no change
-    });
   }, [searchParams]);
+
+  const {
+    data: individualMemberData,
+    isFetching: individualMemberDataLoading,
+  } = useQuery<any>({
+    queryKey: ["individualMemberData", id],
+    queryFn: () => GetIndividualTeamMember(id),
+  });
 
   const {
     data: individualOverview,
@@ -70,15 +58,13 @@ const EfficiencyMemberDetails: React.FC = () => {
     queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit }),
   });
 
-  console.log("Individual", individualOverview);
-
-  const individualAvatar = individualOverview?.userData.avatarUrls;
-  const individualName = individualOverview?.userData.displayName;
+  const individualAvatar = individualMemberData?.userData.avatarUrls;
+  const individualName = individualMemberData?.userData.displayName;
   const firstName = individualName?.split(' ')[0];
-  const individualDesignation = individualOverview?.userData.designation;
+  const individualDesignation = individualMemberData?.userData.designation;
   const individualCurrentMonthPerformance =
-    individualOverview?.currentMonthScore;
-  const individualLastMonthPerformance = individualOverview?.lastMonthScore;
+  individualMemberData?.currentMonthScore;
+  const individualLastMonthPerformance = individualMemberData?.lastMonthScore;
 
   const formattedCurrentMonthPerformance =
     individualCurrentMonthPerformance !== undefined
@@ -92,11 +78,9 @@ const EfficiencyMemberDetails: React.FC = () => {
       ? `${(Math.ceil(individualLastMonthPerformance * 100) / 100).toFixed(2)}%`
       : "-";
 
-  console.log(individualOverview?.history.data);
-
   const totalCountAndLimit = {
     totalCount: individualOverview?.history.count ?? 0,
-    size: pagination.size ?? 10,
+    size: limit,
   };
 
   return (
@@ -110,8 +94,8 @@ const EfficiencyMemberDetails: React.FC = () => {
           secondayData="Profile"
           secondayLink="/team/id/profile"
         />
-        {individualOverviewLoading ? (
-          <TextSkeleton className="h-8 w-48 pl-2 mt-3 mb-4" />
+        {individualMemberDataLoading ? (
+          <TextSkeleton className="h-8 w-48 ml-3 mt-3 mb-4" />
         ) : (
           <PageHeading
             title={`${firstName}'s Profile`}
@@ -121,8 +105,8 @@ const EfficiencyMemberDetails: React.FC = () => {
         )}
         <div className="flex items-center justify-between mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-3 md:mb-0">
-            {individualOverviewLoading ? (
-              <SummarySkeleton />
+            {individualMemberDataLoading ? (
+              <span className="pl-3 pt-3"><SummarySkeleton /></span>
             ) : (
               <>
                 <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">

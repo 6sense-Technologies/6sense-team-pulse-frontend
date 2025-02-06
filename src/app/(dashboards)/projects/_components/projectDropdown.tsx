@@ -32,7 +32,7 @@ export function ProjectDropdown({
 }: DropdownProps) {
   const renderSelect = (field: any) => (
     <Select {...field}>
-      <SelectTrigger className={cn("w-[200px] border-none shadow-none", className)} disabled={!active}>
+      <SelectTrigger className={cn("w-[140px] lg:w-[200px] border-none shadow-none", className)} disabled={!active}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

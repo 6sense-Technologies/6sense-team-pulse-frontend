@@ -145,7 +145,7 @@ const SignIn = () => {
           </Link>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-4 lg:px-5">
+        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 lg:px-5 lg:pt-0">
           <p className="text-3xl text-black font-semibold pt-4 lg:pt-0">
             Sign in
           </p>

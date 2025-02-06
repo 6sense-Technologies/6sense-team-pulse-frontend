@@ -169,7 +169,7 @@ export const columns: ColumnDef<TeamMember>[] = [
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
-            <div className="text-medium line-clamp-2 justify-text">
+            <div className="text-medium line-clamp-2 text-start">
               {row.getValue("insight") || "-"}
             </div>
           </TooltipTrigger>
@@ -185,7 +185,6 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: () => <div className="text-bold text-right pr-4">Actions</div>,
     enableHiding: false,
     cell: ({ row }) => {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const [isModalOpen, setIsModalOpen] = useState(false);
 
       const handleIconClick = () => {
@@ -222,33 +221,32 @@ export const columns: ColumnDef<TeamMember>[] = [
             onClick={handleIconClick}
           />
           {isModalOpen && (
-  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
-    <ul>
-      <Link
-        href={`/team/${id}/member-details/${
-          new Date(row.original._id).toISOString().split("T")[0]
-        }`}
-      >
-        <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-          View
-        </li>
-      </Link>
-      <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
-        Add Comment
-      </li>
-      <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
-        Report Bug
-      </li>
-      <li className="px-4 py-2 text-start   cursor-not-allowed text-gray-400">
-        Project
-      </li>
-      <hr className="mt-1" />
-      <li className="px-4 py-3 text-start  cursor-not-allowed text-gray-400">
-        Remove
-      </li>
-    </ul>
-  </div>
-)}
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+              <ul>
+                <Link
+                  href={`/team/${id}/member-details/${new Date(row.original._id).toISOString().split("T")[0]
+                    }`}
+                >
+                  <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                    View
+                  </li>
+                </Link>
+                <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
+                  Add Comment
+                </li>
+                <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
+                  Report Bug
+                </li>
+                <li className="px-4 py-2 text-start   cursor-not-allowed text-gray-400">
+                  Project
+                </li>
+                <hr className="mt-1" />
+                <li className="px-4 py-3 text-start  cursor-not-allowed text-gray-400">
+                  Remove
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       );
     },
@@ -345,32 +343,31 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-[80px] pl-0 leading-none ${
-                          header.column.id === "actions"
+                        className={`text-left h-[80px] pl-0 leading-none ${header.column.id === "actions"
                             ? "text-right pb-9"
                             : header.column.id === "bugs"
-                            ? "pb-8 w-20 text-center"
-                            : header.column.id === "_id"
-                            ? "w-[100px]"
-                            : header.column.id === "tasks"
-                            ? "w-[282px]"
-                            : header.column.id === "stories"
-                            ? "w-[158px]"
-                            : header.column.id === "ctbr"
-                            ? "pl-3 pr-3"
-                            : header.column.id === "score"
-                            ? "pl-2 pb-8 text-start"
-                            : header.column.id === "insight"
-                            ? "pl-6 pb-8  text-start w-[250px]"
-                            : "pb-8 pt-2"
-                        } `}
+                              ? "pb-8 w-20 text-center"
+                              : header.column.id === "_id"
+                                ? "w-[100px]"
+                                : header.column.id === "tasks"
+                                  ? "w-[282px]"
+                                  : header.column.id === "stories"
+                                    ? "w-[158px]"
+                                    : header.column.id === "ctbr"
+                                      ? "pl-3 pr-3"
+                                      : header.column.id === "score"
+                                        ? "pl-2 pb-8 text-start"
+                                        : header.column.id === "insight"
+                                          ? "pl-6 pb-8  text-start w-[250px]"
+                                          : "pb-8 pt-2"
+                          } `}
                       >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -388,44 +385,41 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
-                        className={`leading-none ${isHoliday ? "h-6" : "h-12"}`}
+                        className="leading-none h-12"
                       >
                         {row.getVisibleCells().map((cell: any) => (
                           <TableCell
                             key={cell.id}
-                            className={`leading-none ${
-                              isHoliday ? "py-0" : "py-1"
-                            } ${
-                              cell.column.id === "actions" && isHoliday
+                            className={`leading-none py-1 ${cell.column.id === "actions" && isHoliday
                                 ? "hidden"
                                 : cell.column.id === "actions"
-                                ? "text-right"
-                                : cell.column.id === "bugs"
-                                ? "pl-7 text-start w-20"
-                                : cell.column.id === "_id" && isHoliday
-                                ? "pl-4 text-start"
-                                : cell.column.id === "score"
-                                ? "text-left"
-                                : cell.column.id === "insight"
-                                ? "text-start pl-6"
-                                : cell.column.id === "tasks"
-                                ? "text-left pl-4"
-                                : cell.column.id === "stories"
-                                ? "text-start pl-0 pr-5"
-                                : cell.column.id === "ctbr" && isHoliday
-                                ? "text-center italic text-[#D97706]"
-                                : cell.column.id === "ctbr"
-                                ? "pl-4 text-start"
-                                : "pl-4 text-start"
-                            }`}
+                                  ? "text-right"
+                                  : cell.column.id === "bugs"
+                                    ? "pl-7 text-start w-20"
+                                    : cell.column.id === "_id" && isHoliday
+                                      ? "pl-4 text-start"
+                                      : cell.column.id === "score"
+                                        ? "text-left"
+                                        : cell.column.id === "insight"
+                                          ? "text-start pl-6"
+                                          : cell.column.id === "tasks"
+                                            ? "text-left pl-4"
+                                            : cell.column.id === "stories"
+                                              ? "text-start pl-0 pr-5"
+                                              : cell.column.id === "ctbr" && isHoliday
+                                                ? "text-center italic text-[#D97706]"
+                                                : cell.column.id === "ctbr"
+                                                  ? "pl-4 text-start"
+                                                  : "pl-4 text-start"
+                              }`}
                           >
                             {isHoliday &&
-                            cell.column.id !== "_id" &&
-                            cell.column.id !== "ctbr"
+                              cell.column.id !== "_id" &&
+                              cell.column.id !== "ctbr"
                               ? null
                               : isHoliday && cell.column.id === "ctbr"
-                              ? "Holiday/Leave"
-                              : flexRender(
+                                ? "Holiday/Leave"
+                                : flexRender(
                                   cell.column.columnDef.cell,
                                   cell.getContext()
                                 )}

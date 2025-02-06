@@ -12,7 +12,7 @@ const AuthPageHeader: FC<IHeadingProps> = ({ title, subTitle, titleclassName, su
   return (
     <div>
       <h3 className={cn('text-2xl font-semibold', titleclassName)}>{title}</h3>
-      <p className={cn('text-sm  text-subHeading', subTitleClassName)}>{subTitle}</p>
+      <p className={cn('text-sm text-start leading-normal text-subHeading', subTitleClassName)}>{subTitle}</p>
     </div>
   );
 };

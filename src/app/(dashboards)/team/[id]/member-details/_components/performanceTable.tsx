@@ -27,6 +27,7 @@ import { Bookmark, Calendar, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { PerformancePagination } from "../[date]/_components/performancePagination";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type PerformanceItem = {
   issueType: string;
@@ -34,6 +35,7 @@ type PerformanceItem = {
   issueIdUrl: string;
   issueStatus: string;
   linkedId: string;
+  planned: boolean;
 };
 
 export const columns: ColumnDef<PerformanceItem>[] = [
@@ -63,14 +65,27 @@ export const columns: ColumnDef<PerformanceItem>[] = [
     accessorKey: "issueSummary",
     header: () => <div className="text-bold">Work Item</div>,
     cell: ({ row }: { row: any }) => (
-      <Link href={row.getValue("issueIdUrl")} target="_blank">
-        <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
-          <span>
-            <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
-          </span>
-          {row.getValue("issueSummary") || "-"}
-        </div>
-      </Link>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
+              <span>
+                {row.original.planned ? (
+                  <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
+                ) : (
+                  <span className="pr-4 hover:no-underline">-</span> 
+                )}
+              </span>
+              <Link href={row.getValue("issueIdUrl")} target="_blank">
+                {row.getValue("issueSummary") || "-"}
+              </Link>
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.original.planned ? "Planned" : "Unplanned"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
@@ -169,7 +184,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
       ? (currentPageState - 1) * pagination.pageSize + performanceItems.length
       : performanceItems.length;
 
-     const {id:member_id, date} = useParams() as {id: string; date: string};
+  const { id: member_id, date } = useParams() as { id: string; date: string };
   return (
     <div className="w-full">
       {isLoading ? (
@@ -220,7 +235,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                        )}       
+                          )}       
                         </TableCell>
                       ))}
                     </TableRow>

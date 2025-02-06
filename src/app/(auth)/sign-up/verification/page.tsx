@@ -16,7 +16,7 @@ import { useMutation } from "@tanstack/react-query";
 import { handleOtp, handleResendOTP } from "../../../../../helpers/Auth/authApi";
 import { useSession } from "next-auth/react";
 import Loader from "@/components/loader";
-import { Circle } from "lucide-react";
+import { Circle } from "@phosphor-icons/react";
 import SmallLogo from "../../../../../public/logo/Ops4TeamLogo.svg";
 const Verify = () => {
   const router = useRouter();
@@ -108,6 +108,7 @@ const Verify = () => {
       update({ isVerified: data.isValidated }).then(() => {
         router.push("/sign-up/create-organization");
       });
+      localStorage.removeItem("endTime");
     },
     onError: (error) => {
       if (error.message) {
@@ -179,7 +180,7 @@ const Verify = () => {
           </div>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-3 md:px-6">
+        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 lg:px-6 lg:pt-0">
           <div>
             <AuthPageHeader
               title="Verify Email"
@@ -190,14 +191,14 @@ const Verify = () => {
           </div>
 
           <form onSubmit={handleSubmit(handleSubmission)}>
-            <div className="w-full relative">
+            <div className="w-full relative pt-6 lg:pt-0">
               <label htmlFor="otp" className="text-black font-medium text-sm">
                 One-Time Password
               </label>
               <div className="flex mt-4">
                 <Otpfields control={control} />
               </div>
-              <div className="flex justify-between items-center relative max-w-[240px]">
+              <div className="flex justify-between items-center relative max-w-[310px] lg:max-w-[240px]">
                 <p className="text-sm text-destructive font-medium pt-2">
                   {isExpired
                     ? "OTP is expired."
@@ -232,10 +233,21 @@ const Verify = () => {
 
             <Button
               variant="submit"
-              className="mt-6 bg-primary hover:bg-primary"
+              className="mt-6 bg-primary hover:bg-primary hidden lg:block"
             >
               {otpMutation.isPending ?(
                 <Circle className="animate-spin" />
+              ):(
+              "Submit"
+              )}
+            </Button>
+
+            <Button
+              variant="submitExtended"
+              className="mt-6 bg-primary hover:bg-primary block lg:hidden"
+            >
+              {otpMutation.isPending ?(
+                <Circle className="animate-spin mx-auto" />
               ):(
               "Submit"
               )}

@@ -3,6 +3,7 @@ import NextAuth, { CredentialsSignin } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthGoogleID, AuthGoogleSecret } from "./config";
+import { TEMP_BACKEND_URI } from "./globalConstants";
 declare module "next-auth" {
   interface Session {
     accessToken?: string;
@@ -56,7 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log("CREDENTIALS:", credentials);
 
           const response = await axios.post(
-            "https://6sense-team-pulse-backend.vercel.app/auth/login",
+            `${TEMP_BACKEND_URI}/auth/login`,
             {
               emailAddress: credentials?.emailAddress,
               password: credentials?.password,
@@ -128,7 +129,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         // Google login flow
         // console.log("FOUND GOOGLE AUTH FLOW");
         const response = await axios.post(
-          "https://6sense-team-pulse-backend.vercel.app/auth/social-login",
+          `${TEMP_BACKEND_URI}/auth/social-login`,
           {
             idToken: account.id_token,
             provider: "google",

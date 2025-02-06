@@ -15,9 +15,12 @@ const Page = () => {
 
   return (
     <div className='w-full bg-blackishBg min-h-screen flex flex-col'>
-      <div className='pt-8 pl-[64px]'>
+      <div className='pt-8 pl-4 lg:pl-[64px]'>
         <Button variant="blackWhite" size="md" onClick={handleGoBack}>
-          <ArrowLeft size={16}/> Go Back
+          <div className='flex items-center space-x-2'>
+            <span><ArrowLeft size={16} /></span>
+            <span>Go Back</span>
+          </div>
         </Button>
       </div>
       <div className='flex flex-col items-center justify-center flex-grow'>

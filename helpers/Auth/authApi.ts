@@ -1,10 +1,10 @@
-import { TEMP_BACKEND_URI } from "@/app/utils/constants/constants";
 import {
   TBasicSignupFormInputs,
   TOrgazinationDetails,
   TVerifyEmail,
 } from "@/types/Auth.types";
 import axios from "axios";
+import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 
 

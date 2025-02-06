@@ -1,5 +1,5 @@
 "use client";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -7,7 +7,7 @@ import GoogleLogo from "../../../../public/logo/googleLogo.svg";
 import FacebookLogo from "../../../../public/logo/facebookLogo.svg";
 import AppleLogo from "../../../../public/logo/appleLogo.svg";
 import OrDivider from "../_components/orDivider";
-import {useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,7 +20,7 @@ import { BaseInput } from "@/components/BaseInput";
 import { Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
-import {signIn, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Loader from "@/components/loader";
 import { Eye, EyeOff } from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
@@ -124,9 +124,9 @@ const SignUp = () => {
           </Link>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-4 lg:px-5 pb-5">
+        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 lg:pt-0 lg:px-5 pb-5">
           <div>
-          <p className="text-3xl text-black font-semibold pt-6 lg:pb-6">Sign up</p>
+            <p className="text-3xl text-black font-semibold pt-6 lg:pb-6">Sign up</p>
             <AuthPageHeader
               title="You are one click away"
               subTitle="from being efficient"
@@ -136,10 +136,10 @@ const SignUp = () => {
           </div>
           <div className="flex gap-x-4">
             {/* <Link href={"/sign-up/sso"}> */}
-              <Button variant="extralight" size="minixl"  className=" cursor-not-allowed">SSO</Button>
+            <Button variant="extralight" size="minixl" className=" cursor-not-allowed">SSO</Button>
             {/* </Link> */}
             <div className="flex gap-x-[16px]">
-              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
+              <Button variant="extralight" size="smallest" className=" cursor-not-allowed">
                 <Image
                   src={GoogleLogo}
                   width={24}
@@ -147,7 +147,7 @@ const SignUp = () => {
                   alt="googleLogo"
                 />
               </Button>
-              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
+              <Button variant="extralight" size="smallest" className=" cursor-not-allowed">
                 <Image
                   src={FacebookLogo}
                   width={24}
@@ -155,7 +155,7 @@ const SignUp = () => {
                   alt="facebookLogo"
                 />
               </Button>
-              <Button variant="extralight" size="smallest"  className=" cursor-not-allowed">
+              <Button variant="extralight" size="smallest" className=" cursor-not-allowed">
                 <Image
                   src={AppleLogo}
                   width={24}
@@ -211,35 +211,35 @@ const SignUp = () => {
                 Password
               </label>
               <div className="relative">
-        <BaseInput
-          control={control}
-          name="password"
-          type={passwordVisible ? 'text' : 'password'}
-          errors={errors}
-          placeholder="Password"
-          className="placeholder:text-subHeading w-full mt-[4px]"
-        />
-        <button
-          type="button"
-          onClick={handlePasswordVisibility}
-          className="absolute right-5 top-2.5"
-        >
-          {passwordVisible ? (
-            <Eye
-              size={20}
-              className="text-xl text-deepBlackColor"
-            />
-          ) : (
-            <EyeOff
-              size={20}
-              className="text-xl text-deepBlackColor font-normal"
-            />
-          )}
-        </button>
-      </div>
+                <BaseInput
+                  control={control}
+                  name="password"
+                  type={passwordVisible ? 'text' : 'password'}
+                  errors={errors}
+                  placeholder="Password"
+                  className="placeholder:text-subHeading w-full mt-[4px]"
+                />
+                <button
+                  type="button"
+                  onClick={handlePasswordVisibility}
+                  className="absolute right-5 top-2.5"
+                >
+                  {passwordVisible ? (
+                    <Eye
+                      size={20}
+                      className="text-xl text-deepBlackColor"
+                    />
+                  ) : (
+                    <EyeOff
+                      size={20}
+                      className="text-xl text-deepBlackColor font-normal"
+                    />
+                  )}
+                </button>
+              </div>
             </div>
 
-            <Button variant="dark" className="mt-8 w-full">
+            <Button variant="dark" className="mt-[52px] lg:mt-8 w-full">
               {basicSignUpMutation.isPending ? (
                 <Circle className="animate-spin" />
               ) : (
@@ -257,16 +257,16 @@ const SignUp = () => {
           </div>
 
           <div>
-          <Link href='/comingsoon'>
-            <p className="text-sm text-textMuted px-10 text-center pt-3">
-              By clicking continue, you agree to our {""}
-              <span className="underline cursor-pointer">
-                Terms of Service
-              </span>{" "}
-              and{" "}
-              <span className="underline cursor-pointer">Privacy Policy</span>.
-            </p>
-          </Link>
+            <Link href='/comingsoon'>
+              <p className="text-sm text-textMuted px-10 text-center pt-3">
+                By clicking continue, you agree to our {""}
+                <span className="underline cursor-pointer">
+                  Terms of Service
+                </span>{" "}
+                and{" "}
+                <span className="underline cursor-pointer">Privacy Policy</span>.
+              </p>
+            </Link>
           </div>
         </div>
       </div>
