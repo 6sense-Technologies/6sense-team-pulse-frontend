@@ -32,7 +32,7 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-          <BreadcrumbSeparator className="text-subHeading"/>
+          <BreadcrumbSeparator className="text-subHeading md:hidden"/>
             <BreadcrumbItem className="hidden md:block">
               <BreadcrumbLink
                 href={initalLink}

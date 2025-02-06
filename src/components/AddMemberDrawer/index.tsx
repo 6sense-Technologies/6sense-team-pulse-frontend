@@ -313,7 +313,6 @@
 
 "use client";
 
-import { BACKEND_URI } from "@/app/utils/constants/constants";
 import { cn } from "@/app/utils/tailwindMerge";
 import { IDesignation, IProject } from "@/types/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -326,6 +325,7 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { Button } from "../ButtonComponent";
 import { MemberSchema } from "../../../Zodschema/memberSchema";
+import { BACKEND_URI } from "../../../globalConstants";
 
 interface IProps {
   isOpen: boolean;

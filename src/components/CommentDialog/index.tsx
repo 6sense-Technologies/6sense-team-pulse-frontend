@@ -1,5 +1,5 @@
 
-import { BACKEND_URI } from '@/app/utils/constants/constants';
+
 import { cn } from '@/app/utils/tailwindMerge';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Warning } from '@phosphor-icons/react';
@@ -9,6 +9,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '../ButtonComponent';
 import { CommentSchema } from '../../../Zodschema/commentSchema';
+import { BACKEND_URI } from '../../../globalConstants';
 
 interface ICommentDialogProps {
     isOpen: boolean;

@@ -1,6 +1,6 @@
 "use client";
 
-import { BACKEND_URI } from "@/app/utils/constants/constants";
+
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberInfo } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
@@ -13,6 +13,7 @@ import IconComponent from "../IconComponent";
 import { Button } from "../ButtonComponent";
 import MemberDetailListView from "../MemberDetailListView";
 import ConfirmDialog from "../ConfirmDialog";
+import { BACKEND_URI } from "../../../globalConstants";
 
 interface IProps {
   memberInformation?: IMemberInfo;

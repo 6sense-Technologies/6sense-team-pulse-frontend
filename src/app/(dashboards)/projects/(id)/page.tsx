@@ -86,7 +86,7 @@ const ProjectList = () => {
               placeholder="Search by project name"
               name="search"
               btntext="Search"
-              className="mt-10 lg:mt-[18px] mb-[26px] gap-x-2 w-full lg:max-w-[291px] relative"
+              className="mt-10 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
             />
             <ProjectDropdown
@@ -98,8 +98,10 @@ const ProjectList = () => {
           </div>
           <Link href={`/projects/create`}>
             <Button variant="defaultEx">
+              <span className="text-nowrap flex items-center gap-x-[6px]">
               <FolderPlus size={16} className="mr-1" />
               Create Project
+              </span>
             </Button>
           </Link>
         </div>

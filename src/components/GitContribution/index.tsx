@@ -1,8 +1,9 @@
 import GitContributionTable from "../GitContributionTable";
 import axios, { AxiosResponse } from "axios";
 import { useQuery } from "@tanstack/react-query";
-import { BACKEND_URI } from "@/app/utils/constants/constants";
+
 import { IGitContribution } from "@/types/types";
+import { BACKEND_URI } from "../../../globalConstants";
 
 interface IGitParam {
   userId: string;

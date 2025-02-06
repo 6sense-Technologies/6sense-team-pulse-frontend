@@ -197,7 +197,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
-            <Table className="!rounded-lg">
+            <Table className="!rounded-lg !min-w-[600px]">
               <TableHeader className="border-b-[1px] text-inputFooterColor">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="py-1 leading-none">
@@ -205,7 +205,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : ""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "tools" ? "min-w-[200px]" : ""
                         }`}
                       >
                         {header.isPlaceholder
