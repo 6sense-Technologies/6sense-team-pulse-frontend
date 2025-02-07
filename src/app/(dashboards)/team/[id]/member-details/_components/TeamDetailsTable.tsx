@@ -60,18 +60,18 @@ export const columns: ColumnDef<TeamMember>[] = [
           year: "numeric",
         })
         .replace(/\//g, "-");
-      return <div className="text-medium w-[120px]">{formattedDate || "-"}</div>;
+      return <div className="text-medium w-[80px]">{formattedDate || "-"}</div>;
     },
   },
   {
     id: "tasks",
     header: () => (
-      <div className="text-bold pl-4">
-        Tasks
-        <div className="flex justify-between border-t mt-1 pt-1 gap-x-[14px]">
-          <span className="py-2">Planned</span>
+      <div className="text-bold pl-6">
+        <p className="pl-4 py-[12px]">Tasks</p>
+        <div className="flex justify-between border-t mt-1 pt-1 gap-x-[30px]">
+          <span className="py-2 pl-4">Planned</span>
           <span className="py-2">Unplanned</span>
-          <span className="py-2 pr-12">TCR</span>
+          <span className="py-2 pr-4">TCR</span>
         </div>
       </div>
     ),
@@ -84,10 +84,10 @@ export const columns: ColumnDef<TeamMember>[] = [
 
       return (
         <div className="flex gap-[60px]">
-          <span className="w-[21px]">
+          <span className="w-[21px] pl-6">
             {planned}/{totalPlanned}
           </span>
-          <span>
+          <span className="pl-7">
             {unplanned}/{totalUnplanned}
           </span>
           <span className="pl-6">
@@ -114,9 +114,9 @@ export const columns: ColumnDef<TeamMember>[] = [
     id: "stories",
     header: () => (
       <div className="text-bold pt-1">
-        Stories
+        <p className="pl-4 py-[12px]">Stories</p>
         <div className="flex justify-between border-t mt-1 pt-1 gap-x-[40px]">
-          <span className="py-2">No</span>
+          <span className="py-2 pl-4">No</span>
           <span className="py-2 pr-4">USCR</span>
         </div>
       </div>
@@ -128,7 +128,7 @@ export const columns: ColumnDef<TeamMember>[] = [
 
       return (
         <div className="flex justify-between">
-          <span>
+          <span className="pl-4">
             {doneStoryCount}/{totalStoryCount}
           </span>
           <span className="w-[38px]">
@@ -140,7 +140,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "ctbr",
-    header: () => <div className="text-bold pb-8">CTBR</div>,
+    header: () => <div className="text-bold pb-8 w-[10px]">CTBR</div>,
     cell: ({ row }: { row: any }) => {
       const ctbr = row.original.codeToBugRatio;
       return (
@@ -152,7 +152,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     accessorKey: "score",
-    header: () => <div className="text-bold">Score</div>,
+    header: () => <div className="text-bold w-[10px]">Score</div>,
     cell: ({ row }: { row: any }) => {
       const score = row.getValue("score");
       const formattedScore =
@@ -221,7 +221,7 @@ export const columns: ColumnDef<TeamMember>[] = [
             onClick={handleIconClick}
           />
           {isModalOpen && (
-            <div className="absolute right-0 bottom-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+            <div className="absolute right-0 -bottom-[12px] mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
                 <Link
                   href={`/team/${id}/member-details/${new Date(row.original._id).toISOString().split("T")[0]
@@ -350,7 +350,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                               : header.column.id === "_id"
                                 ? "w-[100px]"
                                 : header.column.id === "tasks"
-                                  ? "w-[282px]"
+                                  ? "py-1 w-[282px]"
                                   : header.column.id === "stories"
                                     ? "w-[158px]"
                                     : header.column.id === "ctbr"
@@ -441,12 +441,12 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
               </TableBody>
             </Table>
           </div>
-          <div className="flex items-center justify-between space-x-3 py-4">
-            <div className="text-sm text-subHeading pl-2">
+          <div className="space-x-3 flex flex-col justify-center items-center lg:flex-row lg:items-center lg:justify-between lg:space-x-3 py-4 lg:py-4">
+            <div className="text-sm text-subHeading pl-2 md:pb-6">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
               showing
             </div>
-            <div className="flex justify-end mb-2">
+            <div className="flex items-center md:justify-end mb-4 pt-4 px-3 lg:px-0 lg:pt-0">
               <TeamDetailsPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}

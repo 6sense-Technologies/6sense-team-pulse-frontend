@@ -200,7 +200,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none text-nowrap ${
-                          header.column.id === "actions" ? "text-right" : ""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "issueSummary" ? "min-w-[200px]" :""
                         }`}
                       >
                         {header.isPlaceholder
@@ -253,12 +253,12 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
               </TableBody>
             </Table>
           </div>
-          <div className="flex items-center justify-between space-x-3 py-4">
-            <div className="text-sm text-subHeading pl-2">
+          <div className="space-x-3 flex flex-col justify-center items-center lg:flex-row lg:items-center lg:justify-between lg:space-x-3 py-4 lg:py-4">
+            <div className="text-sm text-subHeading pl-2 md:pb-6">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
               showing
             </div>
-            <div className="flex justify-end mb-2">
+            <div className="flex items-center md:justify-end mb-4 pt-4 lg:pt-0">
               <PerformancePagination
                 currentPage={currentPageState}
                 totalPage={totalPages}

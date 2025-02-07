@@ -6,7 +6,7 @@ import PageHeading from "@/components/pageHeading";
 import { useParams, useSearchParams } from "next/navigation";
 import { TeamDetailsTable } from "./_components/TeamDetailsTable";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CalendarArrowDown, CalendarCheck2 } from "lucide-react";
+import { CalendarArrowDown, CalendarCheck2, EllipsisVertical } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
 import { GetIndividualOverview, GetIndividualTeamMember } from "../../../../../../helpers/Team/teamApi";
@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
 import SummarySkeleton from "@/components/summarySkeleton";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const getInitials = (name: string) => {
   if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -63,14 +64,14 @@ const EfficiencyMemberDetails: React.FC = () => {
   const firstName = individualName?.split(' ')[0];
   const individualDesignation = individualMemberData?.userData.designation;
   const individualCurrentMonthPerformance =
-  individualMemberData?.currentMonthScore;
+    individualMemberData?.currentMonthScore;
   const individualLastMonthPerformance = individualMemberData?.lastMonthScore;
 
   const formattedCurrentMonthPerformance =
     individualCurrentMonthPerformance !== undefined
       ? `${(Math.ceil(individualCurrentMonthPerformance * 100) / 100).toFixed(
-          2
-        )}%`
+        2
+      )}%`
       : "-";
 
   const formattedLastMonthPerformance =
@@ -88,10 +89,13 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Member Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
+        <div className="md:hidden pb-4">
+          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+        </div>
         <GlobalBreadCrumb
           initialData="Team"
           initalLink="/team"
-          secondayData="Profile"
+          secondayData="Performance"
           secondayLink="/team/id/profile"
         />
         {individualMemberDataLoading ? (
@@ -109,7 +113,7 @@ const EfficiencyMemberDetails: React.FC = () => {
               <span className="pl-3 pt-3"><SummarySkeleton /></span>
             ) : (
               <>
-                <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
+                <div className="flex flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
                   <div>
                     <Avatar className="w-16 h-16 rounded-full ml-4 mr-2 mt-8 mb-6">
                       {individualAvatar ? (
@@ -121,7 +125,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                       )}
                     </Avatar>
                   </div>
-                  <div className="pt-1">
+                  <div className="pl-2 pt-11 md:pt-1 md:pl-0">
                     <h1 className="pb-[3px] text-sm text-[#334155] font-semibold">
                       {individualName}
                     </h1>
@@ -130,26 +134,26 @@ const EfficiencyMemberDetails: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-x-[10px]">
-                  <div>
+                <div className="pl-2 md:pl-0 flex gap-x-5 md:gap-x-[10px]">
+                  <div className="w-full">
                     <div className="flex items-center gap-x-[6px]">
                       <CalendarCheck2 size={16} />
-                      <h1 className="text-[18px] font-semibold">
+                      <h1 className="md:text-[18px] font-semibold">
                         {formattedCurrentMonthPerformance}
                       </h1>
                     </div>
-                    <p className="text-sm text-miniSubheadingColor">
+                    <p className="text-twelve md:text-sm text-miniSubheadingColor">
                       Current Month Performance
                     </p>
                   </div>
-                  <div>
+                  <div className="w-full">
                     <div className="flex items-center gap-x-[6px]">
                       <CalendarArrowDown size={16} />
                       <h1 className="text-[18px] font-semibold">
                         {formattedLastMonthPerformance}
                       </h1>
                     </div>
-                    <p className="text-sm text-miniSubheadingColor">
+                    <p className="text-twelve md:text-sm text-miniSubheadingColor">
                       Last Month Performance
                     </p>
                   </div>
@@ -157,26 +161,29 @@ const EfficiencyMemberDetails: React.FC = () => {
               </>
             )}
           </div>
-          <Button variant="light">Edit Profile</Button>
+          <span className="hidden md:block">
+            <Button variant="light">Edit Profile</Button>
+          </span>
+          <span className="md:hidden pb-16 pr-2 md:pb-0 md:pr-0 cursor-not-allowed">
+            <span><EllipsisVertical /></span>
+          </span>
         </div>
         <div className="tab lg:ml-2">
           <div className="flex space-x-4 border-b">
             <button
-              className={`py-2 px-4 ${
-                activeTab === "performance"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 ${activeTab === "performance"
+                ? "border-b-2 border-black font-semibold"
+                : ""
+                }`}
               onClick={() => setActiveTab("performance")}
             >
               Performance
             </button>
             <button
-              className={`py-2 px-4 cursor-not-allowed text-gray-400${
-                activeTab === "profile"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 cursor-not-allowed text-gray-400${activeTab === "profile"
+                ? "border-b-2 border-black font-semibold"
+                : ""
+                }`}
               onClick={(e) => e.preventDefault()}
             >
               Profile
@@ -188,7 +195,7 @@ const EfficiencyMemberDetails: React.FC = () => {
             <>
               <span className="flex justify-end mb-4">
                 <span className="cursor-not-allowed">
-                <CustomDatePicker />
+                  <CustomDatePicker />
                 </span>
               </span>
               {individualOverviewLoading ? (

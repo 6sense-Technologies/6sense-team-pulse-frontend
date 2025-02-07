@@ -213,7 +213,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "displayName" ? "min-w-[140px]" : header.column.id === "role" ? "min-w-[110px]" : ""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "displayName" ? "min-w-[140px]" : header.column.id === "role" ? "min-w-[110px]" : header.column.id === "designation" ? "min-w-[180px]" : ""
                         }`}
                       >
                         {header.isPlaceholder

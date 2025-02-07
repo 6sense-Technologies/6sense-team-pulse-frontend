@@ -243,7 +243,7 @@ const ProjectCreate = () => {
             </div>
           ))}
 
-          <div className="mt-14 mb-10  lg:ml-[320px] flex-col items-start lg:items-center">
+          <div className="mt-14 mb-10 ml-2 lg:ml-[320px] flex-col items-start lg:items-center">
             <Button
               variant="extralight"
               size="xsExtended"

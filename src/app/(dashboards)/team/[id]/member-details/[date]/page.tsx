@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../../helpers/Team/teamApi";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
@@ -72,6 +73,9 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Performance Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
+      <div className="md:hidden pb-4">
+          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+        </div>
         <GlobalBreadCrumb
           initialData="Team"
           initalLink="/team"
@@ -85,9 +89,9 @@ const EfficiencyMemberDetails: React.FC = () => {
           titleclassName="font-medium"
           className="pl-2 pt-3"
         />
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between md:mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-1 md:mb-0">
-            <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
+            <div className="flex flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
               {individualMemberDataLoading ? (
                <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton/></span>
               ) : (
@@ -103,7 +107,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                       )}
                     </Avatar>
                   </div>
-                  <div className="pt-1">
+                  <div className="pl-2 pt-11 md:pt-1 md:pl-0">
                     <h1 className="pb-[3px] text-sm font-semibold">
                       {individualName}
                     </h1>
