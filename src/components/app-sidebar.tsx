@@ -20,6 +20,7 @@ import {
   SidebarContent,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { useSession } from 'next-auth/react';
 import { NavAdmin } from './nav-admin';
@@ -112,10 +113,16 @@ const defaultData = {
   ],
 };
 
+const isScreenBelowMd = () => {
+  return window.matchMedia('(max-width: 768px)').matches;
+};
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const session = useSession();
   const pathname = usePathname();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
+
+  const { toggleSidebar } = useSidebar();
 
   useEffect(() => {
     const savedSelectedItem = localStorage.getItem('selectedItem');
@@ -136,6 +143,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const handleItemClick = (title: string) => {
     setSelectedItem(title);
     localStorage.setItem('selectedItem', title);
+    if (isScreenBelowMd()) {
+      toggleSidebar();
+    }
   };
 
   const userData = {
@@ -150,7 +160,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar collapsible='icon' {...props} className='border-none'>
+    <Sidebar side='left' variant='sidebar' collapsible='icon' {...props} className='border-none'>
       <SidebarHeader className='bg-[#F1F5F9]'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>

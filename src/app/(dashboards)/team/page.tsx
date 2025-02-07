@@ -11,6 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { GetTeamList } from "../../../../helpers/Team/teamApi";
 import { TeamList } from "@/types/Team.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const TeamListPage: React.FC = () => {
 
@@ -56,7 +57,7 @@ const TeamListPage: React.FC = () => {
     queryFn: () => GetTeamList({ page: pages, limit }),
   });
 
-  console.log("Team",teamList);
+  console.log("Team", teamList);
 
   const totalCountAndLimit = {
     totalCount: teamList?.count ?? 0,
@@ -68,48 +69,55 @@ const TeamListPage: React.FC = () => {
     <div className="w-full">
       <PageTitle title="Team Efficiency • Ops4 Team" />
 
-      <div className="pl-4 pt-8 pr-[14px] w-full">
+      <div className="px-4 lg:pl-4 pt-8 lg:pr-[14px] w-full">
+        <div className="md:hidden pb-4">
+          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+        </div>
         <GlobalBreadCrumb
-          initialData="Home"
-          initalLink="/"
-          secondayData="Team"
-          secondayLink="/team"
+          initialData="Team"
+          initalLink="/team"
         />
         <PageHeading title="Team" className="pl-2 pt-3" />
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
+        <div className="flex flex-col lg:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <TeamSearchbar
               placeholder="Search by name, email"
               name="search"
               btntext="Search"
-              className="mt-[18px] mb-[26px] gap-x-2 w-full max-w-[291px] relative"
+              className="mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
             />
-            <TeamDropdown
-              placeholder="Filter by Role"
-              name="tool"
-              active={false}
-              className="mb-[26px] max-w-[143px] !placeholder:text-black"
-            />
-              <TeamDropdown
-              placeholder="Filter by Designation"
-              name="tool"
-              active={false}
-              className="mb-[26px] !placeholder:text-black"
-            /> 
+            <div className="flex gap-x-2 md:gap-x-2 w-full">
+              <div className="w-full max-w-[143px]">
+                <TeamDropdown
+                  placeholder="Filter by Role"
+                  name="tool"
+                  active={false}
+                  className="mb-[26px] w-full max-w-[143px] !placeholder:text-black"
+                />
+              </div>
+              <div className="w-full max-w-[180px] md:max-w-[200px]">
+                <TeamDropdown
+                  placeholder="Filter by Designation"
+                  name="tool"
+                  active={false}
+                  className="mb-[26px] w-full md:max-w-[350px] !placeholder:text-black"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div className="lg:ml-2">
-        {teamListLoading ? (
+          {teamListLoading ? (
             <EmptyTableSkeleton />
           ) : (
-          <TeamTable
-            totalCountAndLimit={totalCountAndLimit}
-            loading={teamListLoading}
-            refetch={teamListRefetch}
-            teamMembers={teamList?.data}
-            currentPage={pages}
-          />
+            <TeamTable
+              totalCountAndLimit={totalCountAndLimit}
+              loading={teamListLoading}
+              refetch={teamListRefetch}
+              teamMembers={teamList?.data}
+              currentPage={pages}
+            />
           )}
         </div>
       </div>

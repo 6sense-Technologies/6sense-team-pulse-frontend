@@ -221,7 +221,7 @@ export const columns: ColumnDef<TeamMember>[] = [
             onClick={handleIconClick}
           />
           {isModalOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+            <div className="absolute right-0 bottom-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
                 <Link
                   href={`/team/${id}/member-details/${new Date(row.original._id).toISOString().split("T")[0]

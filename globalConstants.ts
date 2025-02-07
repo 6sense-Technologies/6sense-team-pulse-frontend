@@ -3,4 +3,4 @@ export const passwordRegex =
 
 export const BACKEND_URI = "https://6sense-efficiency-backend.vercel.app"
 
-export const TEMP_BACKEND_URI = "https://6sense-team-pulse-backend-git-mic-ef6b65-six-sense-hqs-projects.vercel.app"
+export const TEMP_BACKEND_URI = "https://o4t-backend-for-tester.vercel.app"

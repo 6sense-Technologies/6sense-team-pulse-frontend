@@ -67,7 +67,7 @@ const ProjectList = () => {
 
       <div className="pl-4 pt-8 lg:pt-8 pr-[14px] w-full">
         <div className="md:hidden pb-4">
-        <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
         </div>
         <GlobalBreadCrumb
           initialData="Home"
@@ -79,7 +79,7 @@ const ProjectList = () => {
           title="Projects"
           className="pl-2 pt-3"
         />
-        
+
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <Searchbar
@@ -97,21 +97,21 @@ const ProjectList = () => {
             />
           </div>
           <div className="w-full md:w-auto">
-          <Link href={`/projects/create`}>
-            <Button variant="defaultEx">
-              <span className="text-nowrap flex items-center gap-x-[6px]">
-              <FolderPlus size={16} className="mr-1" />
-              Create Project
-              </span>
-            </Button>
-          </Link>
+            <Link href={`/projects/create`}>
+              <Button variant="defaultEx">
+                <span className="text-nowrap flex items-center gap-x-[6px]">
+                  <FolderPlus size={16} className="mr-1" />
+                  Create Project
+                </span>
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="mt-6 lg:mt-0 lg:ml-2">
           {projectListLoading ? (
             <EmptyTableSkeleton /> // Show loader while data is being fetched
           ) : projectList?.data?.length === 0 ? (
-            <EmptyProjectView/>
+            <EmptyProjectView />
           ) : (
             // Render the project table when there is data
             <ProjectTable

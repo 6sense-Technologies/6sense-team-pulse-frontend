@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "./ui/breadcrumb";
 import { Separator } from "@radix-ui/react-separator";
+import { Ellipsis } from "lucide-react";
 
 type GlobalBreadCrumbProps = {
   initialData?: string;
@@ -32,7 +33,6 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>
           <BreadcrumbList>
-          <BreadcrumbSeparator className="text-subHeading md:hidden"/>
             <BreadcrumbItem>
               <BreadcrumbLink
                 href={initalLink}
@@ -47,16 +47,21 @@ const GlobalBreadCrumb: FC<GlobalBreadCrumbProps> = ({
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     href={secondayLink}
-                    className={thirdData ? "text-subHeading text-sm" : "!text-black text-sm"}
+                    className={thirdData ? "text-subHeading text-sm hidden md:block" : "!text-black text-sm"}
                   >
                     {secondayData}
                   </BreadcrumbLink>
+                  {thirdData ? (
+                    <BreadcrumbItem className="md:hidden">
+                      <Ellipsis size={14} className="text-subHeading" />
+                    </BreadcrumbItem>
+                  ) : null}
                 </BreadcrumbItem>
               </>
             ) : null}
             {thirdData ? (
               <>
-                <BreadcrumbSeparator className="hidden md:block text-subHeading" />
+                <BreadcrumbSeparator className="text-subHeading" />
                 <BreadcrumbItem>
                   <BreadcrumbLink href={thirdLink} className="!text-black text-sm">
                     {thirdData}

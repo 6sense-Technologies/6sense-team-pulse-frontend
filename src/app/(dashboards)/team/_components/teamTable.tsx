@@ -213,7 +213,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : ""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "displayName" ? "min-w-[140px]" : header.column.id === "role" ? "min-w-[110px]" : ""
                         }`}
                       >
                         {header.isPlaceholder
@@ -271,12 +271,12 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
               </TableBody>
             </Table>
           </div>
-          <div className="flex items-center justify-between space-x-3 py-4">
-            <div className="text-sm text-subHeading pl-2">
+          <div className="space-x-3 flex flex-col justify-center items-center lg:flex-row lg:items-center lg:justify-between lg:space-x-3 py-4 lg:py-4">
+            <div className="text-sm text-subHeading pl-2 md:pb-6">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s)
               showing
             </div>
-            <div className="flex justify-end mb-2">
+            <div className="flex items-center md:justify-end mb-4 pt-4 lg:pt-0">
               <TeamPagination
                 currentPage={currentPageState}
                 totalPage={totalPages}
