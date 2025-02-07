@@ -244,6 +244,7 @@ const ProjectCreate = () => {
           ))}
 
           <div className="mt-14 mb-10 ml-2 lg:ml-[320px] flex-col items-start lg:items-center">
+            <div className="w-full">
             <Button
               variant="extralight"
               size="xsExtended"
@@ -252,11 +253,13 @@ const ProjectCreate = () => {
             >
               Add Tool
             </Button>
+            </div>
+            <div className="w-full">
             <Button
               variant="darkish"
               size="lgExtended"
               type="submit"
-              className="mt-3 w-full max-w-[128px]"
+              className="mt-3 w-full md:max-w-[128px]"
             >
               {projectMutation.isPending ? (
                 <Circle className="animate-spin" size={14} />
@@ -264,6 +267,7 @@ const ProjectCreate = () => {
                 "Create Project"
               )}
             </Button>
+            </div>
           </div>
         </div>
       </form>
