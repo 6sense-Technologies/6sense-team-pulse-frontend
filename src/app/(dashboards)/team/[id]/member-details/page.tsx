@@ -108,7 +108,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           />
         )}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex flex-col md:flex-row items-start md:items-center mb-3 md:mb-0">
+          <div className="flex flex-col md:flex-row md:gap-x-10 items-start md:items-center mb-3 md:mb-0">
             {individualMemberDataLoading ? (
               <span className="pl-3 pt-3"><SummarySkeleton /></span>
             ) : (
@@ -134,8 +134,8 @@ const EfficiencyMemberDetails: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <div className="pl-2 md:pl-0 flex gap-x-5 md:gap-x-[10px]">
-                  <div className="w-full">
+                <div className="pl-6 md:pl-0 flex gap-x-[14px] md:gap-x-[10px]">
+                  <div className="pt-1 md:pt-0">
                     <div className="flex items-center gap-x-[6px]">
                       <CalendarCheck2 size={16} />
                       <h1 className="md:text-[18px] font-semibold">
@@ -146,7 +146,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                       Current Month Performance
                     </p>
                   </div>
-                  <div className="w-full">
+                  <div>
                     <div className="flex items-center gap-x-[6px]">
                       <CalendarArrowDown size={16} />
                       <h1 className="text-[18px] font-semibold">
@@ -165,7 +165,7 @@ const EfficiencyMemberDetails: React.FC = () => {
             <Button variant="light">Edit Profile</Button>
           </span>
           <span className="md:hidden pb-16 pr-2 md:pb-0 md:pr-0 cursor-not-allowed">
-            <span><EllipsisVertical /></span>
+            <span><EllipsisVertical size={16}/></span>
           </span>
         </div>
         <div className="tab lg:ml-2">

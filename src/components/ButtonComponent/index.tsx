@@ -31,7 +31,7 @@ const buttonVariants = cva(
       size: {
         exSmall: "text-sm px-1 h-10",
         smallest: "px-2 h-10",
-        xsExtended: "text-sm px-2 h-9",
+        xsExtended: "text-sm px-2 h-9 w-full lg:w-[90px]",
         md: "text-sm px-5 h-9",
         xs: "text-sm px-3 h-7",
         sm: "text-sm px-5 h-9",

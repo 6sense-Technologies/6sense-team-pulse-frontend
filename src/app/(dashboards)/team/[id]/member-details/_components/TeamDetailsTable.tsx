@@ -66,9 +66,9 @@ export const columns: ColumnDef<TeamMember>[] = [
   {
     id: "tasks",
     header: () => (
-      <div className="text-bold pl-6">
+      <div className="text-bold pl-6 xl:w-[280px]">
         <p className="pl-4 py-[12px]">Tasks</p>
-        <div className="flex justify-between border-t mt-1 pt-1 gap-x-[30px]">
+        <div className="flex justify-between xl:justify-start border-t mt-1 pt-1 gap-x-[30px] xl:gap-x-[40px]">
           <span className="py-2 pl-4">Planned</span>
           <span className="py-2">Unplanned</span>
           <span className="py-2 pr-4">TCR</span>
@@ -99,7 +99,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "bugs",
-    header: () => <div className="text-bold pb-1">Bugs</div>,
+    header: () => <div className="text-bold pb-1 xl:mr-10">Bugs</div>,
     cell: ({ row }: { row: any }) => {
       const doneBugCount = row.original.doneBugCount;
       const totalBugCount = row.original.totalBugCount;
@@ -343,8 +343,8 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-[80px] pl-0 leading-none ${header.column.id === "actions"
-                            ? "text-right pb-9"
+                        className={`text-left h-[125px] pl-0 leading-none ${header.column.id === "actions"
+                            ? "text-right pb-9 min-w-[50px]"
                             : header.column.id === "bugs"
                               ? "pb-8 w-20 text-center"
                               : header.column.id === "_id"
@@ -393,23 +393,23 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                             className={`leading-none py-1 ${cell.column.id === "actions" && isHoliday
                                 ? "hidden"
                                 : cell.column.id === "actions"
-                                  ? "text-right"
+                                  ? "text-right w-[10px]"
                                   : cell.column.id === "bugs"
-                                    ? "pl-7 text-start w-20"
+                                    ? "pl-7 text-start w-[10px]"
                                     : cell.column.id === "_id" && isHoliday
                                       ? "pl-4 text-start"
                                       : cell.column.id === "score"
-                                        ? "text-left"
+                                        ? "text-left w-[10px]"
                                         : cell.column.id === "insight"
                                           ? "text-start pl-6"
                                           : cell.column.id === "tasks"
-                                            ? "text-left pl-4"
+                                            ? "text-left pl-4 w-[10px]"
                                             : cell.column.id === "stories"
                                               ? "text-start pl-0 pr-5"
                                               : cell.column.id === "ctbr" && isHoliday
                                                 ? "text-center italic text-[#D97706]"
                                                 : cell.column.id === "ctbr"
-                                                  ? "pl-4 text-start"
+                                                  ? "pl-4 text-start w-[10px]"
                                                   : "pl-4 text-start"
                               }`}
                           >

@@ -53,7 +53,7 @@ export const columns: ColumnDef<PerformanceItem>[] = [
       return (
         <Badge
           variant="rounded"
-          className="flex items-center"
+          className="flex items-center max-w-[100px]"
         >
           {icon}
           {category}
