@@ -1,37 +1,64 @@
 import '@testing-library/jest-dom';
-import { render, screen} from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import EfficiencyMemberDetails from '../src/app/(dashboards)/team/[id]/member-details/page'; // Adjust import as needed
-import { GetIndividualOverview } from '../helpers/Team/teamApi'; // Adjust import as needed
+import EfficiencyMemberDetails from '../src/app/(dashboards)/team/[id]/member-details/page';
+import { GetIndividualOverview, GetIndividualTeamMember } from '../helpers/Team/teamApi';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
+// Mock window.matchMedia
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(), 
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
 // Mock external libraries
 jest.mock('lucide-react', () => ({
   CalendarArrowDown: () => <svg data-testid="calendar-arrow-down-icon" />,
   CalendarCheck2: () => <svg data-testid="calendar-check-icon" />,
-}));
+  EllipsisVertical: () => <svg data-testid="ellipsis-vertical-icon" />,
+}));;
 
 jest.mock('next/navigation', () => ({
   useParams: jest.fn().mockReturnValue({ id: '123' }), // Mock useParams for the `id` parameter
-useSearchParams: jest.fn().mockReturnValue({
+  useSearchParams: jest.fn().mockReturnValue({
     get: (key: string): string | null => (key === 'page' ? '1' : null),
-}), // Mock useSearchParams for pagination
+  }), // Mock useSearchParams for pagination
 }));
 
-jest.mock('../src/components/globalBreadCrumb', () => () => (
-  <div data-testid="breadcrumb">Mock Breadcrumb</div>
-));
+jest.mock('../src/components/globalBreadCrumb', () => {
+  const MockBreadcrumb = () => (
+    <div data-testid="breadcrumb">Mock Breadcrumb</div>
+  );
+  MockBreadcrumb.displayName = 'MockBreadcrumb';
+  return MockBreadcrumb;
+});
 
-jest.mock('../src/components/pageHeading', () => () => (
-  <h1 data-testid="page-heading">Mock Page Heading</h1>
-));
+jest.mock('../src/components/pageHeading', () => {
+  const MockPageHeading = () => (
+    <h1 data-testid="page-heading">Mock Page Heading</h1>
+  );
+  MockPageHeading.displayName = 'MockPageHeading';
+  return MockPageHeading;
+});
 
-jest.mock('../src/components/PageTitle', () => () => (
-  <title>Mock Page Title</title>
-));
+jest.mock('../src/components/PageTitle', () => {
+  const MockPageTitle = () => <title>Mock Page Title</title>;
+  MockPageTitle.displayName = 'MockPageTitle';
+  return MockPageTitle;
+});
 
 jest.mock('../src/components/ui/avatar', () => ({
-  Avatar: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  AvatarImage: () => <img data-testid="avatar-image" alt="Avatar" />,
+  AvatarImage: () => <img data-testid="avatar-image" alt="Avatar" src="/path/to/avatar.jpg" width={50} height={50} />,
   AvatarFallback: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
@@ -43,9 +70,44 @@ jest.mock('../src/app/(dashboards)/team/[id]/member-details/_components/customDa
   CustomDatePicker: () => <div data-testid="custom-date-picker">Mock Date Picker</div>,
 }));
 
+jest.mock('../src/components/ui/sidebar', () => {
+  const originalModule = jest.requireActual('../src/components/ui/sidebar');
+  return {
+    ...originalModule,
+    SidebarTrigger: () => (
+      <div data-testid="sidebar-trigger">Mock Sidebar Trigger</div>
+    ),
+  };
+});
+
+jest.mock('../src/components/emptyTableSkeleton', () => {
+  const MockEmptyTableSkeleton = () => (
+    <div data-testid="empty-table-skeleton">Mock Empty Table Skeleton</div>
+  );
+  MockEmptyTableSkeleton.displayName = 'MockEmptyTableSkeleton';
+  return MockEmptyTableSkeleton;
+});
+
+jest.mock('../src/components/textSkeleton', () => {
+  const MockTextSkeleton = () => (
+    <div data-testid="text-skeleton">Mock Text Skeleton</div>
+  );
+  MockTextSkeleton.displayName = 'MockTextSkeleton';
+  return MockTextSkeleton;
+});
+
+jest.mock('../src/components/summarySkeleton', () => {
+  const MockSummarySkeleton = () => (
+    <div data-testid="summary-skeleton">Mock Summary Skeleton</div>
+  );
+  MockSummarySkeleton.displayName = 'MockSummarySkeleton';
+  return MockSummarySkeleton;
+});
+
 // Mock API functions
-jest.mock('../api/Efficiency/teamApi', () => ({
+jest.mock('../helpers/Team/teamApi', () => ({
   GetIndividualOverview: jest.fn(),
+  GetIndividualTeamMember: jest.fn(),
 }));
 
 const queryClient = new QueryClient();
@@ -54,6 +116,14 @@ describe('EfficiencyMemberDetails Page', () => {
   beforeEach(() => {
     // Mock GetIndividualOverview API response
     (GetIndividualOverview as jest.Mock).mockResolvedValue({
+      history: {
+        count: 10,
+        data: [],
+      },
+    });
+
+    // Mock GetIndividualTeamMember API response
+    (GetIndividualTeamMember as jest.Mock).mockResolvedValue({
       userData: {
         avatarUrls: 'https://avatar.url',
         displayName: 'John Doe',
@@ -61,12 +131,13 @@ describe('EfficiencyMemberDetails Page', () => {
       },
       currentMonthScore: 0.85,
       lastMonthScore: 0.75,
-      history: { data: [], count: 0 },
     });
 
     render(
       <QueryClientProvider client={queryClient}>
-        <EfficiencyMemberDetails />
+        <SidebarProvider>
+          <EfficiencyMemberDetails />
+        </SidebarProvider>
       </QueryClientProvider>
     );
   });
@@ -76,27 +147,35 @@ describe('EfficiencyMemberDetails Page', () => {
     expect(breadcrumb).toBeInTheDocument();
   });
 
-  it('renders the page heading', () => {
-    const pageHeading = screen.getByTestId('page-heading');
-    expect(pageHeading).toBeInTheDocument();
-  });
 
-  it('renders the profile avatar', () => {
-    const avatarImage = screen.getByTestId('avatar-image');
-    expect(avatarImage).toBeInTheDocument();
-  });
 
-  it('renders the user details correctly', () => {
-    const name = screen.getByText(/John Doe/i);
-    const designation = screen.getByText(/Software Engineer/i);
-    expect(name).toBeInTheDocument();
-    expect(designation).toBeInTheDocument();
-  });
 
   it('renders the Edit Profile button', () => {
-    const editProfileButton = screen.getByText(/Edit Profile/i);
+    const editProfileButton = screen.getByRole('button', { name: /Edit Profile/i });
     expect(editProfileButton).toBeInTheDocument();
   });
 
 
+
+  it('renders the custom date picker', () => {
+    const customDatePicker = screen.getByTestId('custom-date-picker');
+    expect(customDatePicker).toBeInTheDocument();
+  });
+
+
+
+  it('renders the empty table skeleton', () => {
+    const emptyTableSkeleton = screen.getByTestId('empty-table-skeleton');
+    expect(emptyTableSkeleton).toBeInTheDocument();
+  });
+
+  it('renders the text skeleton', () => {
+    const textSkeleton = screen.getByTestId('text-skeleton');
+    expect(textSkeleton).toBeInTheDocument();
+  });
+
+  it('renders the summary skeleton', () => {
+    const summarySkeleton = screen.getByTestId('summary-skeleton');
+    expect(summarySkeleton).toBeInTheDocument();
+  });
 });

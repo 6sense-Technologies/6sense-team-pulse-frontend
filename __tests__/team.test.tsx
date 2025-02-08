@@ -3,6 +3,24 @@ import { render, screen, fireEvent} from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ProjectCreate from '../src/app/(dashboards)/projects/create/page';
 import { GetTools, CreateProject } from '../helpers/projects/projectApi';
+import { SidebarProvider } from '@/components/ui/sidebar';
+
+// Mock window.matchMedia
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation(query => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(), 
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
 
 // Mock external libraries
 jest.mock('lucide-react', () => ({
@@ -15,31 +33,61 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('../src/components/BaseInput', () => ({
-  BaseInput: () => <input data-testid="base-input" />,
+  BaseInput: () => <input data-testid="base-input" title="Base Input" placeholder="Enter text here" />,
 }));
 
-jest.mock('../src/components/globalBreadCrumb', () => () => (
-  <div data-testid="breadcrumb">Mock Breadcrumb</div>
-));
+jest.mock('../src/components/globalBreadCrumb', () => {
+  const MockGlobalBreadCrumb = () => (
+    <div data-testid="breadcrumb">Mock Breadcrumb</div>
+  );
+  MockGlobalBreadCrumb.displayName = 'MockGlobalBreadCrumb';
+  return MockGlobalBreadCrumb;
+});
 
-jest.mock('../src/components/pageHeading', () => () => (
-  <h1 data-testid="page-heading">Mock Page Heading</h1>
-));
+jest.mock('../src/components/pageHeading', () => {
+  const MockPageHeading = () => (
+    <h1 data-testid="page-heading">Mock Page Heading</h1>
+  );
+  MockPageHeading.displayName = 'MockPageHeading';
+  return MockPageHeading;
+});
 
-jest.mock('../src/components/PageTitle', () => () => (
-  <title>Mock Page Title</title>
-));
+jest.mock('../src/components/PageTitle', () => {
+  const MockPageTitle = () => (
+    <title>Mock Page Title</title>
+  );
+  MockPageTitle.displayName = 'MockPageTitle';
+  return MockPageTitle;
+});
 
-jest.mock('../src/app/(dashboards)/projects/create/_components/ToolDropdown', () => () => (
-  <div data-testid="tool-dropdown">Mock Tool Dropdown</div>
-));
+jest.mock('../src/app/(dashboards)/projects/create/_components/ToolDropdown', () => {
+  const MockToolDropdown = () => (
+    <div data-testid="tool-dropdown">Mock Tool Dropdown</div>
+  );
+  MockToolDropdown.displayName = 'MockToolDropdown';
+  return MockToolDropdown;
+});
 
-jest.mock('../src/app/(dashboards)/projects/create/_components/WorkspaceURL', () => () => (
-  <div data-testid="workspace-url">Mock Workspace URL</div>
-));
+jest.mock('../src/app/(dashboards)/projects/create/_components/WorkspaceURL', () => {
+  const MockWorkspaceURL = () => (
+    <div data-testid="workspace-url">Mock Workspace URL</div>
+  );
+  MockWorkspaceURL.displayName = 'MockWorkspaceURL';
+  return MockWorkspaceURL;
+});
+
+jest.mock('../src/components/ui/sidebar', () => {
+  const originalModule = jest.requireActual('../src/components/ui/sidebar');
+  return {
+    ...originalModule,
+    SidebarTrigger: () => (
+      <div data-testid="sidebar-trigger">Mock Sidebar Trigger</div>
+    ),
+  };
+});
 
 // Mock API functions
-jest.mock('../api/projects/projectApi', () => ({
+jest.mock('../helpers/projects/projectApi', () => ({
   GetTools: jest.fn(),
   CreateProject: jest.fn(),
 }));
@@ -56,7 +104,9 @@ describe('ProjectCreate Page', () => {
 
     render(
       <QueryClientProvider client={queryClient}>
+        <SidebarProvider>
         <ProjectCreate />
+        </SidebarProvider>
       </QueryClientProvider>
     );
   });
