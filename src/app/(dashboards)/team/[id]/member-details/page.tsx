@@ -15,6 +15,7 @@ import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
 import SummarySkeleton from "@/components/summarySkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const getInitials = (name: string) => {
   if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -33,6 +34,7 @@ const EfficiencyMemberDetails: React.FC = () => {
   const { id } = useParams() as { id: string };
 
   const searchParams = useSearchParams();
+  const session = useSession();
 
   useEffect(() => {
     const newPage = searchParams.get("page")
@@ -47,7 +49,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     isFetching: individualMemberDataLoading,
   } = useQuery<any>({
     queryKey: ["individualMemberData", id],
-    queryFn: () => GetIndividualTeamMember(id),
+    queryFn: () => GetIndividualTeamMember(id,session),
   });
 
   const {
@@ -56,7 +58,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     refetch: individualOverviewRefetch,
   } = useQuery<any>({
     queryKey: ["individualOverview", pages, limit],
-    queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit }),
+    queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit },session),
   });
 
   const individualAvatar = individualMemberData?.userData.avatarUrls;

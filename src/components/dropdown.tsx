@@ -43,7 +43,14 @@ export function Dropdown({
       value={field.value}
       onValueChange={(value) => field.onChange(value)}
     >
-      <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+      <SelectTrigger
+        className={cn(
+          "w-[200px]",
+          field.value === "" ? "text-subHeading" : "text-black",
+          className
+        )}
+        disabled={!active}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="!z-50 bg-white">

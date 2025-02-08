@@ -1,13 +1,13 @@
 "use client";
 import PageTitle from "@/components/PageTitle";
-import { signOut, useSession } from "next-auth/react";
+import { signOut} from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { Button } from "@/components/ButtonComponent";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 const Dashboard = () => {
-  const session = useSession();
+  // const session = useSession();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -15,9 +15,8 @@ const Dashboard = () => {
     router.push('/sign-in')
   };
 
-  localStorage.setItem("accessToken", session.data?.accessToken as string);
 
-  console.log("Session Data", session.data);
+  // console.log("Session Data", session.data);
 
   return (
     <div>

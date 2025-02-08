@@ -12,12 +12,13 @@ import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<string>("performance");
   const [limit] = useState<number>(10);
-
+  const session = useSession();
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     isFetching: individualMemberDataLoading,
   } = useQuery<any>({
     queryKey: ["individualMemberData", member_id],
-    queryFn: () => GetIndividualTeamMember(member_id),
+    queryFn: () => GetIndividualTeamMember(member_id,session),
   });
 
   const {
@@ -44,7 +45,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     refetch: dailyPerformanceRefetch,
   } = useQuery<any>({
     queryKey: ["dailyPerformance", pages, limit],
-    queryFn: () => GetDailyPerformance({ member_id, page: pages, limit, date }),
+    queryFn: () => GetDailyPerformance({ member_id, page: pages, limit, date }, session),
   });
 
   const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;

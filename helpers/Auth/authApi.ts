@@ -31,15 +31,14 @@ export const handleOtp = async (data: TVerifyEmail) => {
   return response.data;
 };
 
-export const handleOrganizationDetails = async (data: TOrgazinationDetails) => {
-  console.log(localStorage.getItem("accessToken"));
+export const handleOrganizationDetails = async (data: TOrgazinationDetails,session:any) => {
   const response = await axios.post(
     `${TEMP_BACKEND_URI}/auth/register/organization`,
     data,
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${session.data.accessToken}`,
       },
     }
   );

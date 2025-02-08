@@ -15,11 +15,12 @@ import Link from "next/link";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import EmptyProjectView from "@/components/emptyProjectView";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
   const [limit] = useState(10);
-
+  const session = useSession();
   const [pagination, setPagination] = useState({
     page: 1,
     size: 10,
@@ -51,7 +52,7 @@ const ProjectList = () => {
     refetch: projectListRefetch,
   } = useQuery<any>({
     queryKey: ["fetchProjects", pages, limit],
-    queryFn: () => GetProjectList({ page: pages, limit }),
+    queryFn: () => GetProjectList({ page: pages, limit },session),
   });
 
   console.log(projectList);

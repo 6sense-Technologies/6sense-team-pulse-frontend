@@ -14,10 +14,11 @@ import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
 import { CreateProject } from "../../../../../helpers/projects/projectApi";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const ProjectCreate = () => {
   const router = useRouter();
-
+  const session = useSession();
   const {
     handleSubmit,
     control,
@@ -121,7 +122,7 @@ const ProjectCreate = () => {
   };
 
   const projectMutation = useMutation({
-    mutationFn: CreateProject,
+    mutationFn: (data: ProjectTools) => CreateProject(data, session),
     onSuccess: () => {
       router.push("/projects");
     },
@@ -249,7 +250,7 @@ const ProjectCreate = () => {
               variant="extralight"
               size="xsExtended"
               onClick={handleAddtools}
-              className="mb-6"
+              className="mb-6 md:max-w-[90px]"
             >
               Add Tool
             </Button>
