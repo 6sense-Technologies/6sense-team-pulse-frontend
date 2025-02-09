@@ -205,7 +205,7 @@ const ProjectCreate = () => {
               index={0}
             />
           </div>
-          <div className="w-full h-full pl-2 lg:pl-[320px]">
+          <div className="w-full h-full pl-2 pt-3 lg:pl-[320px]">
             <WorkspaceURL
               control={control}
               name="tools[0].toolUrl"
