@@ -5,7 +5,6 @@ import {
 } from "@/types/Auth.types";
 import axios from "axios";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
-import { RefreshURL } from "../../config";
 
 
 
@@ -39,7 +38,7 @@ export const handleOrganizationDetails = async (data: TOrgazinationDetails,sessi
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session')
     accessToken = response.data.accessToken;
   }
 

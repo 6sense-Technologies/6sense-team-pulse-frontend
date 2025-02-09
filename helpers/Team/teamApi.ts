@@ -1,7 +1,7 @@
 import axios from "axios";
 import { TeamList } from "@/types/Team.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
-import { RefreshURL } from "../../config";
+
 
 interface TPaginationProps {
   page: number;
@@ -28,7 +28,7 @@ export const GetTeamList = async ({ page, limit }: TPaginationProps, session:any
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session');
     accessToken = response.data.accessToken;
   }
 
@@ -56,7 +56,7 @@ export const GetIndividualOverview = async ({
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session');
     accessToken = response.data.accessToken;
   }
 
@@ -84,7 +84,7 @@ export const GetDailyPerformance = async ({
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session');
     accessToken = response.data.accessToken;
   }
 
@@ -110,7 +110,7 @@ export const GetIndividualTeamMember = async (member_id: string,session:any) => 
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session');
     accessToken = response.data.accessToken;
   }
 

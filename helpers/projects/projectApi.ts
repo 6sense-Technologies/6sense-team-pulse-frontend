@@ -2,7 +2,6 @@
 import axios from "axios";
 import { ProjectTools } from "@/types/Project.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
-import { RefreshURL } from "../../config";
 
 interface TPaginationProps {
   page: number;
@@ -19,7 +18,7 @@ export const GetProjectList = async ( {page, limit} : TPaginationProps , session
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
-    const response= await axios.get(`${RefreshURL}`);
+    const response= await axios.get('/api/auth/session')
     accessToken = response.data.accessToken;
   }
 
@@ -55,7 +54,7 @@ export const GetTools =  async () =>
       if (new Date(session.data.expires) <= new Date()) {
         console.log("Session expired. Updating session...");
 
-        const response= await axios.get(`${RefreshURL}`);
+        const response= await axios.get('/api/auth/session');
         accessToken = response.data.accessToken;
       }
       const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, data,

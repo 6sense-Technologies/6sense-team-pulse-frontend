@@ -410,7 +410,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                                 ? "text-center italic text-[#D97706]"
                                                 : cell.column.id === "ctbr"
                                                   ? "pl-4 text-start w-[10px]"
-                                                  : "pl-4 text-start"
+                                                  : "pl-4 text-start text-nowrap"
                               }`}
                           >
                             {isHoliday &&
