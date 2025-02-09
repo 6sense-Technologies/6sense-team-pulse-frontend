@@ -5,6 +5,7 @@ import {
 } from "@/types/Auth.types";
 import axios from "axios";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
+import { RefreshURL } from "../../config";
 
 
 
@@ -32,13 +33,24 @@ export const handleOtp = async (data: TVerifyEmail) => {
 };
 
 export const handleOrganizationDetails = async (data: TOrgazinationDetails,session:any) => {
+  
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
+
   const response = await axios.post(
     `${TEMP_BACKEND_URI}/auth/register/organization`,
     data,
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );

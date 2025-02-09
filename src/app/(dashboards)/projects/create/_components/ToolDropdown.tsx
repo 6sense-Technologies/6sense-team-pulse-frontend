@@ -55,7 +55,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
         options={toolOptions}
       />
       {errors && (
-        <p className="text-destructive text-sm font-medium absolute pt-1">
+        <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">
           {errors}
         </p>
       )}

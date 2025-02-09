@@ -1,6 +1,7 @@
 import axios from "axios";
 import { TeamList } from "@/types/Team.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
+import { RefreshURL } from "../../config";
 
 interface TPaginationProps {
   page: number;
@@ -21,17 +22,26 @@ interface TDailyPerformanceProps {
 }
 
 export const GetTeamList = async ({ page, limit }: TPaginationProps, session:any ) => {
-  session.update();
+  
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
   const response = await axios.get(
     `${TEMP_BACKEND_URI}/users/overview?page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );
 
-  console.log("Team Data",response.data);
+  // console.log("Team Data",response.data);
   return response.data as TeamList;
 };
 
@@ -40,11 +50,21 @@ export const GetIndividualOverview = async ({
   page,
   limit,
 }: TIndividualOverviewProps, session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
   const response = await axios.get(
     `${TEMP_BACKEND_URI}/users/individual?userId=${member_id}&page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );
@@ -58,11 +78,22 @@ export const GetDailyPerformance = async ({
   page,
   limit,
 }: TDailyPerformanceProps, session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
+
   const response = await axios.get(
     `${TEMP_BACKEND_URI}/users/daily-performance?userId=${member_id}&dateTime=${date}&page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );
@@ -72,11 +103,22 @@ export const GetDailyPerformance = async ({
 
 
 export const GetIndividualTeamMember = async (member_id: string,session:any) => {
+  
+  
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
   const response = await axios.get(
     `${TEMP_BACKEND_URI}/users/user-info?userId=${member_id}`,
     {
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );

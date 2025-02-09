@@ -2,6 +2,7 @@
 import axios from "axios";
 import { ProjectTools } from "@/types/Project.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
+import { RefreshURL } from "../../config";
 
 interface TPaginationProps {
   page: number;
@@ -13,10 +14,19 @@ interface TPaginationProps {
 
 export const GetProjectList = async ( {page, limit} : TPaginationProps , session : any ) => {
 
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get(`${RefreshURL}`);
+    accessToken = response.data.accessToken;
+  }
+
   const response = await axios.get(`${TEMP_BACKEND_URI}/projects?page=${page}&limit=${limit}`,
     {
       headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -36,21 +46,24 @@ export const GetTools =  async () =>
   }
 
 
-export const CreateProject = async (data: ProjectTools, session:any) => 
-{
-  console.log("Session Data",session.data);
-
-  if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-    session.update();
-  }
-
-  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, data,
+  export const CreateProject = async (data: ProjectTools, session:any) => 
     {
-      headers: {
-        Authorization: `Bearer ${session.data.accessToken}`,
-      },
-    });
+     
+      // console.log("Session Data",session.data);
+      let accessToken: string  = session.data.accessToken;
 
-    return response.data;
-}
+      if (new Date(session.data.expires) <= new Date()) {
+        console.log("Session expired. Updating session...");
+
+        const response= await axios.get(`${RefreshURL}`);
+        accessToken = response.data.accessToken;
+      }
+      const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, data,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+    
+        return response.data;
+    }

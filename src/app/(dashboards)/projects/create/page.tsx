@@ -228,7 +228,7 @@ const ProjectCreate = () => {
                 />
                 <div className="relative border w-10 h-9 rounded-lg">
                   <Trash2
-                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-3"
+                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-2 md:right-3"
                     onClick={() => remove(index + 1)}
                   />
                 </div>
