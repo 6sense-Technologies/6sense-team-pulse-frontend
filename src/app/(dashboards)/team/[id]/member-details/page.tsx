@@ -104,7 +104,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           <TextSkeleton className="h-8 w-48 ml-3 mt-3 mb-4" />
         ) : (
           <PageHeading
-            title={`${firstName}'s Profile`}
+            title={`${firstName}'s Performance`}
             titleclassName="font-medium"
             className="pl-2 pt-3"
           />

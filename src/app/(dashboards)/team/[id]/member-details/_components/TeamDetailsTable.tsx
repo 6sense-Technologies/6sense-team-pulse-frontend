@@ -99,7 +99,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "bugs",
-    header: () => <div className="text-bold pb-1 xl:mr-10">Bugs</div>,
+    header: () => <div className="text-bold pb-1 2xl:mr-10">Bugs</div>,
     cell: ({ row }: { row: any }) => {
       const doneBugCount = row.original.doneBugCount;
       const totalBugCount = row.original.totalBugCount;

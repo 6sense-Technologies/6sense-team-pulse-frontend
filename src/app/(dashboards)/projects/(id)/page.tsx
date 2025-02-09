@@ -71,10 +71,8 @@ const ProjectList = () => {
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
         </div>
         <GlobalBreadCrumb
-          initialData="Home"
-          initalLink="/"
-          secondayData="Projects"
-          secondayLink="/projects"
+          initialData="Projects"
+          initalLink="/projects"
         />
         <PageHeading
           title="Projects"
