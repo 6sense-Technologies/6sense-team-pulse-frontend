@@ -86,10 +86,6 @@ const SignIn = () => {
           password: data.password,
         }).then(() => {
           localStorage.setItem("user-email", data.emailAddress);
-          localStorage.setItem(
-            "accessToken",
-            session.data?.accessToken as string
-          );
           router.push("/dashboard");
         });
       },

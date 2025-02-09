@@ -43,7 +43,14 @@ export function Dropdown({
       value={field.value}
       onValueChange={(value) => field.onChange(value)}
     >
-      <SelectTrigger className={cn("w-[200px]", className)} disabled={!active}>
+      <SelectTrigger
+        className={cn(
+          "w-[200px]",
+          field.value === "" ? "text-subHeading" : "text-black",
+          className
+        )}
+        disabled={!active}
+      >
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent className="!z-50 bg-white">
@@ -70,11 +77,11 @@ export function Dropdown({
         renderSelect({})
       )}
       {errors[name]?.message ? (
-        <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">
+        <p className="absolute mt-1 flex items-center text-twelve md:text-sm font-medium text-destructive">
           {errors[name].message}
         </p>
       ) : message ? null : additionalText ? (
-        <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
+        <p className="absolute mt-1 flex items-center text-twelve md:text-sm text-inputFooterColor min-w-[330px]">
           {additionalText}
         </p>
       ) : null}

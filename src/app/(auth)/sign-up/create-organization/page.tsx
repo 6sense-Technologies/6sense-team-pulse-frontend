@@ -32,10 +32,7 @@ const OrganizationDetails = () => {
     resolver: zodResolver(OrganizationSchema),
   });
   const { data: session, status, update } = useSession();
-  if (typeof window !== 'undefined') {
 
-    localStorage.setItem("accessToken", session?.accessToken as string);
-  }
   const organizationName = watch("organizationName");
 
   useEffect(() => {
@@ -53,7 +50,7 @@ const OrganizationDetails = () => {
 
 
   const OrganizationMutation = useMutation({
-    mutationFn: handleOrganizationDetails,
+    mutationFn: (data: TOrgazinationDetails) => handleOrganizationDetails(data, session),
     onSuccess: () => {
       update({ hasOrganization: true }).then(() => {
         router.push("/dashboard");

@@ -47,7 +47,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
         control={control}
         name={name}
         placeholder={placeholder || "Select"}
-        className="w-full max-w-[553px]"
+        className="w-full max-w-[553px] placeholder:text-subHeading"
         additionalText="Select the management tool you use to manage this project"
         active={true}
         errors={errors}
@@ -55,7 +55,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
         options={toolOptions}
       />
       {errors && (
-        <p className="text-destructive text-sm font-medium absolute pt-1">
+        <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">
           {errors}
         </p>
       )}

@@ -12,12 +12,13 @@ import { GetTeamList } from "../../../../helpers/Team/teamApi";
 import { TeamList } from "@/types/Team.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const TeamListPage: React.FC = () => {
 
   const [pages, setPages] = useState<number>(1);
   const [limit] = useState<number>(10);
-
+  const session = useSession();
   interface Pagination {
     page: number;
     size: number;
@@ -54,7 +55,7 @@ const TeamListPage: React.FC = () => {
     refetch: teamListRefetch,
   } = useQuery<TeamList>({
     queryKey: ["teamList", pages, limit],
-    queryFn: () => GetTeamList({ page: pages, limit }),
+    queryFn: () => GetTeamList({ page: pages, limit}, session),
   });
 
   console.log("Team", teamList);

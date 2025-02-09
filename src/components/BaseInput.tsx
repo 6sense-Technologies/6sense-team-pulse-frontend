@@ -55,11 +55,11 @@ const BaseInput = React.forwardRef<HTMLInputElement, InputProps>(
               {...props}
             />
             {errors[name]?.message || externalError ? (
-              <p className={`absolute ${errorclassName ? errorclassName : "mt-1"} flex items-center text-sm font-medium text-destructive`}>
+              <p className={`absolute ${errorclassName ? errorclassName : "mt-1"} flex items-center text-twelve md:text-sm font-medium text-destructive`}>
                 {errors[name]?.message || externalError}
               </p>
             ) : message ? null : additionalText ? (
-              <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
+              <p className="absolute mt-1 flex items-center text-twelve md:text-sm text-inputFooterColor">
                 {additionalText}
               </p>
             ) : null}

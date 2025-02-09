@@ -14,10 +14,11 @@ import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
 import { CreateProject } from "../../../../../helpers/projects/projectApi";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSession } from "next-auth/react";
 
 const ProjectCreate = () => {
   const router = useRouter();
-
+  const session = useSession();
   const {
     handleSubmit,
     control,
@@ -121,7 +122,7 @@ const ProjectCreate = () => {
   };
 
   const projectMutation = useMutation({
-    mutationFn: CreateProject,
+    mutationFn: (data: ProjectTools) => CreateProject(data, session),
     onSuccess: () => {
       router.push("/projects");
     },
@@ -204,7 +205,7 @@ const ProjectCreate = () => {
               index={0}
             />
           </div>
-          <div className="w-full h-full pl-2 lg:pl-[320px]">
+          <div className="w-full h-full pl-2 pt-3 lg:pl-[320px]">
             <WorkspaceURL
               control={control}
               name="tools[0].toolUrl"
@@ -227,7 +228,7 @@ const ProjectCreate = () => {
                 />
                 <div className="relative border w-10 h-9 rounded-lg">
                   <Trash2
-                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-3"
+                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-2 md:right-3"
                     onClick={() => remove(index + 1)}
                   />
                 </div>
@@ -249,7 +250,7 @@ const ProjectCreate = () => {
               variant="extralight"
               size="xsExtended"
               onClick={handleAddtools}
-              className="mb-6"
+              className="mb-6 md:max-w-[90px]"
             >
               Add Tool
             </Button>

@@ -31,15 +31,25 @@ export const handleOtp = async (data: TVerifyEmail) => {
   return response.data;
 };
 
-export const handleOrganizationDetails = async (data: TOrgazinationDetails) => {
-  console.log(localStorage.getItem("accessToken"));
+export const handleOrganizationDetails = async (data: TOrgazinationDetails,session:any) => {
+  
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get('/api/auth/session')
+    accessToken = response.data.accessToken;
+  }
+
+
   const response = await axios.post(
     `${TEMP_BACKEND_URI}/auth/register/organization`,
     data,
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     }
   );

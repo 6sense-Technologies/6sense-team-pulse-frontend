@@ -17,7 +17,7 @@ const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
   // console.log("WorkspaceURL", name);
 
   return (
-    <div className="w-full max-w-[553px] pt-10 relative">
+    <div className="w-full max-w-[553px] pt-8 md:pt-10 relative">
       <label
         htmlFor="workspace"
         className="text-sm font-medium text-black pb-[6px]"
@@ -35,7 +35,7 @@ const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
         message={errors}
       />
       {errors && (
-        <p className="text-destructive text-sm font-medium pt-1 absolute">
+        <p className="text-destructive text-twelve md:text-sm font-medium pt-1 absolute">
           {errors}
         </p>
       )}
