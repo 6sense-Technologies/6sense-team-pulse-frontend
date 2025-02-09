@@ -32,7 +32,6 @@ jest.mock('../helpers/Auth/authApi', () => ({
   handleOrganizationDetails: jest.fn(),
 }));
 
-
 jest.mock('../src/components/pageHeading', () => {
   const MockPageHeading = () => (
     <h1 data-testid="page-heading">Mock Page Heading</h1>
@@ -75,7 +74,6 @@ describe('OrganizationDetails Page', () => {
     );
   });
 
-
   it('renders the organization name input', () => {
     const orgNameInput = screen.getByPlaceholderText('Enter your organization name');
     expect(orgNameInput).toBeInTheDocument();
@@ -91,7 +89,6 @@ describe('OrganizationDetails Page', () => {
     expect(submitButtons.length).toBeGreaterThan(0);
   });
 
-
   it('submits the form with valid data', async () => {
     const orgNameInput = screen.getByPlaceholderText('Enter your organization name');
     const domainInput = screen.getByPlaceholderText('Domain');
@@ -105,9 +102,7 @@ describe('OrganizationDetails Page', () => {
       expect(handleOrganizationDetails).toHaveBeenCalledWith({
         organizationName: 'Test Organization',
         domainName: 'testorganization',
-      });
+      }, expect.any(Object));
     });
   });
-
-
 });

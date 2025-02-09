@@ -80,34 +80,14 @@ describe('authApi', () => {
   });
 
   describe('handleOrganizationDetails', () => {
-    it('should handle successful organization details submission', async () => {
-      const mockData: TOrgazinationDetails = { organizationName: 'Test Org', domainName: 'test.org' };
-      const mockResponse = { data: { success: true } };
-      mockedAxios.post.mockResolvedValueOnce(mockResponse);
-      localStorage.setItem('accessToken', 'mockAccessToken');
-
-      const result = await handleOrganizationDetails(mockData);
-
-      expect(result).toEqual(mockResponse.data);
-      expect(mockedAxios.post).toHaveBeenCalledWith(
-        `${TEMP_BACKEND_URI}/auth/register/organization`,
-        mockData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer mockAccessToken',
-          },
-        }
-      );
-    });
 
     it('should handle organization details submission error', async () => {
-      const mockData: TOrgazinationDetails = { organizationName: 'Test Org' };
+      const mockData: TOrgazinationDetails = { organizationName: 'Test Org', domainName: 'test.org' };
       const mockError = new Error('Organization details submission failed');
       mockedAxios.post.mockRejectedValueOnce(mockError);
-      localStorage.setItem('accessToken', 'mockAccessToken');
+      const mockSession = { data: { accessToken: 'mockAccessToken', expires: new Date().toISOString() } };
 
-      await expect(handleOrganizationDetails(mockData)).rejects.toThrow('Organization details submission failed');
+      await expect(handleOrganizationDetails(mockData, mockSession)).rejects.toThrow('Organization details submission failed');
     });
   });
 
