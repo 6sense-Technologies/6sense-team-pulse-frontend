@@ -59,6 +59,11 @@ jest.mock('lucide-react', () => ({
   EyeOff: jest.fn(() => <div data-testid="mock-eye-off">Mock EyeOff</div>),
 }));
 
+// Mock Toaster component
+jest.mock('../src/components/ui/toaster', () => ({
+  Toaster: jest.fn(() => <div data-testid="mock-toaster">Mock Toaster</div>),
+}));
+
 const queryClient = new QueryClient();
 
 describe('SignIn Page', () => {

@@ -397,7 +397,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                   : cell.column.id === "bugs"
                                     ? "pl-7 text-start w-[10px]"
                                     : cell.column.id === "_id" && isHoliday
-                                      ? "pl-4 text-start"
+                                      ? "pl-4 text-start text-nowrap"
                                       : cell.column.id === "score"
                                         ? "text-left w-[10px]"
                                         : cell.column.id === "insight"

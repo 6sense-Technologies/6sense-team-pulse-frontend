@@ -9,7 +9,7 @@ test('test', async ({ page }) => {
   
   // Click the sign-in button and wait for navigation
   await Promise.all([
-    page.waitForNavigation({ waitUntil: 'load' }),
+    page.waitForNavigation({ waitUntil: 'networkidle', timeout: 60000 }), // Increased timeout and using 'networkidle'
     page.getByRole('button', { name: 'Sign in' }).click(),
   ]);
 

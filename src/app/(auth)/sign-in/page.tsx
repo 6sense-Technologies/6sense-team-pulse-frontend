@@ -22,12 +22,14 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
 import InvalidErrorBanner from "./_components/invalidErrorBanner";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Info } from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
+import { useToast } from "@/hooks/use-toast";
+import { Toaster } from "@/components/ui/toaster";
 
 const SignIn = () => {
   const router = useRouter();
-
+  const { toast } = useToast()
   const {
     handleSubmit,
     control,
@@ -129,6 +131,7 @@ const SignIn = () => {
         />
       </div>
       <div className="bg-white w-full overflow-y-auto pb-4">
+        <Toaster />
         <div className="lg:flex lg:justify-end mt-9 mx-4 mr-9 lg:gap-0">
           <div className="flex justify-center md:hidden px-3">
             <Image src={SmallLogo} alt="Ops4Team Logo" />
@@ -141,7 +144,7 @@ const SignIn = () => {
           </Link>
         </div>
 
-        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 lg:px-5 lg:pt-0">
+        <div className="w-full max-w-[465px] mx-auto px-8 pt-6 xl:pt-8 lg:px-5 lg:pt-0">
           <p className="text-3xl text-black font-semibold pt-4 lg:pt-0">
             Sign in
           </p>
@@ -280,14 +283,17 @@ const SignIn = () => {
           </div>
 
           <div>
-            <Link href="/comingsoon">
-              <p className="text-sm text-textMuted px-10 text-center pt-5">
+              <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() =>
+                toast({
+                  title: "Feature Coming Soon!",
+                  description: "This feature will be available soon. Stay tuned!",
+                })
+              }>
                 By clicking continue, you agree to our{" "}
                 <span className="underline cursor-pointer">Terms of Service</span>{" "}
                 and{" "}
                 <span className="underline cursor-pointer">Privacy Policy</span>.
               </p>
-            </Link>
           </div>
         </div>
       </div>
