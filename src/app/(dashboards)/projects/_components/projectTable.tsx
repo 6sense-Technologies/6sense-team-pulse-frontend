@@ -50,6 +50,11 @@ export const columns: ColumnDef<Projects>[] = [
       const displayedTools = tools.slice(0, MAX_MANAGEMENT_TOOLS_DISPLAY);
       const remainingTools = tools.slice(MAX_MANAGEMENT_TOOLS_DISPLAY);
       const remainingToolsCount = remainingTools.length;
+      const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+      const handleTooltipToggle = () => {
+        setIsTooltipOpen(!isTooltipOpen);
+      };
 
       return (
         <div className="flex items-center space-x-2">
@@ -60,8 +65,12 @@ export const columns: ColumnDef<Projects>[] = [
           ))}
           {remainingToolsCount > 0 && (
             <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
+              <Tooltip open={isTooltipOpen} onOpenChange={setIsTooltipOpen}>
+                <TooltipTrigger
+                  onClick={handleTooltipToggle}
+                  onMouseEnter={() => setIsTooltipOpen(true)}
+                  onMouseLeave={() => setIsTooltipOpen(false)}
+                >
                   <ManagementToolBadge className="text-medium cursor-pointer">
                     +{remainingToolsCount}
                   </ManagementToolBadge>
