@@ -85,7 +85,7 @@ const ProjectList = () => {
               placeholder="Search by project name"
               name="search"
               btntext="Search"
-              className="mt-10 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
+              className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
             />
             <ProjectDropdown
