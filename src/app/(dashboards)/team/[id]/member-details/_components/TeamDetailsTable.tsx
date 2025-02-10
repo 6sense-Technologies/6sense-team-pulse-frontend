@@ -68,7 +68,7 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: () => (
       <div className="text-bold pl-6 min-w-[240px]">
         <p className="pl-4 py-[12px]">Tasks</p>
-        <div className="grid grid-cols-3 border-t mt-1 pt-1 gap-x-[30px] xl:gap-x-10">
+        <div className="grid grid-cols-3 border-t mt-1 pt-1 pl-4 gap-x-[30px] xl:gap-x-10">
           <span className="py-2">Planned</span>
           <span className="py-2">Unplanned</span>
           <span className="py-2">TCR</span>
@@ -403,7 +403,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                         : cell.column.id === "insight"
                                           ? "text-start pl-6"
                                           : cell.column.id === "tasks"
-                                            ? "text-left pl-6 w-[10px]"
+                                            ? "text-left pl-10 w-[10px]"
                                             : cell.column.id === "stories"
                                               ? "text-start pl-0 pr-5"
                                               : cell.column.id === "ctbr" && isHoliday
