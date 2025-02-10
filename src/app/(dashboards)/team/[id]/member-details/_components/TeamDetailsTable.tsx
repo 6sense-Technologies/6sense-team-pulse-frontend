@@ -66,12 +66,12 @@ export const columns: ColumnDef<TeamMember>[] = [
   {
     id: "tasks",
     header: () => (
-      <div className="text-bold pl-6 xl:w-[280px]">
+      <div className="text-bold pl-6 min-w-[240px]">
         <p className="pl-4 py-[12px]">Tasks</p>
-        <div className="flex justify-between xl:justify-start border-t mt-1 pt-1 gap-x-[30px] xl:gap-x-[40px]">
-          <span className="py-2 pl-4">Planned</span>
+        <div className="grid grid-cols-3 border-t mt-1 pt-1 gap-x-[30px] xl:gap-x-10">
+          <span className="py-2">Planned</span>
           <span className="py-2">Unplanned</span>
-          <span className="py-2 pr-4">TCR</span>
+          <span className="py-2">TCR</span>
         </div>
       </div>
     ),
@@ -83,14 +83,14 @@ export const columns: ColumnDef<TeamMember>[] = [
       const tcr = row.original.taskCompletionRate;
 
       return (
-        <div className="flex gap-[60px]">
-          <span className="w-[21px] pl-6">
+        <div className="grid grid-cols-3 gap-x-[30px] xl:gap-x-10">
+          <span className="">
             {planned}/{totalPlanned}
           </span>
-          <span className="pl-8">
+          <span className="">
             {unplanned}/{totalUnplanned}
           </span>
-          <span className="pl-7">
+          <span className="">
             {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}` : "-"}
           </span>
         </div>
@@ -403,7 +403,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                         : cell.column.id === "insight"
                                           ? "text-start pl-6"
                                           : cell.column.id === "tasks"
-                                            ? "text-left pl-4 w-[10px]"
+                                            ? "text-left pl-6 w-[10px]"
                                             : cell.column.id === "stories"
                                               ? "text-start pl-0 pr-5"
                                               : cell.column.id === "ctbr" && isHoliday
