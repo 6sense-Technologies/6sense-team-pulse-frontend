@@ -57,6 +57,10 @@ interface State {
   toasts: ToasterToast[]
 }
 
+const listeners: Array<(state: State) => void> = []
+
+let memoryState: State = { toasts: [] }
+
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action)
   listeners.forEach((listener) => {
@@ -136,11 +140,6 @@ export const reducer = (state: State, action: Action): State => {
       }
   }
 }
-
-const listeners: Array<(state: State) => void> = []
-
-let memoryState: State = { toasts: [] }
-
 
 type Toast = Omit<ToasterToast, "id">
 

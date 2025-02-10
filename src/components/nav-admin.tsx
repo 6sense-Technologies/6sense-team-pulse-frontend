@@ -15,7 +15,6 @@ import { cn } from '@/lib/utils';
 export function NavAdmin({
   items,
   selectedItem,
-  onItemClick,
 }: {
   items: {
     title: string;
@@ -45,7 +44,7 @@ export function NavAdmin({
                   }
                 )}
                 tooltip={item.title}
-                onClick={(e) => e.preventDefault()} // Prevent click action
+                onClick={(e) => e.preventDefault()}
               >
                 {item.icon && (
                   <item.icon

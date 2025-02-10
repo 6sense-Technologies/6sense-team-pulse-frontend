@@ -22,7 +22,7 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
 import InvalidErrorBanner from "./_components/invalidErrorBanner";
-import { Eye, EyeOff, Info } from "lucide-react";
+import { Eye, EyeOff} from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
