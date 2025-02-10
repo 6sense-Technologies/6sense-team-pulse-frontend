@@ -87,10 +87,10 @@ export const columns: ColumnDef<TeamMember>[] = [
           <span className="w-[21px] pl-6">
             {planned}/{totalPlanned}
           </span>
-          <span className="pl-7">
+          <span className="pl-8">
             {unplanned}/{totalUnplanned}
           </span>
-          <span className="pl-6">
+          <span className="pl-7">
             {tcr !== null && tcr !== undefined ? `${tcr.toFixed(2)}` : "-"}
           </span>
         </div>
