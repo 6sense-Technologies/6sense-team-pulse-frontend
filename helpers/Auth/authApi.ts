@@ -33,9 +33,11 @@ export const handleOtp = async (data: TVerifyEmail) => {
 
 export const handleOrganizationDetails = async (data: TOrgazinationDetails,session:any) => {
   
-  let accessToken: string  = session.data.accessToken;
+  let accessToken: string  = session.accessToken as string;
 
-  if (new Date(session.data.expires) <= new Date()) {
+  console.log("session",session.accessToken)
+
+  if (new Date(session.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
     const response= await axios.get('/api/auth/session')

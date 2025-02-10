@@ -95,6 +95,7 @@ const Verify = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<TVerifyEmail>({
     resolver: zodResolver(VerifyEmailSchema),
@@ -130,6 +131,7 @@ const Verify = () => {
   const ResendOTPHandler = (email: string) => {
     handleResendOTP(email);
     resetTimer();
+    reset({ token: "" });
     if (errors.token) {
       errors.token.message = "";
     }

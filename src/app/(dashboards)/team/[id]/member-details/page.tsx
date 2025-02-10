@@ -170,7 +170,7 @@ const EfficiencyMemberDetails: React.FC = () => {
             <span><EllipsisVertical size={16}/></span>
           </span>
         </div>
-        <div className="tab lg:ml-2">
+        <div className="tab lg:ml-2 ">
           <div className="flex space-x-4 border-b">
             <button
               className={`py-2 px-4 ${activeTab === "performance"
