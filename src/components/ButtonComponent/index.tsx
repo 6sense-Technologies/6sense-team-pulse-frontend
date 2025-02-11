@@ -22,6 +22,7 @@ const buttonVariants = cva(
         link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
         greenish: "text-white bg-green-500 hover:bg-green-600",
         light: "text-black bg-lightBtnColor hover:bg-lightBtnColor",
+        aquaLight: 'text-black bg-lightAquaBg hover:bg-lightAquaBg',
         extralight: "text-black bg-white hover:bg-white border rounded-lg",
         dark: "text-white bg-blackishBg hover:bg-blackishBg",
         submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
