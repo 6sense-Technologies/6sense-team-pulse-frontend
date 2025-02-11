@@ -16,6 +16,7 @@ import TextSkeleton from "@/components/textSkeleton";
 import SummarySkeleton from "@/components/summarySkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import AvatarMenu from "@/components/AvatarMenu";
 
 const getInitials = (name: string) => {
   if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -116,22 +117,28 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Member Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
-        <div className="md:hidden pb-4">
+      <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <AvatarMenu />
         </div>
+        <div className="flex justify-between items-center">
         <GlobalBreadCrumb
           initialData="Members"
           initalLink="/members"
           secondayData="Performance"
           secondayLink="/members/id/member-details"
         />
+        <span className="hidden md:flex pr-2">
+          <AvatarMenu />
+          </span>
+        </div>
         {individualMemberDataLoading ? (
           <TextSkeleton className="h-8 w-48 ml-3 mt-3 mb-4" />
         ) : (
           <PageHeading
             title={`${firstName}'s Performance`}
             titleclassName="font-medium"
-            className="pl-2 pt-3"
+            className="pl-2 pt-1"
           />
         )}
         <div className="flex flex-row md:flex-col lg:flex-row lg:items-center lg:justify-between mb-4">

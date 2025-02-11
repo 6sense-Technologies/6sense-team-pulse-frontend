@@ -7,17 +7,17 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Button } from "@/components/ButtonComponent";
-import ToolDropdown from "./_components/ToolDropdown";
-import WorkspaceURL from "./_components/WorkspaceURL";
-import { Circle, Trash2 } from "lucide-react";
+
+import { Circle} from "lucide-react";
 import { ProjectTools } from "@/types/Project.types";
 import { useMutation } from "@tanstack/react-query";
 import { CreateProject } from "../../../../../helpers/projects/projectApi";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
+import DesignationDropdown from "./_components/designationDropdown";
 
-const ProjectCreate = () => {
+const InviteMembers = () => {
   const router = useRouter();
   const session = useSession();
   const {
@@ -161,40 +161,69 @@ const ProjectCreate = () => {
         </div>
         <div className="flex justify-between items-center">
         <GlobalBreadCrumb
-            initialData="Projects"
-            initalLink="/projects"
-            secondayData="Create Project"
-            secondayLink="/projects/create"
-          />
+          initialData="Members"
+          initalLink="/members"
+          secondayData="Invite Member"
+          secondayLink="/members/invite"
+        />
         <span className="hidden md:flex pr-2">
           <AvatarMenu />
           </span>
         </div>
-          <PageHeading title="Create Project" className="pl-[7px] lg:pl-[5px] pt-1" />
+          <PageHeading title="Invite Member" className="pl-[7px] lg:pl-[5px] pt-1" />
 
-          <div className="flex flex-col lg:flex-row items-start  lg:items-center lg:justify-between w-full max-w-[872px] lg:pt-4">
+          <div className="flex flex-col lg:flex-row items-start  w-full max-w-[872px] lg:pt-4 lg:gap-x-[220px]">
             <div className="pl-[6px] py-4 lg:pt-0">
               <h1 className="text-[16px] lg:text-headingXXS font-semibold lg:pb-2">
-                Project Info
+                Basic Info
               </h1>
             </div>
-            <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-8">
+            <div className="w-full max-w-[420px]">
+            <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-2">
               <label
-                htmlFor="projectName"
+                htmlFor="fullname"
                 className="text-sm font-medium text-black"
               >
-                Project Name <span className="text-destructive">*</span>
+                Full Name <span className="text-destructive">*</span>
               </label>
               <BaseInput
                 control={control}
-                name="name"
+                name="fullname"
                 type="text"
-                placeholder="Project Name"
+                placeholder="Full Name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
-                additionalText="The project name you used in your code project"
+                additionalText="Enter member's full name"
                 errors={errors}
                 errorclassName="mt-1"
               />
+            </div>
+            <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-8">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-black"
+              >
+                Email <span className="text-destructive">*</span>
+              </label>
+              <BaseInput
+                control={control}
+                name="email"
+                type="email"
+                placeholder="Email"
+                className="placeholder:text-subHeading w-full mt-[4px]"
+                additionalText="Enter member's email address"
+                errors={errors}
+                errorclassName="mt-1"
+              />
+            </div>
+            <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-0">
+              <DesignationDropdown
+              control={control}
+              name="designation"
+              placeholder="Select"
+              errors={errors.tools?.[0]?.toolName?.message}
+              index={0}
+            />
+            </div>
             </div>
           </div>
 
@@ -204,52 +233,10 @@ const ProjectCreate = () => {
                 Project Management Tool
               </h1>
             </div>
-            <ToolDropdown
-              control={control}
-              name="tools[0].toolName"
-              placeholder="Select"
-              errors={errors.tools?.[0]?.toolName?.message}
-              index={0}
-            />
-          </div>
-          <div className="w-full h-full pl-2 pt-3 lg:pl-[320px]">
-            <WorkspaceURL
-              control={control}
-              name="tools[0].toolUrl"
-              errors={errors.tools?.[0]?.toolUrl?.message}
-              index={0}
-            />
           </div>
 
-          {fields.slice(1).map((field, index) => (
-            <div
-              key={field.id}
-              className="w-full h-full pl-1 pt-6 lg:pl-[320px] flex-col items-center"
-            >
-              <div className="flex items-end justify-start gap-x-[6px]">
-                <ToolDropdown
-                  control={control}
-                  name={`tools[${index + 1}].toolName`}
-                  errors={errors.tools?.[index + 1]?.toolName?.message}
-                  index={index + 1}
-                />
-                <div className="relative border w-10 h-9 rounded-lg">
-                  <Trash2
-                    className="w-4 h-4 text-black font-normal cursor-pointer absolute top-2 right-2 md:right-3"
-                    onClick={() => remove(index + 1)}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center gap-4 pl-2 pt-4 lg:pl-0 lg:pt-0">
-                <WorkspaceURL
-                  control={control}
-                  name={`tools[${index + 1}].toolUrl`}
-                  errors={errors.tools?.[index + 1]?.toolUrl?.message}
-                  index={index + 1}
-                />
-              </div>
-            </div>
-          ))}
+
+        
 
           <div className="mt-14 mb-10 ml-2 lg:ml-[320px] flex-col items-start lg:items-center">
             <div className="w-full">
@@ -283,4 +270,4 @@ const ProjectCreate = () => {
   );
 };
 
-export default ProjectCreate;
+export default InviteMembers;

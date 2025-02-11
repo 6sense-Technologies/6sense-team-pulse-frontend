@@ -14,6 +14,8 @@ import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ButtonComponent";
+import AvatarMenu from "@/components/AvatarMenu";
+import Link from "next/link";
 
 const TeamListPage: React.FC = () => {
 
@@ -72,14 +74,20 @@ const TeamListPage: React.FC = () => {
       <PageTitle title="Team Efficiency • Ops4 Team" />
 
       <div className="px-4 lg:pl-4 pt-8 lg:pr-[14px] w-full">
-        <div className="md:hidden pb-4">
+        <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <AvatarMenu />
         </div>
+        <div className="flex justify-between items-center">
         <GlobalBreadCrumb
           initialData="Members"
           initalLink="/members"
         />
-        <PageHeading title="All Members" className="pl-2 pt-3" />
+        <span className="hidden md:flex pr-2">
+          <AvatarMenu />
+          </span>
+        </div>
+        <PageHeading title="All Members" className="pl-2 pt-1" />
         <div className="flex flex-col lg:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <TeamSearchbar
@@ -108,7 +116,9 @@ const TeamListPage: React.FC = () => {
               </div>
             </div>
             <div className="w-full md:w-auto">
+              <Link href="/members/invite">
               <Button variant="defaultEx" className="mb-[26px] mr-1">Invite Member</Button>
+              </Link>
             </div>
           </div>
         </div>

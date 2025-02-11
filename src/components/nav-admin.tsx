@@ -41,7 +41,7 @@ export function NavAdmin({
                 className={cn(
                   'hover:bg-sidebarHoverBg hover:text-black',
                   {
-                    'bg-primary text-white': selectedItem === item.title,
+                    'bg-primary text-white hover:bg-primary hover:text-black': selectedItem === item.title,
                     'cursor-pointer text-navbartextColor': item.title === 'Members',
                     'cursor-not-allowed text-gray-400': selectedItem !== item.title && item.title !== 'Members',
                   }

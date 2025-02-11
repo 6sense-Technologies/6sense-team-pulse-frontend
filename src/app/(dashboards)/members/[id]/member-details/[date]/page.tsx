@@ -13,6 +13,7 @@ import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import AvatarMenu from "@/components/AvatarMenu";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
@@ -74,9 +75,11 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Performance Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
-      <div className="md:hidden pb-4">
+      <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <AvatarMenu />
         </div>
+        <div className="flex justify-between items-center">
         <GlobalBreadCrumb
           initialData="Members"
           initalLink="/members"
@@ -85,10 +88,14 @@ const EfficiencyMemberDetails: React.FC = () => {
           thirdData="Daily Performance"
           thirdLink={`/members/${member_id}/member-details/${date}`}
         />
+        <span className="hidden md:flex pr-2">
+          <AvatarMenu />
+          </span>
+        </div>
         <PageHeading
           title="Daily Performance"
           titleclassName="font-medium"
-          className="pl-2 pt-3"
+          className="pl-2 pt-1"
         />
         <div className="flex items-center justify-between md:mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-1 md:mb-0">

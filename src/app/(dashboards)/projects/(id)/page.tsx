@@ -16,6 +16,7 @@ import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import EmptyProjectView from "@/components/emptyProjectView";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import AvatarMenu from "@/components/AvatarMenu";
 
 const ProjectList = () => {
   const [pages, setPages] = useState(1);
@@ -67,16 +68,22 @@ const ProjectList = () => {
       <PageTitle title="Projects • Ops4 Team" />
 
       <div className="pl-4 pt-8 lg:pt-8 pr-[14px] w-full">
-        <div className="md:hidden pb-4">
+      <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <AvatarMenu />
         </div>
+        <div className="flex justify-between items-center">
         <GlobalBreadCrumb
           initialData="Projects"
           initalLink="/projects"
         />
+        <span className="hidden md:flex pr-2">
+          <AvatarMenu />
+          </span>
+        </div>
         <PageHeading
           title="Projects"
-          className="pl-2 pt-3"
+          className="pl-2 pt-1"
         />
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
