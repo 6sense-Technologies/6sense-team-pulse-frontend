@@ -17,6 +17,8 @@ import SummarySkeleton from "@/components/summarySkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
+import DisableModal from "./_components/DisableModal";
+
 
 const getInitials = (name: string) => {
   if (!name) return "NA"; // Return default initials if name is undefined or empty
@@ -117,19 +119,19 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Member Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
-      <div className="md:hidden pb-4 flex justify-between items-center">
+        <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
           <AvatarMenu />
         </div>
         <div className="flex justify-between items-center">
-        <GlobalBreadCrumb
-          initialData="Members"
-          initalLink="/members"
-          secondayData="Performance"
-          secondayLink="/members/id/member-details"
-        />
-        <span className="hidden md:flex pr-2">
-          <AvatarMenu />
+          <GlobalBreadCrumb
+            initialData="Members"
+            initalLink="/members"
+            secondayData="Performance"
+            secondayLink="/members/id/member-details"
+          />
+          <span className="hidden md:flex pr-2">
+            <AvatarMenu />
           </span>
         </div>
         {individualMemberDataLoading ? (
@@ -203,7 +205,7 @@ const EfficiencyMemberDetails: React.FC = () => {
               <Button variant="light">Edit Profile</Button>
             </span>
             <span className="hidden md:block">
-              <Button variant="disable">Disable Member</Button>
+              <DisableModal trigger={<Button variant="disable">Disable Member</Button>} />
             </span>
           </div>
           <span className="md:hidden pt-14 pr-2 md:pb-0 md:pr-0 relative">
@@ -221,7 +223,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                   </li>
                   <hr className="mt-1" />
                   <li className="px-4 py-2 text-destructive hover:bg-gray-100 cursor-pointer">
-                    Disable Member
+                    <DisableModal trigger={<span className="text-sm font-semibold">Disable Member</span>} />
                   </li>
                 </ul>
               </div>

@@ -173,7 +173,7 @@ export const columns: ColumnDef<TeamMember>[] = [
               {row.getValue("insight") || "-"}
             </div>
           </TooltipTrigger>
-          <TooltipContent className="bg-primary text-white w-full max-w-[150px] lg:max-w-[200px] xl:max-w-[220px]">
+          <TooltipContent className="bg-primary text-white w-full max-w-[150px] lg:max-w-[200px] xl:max-w-[320px]">
             {row.getValue("insight") || "-"}
           </TooltipContent>
         </Tooltip>
@@ -391,7 +391,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                   : cell.column.id === "bugs"
                                     ? "pl-7 text-start w-[10px]"
                                     : cell.column.id === "_id" && isHoliday
-                                      ? "pl-4 text-start text-nowrap"
+                                      ? "pl-4 text-start text-nowrap text-subHeading"
                                       : cell.column.id === "score"
                                         ? "text-left w-[10px]"
                                         : cell.column.id === "insight"

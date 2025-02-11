@@ -14,11 +14,15 @@ import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ChartSpline, List } from "lucide-react";
+import { GitTable } from "./_components/gitTable";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<string>("items");
   const [limit] = useState<number>(10);
+  const [view, setView] = useState<string>("Chart");
   const session = useSession();
   const searchParams = useSearchParams();
 
@@ -37,7 +41,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     isFetching: individualMemberDataLoading,
   } = useQuery<any>({
     queryKey: ["individualMemberData", member_id],
-    queryFn: () => GetIndividualTeamMember(member_id,session),
+    queryFn: () => GetIndividualTeamMember(member_id, session),
   });
 
   const {
@@ -50,7 +54,7 @@ const EfficiencyMemberDetails: React.FC = () => {
   });
 
   const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;
-  console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData)
+  console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData);
 
   const totalCountAndLimit = {
     totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
@@ -75,21 +79,21 @@ const EfficiencyMemberDetails: React.FC = () => {
       <PageTitle title="Performance Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
-      <div className="md:hidden pb-4 flex justify-between items-center">
+        <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
           <AvatarMenu />
         </div>
         <div className="flex justify-between items-center">
-        <GlobalBreadCrumb
-          initialData="Members"
-          initalLink="/members"
-          secondayData="Performance"
-          secondayLink={`/members/${member_id}/member-details`}
-          thirdData="Daily Performance"
-          thirdLink={`/members/${member_id}/member-details/${date}`}
-        />
-        <span className="hidden md:flex pr-2">
-          <AvatarMenu />
+          <GlobalBreadCrumb
+            initialData="Members"
+            initalLink="/members"
+            secondayData="Performance"
+            secondayLink={`/members/${member_id}/member-details`}
+            thirdData="Daily Performance"
+            thirdLink={`/members/${member_id}/member-details/${date}`}
+          />
+          <span className="hidden md:flex pr-2">
+            <AvatarMenu />
           </span>
         </div>
         <PageHeading
@@ -101,7 +105,7 @@ const EfficiencyMemberDetails: React.FC = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center mb-1 md:mb-0">
             <div className="flex flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
               {individualMemberDataLoading ? (
-               <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton/></span>
+                <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton /></span>
               ) : (
                 <>
                   <div>
@@ -128,29 +132,16 @@ const EfficiencyMemberDetails: React.FC = () => {
             </div>
           </div>
         </div>
-        <span className="flex justify-end">
-          <span className="cursor-not-allowed">
-          <CustomSingleDatePicker />
-          </span>
-        </span>
         <div className="tab lg:ml-2">
           <div className="flex space-x-4 border-b">
             <button
-              className={`py-2 px-4 ${
-                activeTab === "items"
-                  ? "border-b-2 border-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 ${activeTab === "items" ? "border-b-2 border-black font-semibold" : ""}`}
               onClick={() => setActiveTab("items")}
             >
               Items
             </button>
             <button
-              className={`py-2 px-4 ${
-                activeTab === "git"
-                  ? "border-b-2 border-black text-black font-semibold"
-                  : ""
-              }`}
+              className={`py-2 px-4 ${activeTab === "git" ? "border-b-2 border-black text-black font-semibold" : ""}`}
               onClick={() => setActiveTab("git")}
             >
               Git
@@ -160,18 +151,65 @@ const EfficiencyMemberDetails: React.FC = () => {
         <div className="mt-4 lg:ml-2">
           {activeTab === "items" ? (
             dailyPerformanceLoading ? (
-              <EmptyTableSkeleton /> // Show loader while data is being fetched
+              <EmptyTableSkeleton />
             ) : (
-              <PerformanceTable
-                totalCountAndLimit={totalCountAndLimit}
-                performanceItems={dailyPerformanceData}
-                loading={dailyPerformanceLoading}
-                refetch={dailyPerformanceRefetch}
-                currentPage={pages}
-              />
+              <>
+                <span className="flex justify-end pb-4">
+                  <span className="cursor-not-allowed">
+                    <CustomSingleDatePicker />
+                  </span>
+                </span>
+                <PerformanceTable
+                  totalCountAndLimit={totalCountAndLimit}
+                  performanceItems={dailyPerformanceData}
+                  loading={dailyPerformanceLoading}
+                  refetch={dailyPerformanceRefetch}
+                  currentPage={pages}
+                />
+              </>
             )
           ) : (
-            <div>Git Content Coming Soon</div>
+            <>
+              <span className="flex justify-end pb-4">
+                <span className="cursor-not-allowed">
+                  <CustomSingleDatePicker />
+                </span>
+              </span>
+              <div className="grid grid-cols-4 gap-x-4">
+                <div className="w-276px bg-red-300">s</div>
+                <div className="w-276px bg-green-300">s</div>
+                <div className="w-276px bg-orange-300">s</div>
+                <div className="w-276px bg-lime-300">s</div>
+              </div>
+              <div className="flex justify-between items-center mt-4">
+                <h1 className="text-[16px] font-semibold">Git Contribution</h1>
+                <div>
+                  <ToggleGroup type="single" value={view} onValueChange={(value) => setView(value)}>
+                    <ToggleGroupItem value="Chart"><ChartSpline size={16} /></ToggleGroupItem>
+                    <ToggleGroupItem value="Table"><List size={16} /></ToggleGroupItem>
+                  </ToggleGroup>
+                </div>
+              </div>
+              {view === "Chart" ? (
+                <div className="mt-4">
+                  {/* Replace with your chart component */}
+                  <div>Chart</div>
+                </div>
+              ) : (
+                <div className="mt-4">
+                  {/* Replace with your table component */}
+                  <div>
+                    <GitTable 
+                      totalCountAndLimit={totalCountAndLimit}
+                      performanceItems={dailyPerformanceData}
+                      loading={dailyPerformanceLoading}
+                      refetch={dailyPerformanceRefetch}
+                      currentPage={pages}
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
