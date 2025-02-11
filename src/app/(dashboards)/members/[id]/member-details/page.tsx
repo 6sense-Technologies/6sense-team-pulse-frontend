@@ -29,7 +29,7 @@ const getInitials = (name: string) => {
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [limit] = useState<number>(10);
-  const [activeTab, setActiveTab] = useState<string>("performance");
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const { id } = useParams() as { id: string };
 
@@ -49,7 +49,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     isFetching: individualMemberDataLoading,
   } = useQuery<any>({
     queryKey: ["individualMemberData", id],
-    queryFn: () => GetIndividualTeamMember(id,session),
+    queryFn: () => GetIndividualTeamMember(id, session),
   });
 
   const {
@@ -58,7 +58,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     refetch: individualOverviewRefetch,
   } = useQuery<any>({
     queryKey: ["individualOverview", pages, limit],
-    queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit },session),
+    queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit }, session),
   });
 
   const individualAvatar = individualMemberData?.userData.avatarUrls;
@@ -86,6 +86,31 @@ const EfficiencyMemberDetails: React.FC = () => {
     size: limit,
   };
 
+  const handleIconClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      event.target instanceof Node &&
+      !(event.target as Element).closest(".modal-content")
+    ) {
+      setIsMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   return (
     <div className="w-full">
       <PageTitle title="Member Details • Ops4 Team" />
@@ -95,10 +120,10 @@ const EfficiencyMemberDetails: React.FC = () => {
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
         </div>
         <GlobalBreadCrumb
-          initialData="Team"
-          initalLink="/team"
+          initialData="Members"
+          initalLink="/members"
           secondayData="Performance"
-          secondayLink="/team/id/profile"
+          secondayLink="/members/id/member-details"
         />
         {individualMemberDataLoading ? (
           <TextSkeleton className="h-8 w-48 ml-3 mt-3 mb-4" />
@@ -109,8 +134,8 @@ const EfficiencyMemberDetails: React.FC = () => {
             className="pl-2 pt-3"
           />
         )}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex flex-col md:flex-row md:gap-x-10 items-start md:items-center mb-3 md:mb-0">
+        <div className="flex flex-row md:flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+          <div className="flex flex-col lg:flex-row lg:gap-x-2 items-start lg:items-center mb-3 md:mb-0">
             {individualMemberDataLoading ? (
               <span className="pl-3 pt-3"><SummarySkeleton /></span>
             ) : (
@@ -136,7 +161,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <div className="pl-6 md:pl-0 flex gap-x-[14px] md:gap-x-[10px]">
+                <div className="pl-6 md:pl-6 md:pb-5 lg:pl-0 lg:pt-5 flex gap-x-[14px] md:gap-x-[10px]">
                   <div className="pt-1 md:pt-0">
                     <div className="flex items-center gap-x-[6px]">
                       <CalendarCheck2 size={16} />
@@ -163,58 +188,56 @@ const EfficiencyMemberDetails: React.FC = () => {
               </>
             )}
           </div>
-          <span className="hidden md:block">
-            <Button variant="light">Edit Profile</Button>
-          </span>
-          <span className="md:hidden pb-16 pr-2 md:pb-0 md:pr-0 cursor-not-allowed">
-            <span><EllipsisVertical size={16}/></span>
-          </span>
-        </div>
-        <div className="tab lg:ml-2 ">
-          <div className="flex space-x-4 border-b">
-            <button
-              className={`py-2 px-4 ${activeTab === "performance"
-                ? "border-b-2 border-black font-semibold"
-                : ""
-                }`}
-              onClick={() => setActiveTab("performance")}
-            >
-              Performance
-            </button>
-            <button
-              className={`py-2 px-4 cursor-not-allowed text-gray-400${activeTab === "profile"
-                ? "border-b-2 border-black font-semibold"
-                : ""
-                }`}
-              onClick={(e) => e.preventDefault()}
-            >
-              Profile
-            </button>
+          <div className="flex gap-x-4 pl-0 md:pl-4 lg:pl-0">
+            <span className="hidden md:block">
+              <Button variant="light">View Profile</Button>
+            </span>
+            <span className="hidden md:block">
+              <Button variant="light">Edit Profile</Button>
+            </span>
+            <span className="hidden md:block">
+              <Button variant="disable">Disable Member</Button>
+            </span>
           </div>
+          <span className="md:hidden pt-14 pr-2 md:pb-0 md:pr-0 relative">
+            <span onClick={handleIconClick} className="cursor-pointer">
+              <EllipsisVertical size={16} />
+            </span>
+            {isMenuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+                <ul>
+                  <li className="px-4 py-2 text-start cursor-not-allowed text-gray-400">
+                    View Profile
+                  </li>
+                  <li className="px-4 py-2 text-start cursor-not-allowed text-gray-400">
+                    Edit Profile
+                  </li>
+                  <hr className="mt-1" />
+                  <li className="px-4 py-2 text-destructive hover:bg-gray-100 cursor-pointer">
+                    Disable Member
+                  </li>
+                </ul>
+              </div>
+            )}
+          </span>
         </div>
         <div className="mt-4 lg:ml-2">
-          {activeTab === "performance" ? (
-            <>
-              <span className="flex justify-end mb-4">
-                <span className="cursor-not-allowed">
-                  <CustomDatePicker />
-                </span>
-              </span>
-              {individualOverviewLoading ? (
-                <EmptyTableSkeleton />
-              ) : (
-                <TeamDetailsTable
-                  totalCountAndLimit={totalCountAndLimit}
-                  teamMembers={individualOverview?.history.data ?? []}
-                  loading={individualOverviewLoading}
-                  refetch={individualOverviewRefetch}
-                  currentPage={pages}
-                  Memberid={id}
-                />
-              )}
-            </>
+          <span className="flex justify-end md:justify-start md:ml-3 lg:ml-0 lg:justify-end mb-4">
+            <span className="cursor-not-allowed">
+              <CustomDatePicker />
+            </span>
+          </span>
+          {individualOverviewLoading ? (
+            <EmptyTableSkeleton />
           ) : (
-            <div>Coming Soon</div>
+            <TeamDetailsTable
+              totalCountAndLimit={totalCountAndLimit}
+              teamMembers={individualOverview?.history.data ?? []}
+              loading={individualOverviewLoading}
+              refetch={individualOverviewRefetch}
+              currentPage={pages}
+              Memberid={id}
+            />
           )}
         </div>
       </div>

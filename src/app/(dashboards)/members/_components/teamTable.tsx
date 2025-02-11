@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -26,8 +27,8 @@ import { TeamPagination } from "./teamPagination";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import TeamProgress from "./teamProgress";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { EllipsisVertical } from "lucide-react";
 
 type TeamMember = {
   _id: string;
@@ -112,12 +113,57 @@ export const columns: ColumnDef<TeamMember>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const member = row.original;
+      const [isModalOpen, setIsModalOpen] = useState(false);
+
+      const handleIconClick = () => {
+        setIsModalOpen(!isModalOpen);
+      };
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          event.target instanceof Node &&
+          !(event.target as Element).closest(".modal-content")
+        ) {
+          setIsModalOpen(false);
+        }
+      };
+
+      useEffect(() => {
+        if (isModalOpen) {
+          document.addEventListener("mousedown", handleClickOutside);
+        } else {
+          document.removeEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [isModalOpen]);
 
       return (
         <div className="flex items-center justify-end space-x-4 pr-4 relative">
-          <Link href={`/team/${member._id}/member-details`}>
-            <Button variant="outline">View</Button>
-          </Link>
+          <EllipsisVertical
+            className="cursor-pointer w-4 h-4"
+            onClick={handleIconClick}
+          />
+          {isModalOpen && (
+            <div className="absolute right-0 -top-[73px] mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
+              <ul>
+                <Link href={`/members/${member._id}/member-details`}>
+                  <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
+                    View Performance
+                  </li>
+                </Link>
+                <li className="px-4 py-2 text-start cursor-not-allowed text-gray-400">
+                  Send Feedback
+                </li>
+                <hr className="mt-1" />
+                <li className="px-4 py-2 text-start cursor-not-allowed text-gray-400">
+                  Remove
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       );
     },
@@ -187,7 +233,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
     refetch?.();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading) {
       setIsLoading(false);
     }
@@ -212,8 +258,16 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "displayName" ? "min-w-[140px]" : header.column.id === "role" ? "min-w-[110px]" : header.column.id === "designation" ? "min-w-[180px]" : ""
+                        className={`text-left h-[51px] pl-4 leading-none ${
+                          header.column.id === "actions"
+                            ? "text-right"
+                            : header.column.id === "displayName"
+                            ? "min-w-[140px]"
+                            : header.column.id === "role"
+                            ? "min-w-[110px]"
+                            : header.column.id === "designation"
+                            ? "min-w-[180px]"
+                            : ""
                         }`}
                       >
                         {header.isPlaceholder

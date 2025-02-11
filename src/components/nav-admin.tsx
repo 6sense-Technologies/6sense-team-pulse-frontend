@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 export function NavAdmin({
   items,
   selectedItem,
+  onItemClick,
 }: {
   items: {
     title: string;
@@ -35,30 +36,34 @@ export function NavAdmin({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <Link href='#'>
+            <Link href={item.url}>
               <SidebarMenuButton
                 className={cn(
-                  'hover:bg-sidebarHoverBg hover:text-white cursor-not-allowed text-gray-400',
+                  'hover:bg-sidebarHoverBg hover:text-black',
                   {
                     'bg-primary text-white': selectedItem === item.title,
+                    'cursor-pointer text-navbartextColor': item.title === 'Members',
+                    'cursor-not-allowed text-gray-400': selectedItem !== item.title && item.title !== 'Members',
                   }
                 )}
                 tooltip={item.title}
-                onClick={(e) => e.preventDefault()}
+                onClick={() => onItemClick(item.title)}
               >
                 {item.icon && (
                   <item.icon
                     className={cn('w-6 h-6', {
+                      'text-navbarTextColor': item.title === 'Members',
                       'text-white': selectedItem === item.title,
-                      'text-gray-400': selectedItem !== item.title,
+                      'text-gray-400': selectedItem !== item.title && item.title !== 'Members',
                     })}
                     strokeWidth={2}
                   />
                 )}
                 <span
                   className={cn('text-sm', {
+                    'text-navbarTextColor': item.title === 'Members',
                     'text-white': selectedItem === item.title,
-                    'text-gray-400': selectedItem !== item.title,
+                    'text-gray-400': selectedItem !== item.title && item.title !== 'Members',
                   })}
                 >
                   {item.title}

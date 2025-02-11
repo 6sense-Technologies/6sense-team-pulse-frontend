@@ -16,7 +16,7 @@ import { useSession } from "next-auth/react";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<string>("performance");
+  const [activeTab, setActiveTab] = useState<string>("items");
   const [limit] = useState<number>(10);
   const session = useSession();
   const searchParams = useSearchParams();
@@ -78,12 +78,12 @@ const EfficiencyMemberDetails: React.FC = () => {
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
         </div>
         <GlobalBreadCrumb
-          initialData="Team"
-          initalLink="/team"
-          secondayData="Profile"
-          secondayLink={`/team/${member_id}/member-details`}
+          initialData="Members"
+          initalLink="/members"
+          secondayData="Performance"
+          secondayLink={`/members/${member_id}/member-details`}
           thirdData="Daily Performance"
-          thirdLink={`/team/${member_id}/member-details/${date}`}
+          thirdLink={`/members/${member_id}/member-details/${date}`}
         />
         <PageHeading
           title="Daily Performance"
@@ -130,28 +130,28 @@ const EfficiencyMemberDetails: React.FC = () => {
           <div className="flex space-x-4 border-b">
             <button
               className={`py-2 px-4 ${
-                activeTab === "performance"
+                activeTab === "items"
                   ? "border-b-2 border-black font-semibold"
                   : ""
               }`}
-              onClick={() => setActiveTab("performance")}
+              onClick={() => setActiveTab("items")}
             >
-              Performance
+              Items
             </button>
             <button
-              className={`py-2 px-4 cursor-not-allowed text-gray-400 ${
-                activeTab === "comments"
-                  ? "border-b-2 border-black font-semibold"
+              className={`py-2 px-4 ${
+                activeTab === "git"
+                  ? "border-b-2 border-black text-black font-semibold"
                   : ""
               }`}
-              onClick={(e) => e.preventDefault()}
+              onClick={() => setActiveTab("git")}
             >
-              Comments
+              Git
             </button>
           </div>
         </div>
         <div className="mt-4 lg:ml-2">
-          {activeTab === "performance" ? (
+          {activeTab === "items" ? (
             dailyPerformanceLoading ? (
               <EmptyTableSkeleton /> // Show loader while data is being fetched
             ) : (
@@ -164,7 +164,7 @@ const EfficiencyMemberDetails: React.FC = () => {
               />
             )
           ) : (
-            <div>Comments Content Coming Soon</div>
+            <div>Git Content Coming Soon</div>
           )}
         </div>
       </div>

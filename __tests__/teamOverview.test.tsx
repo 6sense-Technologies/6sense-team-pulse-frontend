@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import EfficiencyMemberDetails from '../src/app/(dashboards)/team/[id]/member-details/page';
+import EfficiencyMemberDetails from '../src/app/(dashboards)/members/[id]/member-details/page';
 import { GetIndividualOverview, GetIndividualTeamMember } from '../helpers/Team/teamApi';
 import { SidebarProvider } from '@/components/ui/sidebar';
 

@@ -66,7 +66,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   {
     id: "tasks",
     header: () => (
-      <div className="text-bold pl-6 min-w-[240px]">
+      <div className="text-bold pl-6 min-w-[320px]">
         <p className="pl-4 py-[12px]">Tasks</p>
         <div className="grid grid-cols-3 border-t mt-1 pt-1 pl-4 gap-x-[30px] xl:gap-x-10">
           <span className="py-2">Planned</span>
@@ -99,7 +99,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     id: "bugs",
-    header: () => <div className="text-bold pb-1 2xl:mr-10">Bugs</div>,
+    header: () => <div className="text-bold pb-1 2xl:mr-8">Bugs</div>,
     cell: ({ row }: { row: any }) => {
       const doneBugCount = row.original.doneBugCount;
       const totalBugCount = row.original.totalBugCount;
@@ -164,7 +164,7 @@ export const columns: ColumnDef<TeamMember>[] = [
   },
   {
     accessorKey: "insight",
-    header: () => <div className="text-bold">Insight</div>,
+    header: () => <div className="text-bold min-w-[280px]">Insight</div>,
     cell: ({ row }: { row: any }) => (
       <TooltipProvider>
         <Tooltip>
@@ -224,7 +224,7 @@ export const columns: ColumnDef<TeamMember>[] = [
             <div className="absolute right-0 -bottom-[12px] mt-2 w-48 bg-white border border-gray-200 rounded shadow-lg z-10 modal-content">
               <ul>
                 <Link
-                  href={`/team/${id}/member-details/${new Date(row.original._id).toISOString().split("T")[0]
+                  href={`/members/${id}/member-details/${new Date(row.original._id).toISOString().split("T")[0]
                     }`}
                 >
                   <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
@@ -232,13 +232,7 @@ export const columns: ColumnDef<TeamMember>[] = [
                   </li>
                 </Link>
                 <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
-                  Add Comment
-                </li>
-                <li className="px-4 py-2 text-start  cursor-not-allowed text-gray-400">
-                  Report Bug
-                </li>
-                <li className="px-4 py-2 text-start   cursor-not-allowed text-gray-400">
-                  Project
+                  Send Feedback
                 </li>
                 <hr className="mt-1" />
                 <li className="px-4 py-3 text-start  cursor-not-allowed text-gray-400">
@@ -343,7 +337,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-[125px] pl-0 leading-none ${header.column.id === "actions"
+                        className={`text-left h-10 pl-0 leading-none ${header.column.id === "actions"
                             ? "text-right pb-9 min-w-[50px]"
                             : header.column.id === "bugs"
                               ? "pb-8 w-20 text-center"

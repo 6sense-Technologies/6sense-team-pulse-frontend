@@ -77,7 +77,7 @@ import {
                 e.preventDefault();
                 if (currentPage > 1) {
                   onPageChange(currentPage - 1);
-                  router.push(`/team/${Memberid}/member-details?page=${currentPage - 1}`);
+                  router.push(`/members/${Memberid}/member-details?page=${currentPage - 1}`);
                 }
               }}
             />
@@ -93,7 +93,7 @@ import {
                   onClick={(e) => {
                     e.preventDefault();
                     onPageChange(page);
-                    router.push(`/team/${Memberid}/member-details?page=${page}`);
+                    router.push(`/members/${Memberid}/member-details?page=${page}`);
                   }}
                 >
                   {page}
@@ -112,7 +112,7 @@ import {
                 e.preventDefault();
                 if (currentPage < totalPage) {
                   onPageChange(currentPage + 1);
-                  router.push(`/team/${Memberid}/member-details?page=${currentPage + 1}`);
+                  router.push(`/members/${Memberid}/member-details?page=${currentPage + 1}`);
                 }
               }}
             />

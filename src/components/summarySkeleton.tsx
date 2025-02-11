@@ -4,9 +4,9 @@ import MultiTextSkeleton from './multiTextSkeleton';
 
 const SummarySkeleton = () => {
   return (
-    <div className="flex flex-col md:flex-row md:space-x-12 animate-pulse">
+    <div className="flex flex-col lg:flex-row lg:space-x-12 animate-pulse pb-0 md:pb-5 lg:pb-0">
       <TitleAvatarSkeleton />
-      <div className='flex pt-6 pl-2 md:pt-0 md:pl-0 space-x-6 md:space-x-6'>
+      <div className='flex pt-6 pl-2 lg:pt-0 lg:pl-0 space-x-6 lg:space-x-6'>
       <MultiTextSkeleton />
       <MultiTextSkeleton />
       </div>

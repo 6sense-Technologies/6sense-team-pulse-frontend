@@ -13,6 +13,7 @@ import { TeamList } from "@/types/Team.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ButtonComponent";
 
 const TeamListPage: React.FC = () => {
 
@@ -75,10 +76,10 @@ const TeamListPage: React.FC = () => {
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
         </div>
         <GlobalBreadCrumb
-          initialData="Team"
-          initalLink="/team"
+          initialData="Members"
+          initalLink="/members"
         />
-        <PageHeading title="Team" className="pl-2 pt-3" />
+        <PageHeading title="All Members" className="pl-2 pt-3" />
         <div className="flex flex-col lg:flex-row justify-between items-start md:items-center mb-3 md:mb-0">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <TeamSearchbar
@@ -105,6 +106,9 @@ const TeamListPage: React.FC = () => {
                   className="mb-[26px] w-full md:max-w-[350px] !placeholder:text-black"
                 />
               </div>
+            </div>
+            <div className="w-full md:w-auto">
+              <Button variant="defaultEx" className="mb-[26px] mr-1">Invite Member</Button>
             </div>
           </div>
         </div>

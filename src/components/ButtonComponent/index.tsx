@@ -12,6 +12,7 @@ const buttonVariants = cva(
       variant: {
         default: "text-white bg-primary hover:opacity-90",
         defaultEx: "text-white bg-primary hover:opacity-90 w-full lg:w-[140px] ",
+        thinprimary: "text-white bg-primary hover:opacity-90 w-full lg:w-[120px] !font-normal",
         secondary: "text-black bg-secondary hover:bg-secondaryHover",
         outline:
           "text-black bg-transparent border-[1px] border-borderColor hover:bg-outlineHover focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
@@ -26,7 +27,8 @@ const buttonVariants = cva(
         submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
         submitExtended: "text-white bg-lightBlueBg hover:bg-lightBlueBg w-full",
         darkish: 'text-white bg-primary font-normal',
-        blackWhite: "text-white bg-black border border-white"
+        blackWhite: "text-white bg-black border border-white",
+        disable: 'text-destructive underline underline-offset-2  border-none',
       },
       size: {
         exSmall: "text-sm px-1 h-10",

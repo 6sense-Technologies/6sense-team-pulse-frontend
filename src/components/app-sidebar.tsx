@@ -1,15 +1,14 @@
 'use client';
 
 import {
-  Bot,
   Boxes,
-  Ellipsis,
-  Frame,
+  FileCode,
+  FolderKeyIcon,
   GalleryVerticalEnd,
-  KeyRound,
-  MessageSquareWarning,
+  MessagesSquare,
+  Settings2,
   SquareTerminal,
-  Users,
+  User,
 } from 'lucide-react';
 
 import { NavMain } from '@/components/nav-main';
@@ -50,17 +49,12 @@ const defaultData = {
     {
       title: 'Projects',
       url: '/projects',
-      icon: Bot,
-    },
-    {
-      title: 'Team',
-      url: '/team',
-      icon: Users,
+      icon: FileCode,
     },
     {
       title: 'Feedback',
       url: '#',
-      icon: MessageSquareWarning,
+      icon: MessagesSquare,
       items: [
         {
           title: 'Peers',
@@ -75,20 +69,14 @@ const defaultData = {
   ],
   navAdmin: [
     {
-      title: 'Organizations',
-      url: '/',
-      icon: Frame,
-      isActive: true,
-    },
-    {
       title: 'Members',
-      url: '/',
-      icon: Users,
+      url: '/members',
+      icon: User,
     },
     {
       title: 'Access Control',
       url: '#',
-      icon: KeyRound,
+      icon: FolderKeyIcon,
       items: [
         {
           title: 'Roles',
@@ -108,7 +96,7 @@ const defaultData = {
     {
       title: 'Settings',
       url: '#',
-      icon: Ellipsis,
+      icon: Settings2,
     },
   ],
 };
