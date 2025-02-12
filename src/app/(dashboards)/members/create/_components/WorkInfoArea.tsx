@@ -74,7 +74,7 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
         type="text"
         placeholder="GitHub Username"
         className="placeholder:text-subHeading w-full mt-[4px]"
-        additionalText="Enter the GitHub Username"
+        additionalText="Enter the GitHub Account Name"
         errors={errors}
         errorclassName="mt-1"
       />

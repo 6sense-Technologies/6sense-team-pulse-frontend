@@ -81,8 +81,8 @@ const AvatarMenu = () => {
             </span>
           </div>
           <ul>
-            <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer">
-              <div className='flex items-center gap-x-2 cursor-not-allowed text-gray-400'>
+            <li className="px-4 py-2 text-start hover:bg-gray-100 cursor-pointer border-b">
+              <div className='flex items-center gap-x-2 cursor-not-allowed text-gray-400 '>
                 <span><User size={16} /></span> <span className='text-sm'>My profile</span>
               </div>
             </li>
