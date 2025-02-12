@@ -16,4 +16,25 @@ export interface TeamList {
   export interface Designations {
     designations: string[]
   }
-  
+
+  export interface Projects
+  {
+    projects: string[]
+  }
+
+  export interface InviteMemberForm {
+    displayName: string;
+    emailAddress: string;
+    designation: string;
+    role: string;
+    projects: string[];
+    jiraId: string;
+    trelloId: string;
+    githubUsername: string;
+    profilePicture: File | null;
+  }
+
+  export interface Roles {
+    _id: string
+    roleName: string
+  }

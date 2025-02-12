@@ -1,5 +1,6 @@
+import { ContentType } from './../../node_modules/recharts/types/component/Label.d';
 import axios from "axios";
-import { TeamList } from "@/types/Members.types";
+import { InviteMemberForm, TeamList } from "@/types/Members.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 
@@ -130,8 +131,6 @@ export const GetIndividualTeamMember = async (member_id: string,session:any) => 
 export const GetGitData = async ({
   member_id,
   date,
-  page,
-  limit,
 }: TDailyPerformanceProps, session:any) => {
 
   let accessToken: string  = session.data.accessToken;
@@ -151,6 +150,87 @@ export const GetGitData = async ({
       },
     }
   );
+
+  return response.data;
+};
+
+export const GetProjects = async (session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/projects/names?page=${1}&limit=${10}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const GetRoles = async (session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/organization/roles`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const CreateInviteMember = async (data: InviteMemberForm, session: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response = await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const formData = new FormData();
+  formData.append("displayName", data.displayName);
+  formData.append("emailAddress", data.emailAddress);
+  formData.append("designation", data.designation);
+  formData.append("projects", JSON.stringify(data.projects));
+  formData.append("jiraId", data.jiraId);
+  formData.append("trelloId", data.trelloId);
+  formData.append("githubUsername", data.githubUsername);
+  formData.append("role", data.role);
+  if (data.profilePicture) {
+    formData.append("profilePicture", data.profilePicture);
+  }
+
+  console.log("Form Data", formData);
+
+  const response = await axios.post(`${TEMP_BACKEND_URI}/users/invite`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
   return response.data;
 };

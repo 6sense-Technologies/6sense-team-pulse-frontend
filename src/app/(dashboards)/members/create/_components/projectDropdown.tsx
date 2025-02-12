@@ -1,10 +1,10 @@
 "use client";
-import { Dropdown } from "@/components/dropdown";
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
-import { GetTools } from "../../../../../../helpers/projects/projectApi";
-import { ToolOptionList } from "../../../../../types/Project.types";
 import { MultiDropdown } from "@/components/multidropdown";
+import { Projects } from "@/types/Members.types";
+import { GetProjects } from "../../../../../../helpers/Member/memberApi";
+import { useSession } from "next-auth/react";
 type ProjectDropdownProps = {
   control: any;
   name: string;
@@ -20,20 +20,22 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
   errors,
   index,
 }) => {
+  
+  const session = useSession();
+
   const {
-    data: tools,
-  } = useQuery<ToolOptionList>({
-    queryKey: ["getTools"],
-    queryFn: () => GetTools(),
+    data: projects,
+  } = useQuery<Projects[]>({
+    queryKey: ["getProjects"],
+    queryFn: () => GetProjects(session)
   });
 
-  // console.log("ToolDropdown", tools);
+  const projectOptions = projects?.map((project) => ({
+    value: project,
+    label: project 
+  })) || [];
 
-  const toolOptions =
-    tools?.map((tool) => ({
-      value: tool.toolName,
-      label: tool.toolName,
-    })) || [];
+  console.log("ProjectDropdown", projectOptions);
 
   return (
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:mt-0 relative">
@@ -52,7 +54,7 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
         additionalText="Select the project(s) assigned to the member"
         errors={errors}
         message={errors}
-        options={toolOptions}
+        options={projectOptions}
       />
       {errors && (
         <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">

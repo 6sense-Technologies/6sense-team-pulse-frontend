@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ButtonComponent";
 import { Circle } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
-import { CreateProject } from "../../../../../helpers/projects/projectApi";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
@@ -17,6 +16,8 @@ import BasicInfoArea from "./_components/BasicInfoArea";
 import WorkInfoArea from "./_components/WorkInfoArea";
 import AccessControlArea from "./_components/AccessControlArea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { InviteMemberForm } from "@/types/Members.types";
+import { CreateInviteMember } from "../../../../../helpers/Member/memberApi";
 
 const InviteMembers = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const InviteMembers = () => {
     formState: { errors },
     setError,
     clearErrors,
-  } = useForm<any>({});
+  } = useForm<InviteMemberForm>({});
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,11 +89,11 @@ const InviteMembers = () => {
     return valid;
   };
 
-  const projectMutation = useMutation({
-    mutationFn: (data: any) => CreateProject(data, session),
+  const inviteMemberMutation = useMutation({
+    mutationFn: (data: InviteMemberForm) => CreateInviteMember(data, session),
     onSuccess: (data) => {
       console.log(data);
-      router.push("/projects");
+      router.push("/members");
     },
     onError: (error) => {
       if (error.message === "Request failed with status code 409") {
@@ -104,15 +105,14 @@ const InviteMembers = () => {
     }
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: InviteMemberForm) => {
     if (validate(data)) {
       const formData = {
         ...data,
         profilePicture: imageFile,
       };
 
-      console.log(formData);
-      // projectMutation.mutate(formData);
+      inviteMemberMutation.mutate(formData);
     }
   };
 
@@ -224,11 +224,11 @@ const InviteMembers = () => {
                 type="submit"
                 className="mt-3 w-full md:max-w-[70px]"
               >
-                {/* {projectMutation.isPending ? ( */}
-                  {/* <Circle className="animate-spin" size={14} /> */}
-                {/* ) : ( */}
-                  Invite
-                {/* )} */}
+                {inviteMemberMutation.isPending ? (
+                  <Circle className="animate-spin" size={14} />
+                ) : (
+                  "Invite"
+                )}
               </Button>
             </div>
           </div>

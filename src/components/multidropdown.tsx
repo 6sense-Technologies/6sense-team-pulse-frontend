@@ -107,7 +107,7 @@ export function MultiDropdown({
               <PopoverContent className={cn("w-full p-0", className)}>
                 <Command>
                   <CommandList>
-                    <CommandEmpty>No {placeholder?.toLowerCase()} found.</CommandEmpty>
+                    <CommandEmpty className="bg-white z-50">No {placeholder?.toLowerCase()} found.</CommandEmpty>
                     <CommandGroup className="w-[420px] bg-white z-50">
                       {options.map((option) => (
                         <CommandItem

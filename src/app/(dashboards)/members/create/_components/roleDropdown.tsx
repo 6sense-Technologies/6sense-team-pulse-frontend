@@ -4,6 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
 import { GetTools } from "../../../../../../helpers/projects/projectApi";
 import { ToolOptionList } from "../../../../../types/Project.types";
+import { useSession } from "next-auth/react";
+import { GetRoles } from "../../../../../../helpers/Member/memberApi";
+import { Roles } from "@/types/Members.types";
 type RoleDropdownProps = {
   control: any;
   name: string;
@@ -19,20 +22,25 @@ const RoleDropdown: FC<RoleDropdownProps> = ({
   errors,
   index,
 }) => {
+
+  const session = useSession();
   const {
-    data: tools,
-  } = useQuery<ToolOptionList>({
-    queryKey: ["getTools"],
-    queryFn: () => GetTools(),
+    data: roles,
+  } = useQuery<Roles[]>({
+    queryKey: ["getRoles"],
+    queryFn: () => GetRoles(session),
   });
 
-  // console.log("ToolDropdown", tools);
+  interface RoleOption {
+    value: string;
+    label: string;
+  }
 
-  const toolOptions =
-    tools?.map((tool) => ({
-      value: tool.toolName,
-      label: tool.toolName,
-    })) || [];
+  const roleOptions: RoleOption[] =
+    roles?.map((role) => ({
+        value: role.roleName,
+        label: role.roleName,
+      })) || [];
 
   return (
     <div className="w-full max-w-[553px] pl-2 pt-4 lg:pt-0 lg:pl-0 relative">
@@ -52,7 +60,7 @@ const RoleDropdown: FC<RoleDropdownProps> = ({
         active={true}
         errors={errors}
         message={errors}
-        options={toolOptions}
+        options={roleOptions}
       />
       {errors && (
         <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">
