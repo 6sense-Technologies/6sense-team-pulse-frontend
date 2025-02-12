@@ -8,7 +8,7 @@ import { TeamDropdown } from "./_components/teamDropdown";
 import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetTeamList } from "../../../../helpers/Team/teamApi";
+import { GetTeamList } from "../../../../helpers/Member/memberApi";
 import { TeamList } from "@/types/Team.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";

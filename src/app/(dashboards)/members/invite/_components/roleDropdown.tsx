@@ -35,7 +35,7 @@ const RoleDropdown: FC<RoleDropdownProps> = ({
     })) || [];
 
   return (
-    <div className="w-full max-w-[553px] pl-2 pt-4 lg:pl-0 relative">
+    <div className="w-full max-w-[553px] pl-2 pt-4 lg:pt-0 lg:pl-0 relative">
       <label
         htmlFor="designation"
         className="text-sm font-medium text-black"

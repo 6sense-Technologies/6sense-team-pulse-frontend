@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { signOut, useSession } from 'next-auth/react';
 import { LogOut, User, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import {useRouter } from 'next/navigation';
+
 
 const AvatarMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +12,7 @@ const AvatarMenu = () => {
   const defaultAvatarUrl = 'https://via.placeholder.com/150/0000FF/808080?Text=Default+Avatar';
 
   const router = useRouter();
+
 
   const handleLogout = async () => {
     await signOut({ redirect: false });
@@ -43,11 +45,14 @@ const AvatarMenu = () => {
     };
   }, [isMenuOpen]);
 
+
+  console.log(session);
+
   return (
     <div className="relative">
       <div onClick={handleAvatarClick} className="cursor-pointer">
         <Avatar className="w-8 h-8">
-          <AvatarImage src={session?.user?.image || defaultAvatarUrl} alt="Avatar" />
+          <AvatarImage src={session?.avatarUrl || defaultAvatarUrl} alt="Avatar" />
           <AvatarFallback className="bg-primary text-white">NA</AvatarFallback>
         </Avatar>
       </div>
@@ -56,7 +61,7 @@ const AvatarMenu = () => {
           <div className="flex items-center justify-between px-4 py-2 border-b">
             <div className="flex flex-col">
               <p className="font-semibold text-sm text-miniSubheadingColor">{session?.user?.name || 'Ahsan Aasim'}</p>
-              <p className="text-twelve text-miniSubheadingColor font-normal">{session?.user?.role || 'admin'}</p>
+              <p className="text-twelve text-miniSubheadingColor font-normal">{session?.role|| 'Admin'}</p>
             </div>
             <span onClick={() => setIsMenuOpen(false)} className="text-black hover:text-black pb-3 cursor-pointer">
               <X size={16} strokeWidth={1} />

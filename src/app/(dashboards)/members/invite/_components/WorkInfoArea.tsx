@@ -16,7 +16,7 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
       </h1>
     </div>
     <div className="w-full max-w-[420px]">
-    <div className="w-full max-w-[553px] pt-4 lg:pl-0 lg:pt-2">
+    <div className="w-full max-w-[553px] pt-4 lg:pl-0 lg:pt-0">
     <ProjectDropdown
       control={control}
       name="project"

@@ -8,15 +8,16 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../../helpers/Team/teamApi";
+import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../../helpers/Member/memberApi";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ChartSpline, List } from "lucide-react";
+import { ChartSpline, Info, List, TrendingUp } from "lucide-react";
 import { GitTable } from "./_components/gitTable";
+import GitCards from "./_components/gitcards";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
@@ -175,11 +176,18 @@ const EfficiencyMemberDetails: React.FC = () => {
                   <CustomSingleDatePicker />
                 </span>
               </span>
-              <div className="grid grid-cols-4 gap-x-4">
-                <div className="w-276px bg-red-300">s</div>
-                <div className="w-276px bg-green-300">s</div>
-                <div className="w-276px bg-orange-300">s</div>
-                <div className="w-276px bg-lime-300">s</div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4">
+                <GitCards
+        icon={TrendingUp}
+        heading="Total Additions"
+        subheading="Total Additions"
+        amount={2445}
+        bgColor="bg-[#DCFCE7]"
+        iconColor="text-[#166534]"
+      />
+                <div className="w-full max-w-276px h-[100px] bg-[#FEF2F2]">s</div>
+                <div className="w-full max-w-276px h-[100px] bg-[#F1F5F9]">s</div>
+                <div className="w-full max-w-276px h-[100px] bg-[#F1F5F9]">s</div>
               </div>
               <div className="flex justify-between items-center mt-4">
                 <h1 className="text-[16px] font-semibold">Git Contribution</h1>

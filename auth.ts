@@ -13,6 +13,9 @@ declare module "next-auth" {
     isVerified?: boolean;
     hasOrganization: boolean;
     expires: Date;
+    role?: string;
+    avatarUrl?: string;
+    id?: string;
   }
 
   interface User {
@@ -20,6 +23,9 @@ declare module "next-auth" {
     refreshToken?: string;
     isVerified?: boolean;
     hasOrganization?: boolean;
+    role?: string;
+    avatarUrl?: string;
+    id?: string;
   }
 }
 
@@ -99,15 +105,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
           );
           const data = response.data;
-
+          
+          console.log("User Info",data?.userInfo);
+          
           if (data?.accessToken) {
             return {
-              emailAddress: credentials.emailAddress,
+              emailAddress: data?.userInfro?.emailAddress,
               name: data?.userInfo?.displayName,
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
               isVerified: data?.userInfo?.isVerified,
               hasOrganization: data?.userInfo?.hasOrganization,
+              role: data?.userInfo?.role,
+              avatarUrl: data?.userInfo?.avatarUrl,
+              id: data?.userInfo?._id,
             } as any;
           }
 
@@ -138,6 +149,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.refreshToken = user.refreshToken || token.refreshToken;
         token.isVerified = user.isVerified as boolean;
         token.hasOrganization = user.hasOrganization as boolean;
+        token.role = user.role;
+        token.avatarUrl = user.avatarUrl;
+        token.id = user.id; 
       }
 
       if (account && account.provider === "google") {
@@ -172,6 +186,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.refreshToken = token.refreshToken as string;
       session.isVerified = token.isVerified as boolean;
       session.hasOrganization = token.hasOrganization as boolean;
+      session.role = token.role as string;
+      session.avatarUrl = token.avatarUrl as string;
+      session.id = token.id as string;
       
       // Set session expiry based on the token's expiration time
       if (token.accessToken) {

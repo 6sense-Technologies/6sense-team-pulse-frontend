@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2, EllipsisVertical } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview, GetIndividualTeamMember } from "../../../../../../helpers/Team/teamApi";
+import { GetIndividualOverview, GetIndividualTeamMember } from "../../../../../../helpers/Member/memberApi";
 import { useQuery } from "@tanstack/react-query";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
