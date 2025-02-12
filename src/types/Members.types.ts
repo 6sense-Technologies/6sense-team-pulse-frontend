@@ -30,7 +30,7 @@ export interface TeamList {
     projects: string[];
     jiraId: string;
     trelloId: string;
-    githubUsername: string;
+    githubUserName: string;
     profilePicture: File | null;
   }
 

@@ -217,7 +217,7 @@ export const CreateInviteMember = async (data: InviteMemberForm, session: any) =
   formData.append("projects", JSON.stringify(data.projects));
   formData.append("jiraId", data.jiraId);
   formData.append("trelloId", data.trelloId);
-  formData.append("githubUsername", data.githubUsername);
+  formData.append("githubUsername", data.githubUserName);
   formData.append("role", data.role);
   if (data.profilePicture) {
     formData.append("profilePicture", data.profilePicture);

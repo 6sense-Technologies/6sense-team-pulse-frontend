@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Logo from "../../../../public/logo/Ops4TeamLogo.png";
 import { Button } from "@/components/ButtonComponent";
@@ -7,7 +7,7 @@ import GoogleLogo from "../../../../public/logo/googleLogo.svg";
 import FacebookLogo from "../../../../public/logo/facebookLogo.svg";
 import AppleLogo from "../../../../public/logo/appleLogo.svg";
 import OrDivider from "../_components/orDivider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import FooterTexts from "../_components/footerTexts";
 import AuthPageHeader from "../_components/authPageHeader";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,12 +26,16 @@ import { Eye, EyeOff } from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import axios from "axios";
 
 const SignUp = () => {
   const router = useRouter();
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [inviteData, setInviteData] = useState<{ displayName: string; emailAddress: string } | null>(null);
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -40,11 +44,36 @@ const SignUp = () => {
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<TBasicSignupFormInputs>({
     resolver: zodResolver(SignupSchema),
   });
   const session = useSession();
+
+  useEffect(() => {
+    if (session.status === "unauthenticated" && token) {
+      axios
+        .post("https://o4t-backend-for-tester.vercel.app/auth/register/verify-invite", {
+          jwtToken: token,
+        })
+        .then((response) => {
+          console.log("RT", response);
+          const { displayName, emailAddress } = response.data;
+          setInviteData({ displayName, emailAddress });
+          setValue("displayName", displayName);
+          setValue("emailAddress", emailAddress);
+        })
+        .catch((error) => {
+          console.error("Error verifying invite:", error);
+          if (error.response && error.response.status === 401) {
+            setErrorMessage("Invalid or expired token.");
+          } else {
+            setErrorMessage("An error occurred while verifying the invite.");
+          }
+        });
+    }
+  }, [session.status, token, setValue]);
 
   const basicSignUpMutation = useMutation({
     mutationFn: handleBasicSignup,
@@ -56,7 +85,7 @@ const SignUp = () => {
       }).then(() => {
         session.update().then(() => {
           localStorage.setItem("user-email", data.userInfo.emailAddress);
-          localStorage.setItem("accessToken", data.accessToken);
+          // localStorage.setItem("accessToken", data.accessToken);
           router.push("/sign-up/verification");
         });
       });
@@ -114,7 +143,7 @@ const SignUp = () => {
         />
       </div>
       <div className="bg-white w-full overflow-y-auto pb-4">
-      <Toaster />
+        <Toaster />
         <div className="lg:flex lg:justify-end mt-9 mx-4 mr-9 lg:gap-0">
           <div className="flex justify-center md:hidden text-center px-3">
             <Image src={SmallLogo} alt="Ops4Team Logo" />
@@ -187,6 +216,7 @@ const SignUp = () => {
                 errors={errors}
                 placeholder="Enter your full name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
+                disabled={!!inviteData}
               />
             </div>
             <div className="w-full pt-6 lg:pt-5">
@@ -204,6 +234,7 @@ const SignUp = () => {
                 externalError={errorMessage}
                 placeholder="Enter your email"
                 className="placeholder:text-subHeading w-full mt-[4px]"
+                disabled={!!inviteData}
               />
             </div>
             <div className="pt-6 lg:pt-5 w-full">
