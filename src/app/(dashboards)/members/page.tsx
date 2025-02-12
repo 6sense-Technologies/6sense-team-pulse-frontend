@@ -116,7 +116,7 @@ const TeamListPage: React.FC = () => {
               </div>
             </div>
             <div className="w-full md:w-auto">
-              <Link href="/members/invite">
+              <Link href="/members/create">
               <Button variant="defaultEx" className="mb-[26px] mr-1">Invite Member</Button>
               </Link>
             </div>

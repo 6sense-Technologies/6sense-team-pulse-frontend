@@ -15,7 +15,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { ChartSpline, Info, List, TrendingUp } from "lucide-react";
+import { Activity, ChartPie, ChartSpline, Info, List, TrendingDown, TrendingUp } from "lucide-react";
 import { GitTable } from "./_components/gitTable";
 import GitCards from "./_components/gitcards";
 
@@ -178,16 +178,34 @@ const EfficiencyMemberDetails: React.FC = () => {
               </span>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-4">
                 <GitCards
-        icon={TrendingUp}
-        heading="Total Additions"
-        subheading="Total Additions"
-        amount={2445}
-        bgColor="bg-[#DCFCE7]"
-        iconColor="text-[#166534]"
-      />
-                <div className="w-full max-w-276px h-[100px] bg-[#FEF2F2]">s</div>
-                <div className="w-full max-w-276px h-[100px] bg-[#F1F5F9]">s</div>
-                <div className="w-full max-w-276px h-[100px] bg-[#F1F5F9]">s</div>
+                  icon={TrendingUp}
+                  subheading="Total Additions"
+                  amount={2445}
+                  bgColor="bg-[#DCFCE7]"
+                  iconColor="text-[#166534]"
+                />
+                <GitCards
+                  icon={TrendingDown}
+                  subheading="Total Deletions"
+                  amount={1350}
+                  bgColor="bg-[#FEF2F2]"
+                  iconColor="text-[#B91C1C]"
+                />
+                <GitCards
+                  icon={ChartPie}
+                  subheading="Total Contributions"
+                  amount={1095}
+                  bgColor="bg-[#F1F5F9]"
+                  iconColor="text-[#030712]"
+                />
+                <GitCards
+                  icon={Activity}
+                  subheading="Code Churn"
+                  amount={55.19}
+                  bgColor="bg-[#F1F5F9]"
+                  iconColor="text-[#030712]"
+                  isPercentage={true}
+                />
               </div>
               <div className="flex justify-between items-center mt-4">
                 <h1 className="text-[16px] font-semibold">Git Contribution</h1>
@@ -207,7 +225,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <div className="mt-4">
                   {/* Replace with your table component */}
                   <div>
-                    <GitTable 
+                    <GitTable
                       totalCountAndLimit={totalCountAndLimit}
                       performanceItems={dailyPerformanceData}
                       loading={dailyPerformanceLoading}

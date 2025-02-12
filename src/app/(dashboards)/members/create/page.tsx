@@ -152,7 +152,7 @@ const InviteMembers = () => {
 
   return (
     <div className="w-full">
-      <PageTitle title="Create Project • Ops4 Team" />
+      <PageTitle title="Invite Member • Ops4 Team" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="px-4 lg:pl-[24px] lg:pr-[14px] pt-8 pb-8 w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">
