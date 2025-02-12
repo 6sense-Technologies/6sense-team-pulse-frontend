@@ -45,6 +45,9 @@ const AvatarMenu = () => {
     };
   }, [isMenuOpen]);
 
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
   console.log(session);
 
@@ -61,7 +64,9 @@ const AvatarMenu = () => {
           <div className="flex items-center justify-between px-4 py-2 border-b">
             <div className="flex flex-col">
               <p className="font-semibold text-sm text-miniSubheadingColor">{session?.user?.name || 'Ahsan Aasim'}</p>
-              <p className="text-twelve text-miniSubheadingColor font-normal">{session?.role|| 'Admin'}</p>
+              <p className="text-twelve text-miniSubheadingColor font-normal">
+  {session?.role ? capitalizeFirstLetter(session.role) : 'Admin'}
+</p>
             </div>
             <span onClick={() => setIsMenuOpen(false)} className="text-black hover:text-black pb-3 cursor-pointer">
               <X size={16} strokeWidth={1} />
