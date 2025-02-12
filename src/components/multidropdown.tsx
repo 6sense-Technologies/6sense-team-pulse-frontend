@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import * as React from "react";
@@ -92,7 +93,7 @@ export function MultiDropdown({
                             tabIndex={0}
                             role="button"
                           >
-                            &times;
+                          
                           </span>
                         </Badge>
                       ))

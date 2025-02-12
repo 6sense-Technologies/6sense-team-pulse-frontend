@@ -1,8 +1,5 @@
 "use client";
-
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
-import { Minus } from "lucide-react";
-
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 function CustomLegend() {

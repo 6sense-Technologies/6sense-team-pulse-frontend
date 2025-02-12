@@ -1,4 +1,5 @@
 "use client";
+
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import PageHeading from "@/components/pageHeading";
 import PageTitle from "@/components/PageTitle";
@@ -21,6 +22,7 @@ const InviteMembers = () => {
   const router = useRouter();
   const session = useSession();
   const [imageUrl, setImageUrl] = useState<string | undefined>("/logo/InviteLogo.svg");
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const {
     handleSubmit,
     control,
@@ -102,13 +104,14 @@ const InviteMembers = () => {
     }
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     if (validate(data)) {
       const formData = {
         ...data,
-        profilePicture: imageUrl === "/logo/InviteLogo.svg" ? "" : imageUrl,
+        profilePicture: imageFile,
       };
-      console.log("Output", formData);
+
+      console.log(formData);
       // projectMutation.mutate(formData);
     }
   };
@@ -116,16 +119,14 @@ const InviteMembers = () => {
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setImageFile(file);
+      setImageUrl(URL.createObjectURL(file));
     }
   };
 
   const handleRemoveImage = () => {
     setImageUrl("/logo/InviteLogo.svg");
+    setImageFile(null);
   };
 
   return (

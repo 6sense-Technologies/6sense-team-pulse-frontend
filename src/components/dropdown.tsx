@@ -46,7 +46,7 @@ export function Dropdown({
       <SelectTrigger
         className={cn(
           "w-[200px]",
-          field.value === "" ? "text-subHeading" : "text-black",
+          !field.value ? "text-subHeading" : "text-black",
           className
         )}
         disabled={!active}
