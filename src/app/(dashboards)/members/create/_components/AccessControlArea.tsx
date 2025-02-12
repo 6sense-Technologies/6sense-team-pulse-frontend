@@ -19,9 +19,9 @@ const AccessControlArea :FC<AccessControlAreaProps> = ({control,errors}) => {
     <div className="w-full max-w-[553px] pl-0 lg:pl-0">
     <RoleDropdown
       control={control}
-      name="project"
+      name="role"
       placeholder="Select"
-      errors={errors.tools?.[0]?.toolName?.message}
+      errors={errors?.role?.message}
       index={0}
     />
     </div>

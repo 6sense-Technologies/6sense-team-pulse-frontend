@@ -66,3 +66,11 @@ export const GetTools =  async () =>
     
         return response.data;
     }
+
+    
+export const GetDesignations =  async () => 
+  {
+    const response = await axios.get(`${TEMP_BACKEND_URI}/users/designations/list`);
+
+    return response.data;
+  }

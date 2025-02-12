@@ -8,7 +8,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance, GetIndividualTeamMember } from "../../../../../../../helpers/Member/memberApi";
+import { GetDailyPerformance, GetGitData, GetIndividualTeamMember } from "../../../../../../../helpers/Member/memberApi";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -18,6 +18,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Activity, ChartPie, ChartSpline, Info, List, TrendingDown, TrendingUp } from "lucide-react";
 import { GitTable } from "./_components/gitTable";
 import GitCards from "./_components/gitcards";
+import GitChart from "./_components/gitChart";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
@@ -74,6 +75,15 @@ const EfficiencyMemberDetails: React.FC = () => {
     }
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
+
+  const {
+    data: gitDetails,
+    isFetching: gitDetailsLoading,
+    refetch: gitDetailsRefetch,
+  } = useQuery<any>({
+    queryKey: ["dailyPerformance", pages, limit],
+    queryFn: () => GetGitData({ member_id, page: pages, limit, date }, session),
+  });
 
   return (
     <div className="w-full">
@@ -219,7 +229,11 @@ const EfficiencyMemberDetails: React.FC = () => {
               {view === "Chart" ? (
                 <div className="mt-4">
                   {/* Replace with your chart component */}
-                  <div>Chart</div>
+                  <div>
+
+                    <GitChart />
+
+                  </div>
                 </div>
               ) : (
                 <div className="mt-4">

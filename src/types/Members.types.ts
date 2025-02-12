@@ -13,4 +13,7 @@ export interface TeamList {
     role: string
   }
 
+  export interface Designations {
+    designations: string[]
+  }
   

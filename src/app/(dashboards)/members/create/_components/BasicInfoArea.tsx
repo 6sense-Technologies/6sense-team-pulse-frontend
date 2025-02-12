@@ -9,6 +9,9 @@ type BasicInfoAreaProps = {
 
 
 const BasicInfoArea :FC<BasicInfoAreaProps> = ({control,errors}) => {
+  
+  console.log(errors)
+  
   return (
     <div className="flex flex-col lg:flex-row items-start  w-full max-w-[872px] lg:pt-4 lg:gap-x-[220px]">
     <div className="pl-[6px] py-4 lg:pt-0">
@@ -19,14 +22,14 @@ const BasicInfoArea :FC<BasicInfoAreaProps> = ({control,errors}) => {
     <div className="w-full max-w-[420px]">
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:pt-2">
       <label
-        htmlFor="fullname"
+        htmlFor="displayName"
         className="text-sm font-medium text-black"
       >
         Full Name <span className="text-destructive">*</span>
       </label>
       <BaseInput
         control={control}
-        name="fullname"
+        name="displayName"
         type="text"
         placeholder="Full Name"
         className="placeholder:text-subHeading w-full mt-[4px]"
@@ -37,14 +40,14 @@ const BasicInfoArea :FC<BasicInfoAreaProps> = ({control,errors}) => {
     </div>
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 pt-8 lg:pt-8">
       <label
-        htmlFor="email"
+        htmlFor="emailAddress"
         className="text-sm font-medium text-black"
       >
         Email <span className="text-destructive">*</span>
       </label>
       <BaseInput
         control={control}
-        name="email"
+        name="emailAddress"
         type="email"
         placeholder="Email"
         className="placeholder:text-subHeading w-full mt-[4px]"
@@ -58,7 +61,7 @@ const BasicInfoArea :FC<BasicInfoAreaProps> = ({control,errors}) => {
       control={control}
       name="designation"
       placeholder="Select"
-      errors={errors.tools?.[0]?.toolName?.message}
+      errors={errors.designation?.message}
       index={0}
     />
     </div>

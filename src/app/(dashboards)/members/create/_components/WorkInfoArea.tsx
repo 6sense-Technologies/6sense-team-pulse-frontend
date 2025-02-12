@@ -19,7 +19,7 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
     <div className="w-full max-w-[553px] pt-4 lg:pl-0 lg:pt-0">
     <ProjectDropdown
       control={control}
-      name="project"
+      name="projects"
       placeholder="Select"
       errors={errors.tools?.[0]?.toolName?.message}
       index={0}
@@ -27,14 +27,14 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
     </div>
     <div className="w-full max-w-[553px] pl-2 pt-8 lg:pl-0 lg:pt-8">
       <label
-        htmlFor="jira"
+        htmlFor="jiraId"
         className="text-sm font-medium text-black"
       >
         Jira <span className="text-subHeading text-[10px]">(Optional)</span>
       </label>
       <BaseInput
         control={control}
-        name="jira"
+        name="jiraId"
         type="text"
         placeholder="Jira"
         className="placeholder:text-subHeading w-full mt-[4px]"
@@ -45,14 +45,14 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
     </div>
     <div className="w-full max-w-[553px] pl-2 pt-8 lg:pl-0 lg:pt-8">
       <label
-        htmlFor="trello"
+        htmlFor="trelloId"
         className="text-sm font-medium text-black"
       >
         Trello ID <span className="text-subHeading text-[10px]">(Optional)</span>
       </label>
       <BaseInput
         control={control}
-        name="trello"
+        name="trelloId"
         type="text"
         placeholder="Trello ID"
         className="placeholder:text-subHeading w-full mt-[4px]"
@@ -63,14 +63,14 @@ const WorkInfoArea :FC<WorkInfoAreaProps> = ({control,errors}) => {
     </div>
     <div className="w-full max-w-[553px] pl-2 pt-8 lg:pl-0 lg:pt-8">
       <label
-        htmlFor="github"
+        htmlFor="githubUserName"
         className="text-sm font-medium text-black"
       >
         GitHub Username <span className="text-subHeading text-[10px]">(Optional)</span>
       </label>
       <BaseInput
         control={control}
-        name="github"
+        name="githubUserName"
         type="text"
         placeholder="GitHub Username"
         className="placeholder:text-subHeading w-full mt-[4px]"

@@ -2,8 +2,9 @@
 import { Dropdown } from "@/components/dropdown";
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
-import { GetTools } from "../../../../../../helpers/projects/projectApi";
-import { ToolOptionList } from "../../../../../types/Project.types";
+import { GetDesignations} from "../../../../../../helpers/projects/projectApi";
+import { Designations } from "@/types/Members.types";
+
 type DesignationDropdownProps = {
   control: any;
   name: string;
@@ -20,19 +21,22 @@ const DesignationDropdown: FC<DesignationDropdownProps> = ({
   index,
 }) => {
   const {
-    data: tools,
-  } = useQuery<ToolOptionList>({
-    queryKey: ["getTools"],
-    queryFn: () => GetTools(),
+    data: designations,
+  } = useQuery<Designations>({
+    queryKey: ["getDesignations"],
+    queryFn: () => GetDesignations(),
   });
 
-  // console.log("ToolDropdown", tools);
 
-  const toolOptions =
-    tools?.map((tool) => ({
-      value: tool.toolName,
-      label: tool.toolName,
-    })) || [];
+  // console.log("DesignationDropdown", designations);
+  
+
+  const designationOptions = designations?.designations?.map((designation) => ({
+    value: designation,
+    label: designation,
+  })) || [];
+
+  // console.log("DesignationDropdown12", designationOptions);
 
   return (
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 mt-3 lg:mt-8 relative">
@@ -52,7 +56,7 @@ const DesignationDropdown: FC<DesignationDropdownProps> = ({
         active={true}
         errors={errors}
         message={errors}
-        options={toolOptions}
+        options={designationOptions}
       />
       {errors && (
         <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">

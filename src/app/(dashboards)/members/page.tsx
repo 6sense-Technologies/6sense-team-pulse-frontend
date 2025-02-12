@@ -9,7 +9,7 @@ import TeamSearchbar from "./_components/teamSearchbar";
 import { TeamTable } from "./_components/teamTable";
 import { useQuery } from "@tanstack/react-query";
 import { GetTeamList } from "../../../../helpers/Member/memberApi";
-import { TeamList } from "@/types/Team.types";
+import { TeamList } from "@/types/Members.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";

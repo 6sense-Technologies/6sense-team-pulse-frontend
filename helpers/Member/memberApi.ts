@@ -1,5 +1,5 @@
 import axios from "axios";
-import { TeamList } from "@/types/Team.types";
+import { TeamList } from "@/types/Members.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 
@@ -125,3 +125,32 @@ export const GetIndividualTeamMember = async (member_id: string,session:any) => 
 
   return response.data;
 }
+
+
+export const GetGitData = async ({
+  member_id,
+  date,
+  page,
+  limit,
+}: TDailyPerformanceProps, session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    `https://sixsense-team-pulse-backend.onrender.com/github/get-contributions?userId=${member_id}&date=${date}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  return response.data;
+};

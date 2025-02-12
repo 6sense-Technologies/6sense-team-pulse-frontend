@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
 import { GetTools } from "../../../../../../helpers/projects/projectApi";
 import { ToolOptionList } from "../../../../../types/Project.types";
+import { MultiDropdown } from "@/components/multidropdown";
 type ProjectDropdownProps = {
   control: any;
   name: string;
@@ -43,13 +44,12 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
         Project
         {index === 0 && <span className="text-subHeading pl-1 text-[10px]">(Optional)</span>}
       </label>
-      <Dropdown
+      <MultiDropdown
         control={control}
         name={name}
         placeholder={placeholder || "Select"}
         className="w-full max-w-[553px] placeholder:text-subHeading"
         additionalText="Select the project(s) assigned to the member"
-        active={true}
         errors={errors}
         message={errors}
         options={toolOptions}
