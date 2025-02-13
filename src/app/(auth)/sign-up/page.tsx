@@ -27,7 +27,6 @@ import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import axios from "axios";
-import { TEMP_BACKEND_URI } from "../../../../globalConstants";
 
 const SignUp = () => {
   const router = useRouter();
@@ -35,8 +34,8 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [inviteData, setInviteData] = useState<{ displayName: string; emailAddress: string } | null>(null);
-  // const searchParams = useSearchParams();
-  const session = useSession();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
 
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -50,24 +49,16 @@ const SignUp = () => {
   } = useForm<TBasicSignupFormInputs>({
     resolver: zodResolver(SignupSchema),
   });
-
-  const [token, setToken] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const urlToken = new URLSearchParams(window.location.search).get("token");
-      setToken(urlToken);
-      console.log("Token IS Found!!!!!!!!", urlToken);
-    }
-  }, []);
+  const session = useSession();
 
   useEffect(() => {
     if (session.status === "unauthenticated" && token) {
       axios
-        .post(`${TEMP_BACKEND_URI}/auth/register/verify-invite`, {
+        .post("https://o4t-backend-for-tester.vercel.app/auth/register/verify-invite", {
           jwtToken: token,
         })
         .then((response) => {
+          // console.log("RT", response);
           const { displayName, emailAddress } = response.data;
           setInviteData({ displayName, emailAddress });
           setValue("displayName", displayName);
@@ -94,11 +85,13 @@ const SignUp = () => {
       }).then(() => {
         session.update().then(() => {
           localStorage.setItem("user-email", data.userInfo.emailAddress);
+          // localStorage.setItem("accessToken", data.accessToken);
           router.push("/sign-up/verification");
         });
       });
     },
     onError: (error: any) => {
+      // console.log(error.message);
       if (error.message) {
         setErrorMessage("Email already exists.");
       }
@@ -174,7 +167,9 @@ const SignUp = () => {
             />
           </div>
           <div className="flex gap-x-4">
+            {/* <Link href={"/sign-up/sso"}> */}
             <Button variant="extralight" size="minixl" className=" cursor-not-allowed">SSO</Button>
+            {/* </Link> */}
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest" className=" cursor-not-allowed">
                 <Image
