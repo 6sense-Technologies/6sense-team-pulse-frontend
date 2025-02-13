@@ -251,7 +251,7 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
-            <Table className="!rounded-lg">
+            <Table className="!rounded-lg !min-w-[600px]">
               <TableHeader className="border-b-[1px] text-inputFooterColor">
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="py-1 leading-none">

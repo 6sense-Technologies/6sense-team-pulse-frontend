@@ -22,6 +22,11 @@ interface TDailyPerformanceProps {
   date: string;
 }
 
+interface TGithubDataProps {
+  member_id: string;
+  date: string;
+}
+
 export const GetTeamList = async ({ page, limit }: TPaginationProps, session:any ) => {
   
   let accessToken: string  = session.data.accessToken;
@@ -131,7 +136,7 @@ export const GetIndividualTeamMember = async (member_id: string,session:any) => 
 export const GetGitData = async ({
   member_id,
   date,
-}: TDailyPerformanceProps, session:any) => {
+}: TGithubDataProps, session:any) => {
 
   let accessToken: string  = session.data.accessToken;
 
@@ -214,7 +219,7 @@ export const CreateInviteMember = async (data: InviteMemberForm, session: any) =
   formData.append("displayName", data.displayName);
   formData.append("emailAddress", data.emailAddress);
   formData.append("designation", data.designation);
-  formData.append("projects", JSON.stringify(data.projects));
+  formData.append("projects", data.projects.join(","));
   formData.append("jiraId", data.jiraId);
   formData.append("trelloId", data.trelloId);
   formData.append("githubUsername", data.githubUserName);

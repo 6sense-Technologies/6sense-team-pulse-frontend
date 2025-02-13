@@ -82,8 +82,10 @@ const EfficiencyMemberDetails: React.FC = () => {
     refetch: gitDetailsRefetch,
   } = useQuery<any>({
     queryKey: ["dailyPerformance", pages, limit],
-    queryFn: () => GetGitData({ member_id, page: pages, limit, date }, session),
+    queryFn: () => GetGitData({ member_id, date }, session),
   });
+
+  console.log("Github", gitDetails);
 
   return (
     <div className="w-full">

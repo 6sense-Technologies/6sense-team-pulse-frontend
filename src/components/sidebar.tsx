@@ -23,8 +23,8 @@ const Sidebar: FC<TSidebarprop> = ({ children }) => {
       <SidebarProvider>
         <div className="flex h-screen w-full">
           <AppSidebar />
-          <div className="w-full">
-            <div className="flex-1">{children}</div>
+          <div className="w-full md:max-w-[calc(100%-260px)] md:relative md:left-[256px]">
+            {children}
           </div>
         </div>
       </SidebarProvider>
