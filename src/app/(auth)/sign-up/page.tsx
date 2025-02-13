@@ -51,7 +51,11 @@ const SignUp = () => {
   });
   const session = useSession();
 
+
+  console.log("Token upp IS Found!!!!!!!!", token);
+
   useEffect(() => {
+    console.log("Token IS Found!!!!!!!!", token);
     if (session.status === "unauthenticated" && token) {
       axios
         .post("https://o4t-backend-for-tester.vercel.app/auth/register/verify-invite", {

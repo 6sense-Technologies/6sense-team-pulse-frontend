@@ -59,7 +59,7 @@ const InviteMembers = () => {
     } else if (!validateEmail(data.emailAddress)) {
       setError("emailAddress", {
         type: "manual",
-        message: "Incorrect Email",
+        message: "Incorrect email.",
       });
       valid = false;
     } else {

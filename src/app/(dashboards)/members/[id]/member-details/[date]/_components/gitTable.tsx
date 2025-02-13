@@ -24,6 +24,8 @@ import { useParams, useSearchParams } from "next/navigation";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { GitPagination } from "./gitPagination";
+import { Badge } from "@/components/ui/badge";
+import { ExternalLink } from "lucide-react";
 
 type GitItem = {
   branch: string;
@@ -42,7 +44,7 @@ export const columns: ColumnDef<GitItem>[] = [
     accessorKey: "gitRepo.repo",
     header: () => <div className="text-bold">Project</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("gitRepo.repo")}</div>
+      <div className="text-medium">{row.original.gitRepo.repo}</div>
     ),
   },
   {
@@ -50,8 +52,17 @@ export const columns: ColumnDef<GitItem>[] = [
     header: () => <div className="text-bold">Branch</div>,
     cell: ({ row }: { row: any }) => (
       <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
-        <Link href={row.getValue("commitHomeUrl") || "#"} target="_blank">
-          {row.getValue("branch") || "-"}
+        <Link href={row.original.commitHomeUrl || "#"} target="_blank">
+          <Badge variant="rounded" className="ml-2 flex items-center">
+            <div className="flex items-center gap-x-1">
+              <span>
+                {row.original.branch}
+              </span>
+              <span>
+                <ExternalLink size={12} />
+              </span>
+            </div>
+          </Badge>
         </Link>
       </div>
     ),
@@ -60,28 +71,28 @@ export const columns: ColumnDef<GitItem>[] = [
     accessorKey: "totalAdditions",
     header: () => <div className="text-bold">Additions</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("totalAdditions")}</div>
+      <div className="text-medium">{row.original.totalAdditions}</div>
     ),
   },
   {
     accessorKey: "totalDeletions",
     header: () => <div className="text-bold">Deletions</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("totalDeletions")}</div>
+      <div className="text-medium">{row.original.totalDeletions}</div>
     ),
   },
   {
     accessorKey: "totalChanges",
     header: () => <div className="text-bold">Changes</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("totalChanges")}</div>
+      <div className="text-medium">{row.original.totalChanges}</div>
     ),
   },
   {
     accessorKey: "totalWritten",
     header: () => <div className="text-bold">Contributions</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("totalWritten")}</div>
+      <div className="text-medium">{row.original.totalWritten}</div>
     ),
   },
 ];
@@ -143,7 +154,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true); 
+    setIsLoading(true);
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -151,7 +162,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   }, [loading]);
 
@@ -164,7 +175,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton /> 
+        <EmptyTableSkeleton />
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -175,16 +186,15 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none text-nowrap ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "branch" ? "min-w-[200px]" : ""
-                        }`}
+                        className={`text-left h-12 pl-4 leading-none text-nowrap ${header.column.id === "actions" ? "text-right" : header.column.id === "branch" ? "min-w-[200px]" : ""
+                          }`}
                       >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -201,16 +211,15 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className={`py-1 leading-none ${
-                            cell.column.id === "actions"
+                          className={`py-1 leading-none ${cell.column.id === "actions"
                               ? "text-right"
                               : cell.column.id === "branch" ? "w-[150px] text-nowrap" : "pl-4 text-start"
-                          }`}
+                            }`}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )}       
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
