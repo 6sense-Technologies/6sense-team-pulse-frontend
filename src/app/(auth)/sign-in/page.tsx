@@ -65,7 +65,7 @@ const SignIn = () => {
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      console.log("Error:", error);
+      // console.log("Error:", error);
       if (error.message === "User not found") {
         setErrorMessage("No account found with this email.");
         setErrorFlag(false);

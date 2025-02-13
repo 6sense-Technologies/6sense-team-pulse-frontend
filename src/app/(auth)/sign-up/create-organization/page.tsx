@@ -57,7 +57,7 @@ const OrganizationDetails = () => {
       });
     },
     onError: (error) => {
-      console.log(error.message);
+      // console.log(error.message);
       if (error.message) {
         setOrgError("Domain must be unique.");
       }

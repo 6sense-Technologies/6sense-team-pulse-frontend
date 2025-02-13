@@ -10,9 +10,10 @@ interface GitCardProps {
   bgColor?: string;
   iconColor?: string;
   isPercentage?: boolean; // New prop to indicate if the amount is a percentage
+  tooltipMessage?:string;
 }
 
-const GitCards: React.FC<GitCardProps> = ({ icon: Icon, subheading, amount, bgColor, iconColor, isPercentage }) => {
+const GitCards: React.FC<GitCardProps> = ({ icon: Icon, subheading, amount, bgColor, iconColor, isPercentage,tooltipMessage }) => {
   const [isTooltipOpen, setIsTooltipOpen] = useState(false);
 
   const handleTooltipToggle = () => {
@@ -41,8 +42,8 @@ const GitCards: React.FC<GitCardProps> = ({ icon: Icon, subheading, amount, bgCo
             >
               <Info size={24} strokeWidth={1} />
             </TooltipTrigger>
-            <TooltipContent className="bg-primary text-white w-full max-w-[100px] lg:max-w-[200px]">
-              <p>This is a tooltip</p>
+            <TooltipContent className="bg-primary text-white w-full max-w-[200px] lg:max-w-[200px] relative right-5">
+              <p>{tooltipMessage}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>

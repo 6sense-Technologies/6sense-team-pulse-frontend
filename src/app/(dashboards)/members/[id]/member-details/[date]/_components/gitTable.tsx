@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import {
   ColumnDef,
@@ -22,114 +21,73 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useParams, useSearchParams } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { Bookmark, Calendar, CalendarClock, CheckSquare } from "lucide-react";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Link from "next/link";
 import { GitPagination } from "./gitPagination";
-import { TeamTooltip, TeamTooltipContent, TeamTooltipProvider, TeamTooltipTrigger } from "./teamTooltip";
 
 type GitItem = {
-  issueType: string;
-  issueSummary: string;
-  issueIdUrl: string;
-  issueStatus: string;
-  linkedId: string;
-  planned: boolean;
+  branch: string;
+  commitHomeUrl: string;
+  gitRepo: {
+    repo: string;
+  };
+  totalAdditions: number;
+  totalDeletions: number;
+  totalChanges: number;
+  totalWritten: number;
 };
 
 export const columns: ColumnDef<GitItem>[] = [
   {
-    accessorKey: "issueType",
+    accessorKey: "gitRepo.repo",
     header: () => <div className="text-bold">Project</div>,
-    cell: ({ row }: { row: any }) => {
-      const category = row.getValue("issueType");
-      const icon =
-        category === "Task" ? (
-          <CheckSquare className="mr-2 w-4 h-4" />
-        ) : (
-          <Bookmark className="mr-2 w-4 h-4" />
-        );
-      return (
-        <Badge
-          variant="rounded"
-          className="flex items-center max-w-[100px]"
-        >
-          {icon}
-          {category}
-        </Badge>
-      );
-    },
+    cell: ({ row }: { row: any }) => (
+      <div className="text-medium">{row.getValue("gitRepo.repo")}</div>
+    ),
   },
   {
-    accessorKey: "issueSummary",
+    accessorKey: "branch",
     header: () => <div className="text-bold">Branch</div>,
     cell: ({ row }: { row: any }) => (
-      <TeamTooltipProvider>
-        <TeamTooltip >
-          <TeamTooltipTrigger asChild>
-            <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
-              <span>
-                {row.original.planned ? (
-                  <Calendar className="mr-2 w-4 h-4 text-[#0284C7]" />
-                ) : (
-                  <CalendarClock className="mr-2 w-4 h-4 text-[#64748B]" />
-                )}
-              </span>
-              <Link href={row.getValue("issueIdUrl")} target="_blank">
-                {row.getValue("issueSummary") || "-"}
-              </Link>
-            </div>
-          </TeamTooltipTrigger>
-          <TeamTooltipContent side="left">
-            <p>{row.original.planned ? "Planned" : "Unplanned"}</p>
-          </TeamTooltipContent>
-        </TeamTooltip>
-      </TeamTooltipProvider>
+      <div className="text-medium flex items-center w-full max-w-[700px] hover:underline">
+        <Link href={row.getValue("commitHomeUrl") || "#"} target="_blank">
+          {row.getValue("branch") || "-"}
+        </Link>
+      </div>
     ),
   },
   {
-    accessorKey: "issueIdUrl",
+    accessorKey: "totalAdditions",
     header: () => <div className="text-bold">Additions</div>,
     cell: ({ row }: { row: any }) => (
-      <Link href={row.getValue("issueIdUrl")} target="_blank">
-        <div className="cursor-pointer hover:underline">
-          {row.getValue("issueIdUrl").split("-").pop()}
-        </div>
-      </Link>
+      <div className="text-medium">{row.getValue("totalAdditions")}</div>
     ),
   },
   {
-    accessorKey: "issueStatus",
+    accessorKey: "totalDeletions",
     header: () => <div className="text-bold">Deletions</div>,
     cell: ({ row }: { row: any }) => (
-      <Badge variant="rounded">
-        {row.getValue("issueStatus")}
-      </Badge>
+      <div className="text-medium">{row.getValue("totalDeletions")}</div>
     ),
   },
   {
-    accessorKey: "issueStatus",
+    accessorKey: "totalChanges",
     header: () => <div className="text-bold">Changes</div>,
     cell: ({ row }: { row: any }) => (
-      <Badge variant="rounded">
-        {row.getValue("issueStatus")}
-      </Badge>
+      <div className="text-medium">{row.getValue("totalChanges")}</div>
     ),
   },
   {
-    accessorKey: "issueStatus",
+    accessorKey: "totalWritten",
     header: () => <div className="text-bold">Contributions</div>,
     cell: ({ row }: { row: any }) => (
-      <Badge variant="rounded">
-        {row.getValue("issueStatus")}
-      </Badge>
+      <div className="text-medium">{row.getValue("totalWritten")}</div>
     ),
   },
 ];
 
 type TPerformanceTableProps = {
-  performanceItems?: any[];
+  performanceItems?: GitItem[];
   refetch?: () => void;
   totalCountAndLimit?: { totalCount: number; size: number };
   currentPage: number;
@@ -218,7 +176,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none text-nowrap ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "issueSummary" ? "min-w-[200px]" :""
+                          header.column.id === "actions" ? "text-right" : header.column.id === "branch" ? "min-w-[200px]" : ""
                         }`}
                       >
                         {header.isPlaceholder
@@ -246,8 +204,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
                           className={`py-1 leading-none ${
                             cell.column.id === "actions"
                               ? "text-right"
-                              : cell.column.id === "issueStatus"? "w-[150px] text-nowrap"
-                              :"pl-4 text-start"
+                              : cell.column.id === "branch" ? "w-[150px] text-nowrap" : "pl-4 text-start"
                           }`}
                         >
                           {flexRender(

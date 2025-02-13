@@ -12,7 +12,7 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 const Dashboard = () => {
   const session = useSession();
 
-  console.log("Session Data", session.data);
+  // console.log("Session Data", session.data);
 
   return (
     <div>

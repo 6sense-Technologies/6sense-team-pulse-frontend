@@ -58,7 +58,7 @@ const SignUp = () => {
           jwtToken: token,
         })
         .then((response) => {
-          console.log("RT", response);
+          // console.log("RT", response);
           const { displayName, emailAddress } = response.data;
           setInviteData({ displayName, emailAddress });
           setValue("displayName", displayName);
@@ -91,7 +91,7 @@ const SignUp = () => {
       });
     },
     onError: (error: any) => {
-      console.log(error.message);
+      // console.log(error.message);
       if (error.message) {
         setErrorMessage("Email already exists.");
       }
@@ -291,17 +291,17 @@ const SignUp = () => {
           </div>
 
           <div>
-              <p className="text-sm text-textMuted px-10 text-center pt-3" onClick={() => toast({
-                  title: "Feature Coming Soon!",
-                  description: "This feature will be available soon. Stay tuned!",
-                })}>
-                By clicking continue, you agree to our {""}
-                <span className="underline cursor-pointer">
-                  Terms of Service
-                </span>{" "}
-                and{" "}
-                <span className="underline cursor-pointer">Privacy Policy</span>.
-              </p>
+            <p className="text-sm text-textMuted px-10 text-center pt-3" onClick={() => toast({
+              title: "Feature Coming Soon!",
+              description: "This feature will be available soon. Stay tuned!",
+            })}>
+              By clicking continue, you agree to our {""}
+              <span className="underline cursor-pointer">
+                Terms of Service
+              </span>{" "}
+              and{" "}
+              <span className="underline cursor-pointer">Privacy Policy</span>.
+            </p>
           </div>
         </div>
       </div>

@@ -92,7 +92,7 @@ const InviteMembers = () => {
   const inviteMemberMutation = useMutation({
     mutationFn: (data: InviteMemberForm) => CreateInviteMember(data, session),
     onSuccess: (data) => {
-      console.log(data);
+      // console.log(data);
       router.push("/members");
     },
     onError: (error) => {

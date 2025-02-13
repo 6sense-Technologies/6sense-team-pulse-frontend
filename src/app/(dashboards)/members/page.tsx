@@ -61,7 +61,7 @@ const TeamListPage: React.FC = () => {
     queryFn: () => GetTeamList({ page: pages, limit}, session),
   });
 
-  console.log("Team", teamList);
+  // console.log("Team", teamList);
 
   const totalCountAndLimit = {
     totalCount: teamList?.count ?? 0,

@@ -29,6 +29,7 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
     queryKey: ["getProjects"],
     queryFn: () => GetProjects(session)
   });
+    console.log("🚀 ~ projects:", projects)
 
   const projectOptions = projects?.map((project) => ({
     value: project,

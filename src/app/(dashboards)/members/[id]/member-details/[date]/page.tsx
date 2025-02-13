@@ -56,7 +56,7 @@ const EfficiencyMemberDetails: React.FC = () => {
   });
 
   const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;
-  console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData);
+  // console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData);
 
   const totalCountAndLimit = {
     totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
@@ -76,17 +76,24 @@ const EfficiencyMemberDetails: React.FC = () => {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
+  console.log("MemberID", member_id);
+  console.log("Date", date);
+
   const {
     data: gitDetails,
     isFetching: gitDetailsLoading,
     refetch: gitDetailsRefetch,
   } = useQuery<any>({
-    queryKey: ["dailyPerformance", pages, limit],
+    queryKey: ["gitDetails", pages, limit],
     queryFn: () => GetGitData({ member_id, date }, session),
   });
 
   console.log("Github", gitDetails);
-
+  
+  const gitTotalCountAndLimit = {
+    totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
+    size: limit,
+  };
   return (
     <div className="w-full">
       <PageTitle title="Performance Details • Ops4 Team" />
@@ -195,6 +202,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                   amount={2445}
                   bgColor="bg-[#DCFCE7]"
                   iconColor="text-[#166534]"
+                  tooltipMessage="Total lines of code added"
                 />
                 <GitCards
                   icon={TrendingDown}
@@ -202,6 +210,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                   amount={1350}
                   bgColor="bg-[#FEF2F2]"
                   iconColor="text-[#B91C1C]"
+                  tooltipMessage="Total lines of code deleted"
                 />
                 <GitCards
                   icon={ChartPie}
@@ -209,6 +218,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                   amount={1095}
                   bgColor="bg-[#F1F5F9]"
                   iconColor="text-[#030712]"
+                  tooltipMessage="Net additions after deletions for all contributions"
                 />
                 <GitCards
                   icon={Activity}
@@ -217,6 +227,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                   bgColor="bg-[#F1F5F9]"
                   iconColor="text-[#030712]"
                   isPercentage={true}
+                  tooltipMessage="Percentage of lines deleted relative to total additions"
                 />
               </div>
               <div className="flex justify-between items-center mt-4">
@@ -242,10 +253,10 @@ const EfficiencyMemberDetails: React.FC = () => {
                   {/* Replace with your table component */}
                   <div>
                     <GitTable
-                      totalCountAndLimit={totalCountAndLimit}
-                      performanceItems={dailyPerformanceData}
-                      loading={dailyPerformanceLoading}
-                      refetch={dailyPerformanceRefetch}
+                      totalCountAndLimit={gitTotalCountAndLimit}
+                      performanceItems={gitDetails}
+                      loading={gitDetailsLoading}
+                      refetch={gitDetailsRefetch}
                       currentPage={pages}
                     />
                   </div>

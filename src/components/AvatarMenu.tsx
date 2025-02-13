@@ -55,7 +55,7 @@ const AvatarMenu = () => {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
-  console.log(session);
+  // console.log(session);
 
   return (
     <div className="relative">

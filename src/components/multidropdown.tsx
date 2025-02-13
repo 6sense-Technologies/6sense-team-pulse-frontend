@@ -11,16 +11,13 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 
-interface Option {
-  value: string;
-  label: string;
-}
+
 
 interface MultiDropdownProps {
   control: any;
   name: string;
   placeholder?: string;
-  options: Option[];
+  options: any[];
   additionalText?: string;
   errors?: any;
   message?: any;
@@ -71,9 +68,9 @@ export function MultiDropdown({
                   variant="outline"
                   role="combobox"
                   aria-expanded={open}
-                  className={cn("w-full justify-between h-9 px-2 py-1", className)}
+                  className={cn("w-full justify-between h-auto min-h-[36px] px-2 py-1", className)}
                 >
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto">
                     {selectedValues.length > 0 ? (
                       selectedValues.map((value) => (
                         <Badge key={value} variant="secondary" className="bg-white border-lightborderColor rounded-xl text-lightAquaTextColor hover:bg-white cursor-auto">
@@ -93,7 +90,6 @@ export function MultiDropdown({
                             tabIndex={0}
                             role="button"
                           >
-                          
                           </span>
                         </Badge>
                       ))

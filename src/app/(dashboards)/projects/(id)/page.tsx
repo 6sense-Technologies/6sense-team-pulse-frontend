@@ -56,7 +56,7 @@ const ProjectList = () => {
     queryFn: () => GetProjectList({ page: pages, limit },session),
   });
 
-  console.log(projectList);
+  // console.log(projectList);
 
   const totalCountAndLimit = {
     totalCount: projectList?.total ?? 0,
