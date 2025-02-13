@@ -27,6 +27,7 @@ import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import axios from "axios";
+import { TEMP_BACKEND_URI } from "../../../../globalConstants";
 
 const SignUp = () => {
   const router = useRouter();
@@ -52,13 +53,12 @@ const SignUp = () => {
   const session = useSession();
 
 
-  console.log("Token upp IS Found!!!!!!!!", token);
+  console.log("Token IS Found!!!!!!!!", token);
 
   useEffect(() => {
-    console.log("Token IS Found!!!!!!!!", token);
     if (session.status === "unauthenticated" && token) {
       axios
-        .post("https://o4t-backend-for-tester.vercel.app/auth/register/verify-invite", {
+        .post(`${TEMP_BACKEND_URI}/auth/register/verify-invite`, {
           jwtToken: token,
         })
         .then((response) => {
