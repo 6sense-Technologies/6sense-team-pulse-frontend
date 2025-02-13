@@ -35,8 +35,8 @@ const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [inviteData, setInviteData] = useState<{ displayName: string; emailAddress: string } | null>(null);
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  // const searchParams = useSearchParams();
+  const session = useSession();
 
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -50,10 +50,16 @@ const SignUp = () => {
   } = useForm<TBasicSignupFormInputs>({
     resolver: zodResolver(SignupSchema),
   });
-  const session = useSession();
 
+  const [token, setToken] = useState<string | null>(null);
 
-  console.log("Token IS Found!!!!!!!!", token);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlToken = new URLSearchParams(window.location.search).get("token");
+      setToken(urlToken);
+      console.log("Token IS Found!!!!!!!!", urlToken);
+    }
+  }, []);
 
   useEffect(() => {
     if (session.status === "unauthenticated" && token) {
@@ -62,7 +68,6 @@ const SignUp = () => {
           jwtToken: token,
         })
         .then((response) => {
-          // console.log("RT", response);
           const { displayName, emailAddress } = response.data;
           setInviteData({ displayName, emailAddress });
           setValue("displayName", displayName);
@@ -89,13 +94,11 @@ const SignUp = () => {
       }).then(() => {
         session.update().then(() => {
           localStorage.setItem("user-email", data.userInfo.emailAddress);
-          // localStorage.setItem("accessToken", data.accessToken);
           router.push("/sign-up/verification");
         });
       });
     },
     onError: (error: any) => {
-      // console.log(error.message);
       if (error.message) {
         setErrorMessage("Email already exists.");
       }
@@ -171,9 +174,7 @@ const SignUp = () => {
             />
           </div>
           <div className="flex gap-x-4">
-            {/* <Link href={"/sign-up/sso"}> */}
             <Button variant="extralight" size="minixl" className=" cursor-not-allowed">SSO</Button>
-            {/* </Link> */}
             <div className="flex gap-x-[16px]">
               <Button variant="extralight" size="smallest" className=" cursor-not-allowed">
                 <Image
