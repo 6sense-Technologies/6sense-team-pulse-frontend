@@ -3,11 +3,10 @@ import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader,
 
 interface DisableModalProps {
   trigger: React.ReactNode;
-  member_id: string;
-  togglefn: (data: string) => any;
+  // togglefn: (data: string) => any;
 }
 
-const DisableModal: React.FC<DisableModalProps> = ({ trigger, member_id, togglefn }) => {
+const DisableModal: React.FC<DisableModalProps> = ({ trigger }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -22,7 +21,7 @@ const DisableModal: React.FC<DisableModalProps> = ({ trigger, member_id, togglef
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel className='bg-white text-black hover:bg-white'>Cancel</AlertDialogCancel>
-          <AlertDialogAction className='bg-destructive text-white hover:bg-destructive' onClick={togglefn(member_id)}>Disable</AlertDialogAction>
+          <AlertDialogAction className='bg-destructive text-white hover:bg-destructive'>Disable</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

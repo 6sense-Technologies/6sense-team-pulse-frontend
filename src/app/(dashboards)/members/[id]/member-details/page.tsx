@@ -18,6 +18,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
 import DisableModal from "./_components/DisableModal";
+import { toast } from "@/hooks/use-toast";
 
 
 const getInitials = (name: string) => {
@@ -122,6 +123,11 @@ const EfficiencyMemberDetails: React.FC = () => {
     };
   }, [isMenuOpen]);
 
+  // const handleToogle = (member_id: string) => {
+  //   ToggleMutation.mutate(member_id);
+  //   router.push("/members");
+  // };
+
   return (
     <div className="w-full">
       <PageTitle title="Member Details • Ops4 Team" />
@@ -215,8 +221,7 @@ const EfficiencyMemberDetails: React.FC = () => {
             <span className="hidden md:block">
               <DisableModal
                 trigger={<Button variant="disable">Disable Member</Button>}
-                member_id={id}
-                togglefn={ToggleMutation.mutate}
+                // togglefn={ToggleMutation.mutate}
               />
             </span>
           </div>
@@ -236,10 +241,9 @@ const EfficiencyMemberDetails: React.FC = () => {
                   <hr className="mt-1" />
                   <li className="px-4 py-2 text-destructive hover:bg-gray-100 cursor-pointer">
                     <DisableModal trigger={<span className="text-sm font-semibold">Disable Member</span>}
-                      member_id={id}
-                      togglefn={() => {
-                        router.push("/members");
-                      }}
+                      // togglefn={() => {
+                      //   handleToogle(id);
+                      // }}
                     />
                   </li>
                 </ul>
