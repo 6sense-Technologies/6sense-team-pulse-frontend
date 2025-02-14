@@ -238,10 +238,6 @@ const EfficiencyMemberDetails: React.FC = () => {
                     <DisableModal trigger={<span className="text-sm font-semibold">Disable Member</span>}
                       member_id={id}
                       togglefn={() => {
-                        <SuccessMessage
-                          title="Disabled!"
-                          description="This member has been disabled."
-                        />;
                         router.push("/members");
                       }}
                     />
