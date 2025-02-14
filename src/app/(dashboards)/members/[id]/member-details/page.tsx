@@ -3,14 +3,14 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import React, { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { TeamDetailsTable } from "./_components/TeamDetailsTable";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2, EllipsisVertical } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview, GetIndividualTeamMember } from "../../../../../../helpers/Member/memberApi";
-import { useQuery } from "@tanstack/react-query";
+import { GetIndividualOverview, GetIndividualTeamMember, ToggleMemberState } from "../../../../../../helpers/Member/memberApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
 import SummarySkeleton from "@/components/summarySkeleton";
@@ -33,7 +33,7 @@ const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [limit] = useState<number>(10);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
+  const router = useRouter();
   const { id } = useParams() as { id: string };
 
   const searchParams = useSearchParams();
@@ -62,6 +62,14 @@ const EfficiencyMemberDetails: React.FC = () => {
   } = useQuery<any>({
     queryKey: ["individualOverview", pages, limit],
     queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit }, session),
+  });
+
+  const ToggleMutation = useMutation({
+    mutationFn: (data: string) => ToggleMemberState(data, session),
+    onSuccess: (data) => {
+      console.log("Toggle Response", data);
+      router.push("/members");
+    },
   });
 
   const individualAvatar = individualMemberData?.userData.avatarUrls;
@@ -205,7 +213,11 @@ const EfficiencyMemberDetails: React.FC = () => {
               <Button variant="light">Edit Profile</Button>
             </span>
             <span className="hidden md:block">
-              <DisableModal trigger={<Button variant="disable">Disable Member</Button>} />
+              <DisableModal
+                trigger={<Button variant="disable">Disable Member</Button>}
+                member_id={id}
+                togglefn={ToggleMutation.mutate}
+              />
             </span>
           </div>
           <span className="md:hidden pt-14 pr-2 md:pb-0 md:pr-0 relative">
@@ -223,7 +235,16 @@ const EfficiencyMemberDetails: React.FC = () => {
                   </li>
                   <hr className="mt-1" />
                   <li className="px-4 py-2 text-destructive hover:bg-gray-100 cursor-pointer">
-                    <DisableModal trigger={<span className="text-sm font-semibold">Disable Member</span>} />
+                    <DisableModal trigger={<span className="text-sm font-semibold">Disable Member</span>}
+                      member_id={id}
+                      togglefn={() => {
+                        <SuccessMessage
+                          title="Disabled!"
+                          description="This member has been disabled."
+                        />;
+                        router.push("/members");
+                      }}
+                    />
                   </li>
                 </ul>
               </div>

@@ -266,3 +266,23 @@ export const CreateInviteMember = async (data: InviteMemberForm, session: any) =
 
   return response.data;
 };
+
+
+export const ToggleMemberState = async (data: string, session: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response = await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.post(`${TEMP_BACKEND_URI}/users/toggle-enable`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return response.data;
+};

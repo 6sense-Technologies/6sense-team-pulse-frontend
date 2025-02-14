@@ -18,7 +18,6 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Activity, ChartPie, ChartSpline, List, TrendingDown, TrendingUp } from "lucide-react";
 import { GitTable } from "./_components/gitTable";
 import GitCards from "./_components/gitcards";
-import GitChart from "./_components/gitChart";
 import comingSoonAlert from "@/components/comingSoonAlert";
 import { Toaster } from "@/components/ui/toaster";
 

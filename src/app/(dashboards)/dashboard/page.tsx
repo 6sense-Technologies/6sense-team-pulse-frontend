@@ -1,16 +1,13 @@
 "use client";
 import PageTitle from "@/components/PageTitle";
-import { signOut, useSession} from "next-auth/react";
-import { useRouter } from "next/navigation";
 import React from "react";
-import { Button } from "@/components/ButtonComponent";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import AvatarMenu from "@/components/AvatarMenu";
 import PageHeading from "@/components/pageHeading";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 
 const Dashboard = () => {
-  const session = useSession();
+  // const session = useSession();
 
   // console.log("Session Data", session.data);
 

@@ -22,15 +22,13 @@ import Link from "next/link";
 import PageTitle from "@/components/PageTitle";
 import Loader from "@/components/loader";
 import InvalidErrorBanner from "./_components/invalidErrorBanner";
-import { Eye, EyeOff} from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
-import { useToast } from "@/hooks/use-toast";
-import { Toaster } from "@/components/ui/toaster";
 import comingSoonAlert from "@/components/comingSoonAlert";
+import { Toaster } from "@/components/ui/toaster";
 
 const SignIn = () => {
   const router = useRouter();
-  const { toast } = useToast()
   const {
     handleSubmit,
     control,
@@ -162,8 +160,10 @@ const SignIn = () => {
             <Button
               variant="extralight"
               size="minixl"
-              className=" cursor-not-allowed"
+              onClick={() =>
+                comingSoonAlert()}
             >
+
               SSO
             </Button>
             {/* </Link> */}
@@ -171,7 +171,8 @@ const SignIn = () => {
               <Button
                 variant="extralight"
                 size="smallest"
-                className=" cursor-not-allowed"
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image
                   src={GoogleLogo}
@@ -183,7 +184,8 @@ const SignIn = () => {
               <Button
                 variant="extralight"
                 size="smallest"
-                className=" cursor-not-allowed"
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image
                   src={FacebookLogo}
@@ -195,7 +197,8 @@ const SignIn = () => {
               <Button
                 variant="extralight"
                 size="smallest"
-                className=" cursor-not-allowed"
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image
                   src={AppleLogo}
@@ -284,14 +287,14 @@ const SignIn = () => {
           </div>
 
           <div>
-              <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() =>
-                comingSoonAlert() 
-              }>
-                By clicking continue, you agree to our{" "}
-                <span className="underline cursor-pointer">Terms of Service</span>{" "}
-                and{" "}
-                <span className="underline cursor-pointer">Privacy Policy</span>.
-              </p>
+            <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() =>
+              comingSoonAlert()
+            }>
+              By clicking continue, you agree to our{" "}
+              <span className="underline cursor-pointer">Terms of Service</span>{" "}
+              and{" "}
+              <span className="underline cursor-pointer">Privacy Policy</span>.
+            </p>
           </div>
         </div>
       </div>

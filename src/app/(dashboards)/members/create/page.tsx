@@ -18,6 +18,7 @@ import AccessControlArea from "./_components/AccessControlArea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { InviteMemberForm } from "@/types/Members.types";
 import { CreateInviteMember } from "../../../../../helpers/Member/memberApi";
+import { toast } from "@/hooks/use-toast";
 
 const InviteMembers = () => {
   const router = useRouter();
@@ -92,7 +93,11 @@ const InviteMembers = () => {
   const inviteMemberMutation = useMutation({
     mutationFn: (data: InviteMemberForm) => CreateInviteMember(data, session),
     onSuccess: (data) => {
-      // console.log(data);
+      let fullName = data?.displayName
+      toast({
+        title: 'Invitation Sent Successfully',
+        description: `You invited ${fullName} to join the organization as a member.`,
+      });
       router.push("/members");
     },
     onError: (error) => {

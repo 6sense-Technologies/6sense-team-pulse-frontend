@@ -16,6 +16,7 @@ import { CreateProject } from "../../../../../helpers/projects/projectApi";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
+import { toast } from "@/hooks/use-toast";
 
 const ProjectCreate = () => {
   const router = useRouter();
@@ -125,6 +126,11 @@ const ProjectCreate = () => {
   const projectMutation = useMutation({
     mutationFn: (data: ProjectTools) => CreateProject(data, session),
     onSuccess: () => {
+      toast({
+        title: 'Project Created!',
+        description:
+            'Your project has been created successfully.',
+    });
       router.push("/projects");
     },
     onError: (error) => {

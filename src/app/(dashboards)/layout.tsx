@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import { SessionProvider } from "next-auth/react";
 import Sidebar from "@/components/sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const Inter = localFont({
   src: "../fonts/Inter-VariableFont_opsz,wght.ttf",
@@ -27,6 +28,7 @@ export default function RootLayout({
         <SessionProvider>
           <Sidebar>{children}</Sidebar>
         </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

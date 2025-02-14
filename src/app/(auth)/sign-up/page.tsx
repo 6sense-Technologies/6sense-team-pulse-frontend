@@ -24,14 +24,12 @@ import { signIn, useSession } from 'next-auth/react';
 import Loader from '@/components/loader';
 import { Eye, EyeOff } from 'lucide-react';
 import SmallLogo from '../../../../public/logo/Ops4TeamLogo.svg';
-import { useToast } from '@/hooks/use-toast';
-import { Toaster } from '@/components/ui/toaster';
 import axios from 'axios';
 import comingSoonAlert from '@/components/comingSoonAlert';
+import { Toaster } from '@/components/ui/toaster';
 
 const SignUp = () => {
   const router = useRouter();
-  const { toast } = useToast();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [inviteData, setInviteData] = useState<{
@@ -181,7 +179,8 @@ const SignUp = () => {
             <Button
               variant='extralight'
               size='minixl'
-              className='cursor-not-allowed'
+              onClick={() =>
+                comingSoonAlert()}
             >
               SSO
             </Button>
@@ -190,7 +189,8 @@ const SignUp = () => {
               <Button
                 variant='extralight'
                 size='smallest'
-                className='cursor-not-allowed'
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image
                   src={GoogleLogo}
@@ -202,7 +202,8 @@ const SignUp = () => {
               <Button
                 variant='extralight'
                 size='smallest'
-                className='cursor-not-allowed'
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image
                   src={FacebookLogo}
@@ -214,7 +215,8 @@ const SignUp = () => {
               <Button
                 variant='extralight'
                 size='smallest'
-                className='cursor-not-allowed'
+                onClick={() =>
+                  comingSoonAlert()}
               >
                 <Image src={AppleLogo} width={24} height={24} alt='applelogo' />
               </Button>
@@ -314,7 +316,7 @@ const SignUp = () => {
             <p
               className='px-10 pt-3 text-center text-sm text-textMuted'
               onClick={() =>
-                comingSoonAlert() 
+                comingSoonAlert()
               }
             >
               By clicking continue, you agree to our {''}

@@ -2,8 +2,6 @@
 import { Dropdown } from "@/components/dropdown";
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
-import { GetTools } from "../../../../../../helpers/projects/projectApi";
-import { ToolOptionList } from "../../../../../types/Project.types";
 import { useSession } from "next-auth/react";
 import { GetRoles } from "../../../../../../helpers/Member/memberApi";
 import { Roles } from "@/types/Members.types";

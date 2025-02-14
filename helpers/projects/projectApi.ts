@@ -53,16 +53,7 @@ export const CreateProject = async (data: any, session: any) => {
     accessToken = response.data.accessToken;
   }
 
-  const formData = new FormData();
-  formData.append('displayName', data.displayName);
-  formData.append('emailAddress', data.emailAddress);
-  formData.append('designation', data.designation);
-  formData.append('role', data.role);
-  if (data.profilePicture) {
-    formData.append('profilePicture', data.profilePicture);
-  }
-
-  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, formData, {
+  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`,data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
