@@ -140,17 +140,12 @@ export const GetGitData = async ({
 
   let accessToken: string  = session.data.accessToken;
 
-  console.log("Api id", member_id);
-  console.log("Api date", date);
-
   if (new Date(session.data.expires) <= new Date()) {
     console.log("Session expired. Updating session...");
 
     const response= await axios.get('/api/auth/session');
     accessToken = response.data.accessToken;
   }
-
-//https://o4t-backend-for-tester.vercel.app/github/get-contributions?userId=66f2863078fc23e27073b23c&date=2024-12-13
 
   const response = await axios.get(
     `${TEMP_BACKEND_URI}/github/get-contributions?userId=${member_id}&date=${date}`,
@@ -161,7 +156,33 @@ export const GetGitData = async ({
     }
   );
 
-  console.log("Git Data",response.data)
+  return response.data;
+};
+
+export const GetGitCalculations = async ({
+  member_id,
+  date,
+}: TGithubDataProps, session:any) => {
+
+  let accessToken: string  = session.data.accessToken;
+
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response= await axios.get('/api/auth/session');
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/github/summary?userId=${member_id}&date=${date}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
   return response.data;
 };
 

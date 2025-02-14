@@ -26,6 +26,7 @@ import { Eye, EyeOff} from "lucide-react";
 import SmallLogo from "../../../../public/logo/Ops4TeamLogo.svg";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+import comingSoonAlert from "@/components/comingSoonAlert";
 
 const SignIn = () => {
   const router = useRouter();
@@ -284,10 +285,7 @@ const SignIn = () => {
 
           <div>
               <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() =>
-                toast({
-                  title: "Feature Coming Soon!",
-                  description: "This feature will be available soon. Stay tuned!",
-                })
+                comingSoonAlert() 
               }>
                 By clicking continue, you agree to our{" "}
                 <span className="underline cursor-pointer">Terms of Service</span>{" "}

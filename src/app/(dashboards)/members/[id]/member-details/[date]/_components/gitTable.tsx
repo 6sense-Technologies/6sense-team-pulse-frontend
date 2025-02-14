@@ -41,10 +41,10 @@ type GitItem = {
 
 export const columns: ColumnDef<GitItem>[] = [
   {
-    accessorKey: "gitRepo.repo",
+    accessorKey: "repo",
     header: () => <div className="text-bold">Project</div>,
     cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.original.gitRepo.repo}</div>
+      <div className="text-medium">{row.original.repo}</div>
     ),
   },
   {
@@ -186,7 +186,7 @@ export const GitTable: React.FC<TPerformanceTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none text-nowrap ${header.column.id === "actions" ? "text-right" : header.column.id === "branch" ? "min-w-[200px]" : ""
+                        className={`text-left h-12 pl-4 leading-none text-nowrap ${header.column.id === "actions" ? "text-right" : header.column.id === "repo" ? "min-w-[150px]" : ""
                           }`}
                       >
                         {header.isPlaceholder

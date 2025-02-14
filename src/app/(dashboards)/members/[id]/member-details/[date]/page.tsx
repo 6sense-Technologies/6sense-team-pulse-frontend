@@ -3,30 +3,38 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import React, { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CustomSingleDatePicker } from "../_components/customSingleDatepicker";
 import PerformanceTable from "../_components/performanceTable";
 import { useQuery } from "@tanstack/react-query";
-import { GetDailyPerformance, GetGitData, GetIndividualTeamMember } from "../../../../../../../helpers/Member/memberApi";
+import { GetDailyPerformance, GetGitCalculations, GetGitData, GetIndividualTeamMember } from "../../../../../../../helpers/Member/memberApi";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TitleAvatarSkeleton from "@/components/titleAvatarSkeleton";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Activity, ChartPie, ChartSpline, Info, List, TrendingDown, TrendingUp } from "lucide-react";
+import { Activity, ChartPie, ChartSpline, List, TrendingDown, TrendingUp } from "lucide-react";
 import { GitTable } from "./_components/gitTable";
 import GitCards from "./_components/gitcards";
 import GitChart from "./_components/gitChart";
+import comingSoonAlert from "@/components/comingSoonAlert";
+import { Toaster } from "@/components/ui/toaster";
 
 const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<string>("items");
   const [limit] = useState<number>(10);
-  const [view, setView] = useState<string>("Chart");
+  const [view, setView] = useState<string>("Table");
   const session = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const { id: member_id, date } = useParams() as { id: string; date: string };
+
+  const [activeTab, setActiveTab] = useState<string>(
+    searchParams.get("tab") === "git" ? "git" : "items"
+  );
 
   useEffect(() => {
     const newPage = searchParams.get("page")
@@ -36,7 +44,18 @@ const EfficiencyMemberDetails: React.FC = () => {
     setPages(newPage);
   }, [searchParams]);
 
-  const { id: member_id, date } = useParams() as { id: string; date: string };
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    const newUrl = `${window.location.pathname}?tab=${tab}`;
+    router.push(newUrl);
+  };
 
   const {
     data: individualMemberData,
@@ -56,7 +75,6 @@ const EfficiencyMemberDetails: React.FC = () => {
   });
 
   const dailyPerformanceData = dailyPerformance?.dailyPerformance?.data;
-  // console.log("🚀 ~ dailyPerformanceData:", dailyPerformanceData);
 
   const totalCountAndLimit = {
     totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
@@ -76,9 +94,6 @@ const EfficiencyMemberDetails: React.FC = () => {
     return (parts[0][0] + parts[1][0]).toUpperCase();
   };
 
-  console.log("MemberID", member_id);
-  console.log("Date", date);
-
   const {
     data: gitDetails,
     isFetching: gitDetailsLoading,
@@ -88,16 +103,29 @@ const EfficiencyMemberDetails: React.FC = () => {
     queryFn: () => GetGitData({ member_id, date }, session),
   });
 
-  console.log("Github", gitDetails);
-  
+  const {
+    data: gitCalculations,
+  } = useQuery<any>({
+    queryKey: ["gitCalculations", pages, limit],
+    queryFn: () => GetGitCalculations({ member_id, date }, session),
+  });
+    console.log("🚀 ~ gitCalculations:", gitCalculations)
+
   const gitTotalCountAndLimit = {
-    totalCount: dailyPerformance?.dailyPerformance?.count ?? 0,
+    totalCount: gitDetails?.totalCount ?? 0,
     size: limit,
   };
+
+  
+  const formatNumber = (num: string | undefined) => {
+    const number = parseFloat(num ?? "0");
+    return num !== undefined ? number.toFixed(2) : "0.00";
+  };
+
   return (
     <div className="w-full">
       <PageTitle title="Performance Details • Ops4 Team" />
-
+        <Toaster/>
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">
           <span className="md:hidden pl-1 "><SidebarTrigger /></span>
@@ -156,13 +184,13 @@ const EfficiencyMemberDetails: React.FC = () => {
           <div className="flex space-x-4 border-b">
             <button
               className={`py-2 px-4 ${activeTab === "items" ? "border-b-2 border-black font-semibold" : ""}`}
-              onClick={() => setActiveTab("items")}
+              onClick={() => handleTabChange("items")}
             >
               Items
             </button>
             <button
               className={`py-2 px-4 ${activeTab === "git" ? "border-b-2 border-black text-black font-semibold" : ""}`}
-              onClick={() => setActiveTab("git")}
+              onClick={() => handleTabChange("git")}
             >
               Git
             </button>
@@ -199,7 +227,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <GitCards
                   icon={TrendingUp}
                   subheading="Total Additions"
-                  amount={2445}
+                  amount={gitCalculations?.summary?.totalAdditionsSum ?? "0"}
                   bgColor="bg-[#DCFCE7]"
                   iconColor="text-[#166534]"
                   tooltipMessage="Total lines of code added"
@@ -207,7 +235,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <GitCards
                   icon={TrendingDown}
                   subheading="Total Deletions"
-                  amount={1350}
+                  amount={gitCalculations?.summary?.totalDeletionsSum ?? "0"}
                   bgColor="bg-[#FEF2F2]"
                   iconColor="text-[#B91C1C]"
                   tooltipMessage="Total lines of code deleted"
@@ -215,7 +243,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <GitCards
                   icon={ChartPie}
                   subheading="Total Contributions"
-                  amount={1095}
+                  amount={gitCalculations?.summary?.totalContributions ?? "0"}
                   bgColor="bg-[#F1F5F9]"
                   iconColor="text-[#030712]"
                   tooltipMessage="Net additions after deletions for all contributions"
@@ -223,7 +251,7 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <GitCards
                   icon={Activity}
                   subheading="Code Churn"
-                  amount={55.19}
+                  amount={formatNumber(gitCalculations?.summary?.codeChurn)}
                   bgColor="bg-[#F1F5F9]"
                   iconColor="text-[#030712]"
                   isPercentage={true}
@@ -234,34 +262,24 @@ const EfficiencyMemberDetails: React.FC = () => {
                 <h1 className="text-[16px] font-semibold">Git Contribution</h1>
                 <div>
                   <ToggleGroup type="single" value={view} onValueChange={(value) => setView(value)}>
-                    <ToggleGroupItem value="Chart"><ChartSpline size={16} /></ToggleGroupItem>
-                    <ToggleGroupItem value="Table"><List size={16} /></ToggleGroupItem>
+                    <ToggleGroupItem value="Chart" onClick={comingSoonAlert}>
+                      <ChartSpline size={16} />
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="Table">
+                      <List size={16} />
+                    </ToggleGroupItem>
                   </ToggleGroup>
                 </div>
               </div>
-              {view === "Chart" ? (
-                <div className="mt-4">
-                  {/* Replace with your chart component */}
-                  <div>
-
-                    <GitChart />
-
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-4">
-                  {/* Replace with your table component */}
-                  <div>
-                    <GitTable
-                      totalCountAndLimit={gitTotalCountAndLimit}
-                      performanceItems={gitDetails}
-                      loading={gitDetailsLoading}
-                      refetch={gitDetailsRefetch}
-                      currentPage={pages}
-                    />
-                  </div>
-                </div>
-              )}
+              <div className="mt-4">
+                <GitTable
+                  totalCountAndLimit={gitTotalCountAndLimit}
+                  performanceItems={gitDetails?.data}
+                  loading={gitDetailsLoading}
+                  refetch={gitDetailsRefetch}
+                  currentPage={pages}
+                />
+              </div>
             </>
           )}
         </div>

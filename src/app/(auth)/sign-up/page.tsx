@@ -27,6 +27,7 @@ import SmallLogo from '../../../../public/logo/Ops4TeamLogo.svg';
 import { useToast } from '@/hooks/use-toast';
 import { Toaster } from '@/components/ui/toaster';
 import axios from 'axios';
+import comingSoonAlert from '@/components/comingSoonAlert';
 
 const SignUp = () => {
   const router = useRouter();
@@ -313,11 +314,7 @@ const SignUp = () => {
             <p
               className='px-10 pt-3 text-center text-sm text-textMuted'
               onClick={() =>
-                toast({
-                  title: 'Feature Coming Soon!',
-                  description:
-                    'This feature will be available soon. Stay tuned!',
-                })
+                comingSoonAlert() 
               }
             >
               By clicking continue, you agree to our {''}
