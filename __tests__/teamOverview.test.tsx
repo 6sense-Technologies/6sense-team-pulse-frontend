@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EfficiencyMemberDetails from '../src/app/(dashboards)/members/[id]/member-details/page';
 import { GetIndividualOverview, GetIndividualTeamMember } from '../helpers/Member/memberApi';
 import { SidebarProvider } from '@/components/ui/sidebar';
-
+//
 // Mock window.matchMedia
 beforeAll(() => {
   Object.defineProperty(window, 'matchMedia', {
