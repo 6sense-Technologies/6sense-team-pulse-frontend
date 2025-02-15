@@ -125,7 +125,7 @@ jest.mock('../src/components/AvatarMenu', () => {
 });
 
 // Mock API functions
-jest.mock('../helpers/member/memberApi', () => ({
+jest.mock('../helpers/Member/memberApi', () => ({
   GetIndividualOverview: jest.fn(),
   GetIndividualTeamMember: jest.fn(),
 }));
