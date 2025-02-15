@@ -130,7 +130,7 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   return (
     <div className="w-full">
-      <PageTitle title="Member Details • Ops4 Team" />
+      <PageTitle title="Member Performance Details • Ops4 Team" />
 
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">

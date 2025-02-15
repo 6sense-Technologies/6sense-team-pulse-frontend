@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import { useSession } from "next-auth/react";
 import { GetRoles } from "../../../../../../helpers/Member/memberApi";
 import { Roles } from "@/types/Members.types";
+
 type RoleDropdownProps = {
   control: any;
   name: string;
@@ -20,11 +21,8 @@ const RoleDropdown: FC<RoleDropdownProps> = ({
   errors,
   index,
 }) => {
-
   const session = useSession();
-  const {
-    data: roles,
-  } = useQuery<Roles[]>({
+  const { data: roles } = useQuery<Roles[]>({
     queryKey: ["getRoles"],
     queryFn: () => GetRoles(session),
   });
@@ -36,16 +34,13 @@ const RoleDropdown: FC<RoleDropdownProps> = ({
 
   const roleOptions: RoleOption[] =
     roles?.map((role) => ({
-        value: role.roleName,
-        label: role.roleName,
-      })) || [];
+      value: role.roleName,
+      label: role.roleName === 'admin' ? 'Admin' : 'Member',
+    })) || [];
 
   return (
-    <div className="w-full max-w-[553px] pl-2 pt-4 lg:pt-0 lg:pl-0 relative">
-      <label
-        htmlFor="designation"
-        className="text-sm font-medium text-black"
-      >
+    <div className="w-full max-w-[553px] pt-4 lg:pt-0 lg:!pl-0 relative">
+      <label htmlFor="role" className="text-sm font-medium text-black">
         Role
         {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>

@@ -71,7 +71,7 @@ const TeamListPage: React.FC = () => {
 
   return (
     <div className="w-full">
-      <PageTitle title="Team Efficiency • Ops4 Team" />
+      <PageTitle title="Members • Ops4 Team" />
 
       <div className="px-4 lg:pl-4 pt-8 lg:pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">

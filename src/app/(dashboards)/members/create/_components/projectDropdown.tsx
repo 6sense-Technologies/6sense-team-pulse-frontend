@@ -39,10 +39,10 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
   console.log("ProjectDropdown", projectOptions);
 
   return (
-    <div className="w-full max-w-[553px] pl-2 lg:pl-0 lg:mt-0 relative">
+    <div className="w-full max-w-[553px] pl-0 lg:pl-0 lg:mt-0 relative">
       <label
         htmlFor="designation"
-        className="text-sm font-medium text-black"
+        className="text-sm font-medium text-black pl-2 lg:pl-0"
       >
         Project
         {index === 0 && <span className="text-subHeading pl-1 text-[10px]">(Optional)</span>}

@@ -16,7 +16,7 @@ const AccessControlArea :FC<AccessControlAreaProps> = ({control,errors}) => {
       </h1>
     </div>
     <div className="w-full max-w-[420px]">
-    <div className="w-full max-w-[553px] pl-0 lg:pl-0">
+    <div className="w-full max-w-[553px] pl-0 lg:!pl-0">
     <RoleDropdown
       control={control}
       name="role"

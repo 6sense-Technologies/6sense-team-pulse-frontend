@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SignIn from '../src/app/(auth)/sign-in/page';
 import { useSession } from 'next-auth/react';
@@ -64,6 +64,11 @@ jest.mock('../src/components/ui/toaster', () => ({
   Toaster: jest.fn(() => <div data-testid="mock-toaster">Mock Toaster</div>),
 }));
 
+// Mock comingSoonAlert function
+jest.mock('../src/hooks/use-toast', () => ({
+  toast: jest.fn(),
+}));
+
 const queryClient = new QueryClient();
 
 describe('SignIn Page', () => {
@@ -87,5 +92,13 @@ describe('SignIn Page', () => {
     expect(passwordInput).toBeInTheDocument();
   });
 
-
+  it('calls the comingSoonAlert function when the feature is accessed', () => {
+    const { toast } = require('../src/hooks/use-toast');
+    const someButton = screen.getByText('SSO'); // Replace with actual button text
+    fireEvent.click(someButton);
+    expect(toast).toHaveBeenCalledWith({
+      title: 'Stay Tuned!',
+      description: 'This feature is coming soon.',
+    });
+  });
 });

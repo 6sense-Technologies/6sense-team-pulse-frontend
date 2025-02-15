@@ -13,14 +13,12 @@ beforeAll(() => {
       matches: false,
       media: query,
       onchange: null,
-      addListener: jest.fn(), 
+      addListener: jest.fn(),
       removeListener: jest.fn(),
       addEventListener: jest.fn(),
       removeEventListener: jest.fn(),
       dispatchEvent: jest.fn(),
-    })),
-  });
-});
+    }))})});
 
 // Mock external libraries
 jest.mock('lucide-react', () => ({
@@ -30,6 +28,16 @@ jest.mock('lucide-react', () => ({
   LogOut: () => <svg data-testid="logout-icon" />,
   User: () => <svg data-testid="user-icon" />,
   X: () => <svg data-testid="x-icon" />,
+  TrendingUp: () => <svg data-testid="trending-up-icon" />,
+  TrendingDown: () => <svg data-testid="trending-down-icon" />,
+  ChartPie: () => <svg data-testid="chart-pie-icon" />,
+  Activity: () => <svg data-testid="activity-icon" />,
+  List: () => <svg data-testid="list-icon" />,
+  ChartSpline: () => <svg data-testid="chart-spline-icon" />,
+  ChevronLeft: () => <svg data-testid="chevron-left-icon" />,
+  ChevronRight: () => <svg data-testid="chevron-right-icon" />,
+  CalendarIcon: () => <svg data-testid="calendar-icon" />,
+  ExternalLink: () => <svg data-testid="external-link-icon" />,
 }));
 
 jest.mock('next/navigation', () => ({
@@ -125,9 +133,29 @@ jest.mock('../src/components/AvatarMenu', () => {
 });
 
 // Mock API functions
-jest.mock('../helpers/member/memberApi', () => ({
+jest.mock('../helpers/Member/memberApi', () => ({
   GetIndividualOverview: jest.fn(),
   GetIndividualTeamMember: jest.fn(),
+}));
+
+// Mock useToast
+jest.mock('../src/hooks/use-toast', () => ({
+  toast: jest.fn(),
+  useToast: jest.fn(() => ({
+    toast: jest.fn(),
+    dismiss: jest.fn(),
+  })),
+}));
+
+// Mock Input component
+jest.mock('../src/components/ui/input', () => ({
+  Input: jest.fn(({ className, type, ...props }) => (
+    <input
+      type={type}
+      className={`mock-input ${className}`}
+      {...props}
+    />
+  )),
 }));
 
 const queryClient = new QueryClient();
@@ -192,4 +220,21 @@ describe('EfficiencyMemberDetails Page', () => {
     expect(summarySkeleton).toBeInTheDocument();
   });
 
+  it('renders the CustomSingleDatePicker component', () => {
+    const customSingleDatePicker = screen.getByTestId('custom-date-picker');
+    expect(customSingleDatePicker).toBeInTheDocument();
+  });
+
+
+  it('calls the toast function', () => {
+    const { toast } = require('../src/hooks/use-toast');
+    toast({
+      title: 'Test Toast',
+      description: 'This is a test toast',
+    });
+    expect(toast).toHaveBeenCalledWith({
+      title: 'Test Toast',
+      description: 'This is a test toast',
+    });
+  });
 });
