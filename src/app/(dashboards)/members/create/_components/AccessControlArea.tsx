@@ -9,8 +9,8 @@ type AccessControlAreaProps = {
 
 const AccessControlArea :FC<AccessControlAreaProps> = ({control,errors}) => {
   return (
-    <div className="flex flex-col lg:flex-row items-start  w-full max-w-[872px] lg:pt-12 lg:gap-x-[176px]">
-    <div className="pl-[6px] pt-8 lg:pt-0">
+    <div className="flex flex-col lg:flex-row items-start  w-full max-w-[872px] lg:pt-12">
+    <div className="pl-[6px] pt-8 lg:pt-0 w-full lg:max-w-[316px]">
       <h1 className="text-[16px] lg:text-headingXXS font-semibold">
         Access Control
       </h1>
