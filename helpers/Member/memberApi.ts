@@ -1,4 +1,3 @@
-import { ContentType } from './../../node_modules/recharts/types/component/Label.d';
 import axios from "axios";
 import { InviteMemberForm, TeamList } from "@/types/Members.types";
 import { TEMP_BACKEND_URI } from "../../globalConstants";

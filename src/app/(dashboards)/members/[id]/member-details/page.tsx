@@ -3,14 +3,14 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import React, { useEffect, useState } from "react";
 import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams,useSearchParams } from "next/navigation";
 import { TeamDetailsTable } from "./_components/TeamDetailsTable";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { CalendarArrowDown, CalendarCheck2, EllipsisVertical } from "lucide-react";
 import { Button } from "@/components/ButtonComponent";
 import { CustomDatePicker } from "./_components/customDatePicker";
-import { GetIndividualOverview, GetIndividualTeamMember, ToggleMemberState } from "../../../../../../helpers/Member/memberApi";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { GetIndividualOverview, GetIndividualTeamMember} from "../../../../../../helpers/Member/memberApi";
+import { useQuery } from "@tanstack/react-query";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import TextSkeleton from "@/components/textSkeleton";
 import SummarySkeleton from "@/components/summarySkeleton";
@@ -18,7 +18,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
 import DisableModal from "./_components/DisableModal";
-import { toast } from "@/hooks/use-toast";
+
 
 
 const getInitials = (name: string) => {
@@ -34,7 +34,6 @@ const EfficiencyMemberDetails: React.FC = () => {
   const [pages, setPages] = useState<number>(1);
   const [limit] = useState<number>(10);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  const router = useRouter();
   const { id } = useParams() as { id: string };
 
   const searchParams = useSearchParams();
@@ -65,13 +64,13 @@ const EfficiencyMemberDetails: React.FC = () => {
     queryFn: () => GetIndividualOverview({ member_id: id, page: pages, limit }, session),
   });
 
-  const ToggleMutation = useMutation({
-    mutationFn: (data: string) => ToggleMemberState(data, session),
-    onSuccess: (data) => {
-      console.log("Toggle Response", data);
-      router.push("/members");
-    },
-  });
+  // const ToggleMutation = useMutation({
+  //   mutationFn: (data: string) => ToggleMemberState(data, session),
+  //   onSuccess: (data) => {
+  //     console.log("Toggle Response", data);
+  //     router.push("/members");
+  //   },
+  // });
 
   const individualAvatar = individualMemberData?.userData.avatarUrls;
   const individualName = individualMemberData?.userData.displayName;
