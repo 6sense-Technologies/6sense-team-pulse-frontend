@@ -157,7 +157,7 @@ export const columns: ColumnDef<TeamMember>[] = [
       const score = row.getValue("score");
       const formattedScore =
         score !== null && score !== undefined
-          ? `${Math.ceil(score).toFixed(2)}`
+          ? `${score.toFixed(2)}`
           : "-";
       return <div className="text-medium">{formattedScore}</div>;
     },
