@@ -96,7 +96,7 @@ export const columns: ColumnDef<TeamMember>[] = [
     cell: ({ row }: { row: any }) => {
       const performance = row.getValue("performance");
       const performanceText =
-        performance !== null ? `${Math.round(performance)}%` : "-";
+        performance !== null ? `${performance.toFixed(2)}%` : "-";
       return (
         <div className="flex items-center max-w-[128px] w-full">
           <div className="text-medium mr-2 w-9">{performanceText}</div>
