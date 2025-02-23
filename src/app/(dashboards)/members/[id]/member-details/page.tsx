@@ -80,6 +80,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     individualMemberData?.currentMonthScore;
   const individualLastMonthPerformance = individualMemberData?.lastMonthScore;
 
+
   const formattedCurrentMonthPerformance =
     individualCurrentMonthPerformance !== undefined
       ? `${(Math.ceil(individualCurrentMonthPerformance * 100) / 100).toFixed(
@@ -266,6 +267,7 @@ const EfficiencyMemberDetails: React.FC = () => {
               refetch={individualOverviewRefetch}
               currentPage={pages}
               Memberid={id}
+              individualDesignation={individualDesignation}
             />
           )}
         </div>

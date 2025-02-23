@@ -47,11 +47,15 @@ export const columns: ColumnDef<TeamMember>[] = [
     cell: ({ row }: { row: any }) => {
       const name = row.getValue("displayName");
       const avatarUrl = row.original.avatarUrls;
-      const nameParts = name.split(" ");
+      const nameParts = name ? name.split(" ") : [];
       let initials =
         nameParts.length === 3
           ? `${nameParts[0][0]}${nameParts[1][0]}`
-          : `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`;
+          : nameParts.length > 1
+            ? `${nameParts[0][0]}${nameParts[nameParts.length - 1][0]}`
+            : name
+              ? name[0]
+              : "";
 
       return (
         <div className="flex items-center">
@@ -258,24 +262,23 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-[51px] pl-4 leading-none ${
-                          header.column.id === "actions"
-                            ? "text-right"
-                            : header.column.id === "displayName"
+                        className={`text-left h-[51px] pl-4 leading-none ${header.column.id === "actions"
+                          ? "text-right"
+                          : header.column.id === "displayName"
                             ? "min-w-[140px]"
                             : header.column.id === "role"
-                            ? "min-w-[110px]"
-                            : header.column.id === "designation"
-                            ? "min-w-[180px]"
-                            : ""
-                        }`}
+                              ? "min-w-[110px]"
+                              : header.column.id === "designation"
+                                ? "min-w-[180px]"
+                                : ""
+                          }`}
                       >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -292,17 +295,16 @@ export const TeamTable: React.FC<TTeamTableProps> = ({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className={`py-1 leading-none ${
-                            cell.column.id === "actions"
-                              ? "text-right"
-                              : cell.column.id === "displayName"
+                          className={`py-1 leading-none ${cell.column.id === "actions"
+                            ? "text-right"
+                            : cell.column.id === "displayName"
                               ? "text-start font-semibold"
                               : cell.column.id === "emailAddress"
-                              ? "text-start pl-4"
-                              : cell.column.id === "performance"
-                              ? "pl-5 text-start"
-                              : "pl-4 text-start"
-                          }`}
+                                ? "text-start pl-4"
+                                : cell.column.id === "performance"
+                                  ? "pl-5 text-start"
+                                  : "pl-4 text-start"
+                            }`}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
