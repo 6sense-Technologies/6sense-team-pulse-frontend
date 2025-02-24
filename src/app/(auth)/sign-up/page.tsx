@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Image from 'next/image';
 import Logo from '../../../../public/logo/Ops4TeamLogo.png';
 import { Button } from '@/components/ButtonComponent';
@@ -28,7 +28,7 @@ import axios from 'axios';
 import comingSoonAlert from '@/components/comingSoonAlert';
 import { Toaster } from '@/components/ui/toaster';
 
-const SignUp = () => {
+const SignUpContent = () => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -63,8 +63,6 @@ const SignUp = () => {
           }
         )
         .then((response) => {
-          //dummy push
-          // console.log("RT", response);
           const { displayName, emailAddress } = response.data;
           setInviteData({ displayName, emailAddress });
           setValue('displayName', displayName);
@@ -91,13 +89,11 @@ const SignUp = () => {
       }).then(() => {
         session.update().then(() => {
           localStorage.setItem('user-email', data.userInfo.emailAddress);
-          // localStorage.setItem("accessToken", data.accessToken);
           router.push('/sign-up/verification');
         });
       });
     },
     onError: (error: any) => {
-      // console.log(error.message);
       if (error.message) {
         setErrorMessage('Email already exists.');
       }
@@ -175,22 +171,18 @@ const SignUp = () => {
             />
           </div>
           <div className='flex gap-x-4'>
-            {/* <Link href={"/sign-up/sso"}> */}
             <Button
               variant='extralight'
               size='minixl'
-              onClick={() =>
-                comingSoonAlert()}
+              onClick={() => comingSoonAlert()}
             >
               SSO
             </Button>
-            {/* </Link> */}
             <div className='flex gap-x-[16px]'>
               <Button
                 variant='extralight'
                 size='smallest'
-                onClick={() =>
-                  comingSoonAlert()}
+                onClick={() => comingSoonAlert()}
               >
                 <Image
                   src={GoogleLogo}
@@ -202,8 +194,7 @@ const SignUp = () => {
               <Button
                 variant='extralight'
                 size='smallest'
-                onClick={() =>
-                  comingSoonAlert()}
+                onClick={() => comingSoonAlert()}
               >
                 <Image
                   src={FacebookLogo}
@@ -215,8 +206,7 @@ const SignUp = () => {
               <Button
                 variant='extralight'
                 size='smallest'
-                onClick={() =>
-                  comingSoonAlert()}
+                onClick={() => comingSoonAlert()}
               >
                 <Image src={AppleLogo} width={24} height={24} alt='applelogo' />
               </Button>
@@ -315,9 +305,7 @@ const SignUp = () => {
           <div>
             <p
               className='px-10 pt-3 text-center text-sm text-textMuted'
-              onClick={() =>
-                comingSoonAlert()
-              }
+              onClick={() => comingSoonAlert()}
             >
               By clicking continue, you agree to our {''}
               <span className='cursor-pointer underline'>
@@ -332,5 +320,11 @@ const SignUp = () => {
     </div>
   );
 };
+
+const SignUp = () => (
+  <Suspense fallback={<Loader />}>
+    <SignUpContent />
+  </Suspense>
+);
 
 export default SignUp;
