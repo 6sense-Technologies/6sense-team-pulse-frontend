@@ -8,7 +8,6 @@
   "ignorePatterns": ["next.config.mjs", "next.config.js"],
   "extends": [
     "eslint:recommended",
-    "plugin:react-hooks/recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
     "next"
