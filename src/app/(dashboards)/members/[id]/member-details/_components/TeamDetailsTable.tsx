@@ -380,7 +380,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                   : header.column.id === "ctbr"
                                     ? "pl-3 pr-3"
                                     : header.column.id === "score"
-                                      ? "pl-2 pb-8 text-start"
+                                      ? "pl-8 pb-8 text-center"
                                       : header.column.id === "insight"
                                         ? "pl-6 pb-8  text-start w-[250px]"
                                         : "pb-8 pt-2"
@@ -423,9 +423,9 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                   : cell.column.id === "_id" && isHoliday
                                     ? "pl-4 text-start text-nowrap text-subHeading"
                                     : cell.column.id === "score" && isHoliday
-                                      ? "text-start italic text-[#D97706]"
+                                      ? "text-start italic text-[#D97706]  pl-8"
                                       : cell.column.id === "score"
-                                        ? "text-left w-[10px]"
+                                        ? "text-left w-[10px] pl-8"
                                         : cell.column.id === "insight"
                                           ? "text-start pl-6"
                                           : cell.column.id === "tasks"
