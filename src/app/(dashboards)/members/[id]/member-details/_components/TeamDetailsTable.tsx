@@ -47,6 +47,13 @@ type TeamMember = {
   codeToBugRatio: number;
 };
 
+const allowedDesignations = [
+  "Jr. Software Engineer",
+  "Software Engineer II",
+  "Backend Intern",
+  "Frontend Intern",
+];
+
 export const columns: ColumnDef<TeamMember>[] = [
   {
     accessorKey: "_id",
@@ -155,10 +162,15 @@ export const columns: ColumnDef<TeamMember>[] = [
     header: () => <div className="text-bold w-[10px]">Score</div>,
     cell: ({ row }: { row: any }) => {
       const score = row.getValue("score");
+      const isHoliday =
+        row.original.insight &&
+        row.original.insight.toLowerCase().includes("holidays/leave");
       const formattedScore =
         score !== null && score !== undefined
-          ? `${Math.ceil(score).toFixed(2)}`
-          : "-";
+          ? `${score.toFixed(2)}`
+          : isHoliday
+            ? "Holiday"
+            : "-";
       return <div className="text-medium">{formattedScore}</div>;
     },
   },
@@ -254,6 +266,7 @@ type TTeamDetailsTableProps = {
   currentPage: number;
   loading?: boolean;
   Memberid: string;
+  individualDesignation: string;
 };
 
 export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
@@ -263,6 +276,7 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
   currentPage,
   loading,
   Memberid,
+  individualDesignation,
 }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -282,6 +296,22 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
   const totalPages = totalCountAndLimit.totalCount
     ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
     : 0;
+
+  useEffect(() => {
+    if (!allowedDesignations.includes(individualDesignation)) {
+      setColumnVisibility({
+        bugs: false,
+        stories: false,
+        ctbr: false,
+      });
+    } else {
+      setColumnVisibility({
+        bugs: true,
+        stories: true,
+        ctbr: true,
+      });
+    }
+  }, [individualDesignation]);
 
   const table = useReactTable({
     data: teamMembers,
@@ -338,22 +368,22 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-10 pl-0 leading-none ${header.column.id === "actions"
-                            ? "text-right pb-9 min-w-[50px]"
-                            : header.column.id === "bugs"
-                              ? "pb-8 w-20 text-center"
-                              : header.column.id === "_id"
-                                ? "w-[100px]"
-                                : header.column.id === "tasks"
-                                  ? "py-1 w-[282px]"
-                                  : header.column.id === "stories"
-                                    ? "w-[158px]"
-                                    : header.column.id === "ctbr"
-                                      ? "pl-3 pr-3"
-                                      : header.column.id === "score"
-                                        ? "pl-2 pb-8 text-start"
-                                        : header.column.id === "insight"
-                                          ? "pl-6 pb-8  text-start w-[250px]"
-                                          : "pb-8 pt-2"
+                          ? "text-right pb-9 min-w-[50px]"
+                          : header.column.id === "bugs"
+                            ? "pb-8 w-20 text-center"
+                            : header.column.id === "_id"
+                              ? "w-[100px]"
+                              : header.column.id === "tasks"
+                                ? "py-1 w-[282px]"
+                                : header.column.id === "stories"
+                                  ? "w-[158px]"
+                                  : header.column.id === "ctbr"
+                                    ? "pl-3 pr-3"
+                                    : header.column.id === "score"
+                                      ? "pl-2 pb-8 text-start"
+                                      : header.column.id === "insight"
+                                        ? "pl-6 pb-8  text-start w-[250px]"
+                                        : "pb-8 pt-2"
                           } `}
                       >
                         {header.isPlaceholder
@@ -385,13 +415,15 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                           <TableCell
                             key={cell.id}
                             className={`leading-none py-1 ${cell.column.id === "actions" && isHoliday
-                                ? "hidden"
-                                : cell.column.id === "actions"
-                                  ? "text-right w-[10px]"
-                                  : cell.column.id === "bugs"
-                                    ? "pl-7 text-start w-[10px]"
-                                    : cell.column.id === "_id" && isHoliday
-                                      ? "pl-4 text-start text-nowrap text-subHeading"
+                              ? "hidden"
+                              : cell.column.id === "actions"
+                                ? "text-right w-[10px]"
+                                : cell.column.id === "bugs"
+                                  ? "pl-7 text-start w-[10px]"
+                                  : cell.column.id === "_id" && isHoliday
+                                    ? "pl-4 text-start text-nowrap text-subHeading"
+                                    : cell.column.id === "score" && isHoliday
+                                      ? "text-start italic text-[#D97706]"
                                       : cell.column.id === "score"
                                         ? "text-left w-[10px]"
                                         : cell.column.id === "insight"
@@ -400,18 +432,16 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
                                             ? "text-left pl-10 w-[10px]"
                                             : cell.column.id === "stories"
                                               ? "text-start pl-0 pr-5"
-                                              : cell.column.id === "ctbr" && isHoliday
-                                                ? "text-center italic text-[#D97706]"
-                                                : cell.column.id === "ctbr"
-                                                  ? "pl-4 text-start w-[10px]"
-                                                  : "pl-4 text-start text-nowrap"
+                                              : cell.column.id === "ctbr"
+                                                ? "pl-4 text-start w-[10px]"
+                                                : "pl-4 text-start text-nowrap"
                               }`}
                           >
                             {isHoliday &&
                               cell.column.id !== "_id" &&
-                              cell.column.id !== "ctbr"
+                              cell.column.id !== "score"
                               ? null
-                              : isHoliday && cell.column.id === "ctbr"
+                              : isHoliday && cell.column.id === "score"
                                 ? "Holiday/Leave"
                                 : flexRender(
                                   cell.column.columnDef.cell,
@@ -450,8 +480,9 @@ export const TeamDetailsTable: React.FC<TTeamDetailsTableProps> = ({
             </div>
           </div>
         </>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
