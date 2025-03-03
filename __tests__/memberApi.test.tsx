@@ -86,12 +86,12 @@ describe('memberApi', () => {
     it('should fetch daily performance successfully', async () => {
       const mockResponse = { data: {} };
       mockedAxios.get.mockResolvedValueOnce(mockResponse);
-
+  
       const result = await GetDailyPerformance({ member_id: '1', date: '2025-02-15', page: 1, limit: 10 }, mockSession);
-
+  
       expect(result).toEqual(mockResponse.data);
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        `${TEMP_BACKEND_URI}/users/daily-performance?userId=1&dateTime=2025-02-15&page=1&limit=10`,
+        `${TEMP_BACKEND_URI}/users/daily-performance?userId=1&dateTime=2025-02-15&Page=1&limit=10`,
         {
           headers: {
             Authorization: `Bearer mockAccessToken`,
@@ -99,11 +99,11 @@ describe('memberApi', () => {
         }
       );
     });
-
+  
     it('should handle error while fetching daily performance', async () => {
       const mockError = new Error('Failed to fetch daily performance');
       mockedAxios.get.mockRejectedValueOnce(mockError);
-
+  
       await expect(GetDailyPerformance({ member_id: '1', date: '2025-02-15', page: 1, limit: 10 }, mockSession)).rejects.toThrow('Failed to fetch daily performance');
     });
   });

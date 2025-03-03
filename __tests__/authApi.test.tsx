@@ -13,7 +13,7 @@ import {
 
 jest.mock('axios');
 
-const TEMP_BACKEND_URI = "https://o4t-backend-for-tester.vercel.app"; // or your actual backend URI
+const TEMP_BACKEND_URI = "https://sure-nady-6sensehq-125ac33a.koyeb.app"; // Updated to match the actual backend URI
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('authApi', () => {
@@ -80,7 +80,6 @@ describe('authApi', () => {
   });
 
   describe('handleOrganizationDetails', () => {
-
     it('should handle organization details submission error', async () => {
       const mockData: TOrgazinationDetails = { organizationName: 'Test Org', domainName: 'test.org' };
       const mockError = new Error('Organization details submission failed');

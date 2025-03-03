@@ -95,7 +95,7 @@ export const GetDailyPerformance = async ({
 
 
   const response = await axios.get(
-    `${TEMP_BACKEND_URI}/users/daily-performance?userId=${member_id}&dateTime=${date}&page=${page}&limit=${limit}`,
+    `${TEMP_BACKEND_URI}/users/daily-performance?userId=${member_id}&dateTime=${date}&Page=${page}&limit=${limit}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
