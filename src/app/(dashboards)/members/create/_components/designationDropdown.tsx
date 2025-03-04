@@ -2,7 +2,7 @@
 import { Dropdown } from "@/components/dropdown";
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
-import { GetDesignations} from "../../../../../../helpers/projects/projectApi";
+import { GetDesignations } from "../../../../../../helpers/projects/projectApi";
 import { Designations } from "@/types/Members.types";
 
 type DesignationDropdownProps = {
@@ -29,7 +29,7 @@ const DesignationDropdown: FC<DesignationDropdownProps> = ({
 
 
   // console.log("DesignationDropdown", designations);
-  
+
 
   const designationOptions = designations?.designations?.map((designation) => ({
     value: designation,
@@ -51,7 +51,7 @@ const DesignationDropdown: FC<DesignationDropdownProps> = ({
         control={control}
         name={name}
         placeholder={placeholder || "Select"}
-        className="w-full max-w-[553px] placeholder:text-subHeading"
+        className={`w-full max-w-[553px] placeholder:text-subHeading ${errors ? "border-destructive" : null}`}
         additionalText="Enter member's designation"
         active={true}
         errors={errors}
