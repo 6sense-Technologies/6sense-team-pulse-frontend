@@ -57,7 +57,7 @@ const SignUpContent = () => {
     if (session.status === 'unauthenticated' && token) {
       axios
         .post(
-          'https://o4t-backend-for-tester.vercel.app/auth/register/verify-invite',
+          'https://sure-nady-6sensehq-125ac33a.koyeb.app/auth/register/verify-invite',
           {
             jwtToken: token,
           }
