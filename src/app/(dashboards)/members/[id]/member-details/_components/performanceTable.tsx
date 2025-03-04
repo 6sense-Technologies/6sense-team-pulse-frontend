@@ -91,13 +91,21 @@ export const columns: ColumnDef<PerformanceItem>[] = [
   {
     accessorKey: "issueIdUrl",
     header: () => <div className="text-bold">Linked IDs</div>,
-    cell: ({ row }: { row: any }) => (
-      <Link href={row.getValue("issueIdUrl")} target="_blank">
-        <div className="cursor-pointer hover:underline">
-          {row.getValue("issueIdUrl").split("-").pop()}
+    cell: ({ row }: { row: any }) => {
+      const issueIdUrl = row.getValue("issueIdUrl");
+      const displayText = issueIdUrl.includes("trello") ? "-" : issueIdUrl.split("-").pop();
+      return displayText === "-" ? (
+        <div className="cursor-default">
+          {displayText}
         </div>
-      </Link>
-    ),
+      ) : (
+        <Link href={issueIdUrl} target="_blank">
+          <div className="cursor-pointer hover:underline">
+            {displayText}
+          </div>
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "issueStatus",
@@ -167,7 +175,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
   });
 
   const onPageChange = (page: number): void => {
-    setIsLoading(true); 
+    setIsLoading(true);
     setCurrentPageState(page);
     table.setPageIndex(page - 1);
     refetch?.();
@@ -175,7 +183,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
 
   React.useEffect(() => {
     if (!loading) {
-      setIsLoading(false); 
+      setIsLoading(false);
     }
   }, [loading]);
 
@@ -188,7 +196,7 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
   return (
     <div className="w-full">
       {isLoading ? (
-        <EmptyTableSkeleton /> 
+        <EmptyTableSkeleton />
       ) : (
         <>
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
@@ -199,16 +207,15 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className={`text-left h-12 pl-4 leading-none text-nowrap ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "issueSummary" ? "min-w-[200px]" :""
-                        }`}
+                        className={`text-left h-12 pl-4 leading-none text-nowrap ${header.column.id === "actions" ? "text-right" : header.column.id === "issueSummary" ? "min-w-[200px]" : ""
+                          }`}
                       >
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -225,17 +232,16 @@ export const PerformanceTable: React.FC<TPerformanceTableProps> = ({
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
-                          className={`py-1 leading-none ${
-                            cell.column.id === "actions"
-                              ? "text-right"
-                              : cell.column.id === "issueStatus"? "w-[150px] text-nowrap"
-                              :"pl-4 text-start"
-                          }`}
+                          className={`py-1 leading-none ${cell.column.id === "actions"
+                            ? "text-right"
+                            : cell.column.id === "issueStatus" ? "w-[150px] text-nowrap"
+                              : "pl-4 text-start"
+                            }`}
                         >
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext()
-                          )}       
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
