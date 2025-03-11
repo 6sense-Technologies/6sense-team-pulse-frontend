@@ -9,7 +9,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ButtonComponent';
 import ToolDropdown from './_components/ToolDropdown';
 import WorkspaceURL from './_components/WorkspaceURL';
-import { Circle, ShieldQuestion, Trash2 } from 'lucide-react';
+import { Circle, Info, Trash2 } from 'lucide-react';
 import { ProjectTools } from '@/types/Project.types';
 import { useMutation } from '@tanstack/react-query';
 import { CreateProject } from '../../../../../helpers/projects/projectApi';
@@ -22,8 +22,8 @@ import Modal from '@/components/customModal';
 const ProjectCreate = () => {
   const router = useRouter();
   const session = useSession();
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
-  const [selectedTool, setSelectedTool] = useState<string | null>(null); // State to store selected tool
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const {
     handleSubmit,
     control,
@@ -31,6 +31,7 @@ const ProjectCreate = () => {
     setError,
     clearErrors,
     getValues,
+    watch,
   } = useForm<ProjectTools>({
     defaultValues: {
       tools: [{ toolName: '', toolUrl: '' }],
@@ -173,11 +174,13 @@ const ProjectCreate = () => {
     }
   };
 
-  const handleShieldQuestionClick = () => {
-    const selectedTool = getValues(`tools.${0}.toolName`);
+  const handleShieldQuestionClick = (index: number) => {
+    const selectedTool = getValues(`tools.${index}.toolName`);
     setSelectedTool(selectedTool);
     setIsModalOpen(true);
   };
+
+  const isToolName = watch();
 
   return (
     <div className='w-full'>
@@ -253,12 +256,14 @@ const ProjectCreate = () => {
               errors={errors.tools?.[0]?.toolUrl?.message}
               index={0}
             />
-            <div className='relative mt-[62px] h-9 w-10 rounded-lg border lg:mt-[71px]'>
-              <ShieldQuestion
-                className='absolute right-2 top-2 h-4 w-4 cursor-pointer font-normal text-black md:right-3'
-                onClick={handleShieldQuestionClick}
-              />
-            </div>
+            {isToolName.tools[0].toolName !== '' ? (
+              <div className='relative mt-[62px] h-9 w-10 rounded-lg lg:mt-[71px]'>
+                <Info
+                  className='absolute right-2 top-2 h-4 w-4 cursor-pointer font-normal text-black md:right-3'
+                  onClick={() => handleShieldQuestionClick(0)}
+                />
+              </div>
+            ) : null}
           </div>
 
           {fields.slice(1).map((field, index) => (
@@ -280,13 +285,21 @@ const ProjectCreate = () => {
                   />
                 </div>
               </div>
-              <div className='flex items-center gap-4 pl-2 pt-4 lg:pl-0 lg:pt-0'>
+              <div className='flex items-center gap-2 pl-2 pt-4 lg:pl-0 lg:pt-0'>
                 <WorkspaceURL
                   control={control}
                   name={`tools[${index + 1}].toolUrl`}
                   errors={errors.tools?.[index + 1]?.toolUrl?.message}
                   index={index + 1}
                 />
+                {isToolName.tools[index + 1].toolName !== '' ? (
+                  <div className='relative mt-[62px] h-9 w-10 rounded-lg lg:mt-[71px]'>
+                    <Info
+                      className='absolute right-4 top-2 h-4 w-4 cursor-pointer font-normal text-black md:right-3'
+                      onClick={() => handleShieldQuestionClick(index + 1)}
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           ))}
@@ -322,12 +335,21 @@ const ProjectCreate = () => {
 
       {/* Modal for video */}
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
+        <Modal toolName={selectedTool}>
           <div>
             <video controls className='mt-4 w-full'>
               <source src={getVideoUrl(selectedTool || '')} type='video/mp4' />
               Your browser does not support the video tag.
             </video>
+            <div className='mb-3 mt-8 flex justify-end'>
+              <Button
+                variant='lightex'
+                size='xsExtended'
+                onClick={() => setIsModalOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
           </div>
         </Modal>
       )}
