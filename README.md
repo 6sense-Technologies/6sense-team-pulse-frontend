@@ -1,6 +1,6 @@
 
 
-![Ops4Team Logo](./public/logo/Ops4TeamLogo.svg)
+![Ops4Team Logo](./public/logo/Ops4TeamLogo.png)
 
 Ops4Team is an advanced task and performance management tool designed to track and evaluate team members' daily activities across multiple platforms, including Jira, Trello, and GitHub. It provides insights into individual contributions by monitoring completed tasks and GitHub activity, offering a calculated performance analysis for both the previous and current months. This enables teams to measure productivity, identify areas for improvement, and ensure optimal performance across all members.
 
