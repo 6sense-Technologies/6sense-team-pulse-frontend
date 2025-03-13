@@ -7,7 +7,7 @@ interface ModalProps {
 }
 
 const capitalizeFirstLetter = (string: string | null) => {
-  if (string === null) return '';
+  if (!string) return "";
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
