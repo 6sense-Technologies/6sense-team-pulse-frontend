@@ -22,7 +22,6 @@ const buttonVariants = cva(
         link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
         greenish: "text-white bg-green-500 hover:bg-green-600",
         light: "text-black bg-lightBtnColor hover:bg-lightBtnColor",
-        lightex:"text-black bg-lightBtnColor hover:bg-lightBtnColor border",
         aquaLight: 'text-black bg-lightAquaBg hover:bg-lightAquaBg',
         extralight: "text-black bg-white hover:bg-white border rounded-lg",
         dark: "text-white bg-blackishBg hover:bg-blackishBg",
@@ -128,7 +127,7 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
     return (
       <div
         className={cn(
-          "relative w-full",
+          "relative",
           { "cursor-not-allowed": props?.disabled },
           buttonDivClassName ?? ""
         )}
