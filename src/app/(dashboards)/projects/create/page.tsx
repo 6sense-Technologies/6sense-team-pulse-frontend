@@ -19,7 +19,6 @@ import AvatarMenu from '@/components/AvatarMenu';
 import { toast } from '@/hooks/use-toast';
 import Modal from '@/components/customModal';
 
-
 const ProjectCreate = () => {
   const router = useRouter();
   const session = useSession();
@@ -102,8 +101,8 @@ const ProjectCreate = () => {
         // Subsequent pairs are optional but must be provided together
         if (tool.toolName && !tool.toolUrl) {
           setError(`tools.${index}.toolUrl`, {
-            type: "manual",
-            message: "Workspace URL is required.",
+            type: 'manual',
+            message: 'Workspace URL is required.',
           });
           valid = false;
         } else if (tool.toolUrl && !validateURL(tool.toolUrl)) {
@@ -137,7 +136,7 @@ const ProjectCreate = () => {
       toast({
         title: 'Project Created!',
         description: 'Your project has been created successfully.',
-    });
+      });
       router.push('/projects');
     },
     onError: (error) => {
@@ -163,13 +162,12 @@ const ProjectCreate = () => {
     }
   };
 
-  
   const getVideoUrl = (toolName: string) => {
     switch (toolName.toLowerCase()) {
       case 'codacy':
         return 'https://archive.org/download/SampleVideo1280x7205mb/SampleVideo_1280x720_5mb.mp4';
       case 'jira':
-        return 'https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4';
+        return 'https://github.com/6senseHQ-Internal/Ops4Team-TuT/raw/refs/heads/main/Jira_ProjectID.mp4';
       case 'trello':
         return 'https://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4';
       default:
@@ -185,7 +183,6 @@ const ProjectCreate = () => {
 
   const isToolName = watch();
 
-
   return (
     <div className='w-full'>
       <PageTitle title='Create Project • Ops4 Team' />
@@ -195,19 +192,19 @@ const ProjectCreate = () => {
             <span className='pl-1 md:hidden'>
               <SidebarTrigger />
             </span>
-          <AvatarMenu />
-        </div>
+            <AvatarMenu />
+          </div>
           <div className='flex items-center justify-between'>
-        <GlobalBreadCrumb
+            <GlobalBreadCrumb
               initialData='Projects'
               initalLink='/projects'
               secondayData='Create Project'
               secondayLink='/projects/create'
-          />
+            />
             <span className='hidden pr-2 md:flex'>
-          <AvatarMenu />
-          </span>
-        </div>
+              <AvatarMenu />
+            </span>
+          </div>
           <PageHeading
             title='Create Project'
             className='pl-[7px] pt-1 lg:pl-[5px]'
@@ -310,28 +307,28 @@ const ProjectCreate = () => {
 
           <div className='mb-10 ml-2 mt-14 flex-col items-start lg:ml-[320px] lg:items-center'>
             <div className='w-full'>
-            <Button
+              <Button
                 variant='extralight'
                 size='xsExtended'
-              onClick={handleAddtools}
+                onClick={handleAddtools}
                 className='mb-6 md:max-w-[90px]'
-            >
-              Add Tool
-            </Button>
+              >
+                Add Tool
+              </Button>
             </div>
             <div className='w-full'>
-            <Button
+              <Button
                 variant='darkish'
                 size='lgExtended'
                 type='submit'
                 className='mt-3 w-full md:max-w-[128px]'
-            >
-              {projectMutation.isPending ? (
+              >
+                {projectMutation.isPending ? (
                   <Circle className='animate-spin' size={14} />
-              ) : (
+                ) : (
                   'Create Project'
-              )}
-            </Button>
+                )}
+              </Button>
             </div>
           </div>
         </div>

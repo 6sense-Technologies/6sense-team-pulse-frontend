@@ -18,9 +18,9 @@ const WorkInfoArea: FC<WorkInfoAreaProps> = ({ control, errors }) => {
   const getVideoUrl = (toolName: string) => {
     switch (toolName.toLowerCase()) {
       case 'jira':
-        return 'https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4';
+        return 'https://github.com/6senseHQ-Internal/Ops4Team-TuT/raw/refs/heads/main/Jira_UserID.mp4';
       case 'trello':
-        return 'https://archive.org/download/BigBuckBunny_328/BigBuckBunny_512kb.mp4';
+        return 'https://github.com/6senseHQ-Internal/Ops4Team-TuT/raw/refs/heads/main/Trello_UserID.mp4';
       case 'github':
         return 'https://archive.org/download/SampleVideo1280x7205mb/SampleVideo_1280x720_5mb.mp4';
       default:
@@ -77,7 +77,7 @@ const WorkInfoArea: FC<WorkInfoAreaProps> = ({ control, errors }) => {
         <div className='w-full max-w-[553px] pl-2 pt-8 lg:pl-0 lg:pt-8'>
           <label htmlFor='trelloId' className='text-sm font-medium text-black'>
             Trello ID
-            <span className='text-[10px] text-subHeading'>(Optional)</span>
+            <span className='text-[10px] text-subHeading pl-1 pb-[6px]'>(Optional)</span>
           </label>
           <div className='flex items-center gap-2'>
             <BaseInput
@@ -105,7 +105,7 @@ const WorkInfoArea: FC<WorkInfoAreaProps> = ({ control, errors }) => {
             className='text-sm font-medium text-black'
           >
             GitHub Username
-            <span className='text-[10px] text-subHeading'>(Optional)</span>
+            <span className='text-[10px] text-subHeading pl-1'>(Optional)</span>
           </label>
           <div className='flex items-center gap-2'>
             <BaseInput

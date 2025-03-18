@@ -47,11 +47,18 @@ type TeamMember = {
   codeToBugRatio: number;
 };
 
+// This is to show/hide full table view based on the designation
 const allowedDesignations = [
   "Jr. Software Engineer",
   "Software Engineer II",
   "Backend Intern",
   "Frontend Intern",
+   "Visualizer",
+   "SEO Specialist",
+   "Junior Content Writer",
+   "Senior Executive - Sales & Marketing",
+   "Senior Content Writer",
+   "BDR MTO",
 ];
 
 export const columns: ColumnDef<TeamMember>[] = [
