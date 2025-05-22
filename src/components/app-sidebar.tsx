@@ -2,6 +2,7 @@
 
 import {
   Boxes,
+  FileClock,
   FileCode,
   FolderKeyIcon,
   GalleryVerticalEnd,
@@ -66,6 +67,11 @@ const defaultData = {
         },
       ],
     },
+    {
+      title: 'Time Log',
+      url: '/timelog',
+      icon: FileClock,
+    },
   ],
   navAdmin: [
     {
@@ -122,7 +128,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, []);
 
   useEffect(() => {
-    const matchedItem = defaultData.navMain.find(item => pathname.startsWith(item.url));
+    const matchedItem = defaultData.navMain.find((item) =>
+      pathname.startsWith(item.url)
+    );
     if (matchedItem) {
       setSelectedItem(matchedItem.title);
     }
@@ -148,13 +156,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   return (
-    <Sidebar side='left' variant='sidebar' collapsible='icon' {...props} className='border-none'>
+    <Sidebar
+      side='left'
+      variant='sidebar'
+      collapsible='icon'
+      {...props}
+      className='border-none'
+    >
       <SidebarHeader className='bg-[#F1F5F9]'>
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className='bg-[#F1F5F9]'>
-        <NavMain items={data.navMain} selectedItem={selectedItem} onItemClick={handleItemClick} />
-        <NavAdmin items={data.navAdmin} selectedItem={selectedItem} onItemClick={handleItemClick} />
+        <NavMain
+          items={data.navMain}
+          selectedItem={selectedItem}
+          onItemClick={handleItemClick}
+        />
+        <NavAdmin
+          items={data.navAdmin}
+          selectedItem={selectedItem}
+          onItemClick={handleItemClick}
+        />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
