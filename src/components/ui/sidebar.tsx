@@ -4,8 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { Menu } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ButtonComponent";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
@@ -224,7 +223,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
         type="button"
         data-sidebar="trigger"
         variant="ghost"
-        size="icon"
+        size="sm"
         className={cn("h-7 w-7", className)}
         onClick={(event) => {
           onClick?.(event);

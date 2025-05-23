@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import { ProjectDropdown } from "../projects/_components/projectDropdown";
 import Link from "next/link";
 import { Button } from "@/components/ButtonComponent";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, FolderPlus } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, FolderPlus, ListFilter } from "lucide-react";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import EmptyProjectView from "@/components/emptyProjectView";
 import { GetTimelogList } from "../../../../helpers/timelogs/timelogApi";
@@ -47,6 +47,7 @@ const TimelogPage = () => {
     size: 10,
   });
   const [sortOpen, setSortOpen] = useState(false);
+  const [sort, setSort] = useState<"latest" | "oldest">("latest");
 
   const searchParams = useSearchParams();
 
@@ -71,8 +72,8 @@ const TimelogPage = () => {
     isFetching: timelogListLoading,
     refetch: timelogListRefetch,
   } = useQuery<any>({
-    queryKey: ["fetchTimelogs", pages, limit, formattedDate],
-    queryFn: () => GetTimelogList({ page: pages, limit, formattedDate }, session),
+    queryKey: ["fetchTimelogs", pages, limit, formattedDate, sort], // include sort in queryKey
+    queryFn: () => GetTimelogList({ page: pages, limit, formattedDate, sort }, session),
   });
 
   console.log("timelogList", timelogList);
@@ -103,20 +104,19 @@ const TimelogPage = () => {
 
         <div className="mb-3 flex flex-col items-start justify-between overflow-x-hidden md:mb-0 lg:flex-row lg:items-center">
           <div className="item-start flex w-full flex-col md:flex-row md:items-end md:gap-x-4 md:gap-y-0 lg:ml-2">
-            {/* <Searchbar
-              placeholder="Search by project name"
-              name="search"
-              btntext="Search"
-              className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
-              variant="light"
-            /> */}
-            <div className="flex justify-center gap-4 md:mb-6 md:mt-4">
-              <Tabs defaultValue="account" className="bg-[#F1F5F9] rounded-md text-[#64748B]">
-                <TabsList className="bg-transparent">
-                  <TabsTrigger value="account" className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm">
+            <div className="flex justify-center gap-4 my-4 md:mb-6 md:mt-4">
+              <Tabs defaultValue="account" className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full">
+                <TabsList className="bg-transparent flex">
+                  <TabsTrigger
+                    value="account"
+                    className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm w-full"
+                  >
                     Unreported
                   </TabsTrigger>
-                  <TabsTrigger value="password" className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm">
+                  <TabsTrigger
+                    value="password"
+                    className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm w-full"
+                  >
                     Reported
                   </TabsTrigger>
                 </TabsList>
@@ -125,12 +125,17 @@ const TimelogPage = () => {
               </Tabs>
 
               <DropdownMenu open={sortOpen} onOpenChange={setSortOpen}>
-                <DropdownMenuTrigger className="px-3 flex gap-4 items-center">Sort {sortOpen ? <ChevronUp /> : <ChevronDown />}</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="px-3 flex gap-4 items-center">
+                  <div className="hidden md:flex">Sort {sortOpen ? <ChevronUp /> : <ChevronDown />}</div>
+                  <div className="md:hidden">
+                    <ListFilter />
+                  </div>
+                </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white">
-                  <DropdownMenuItem className="flex font-normal">
+                  <DropdownMenuItem className="flex font-normal" onClick={() => setSort("latest")}>
                     <ArrowUpNarrowWide /> Latest
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setSort("oldest")}>
                     <ArrowDownNarrowWide /> Oldest
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -138,13 +143,19 @@ const TimelogPage = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-auto md:flex gap-4 items-center">
+          <div className="md:flex md:items-center md:gap-x-4 md:justify-center">
             {/* date picker */}
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant={"outline"} className={cn("w-[240px] justify-start text-left font-normal", !date && "text-muted-foreground")}>
-                  <CalendarIcon />
-                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                <Button
+                  variant={"outline"}
+                  className={cn(
+                    "flex items-center gap-2 justify-start text-left font-normal", // add items-center and gap-2
+                    !date && "text-muted-foreground",
+                  )}
+                >
+                  <CalendarIcon className="w-4 h-4" />
+                  <span>{date ? format(date, "PPP") : "Pick a date"}</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-white" align="start">
@@ -160,7 +171,7 @@ const TimelogPage = () => {
             </Popover>
 
             <Link href={`/timelog/create`}>
-              <Button variant="defaultEx">
+              <Button className="mt-4 md:mt-0" variant="defaultEx" disabled>
                 <span className="flex items-center gap-x-[6px] text-nowrap">Create Log</span>
               </Button>
             </Link>

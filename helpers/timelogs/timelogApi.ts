@@ -5,9 +5,10 @@ interface TPaginationProps {
   page: number;
   limit: number;
   formattedDate: string;
+  sort: string;
 }
 
-export const GetTimelogList = async ({ page, limit, formattedDate }: TPaginationProps, session: any) => {
+export const GetTimelogList = async ({ page, limit, formattedDate, sort }: TPaginationProps, session: any) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -17,7 +18,7 @@ export const GetTimelogList = async ({ page, limit, formattedDate }: TPagination
     accessToken = response.data.accessToken;
   }
 
-  const response = await axios.get(`${TEMP_BACKEND_URI}/timelog/unreported?page=${page}&limit=${limit}&date=${formattedDate}`, {
+  const response = await axios.get(`${TEMP_BACKEND_URI}/timelog/unreported?page=${page}&limit=${limit}&date=${formattedDate}&sort-order=${sort}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Organization-Id": "67a317a25b672f01152f081a",
