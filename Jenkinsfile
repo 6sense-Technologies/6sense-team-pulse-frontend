@@ -1,5 +1,11 @@
 pipeline {
-  agent { label 'docker-agent' }
+  agent {
+    label 'docker-agent'
+    docker {
+      image 'node:18-alpine'
+      args '-u root:root'
+    }
+  }
 
   environment {
     NODE_ENV = 'test'
