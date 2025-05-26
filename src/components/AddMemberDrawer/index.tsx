@@ -326,6 +326,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { Button } from "../ButtonComponent";
 import { MemberSchema } from "../../../Zodschema/memberSchema";
 import { BACKEND_URI } from "../../../globalConstants";
+import { z } from "zod";
 
 interface IProps {
   isOpen: boolean;
@@ -340,8 +341,6 @@ interface IFormData {
   designation: string;
 }
 
-
-
 const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const {
     handleSubmit,
@@ -350,7 +349,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
     setValue,
     watch,
     clearErrors,
-  } = useForm<IFormData>({
+  } = useForm({
     resolver: zodResolver(MemberSchema),
   });
 
@@ -363,9 +362,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const { data: designationData } = useQuery({
     queryKey: ["getDesignationList"],
     queryFn: async () => {
-      const res: AxiosResponse<IDesignation> = await axios.get(
-        `${BACKEND_URI}/users/designations/list`
-      );
+      const res: AxiosResponse<IDesignation> = await axios.get(`${BACKEND_URI}/users/designations/list`);
       return res.data;
     },
     refetchOnWindowFocus: false,
@@ -375,9 +372,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const { data: projectData } = useQuery({
     queryKey: ["getProjectList"],
     queryFn: async () => {
-      const res: AxiosResponse<{ projects: IProject[] }> = await axios.get(
-        `${BACKEND_URI}/users/projects/list`
-      );
+      const res: AxiosResponse<{ projects: IProject[] }> = await axios.get(`${BACKEND_URI}/users/projects/list`);
       return res.data;
     },
     refetchOnWindowFocus: false,
@@ -391,10 +386,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
       }
     };
     const handleClickOutside = (event: MouseEvent): void => {
-      if (
-        drawerRef.current &&
-        !drawerRef.current.contains(event.target as Node)
-      ) {
+      if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -407,10 +399,18 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
     };
   }, [onClose]);
 
-  const addMemberMutation = useMutation({
+  interface AddMemberVariables extends z.infer<typeof MemberSchema> {}
+
+  interface AddMemberResponse {
+    success: boolean;
+    message: string;
+    data?: any;
+  }
+
+  const addMemberMutation = useMutation<AddMemberResponse, unknown, AddMemberVariables>({
     mutationKey: ["addMemberMutation"],
-    mutationFn: async (newMember: IFormData) => {
-      const res = await axios.post(`${BACKEND_URI}/users/create`, {
+    mutationFn: async (newMember: AddMemberVariables) => {
+      const res = await axios.post<AddMemberResponse>(`${BACKEND_URI}/users/create`, {
         ...newMember,
         projects: newMember.projects.map((project) => project._id),
       });
@@ -419,14 +419,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   });
 
   const handleProjectChange = (selectedIds: string[]) => {
-    const selected = (Array.isArray(projects) ? projects : projects.projects).filter((project: IProject) =>
-      selectedIds.includes(project._id)
-    );
+    const selected = (Array.isArray(projects) ? projects : projects.projects).filter((project: IProject) => selectedIds.includes(project._id));
 
     // Get the tools of deselected projects
-    const deselectedTools = selectedProjects
-      .filter((project) => !selectedIds.includes(project._id))
-      .map((project) => project.tool);
+    const deselectedTools = selectedProjects.filter((project) => !selectedIds.includes(project._id)).map((project) => project.tool);
 
     // Clear Jira or Trello IDs if their respective projects are deselected
     if (deselectedTools.includes("jira")) {
@@ -442,7 +438,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
     clearErrors("projects"); // Clear validation errors
   };
 
-  const onSubmit = (data: IFormData): void => {
+  const onSubmit = (data: z.infer<typeof MemberSchema>): void => {
     setIsLoading(true);
     addMemberMutation.mutate(data, {
       onSuccess: () => {
@@ -463,15 +459,11 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
 
   return (
     <div
-      className={cn(
-        "fixed inset-0 bg-black/10 z-50 transform transition-transform duration-300 ease-in-out translate-x-full",
-        { "translate-x-0": isOpen }
-      )}
+      className={cn("fixed inset-0 bg-black/10 z-50 transform transition-transform duration-300 ease-in-out translate-x-full", {
+        "translate-x-0": isOpen,
+      })}
     >
-      <div
-        ref={drawerRef}
-        className="bg-white fixed right-0 top-0 bottom-0 max-w-lg w-full md:max-w-lg rounded-lg overflow-hidden shadow-xl"
-      >
+      <div ref={drawerRef} className="bg-white fixed right-0 top-0 bottom-0 max-w-lg w-full md:max-w-lg rounded-lg overflow-hidden shadow-xl">
         <div className="flex flex-col h-full">
           <div className="bg-slate-50 p-5 flex justify-between">
             <h1 className="text-2xl font-bold">Add Member</h1>
@@ -488,16 +480,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                   <select
                     multiple
                     onChange={(e) => {
-                      const selectedIds = Array.from(
-                        e.target.selectedOptions,
-                        (option) => option.value
-                      );
+                      const selectedIds = Array.from(e.target.selectedOptions, (option) => option.value);
                       handleProjectChange(selectedIds);
                     }}
-                    className={cn(
-                      "w-full border px-4 py-2 rounded-md",
-                      errors.projects ? "border-red-400" : ""
-                    )}
+                    className={cn("w-full border px-4 py-2 rounded-md", errors.projects ? "border-red-400" : "")}
                   >
                     {(Array.isArray(projects) ? projects : projects.projects).map((project) => (
                       <option key={project._id} value={project._id}>
@@ -505,11 +491,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       </option>
                     ))}
                   </select>
-                  {errors.projects && (
-                    <p className="text-red-400 text-sm">
-                      {errors.projects.message}
-                    </p>
-                  )}
+                  {errors.projects && <p className="text-red-400 text-sm">{errors.projects.message}</p>}
                 </div>
 
                 <div>
@@ -518,10 +500,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                   </label>
                   <select
                     {...register("designation")}
-                    className={cn(
-                      "w-full border px-4 py-2 rounded-md",
-                      errors.designation ? "border-red-400" : ""
-                    )}
+                    className={cn("w-full border px-4 py-2 rounded-md", errors.designation ? "border-red-400" : "")}
                   >
                     <option value="">Select</option>
                     {designations.map((designation, index) => (
@@ -530,54 +509,26 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
                       </option>
                     ))}
                   </select>
-                  {errors.designation && (
-                    <p className="text-red-400 text-sm">
-                      {errors.designation.message}
-                    </p>
-                  )}
+                  {errors.designation && <p className="text-red-400 text-sm">{errors.designation.message}</p>}
                 </div>
 
-                {selectedProjects.some(
-                  (project) => project.tool === "jira"
-                ) && (
+                {selectedProjects.some((project) => project.tool === "jira") && (
                   <div>
                     <label className="block">
                       Jira ID <span className="text-destructive">*</span>
                     </label>
-                    <input
-                      {...register("jiraId")}
-                      className={cn(
-                        "w-full border px-4 py-2 rounded-md",
-                        errors.jiraId ? "border-red-400" : ""
-                      )}
-                    />
-                    {errors.jiraId && (
-                      <p className="text-red-400 text-sm">
-                        {errors.jiraId.message}
-                      </p>
-                    )}
+                    <input {...register("jiraId")} className={cn("w-full border px-4 py-2 rounded-md", errors.jiraId ? "border-red-400" : "")} />
+                    {errors.jiraId && <p className="text-red-400 text-sm">{errors.jiraId.message}</p>}
                   </div>
                 )}
 
-                {selectedProjects.some(
-                  (project) => project.tool === "trello"
-                ) && (
+                {selectedProjects.some((project) => project.tool === "trello") && (
                   <div>
                     <label className="block">
                       Trello ID <span className="text-destructive">*</span>
                     </label>
-                    <input
-                      {...register("trelloId")}
-                      className={cn(
-                        "w-full border px-4 py-2 rounded-md",
-                        errors.trelloId ? "border-red-400" : ""
-                      )}
-                    />
-                    {errors.trelloId && (
-                      <p className="text-red-400 text-sm">
-                        {errors.trelloId.message}
-                      </p>
-                    )}
+                    <input {...register("trelloId")} className={cn("w-full border px-4 py-2 rounded-md", errors.trelloId ? "border-red-400" : "")} />
+                    {errors.trelloId && <p className="text-red-400 text-sm">{errors.trelloId.message}</p>}
                   </div>
                 )}
               </div>
@@ -585,20 +536,10 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
           </div>
 
           <div className="bg-slate-50 flex justify-end gap-5 p-5">
-            <Button
-              variant="secondary"
-              type="button"
-              onClick={onClose}
-              className="w-full"
-            >
+            <Button variant="secondary" type="button" onClick={onClose} className="w-full">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              form="member-form"
-              loading={isLoading}
-              className="w-[90px] hover:opacity-90"
-            >
+            <Button type="submit" form="member-form" loading={isLoading} className="w-[90px] hover:opacity-90">
               Create
             </Button>
           </div>
