@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     NODE_ENV = 'test'
-    GHCR_USER = '6sense-Technologies'
+    GHCR_USER = 'ahsanaasim'
     GHCR_REPO = '6sense-team-pulse-frontend'
     IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}"
   }
