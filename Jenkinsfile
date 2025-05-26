@@ -36,7 +36,7 @@ pipeline {
 
     stage('Push to GHCR') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'ahsanaasim', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
+        withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
             echo $GITHUB_PAT | docker login ghcr.io -u $GITHUB_USER --password-stdin
             docker push ghcr.io/${GHCR_USER}/${GHCR_REPO}:${IMAGE_TAG}
