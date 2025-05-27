@@ -10,26 +10,6 @@ pipeline {
   }
 
   stages {
-    stage('🔪 Cancel Previous Builds (Same Branch)') {
-      steps {
-        script {
-          def currentBuildNumber = currentBuild.number
-          def currentBranch = env.BRANCH_NAME
-          def job = Jenkins.instance.getItemByFullName(env.JOB_NAME)
-
-          job.builds.each { build ->
-            if (
-              build.isBuilding() &&
-              build.number != currentBuildNumber &&
-              build.getEnvironment(TaskListener.NULL).BRANCH_NAME == currentBranch
-            ) {
-              println "Aborting previous build #${build.number} for branch ${currentBranch}"
-              build.doKill()
-            }
-          }
-        }
-      }
-    }
     
     stage('📦 Checkout Source Code') {
       steps {
