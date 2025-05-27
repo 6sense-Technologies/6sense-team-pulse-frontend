@@ -34,6 +34,14 @@ pipeline {
       }
     }
 
+    stage('Build Docker Image') {
+      steps {
+        script {
+          sh "docker build -t ghcr.io/${GHCR_USER}/${GHCR_REPO}:${IMAGE_TAG} ."
+        }
+      }
+    }
+
     stage('Push to GHCR') {
       steps {
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
