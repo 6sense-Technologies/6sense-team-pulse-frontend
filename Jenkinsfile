@@ -70,7 +70,20 @@ pipeline {
         }
       }
       steps {
-        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: 'Ops4Team', infisicalUrl: 'https://infisical.6sensehq.com']) {
+        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: 'Ops4Team', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
+            infisicalSecret(
+                includeImports: true, 
+                path: '/', 
+                secretValues: [
+                    [infisicalKey: 'AUTH_SECRET'],
+                    [infisicalKey: "AUTH_GOOGLE_SECRET"],
+                    [infisicalKey: 'AUTH_GOOGLE_ID'],
+                    [infisicalKey: 'CONTAINER_NAME'],
+                    [infisicalKey: 'HOST_PORT'],
+                    [infisicalKey: 'IMAGE_TAG'],
+                ]
+            )
+        ]) {
             sh "printenv"
         }
       }
