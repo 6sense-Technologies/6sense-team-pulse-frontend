@@ -1,0 +1,14 @@
+services:
+  frontend:
+    image: ghcr.io/6sense-technologies/6sense-team-pulse-frontend:${IMAGE_TAG}
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT}:3000"
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
