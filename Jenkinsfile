@@ -10,8 +10,6 @@ pipeline {
   }
 
   stages {
-
-    stages {
     stage('🔪 Cancel Previous Builds (Same Branch)') {
       steps {
         script {
