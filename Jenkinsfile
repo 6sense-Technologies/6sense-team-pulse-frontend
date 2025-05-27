@@ -1,6 +1,11 @@
 pipeline {
   agent { label 'docker-agent' }
 
+  options {
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '20'))
+  }
+
   environment {
     NODE_ENV = 'test'
     GHCR_USER = '6sense-technologies'
