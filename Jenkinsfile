@@ -60,6 +60,21 @@ pipeline {
         }
       }
     }
+
+    stage('🚀 Push to Server') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'beta'
+        }
+      }
+      steps {
+        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: 'Ops4Team', infisicalUrl: 'https://infisical.6sensehq.com']) {
+            sh "printenv"
+        }
+      }
+    }
   }
 
   post {
