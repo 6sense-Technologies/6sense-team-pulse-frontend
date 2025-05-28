@@ -15,6 +15,34 @@ pipeline {
   }
 
   stages {
+
+    stage('🚀 Push to Server') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'beta'
+        }
+      }
+      steps {
+        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', projectSulg: '6835de76d5560fd33d8b1a55', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
+            infisicalSecret(
+                includeImports: true, 
+                path: '/', 
+                secretValues: [
+                    [infisicalKey: 'AUTH_SECRET'],
+                    [infisicalKey: "AUTH_GOOGLE_SECRET"],
+                    [infisicalKey: 'AUTH_GOOGLE_ID'],
+                    [infisicalKey: 'CONTAINER_NAME'],
+                    [infisicalKey: 'HOST_PORT'],
+                    [infisicalKey: 'IMAGE_TAG'],
+                ]
+            )
+        ]) {
+            sh "printenv"
+        }
+      }
+    }
     
     stage('📦 Checkout Source Code') {
       steps {
@@ -57,34 +85,6 @@ pipeline {
             docker push ghcr.io/${GHCR_USER}/${GHCR_REPO}:${IMAGE_TAG}
             docker image prune -f
           '''
-        }
-      }
-    }
-
-    stage('🚀 Push to Server') {
-      when {
-        anyOf {
-          branch 'main'
-          branch 'master'
-          branch 'beta'
-        }
-      }
-      steps {
-        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', workspaceId: '6835de76d5560fd33d8b1a55', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
-            infisicalSecret(
-                includeImports: true, 
-                path: '/', 
-                secretValues: [
-                    [infisicalKey: 'AUTH_SECRET'],
-                    [infisicalKey: "AUTH_GOOGLE_SECRET"],
-                    [infisicalKey: 'AUTH_GOOGLE_ID'],
-                    [infisicalKey: 'CONTAINER_NAME'],
-                    [infisicalKey: 'HOST_PORT'],
-                    [infisicalKey: 'IMAGE_TAG'],
-                ]
-            )
-        ]) {
-            sh "printenv"
         }
       }
     }
