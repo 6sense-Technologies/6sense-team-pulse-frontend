@@ -1,14 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
 
 type DropdownProps = {
@@ -21,18 +13,10 @@ type DropdownProps = {
   active?: boolean;
 };
 
-export function ProjectDropdown({
-  className,
-  placeholder,
-  control,
-  name,
-  errors = {},
-  additionalText,
-  active = false,
-}: DropdownProps) {
+export function ProjectDropdown({ className, placeholder, control, name, errors = {}, additionalText, active = false }: DropdownProps) {
   const renderSelect = (field: any) => (
     <Select {...field}>
-      <SelectTrigger className={cn("w-[140px] lg:w-[200px] border-none shadow-none", className)} disabled={!active}>
+      <SelectTrigger className={cn("w-[140px] lg:w-[200px] border-none shadow-none", className)}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
@@ -50,23 +34,11 @@ export function ProjectDropdown({
 
   return (
     <div className="relative">
-      {control ? (
-        <Controller
-          control={control}
-          name={name}
-          render={({ field }) => renderSelect(field)}
-        />
-      ) : (
-        renderSelect({})
-      )}
+      {control ? <Controller control={control} name={name} render={({ field }) => renderSelect(field)} /> : renderSelect({})}
       {errors[name]?.message ? (
-        <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">
-          {errors[name].message}
-        </p>
+        <p className="absolute mt-1 flex items-center text-sm font-medium text-destructive">{errors[name].message}</p>
       ) : (
-        <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">
-          {additionalText}
-        </p>
+        <p className="absolute mt-1 flex items-center text-sm text-inputFooterColor">{additionalText}</p>
       )}
     </div>
   );

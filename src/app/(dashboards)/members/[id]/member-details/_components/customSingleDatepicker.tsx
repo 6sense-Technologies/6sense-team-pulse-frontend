@@ -5,13 +5,9 @@ import { format, addDays, subDays } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ButtonComponent";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export function CustomSingleDatePicker() {
   const [date, setDate] = React.useState<Date>(new Date());
@@ -31,25 +27,13 @@ export function CustomSingleDatePicker() {
       </Button>
       <Popover>
         <PopoverTrigger asChild>
-          <Button
-            variant={"outline"}
-            className={cn(
-              "w-[220px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-            disabled
-          >
+          <Button variant={"outline"} className={cn("w-[220px] justify-start text-left font-normal", !date && "text-muted-foreground")} disabled>
             <CalendarIcon className="mr-2 w-4 h-4" />
             {date ? format(date, "PPP") : <span>Pick a date</span>}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={(day) => day && setDate(day)}
-            initialFocus
-          />
+          <Calendar mode="single" selected={date} onSelect={(day) => day && setDate(day)} initialFocus />
         </PopoverContent>
       </Popover>
       <Button variant="outline" onClick={handleNextDay} disabled>

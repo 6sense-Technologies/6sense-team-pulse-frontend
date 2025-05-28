@@ -14,23 +14,22 @@ const buttonVariants = cva(
         defaultEx: "text-white bg-primary hover:opacity-90 w-full lg:w-[140px] ",
         thinprimary: "text-white bg-primary hover:opacity-90 w-full lg:w-[120px] !font-normal",
         secondary: "text-black bg-secondary hover:bg-secondaryHover",
-        outline:
-          "text-black bg-transparent border-[1px] border-borderColor hover:bg-outlineHover focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
+        outline: "text-black bg-transparent border-[1px] border-borderColor hover:bg-outlineHover",
         destructive: "text-white bg-destructive hover:bg-destructiveHover",
         ghost:
           "text-textPrimary bg-transparent hover:bg-disabled focus:bg-disabled focus:outline focus:outline-2 focus:outline-primary focus:outline-offset-2",
         link: "text-black h-fit w-fit hover:underline underline-offset-4 hover:underline focus:outline focus:outline-2 focus:outline-primary ",
         greenish: "text-white bg-green-500 hover:bg-green-600",
         light: "text-black bg-lightBtnColor hover:bg-lightBtnColor",
-        lightex:"text-black bg-lightBtnColor hover:bg-lightBtnColor border",
-        aquaLight: 'text-black bg-lightAquaBg hover:bg-lightAquaBg',
+        lightex: "text-black bg-lightBtnColor hover:bg-lightBtnColor border",
+        aquaLight: "text-black bg-lightAquaBg hover:bg-lightAquaBg",
         extralight: "text-black bg-white hover:bg-white border rounded-lg",
         dark: "text-white bg-blackishBg hover:bg-blackishBg",
         submit: "text-white bg-lightBlueBg hover:bg-lightBlueBg",
         submitExtended: "text-white bg-lightBlueBg hover:bg-lightBlueBg w-full",
-        darkish: 'text-white bg-primary font-normal',
+        darkish: "text-white bg-primary font-normal",
         blackWhite: "text-white bg-black border border-white",
-        disable: 'text-destructive underline underline-offset-2  border-none',
+        disable: "text-destructive underline underline-offset-2  border-none",
       },
       size: {
         exSmall: "text-sm px-1 h-10",
@@ -49,12 +48,10 @@ const buttonVariants = cva(
       variant: "default",
       size: "md",
     },
-  }
+  },
 );
 
-export interface IButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+export interface IButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   loading?: boolean;
   loaderColor?: string;
@@ -92,14 +89,7 @@ export interface IButtonProps
   prefixIconSize?: number;
   suffixIconSize?: number;
   suffixIconClassName?: string;
-  weight?:
-    | "bold"
-    | "thin"
-    | "light"
-    | "regular"
-    | "fill"
-    | "duotone"
-    | undefined;
+  weight?: "bold" | "thin" | "light" | "regular" | "fill" | "duotone" | undefined;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
@@ -123,28 +113,13 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     return (
-      <div
-        className={cn(
-          "relative",
-          { "cursor-not-allowed": props?.disabled },
-          buttonDivClassName ?? ""
-        )}
-      >
-        <button
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...props}
-        >
+      <div className={cn("relative", { "cursor-not-allowed": props?.disabled }, buttonDivClassName ?? "")}>
+        <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props}>
           {loading ? (
-            <IconComponent
-              name={"loader"}
-              color={loaderColor ?? "#ffffff"}
-              className="absolute animate-spin"
-              fontSize={16}
-            />
+            <IconComponent name={"loader"} color={loaderColor ?? "#ffffff"} className="absolute animate-spin" fontSize={16} />
           ) : (
             <div className="text-center lg:flex lg:gap-x-2 lg:items-center">
               {prefixIcon ? (
@@ -158,19 +133,14 @@ const Button = React.forwardRef<HTMLButtonElement, IButtonProps>(
               ) : null}
               {children}
               {suffixIcon ? (
-                <IconComponent
-                  name={suffixIcon}
-                  color={suffixIconColor ?? "#fff"}
-                  className={suffixIconClassName}
-                  fontSize={suffixIconSize}
-                />
+                <IconComponent name={suffixIcon} color={suffixIconColor ?? "#fff"} className={suffixIconClassName} fontSize={suffixIconSize} />
               ) : null}
             </div>
           )}
         </button>
       </div>
     );
-  }
+  },
 );
 Button.displayName = "Button";
 

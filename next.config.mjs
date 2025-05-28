@@ -1,4 +1,4 @@
-import {withSentryConfig} from '@sentry/nextjs';
+import { withSentryConfig } from "@sentry/nextjs";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -7,16 +7,20 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'secure.gravatar.com',
+        protocol: "https",
+        hostname: "secure.gravatar.com",
       },
       {
-        protocol: 'https',
-        hostname: 'trello-members.s3.amazonaws.com',
+        protocol: "https",
+        hostname: "trello-members.s3.amazonaws.com",
       },
       {
-        protocol: 'https',
-        hostname: 'avatar-management--avatars.us-west-2.prod.public.atl-paas.net',
+        protocol: "https",
+        hostname: "avatar-management--avatars.us-west-2.prod.public.atl-paas.net",
+      },
+      {
+        protocol: "https",
+        hostname: "**",
       },
     ],
   },
@@ -26,9 +30,9 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options
 
-  org: '6sense-technologies',
-  project: '6sense-team-pulse-frontend',
-  sentryUrl: 'https://sentry.io/',
+  org: "6sense-technologies",
+  project: "6sense-team-pulse-frontend",
+  sentryUrl: "https://sentry.io/",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
@@ -48,7 +52,7 @@ export default withSentryConfig(nextConfig, {
   // This can increase your server load as well as your hosting bill.
   // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
   // side errors will fail.
-  tunnelRoute: '/monitoring',
+  tunnelRoute: "/monitoring",
 
   // Hides source maps from generated client bundles
   hideSourceMaps: true,

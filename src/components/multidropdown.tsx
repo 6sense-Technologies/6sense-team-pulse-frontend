@@ -6,12 +6,10 @@ import { Check, ChevronDown } from "lucide-react";
 import { Controller } from "react-hook-form";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ButtonComponent";
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-
-
 
 interface MultiDropdownProps {
   control: any;
@@ -44,9 +42,7 @@ export function MultiDropdown({
   };
 
   const handleSelectItem = (value: string, onChange: (value: string[]) => void) => {
-    const newSelectedValues = selectedValues.includes(value)
-      ? selectedValues.filter((v) => v !== value)
-      : [...selectedValues, value];
+    const newSelectedValues = selectedValues.includes(value) ? selectedValues.filter((v) => v !== value) : [...selectedValues, value];
     setSelectedValues(newSelectedValues);
     onChange(newSelectedValues);
   };
@@ -73,7 +69,11 @@ export function MultiDropdown({
                   <div className="flex flex-wrap gap-1 max-h-[100px] overflow-y-auto">
                     {selectedValues.length > 0 ? (
                       selectedValues.map((value) => (
-                        <Badge key={value} variant="secondary" className="bg-white border-lightborderColor rounded-xl text-lightAquaTextColor hover:bg-white cursor-auto">
+                        <Badge
+                          key={value}
+                          variant="secondary"
+                          className="bg-white border-lightborderColor rounded-xl text-lightAquaTextColor hover:bg-white cursor-auto"
+                        >
                           {options.find((option) => option.value === value)?.label}
                           <span
                             className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 cursor-pointer"
@@ -89,8 +89,7 @@ export function MultiDropdown({
                             }}
                             tabIndex={0}
                             role="button"
-                          >
-                          </span>
+                          ></span>
                         </Badge>
                       ))
                     ) : (
@@ -106,16 +105,8 @@ export function MultiDropdown({
                     <CommandEmpty className="bg-white z-50">No {placeholder?.toLowerCase()} found.</CommandEmpty>
                     <CommandGroup className="w-[420px] bg-white z-50">
                       {options.map((option) => (
-                        <CommandItem
-                          key={option.value}
-                          onSelect={() => handleSelectItem(option.value, field.onChange)}
-                        >
-                          <Check
-                            className={cn(
-                              "mr-2 h-4 w-4",
-                              selectedValues.includes(option.value) ? "opacity-100" : "opacity-0"
-                            )}
-                          />
+                        <CommandItem key={option.value} onSelect={() => handleSelectItem(option.value, field.onChange)}>
+                          <Check className={cn("mr-2 h-4 w-4", selectedValues.includes(option.value) ? "opacity-100" : "opacity-0")} />
                           {option.label}
                         </CommandItem>
                       ))}
@@ -125,13 +116,9 @@ export function MultiDropdown({
               </PopoverContent>
             </Popover>
             {errors && errors[name]?.message ? (
-              <p className="absolute mt-1 flex items-center text-twelve md:text-sm font-medium text-destructive">
-                {errors[name].message}
-              </p>
+              <p className="absolute mt-1 flex items-center text-twelve md:text-sm font-medium text-destructive">{errors[name].message}</p>
             ) : message ? null : additionalText ? (
-              <p className="absolute mt-1 flex items-center text-twelve md:text-sm text-inputFooterColor min-w-[330px]">
-                {additionalText}
-              </p>
+              <p className="absolute mt-1 flex items-center text-twelve md:text-sm text-inputFooterColor min-w-[330px]">{additionalText}</p>
             ) : null}
           </div>
         );

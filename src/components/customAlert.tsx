@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
-import { useToast } from "../hooks/use-toast"
-import { Button } from "@/components/ui/button"
-
+import { useToast } from "../hooks/use-toast";
+import { Button } from "@/components/ButtonComponent";
 export function CustomAlert() {
-  const { toast } = useToast()
+  const { toast } = useToast();
 
   return (
     <Button
@@ -12,10 +11,10 @@ export function CustomAlert() {
       onClick={() => {
         toast({
           description: "Coming Soon !!!",
-        })
+        });
       }}
     >
       Show Toast
     </Button>
-  )
+  );
 }
