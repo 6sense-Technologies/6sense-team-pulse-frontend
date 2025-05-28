@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, ListFilter, CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
 
 import AvatarMenu from "@/components/AvatarMenu";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
@@ -20,7 +21,6 @@ import EmptyTimelogView from "./_components/emptyTimelogView";
 import { ProjectDropdown } from "../projects/_components/projectDropdown";
 import { TimelogTable } from "./_components/timelogTable";
 
-import { GetTimelogList } from "../../../../helpers/timelogs/timelogApi";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   DropdownMenu,
@@ -39,14 +39,23 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import AddReportedModal from "./_components/addReportedModal";
+import { GetTimelogListUnreported, GetTimelogListReported } from "../../../../helpers/timelogs/timelogApi";
+import { TimelogReportedListTable } from "./_components/timelogReportedListTable";
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  console.log("🚀 ~frompage TimelogPage ~ selectedIds:", selectedIds);
+  const [activeTab, setActiveTab] = useState<"unreported" | "reported">("unreported");
   const session = useSession();
 
   const [date, setDate] = useState<Date>(new Date());
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: new Date(),
+    to: addDays(new Date(), 7),
+  });
+
   const formattedDate = date ? format(date, "yyyy-MM-dd") : "";
+  const formattedStartDate = dateRange?.from ? format(dateRange.from, "yyyy-MM-dd") : "";
+  const formattedEndDate = dateRange?.to ? format(dateRange.to, "yyyy-MM-dd") : "";
 
   const [pages, setPages] = useState(1);
   const [limit] = useState(10);
@@ -82,19 +91,39 @@ const TimelogPage = () => {
     });
   }, [searchParams]);
 
-  // Query: Fetch Time Logs
+  // Query: Fetch Time Logs (Unreported)
   const {
     data: timelogList,
     isFetching: timelogListLoading,
     refetch: timelogListRefetch,
   } = useQuery<any>({
     queryKey: ["fetchTimelogs", pages, limit, formattedDate, sort],
-    queryFn: () => GetTimelogList({ page: pages, limit, formattedDate, sort }, session),
+    queryFn: () => GetTimelogListUnreported({ page: pages, limit, formattedDate, sort }, session),
+    enabled: activeTab === "unreported",
+  });
+
+  // Query: Fetch Time Logs (Reported)
+  const {
+    data: reportedList,
+    isFetching: reportedListLoading,
+    refetch: reportedListRefetch,
+  } = useQuery<any>({
+    queryKey: ["fetchReportedTimelogs", pages, limit, formattedStartDate, formattedEndDate, sort],
+    queryFn: () => GetTimelogListReported({ 
+      page: pages, 
+      limit, 
+      startDate: formattedStartDate || format(new Date(), "yyyy-MM-dd"),
+      endDate: formattedEndDate || format(addDays(new Date(), 7), "yyyy-MM-dd"), 
+      sort 
+    }, session),
+    enabled: activeTab === "reported" && !!formattedStartDate && !!formattedEndDate,
   });
 
   // Setup for pagination handling
   const totalCountAndLimit = {
-    totalCount: timelogList?.paginationMetadata?.totalCount ?? 0,
+    totalCount: activeTab === "unreported" 
+      ? timelogList?.paginationMetadata?.totalCount ?? 0 
+      : reportedList?.paginationMetadata?.totalCount ?? 0,
     size: pagination.size ?? 10,
   };
 
@@ -127,16 +156,20 @@ const TimelogPage = () => {
           <div className="item-start flex w-full flex-col md:flex-row md:items-end md:gap-x-4 md:gap-y-0 lg:ml-2">
             <div className="flex justify-center gap-4 my-4 md:mb-6 md:mt-4">
               {/* Tabs: Unreported / Reported */}
-              <Tabs defaultValue="account" className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full">
+              <Tabs 
+                defaultValue="unreported" 
+                className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full"
+                onValueChange={(value) => setActiveTab(value as "unreported" | "reported")}
+              >
                 <TabsList className="bg-transparent flex">
                   <TabsTrigger
-                    value="account"
+                    value="unreported"
                     className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm w-full"
                   >
                     Unreported
                   </TabsTrigger>
                   <TabsTrigger
-                    value="password"
+                    value="reported"
                     className="data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:shadow-sm w-full"
                   >
                     Reported
@@ -167,41 +200,96 @@ const TimelogPage = () => {
           {/* Date Picker & Create Log Button */}
           <div className="md:flex md:items-center md:gap-x-4 md:justify-center">
             {anySelected ? (
-              <AddReportedModal date={formattedDate} selectedIds={selectedIds} />
+              <AddReportedModal 
+                date={formattedDate} 
+                selectedIds={selectedIds} 
+                onClose={() => setAnySelected(false)}
+              />
             ) : (
               <>
                 {/* Date Picker */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn("flex items-center gap-2 justify-start text-left font-normal", !date && "text-muted-foreground")}
-                    >
-                      <CalendarIcon className="w-4 h-4" />
-                      <span>{date ? format(date, "PPP") : "Pick a date"}</span>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0 bg-white" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={(selectedDate) => {
-                        if (selectedDate) {
-                          setDate(selectedDate);
-                          setPages(1);
-                          setPagination((prev) => ({
-                            ...prev,
-                            page: 1,
-                          }));
-                          const params = new URLSearchParams(searchParams.toString());
-                          params.set("page", "1");
-                          router.replace(`${pathname}?${params.toString()}`);
-                        }
-                      }}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                {activeTab === "unreported" ? (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn("flex items-center gap-2 justify-start text-left font-normal", !date && "text-muted-foreground")}
+                      >
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>{date ? format(date, "PPP") : "Pick a date"}</span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-white" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={(selectedDate) => {
+                          if (selectedDate) {
+                            setDate(selectedDate);
+                            setPages(1);
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: 1,
+                            }));
+                            const params = new URLSearchParams(searchParams.toString());
+                            params.set("page", "1");
+                            router.replace(`${pathname}?${params.toString()}`);
+                          }
+                        }}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "flex items-center gap-2 justify-start text-left font-normal",
+                          !dateRange.from && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="w-4 h-4" />
+                        <span>
+                          {dateRange.from ? (
+                            dateRange.to ? (
+                              <>
+                                {format(dateRange.from, "LLL dd")} -{" "}
+                                {format(dateRange.to, "LLL dd")}
+                              </>
+                            ) : (
+                              format(dateRange.from, "LLL dd, y")
+                            )
+                          ) : (
+                            "Pick a date range"
+                          )}
+                        </span>
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-white" align="start">
+                      <Calendar
+                        mode="range"
+                        selected={dateRange}
+                        onSelect={(range) => {
+                          if (range) {
+                            setDateRange(range);
+                            setPages(1);
+                            setPagination((prev) => ({
+                              ...prev,
+                              page: 1,
+                            }));
+                            const params = new URLSearchParams(searchParams.toString());
+                            params.set("page", "1");
+                            router.replace(`${pathname}?${params.toString()}`);
+                          }
+                        }}
+                        initialFocus
+                        className="[&_.rdp-day_selected]:!bg-[#0F172A] [&_.rdp-day_in_range]:!bg-[#F1F5F9] [&_.rdp-day_in_range]:!rounded-none [&_.rdp-day_selected]:!rounded-md [&_.rdp-day_selected:first-child]:!rounded-l-md [&_.rdp-day_selected:last-child]:!rounded-r-md"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
 
                 {/* Create Log Button (Disabled) */}
                 <Link href={``}>
@@ -216,21 +304,40 @@ const TimelogPage = () => {
 
         {/* Table or Empty States */}
         <div className="mt-6 lg:ml-2 lg:mt-0">
-          {timelogListLoading ? (
-            <EmptyTableSkeleton />
-          ) : timelogList?.data?.length === 0 ? (
-            <EmptyTimelogView />
+          {activeTab === "unreported" ? (
+            timelogListLoading ? (
+              <EmptyTableSkeleton />
+            ) : timelogList?.data?.length === 0 ? (
+              <EmptyTimelogView />
+            ) : (
+              <TimelogTable
+                totalCountAndLimit={totalCountAndLimit}
+                projects={timelogList?.data ?? []}
+                loading={timelogListLoading}
+                refetch={timelogListRefetch}
+                currentPage={pages}
+                onSelectionChange={setAnySelected}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+              />
+            )
           ) : (
-            <TimelogTable
-              totalCountAndLimit={totalCountAndLimit}
-              projects={timelogList?.data ?? []}
-              loading={timelogListLoading}
-              refetch={timelogListRefetch}
-              currentPage={pages}
-              onSelectionChange={setAnySelected}
-              selectedIds={selectedIds}
-              setSelectedIds={setSelectedIds}
-            />
+            reportedListLoading ? (
+              <EmptyTableSkeleton />
+            ) : reportedList?.data?.length === 0 ? (
+              <EmptyTimelogView />
+            ) : (
+              <TimelogReportedListTable
+                totalCountAndLimit={totalCountAndLimit}
+                projects={reportedList?.data ?? []}
+                loading={reportedListLoading}
+                refetch={reportedListRefetch}
+                currentPage={pages}
+                onSelectionChange={setAnySelected}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+              />
+            )
           )}
         </div>
       </div>

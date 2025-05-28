@@ -1,10 +1,13 @@
 import axios from "axios";
 import { TEMP_BACKEND_URI } from "../../globalConstants";
+import { useState } from "react";
 
 interface TPaginationProps {
   page: number;
   limit: number;
-  formattedDate: string;
+  formattedDate?: string;
+  startDate?: string;
+  endDate?: string;
   sort: string;
 }
 
@@ -14,7 +17,7 @@ interface TWorksheetProps {
   formattedDate: string;
 }
 
-export const GetTimelogList = async ({ page, limit, formattedDate, sort }: TPaginationProps, session: any) => {
+export const GetTimelogListUnreported  = async ({ page, limit, formattedDate, sort }: TPaginationProps, session: any) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -109,6 +112,35 @@ export const CreateReportedData = async (data: any, session: any) => {
       "Organization-Id": "67a317a25b672f01152f081a",
     },
   });
+
+  return response.data;
+};
+
+
+export const GetTimelogListReported = async ({ page, limit, startDate, endDate, sort }: TPaginationProps, session: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/timelog/worksheet/list?page=${page}&limit=${limit}&start-date=${startDate}&end-date=${endDate}&sort-order=${sort}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Organization-Id": "67a317a25b672f01152f081a",
+        "Timezone-Region": "Asia/Dhaka",
+      },
+    }
+  );
+
+  if (response.status === 401) {
+    session.update();
+  }
 
   return response.data;
 };
