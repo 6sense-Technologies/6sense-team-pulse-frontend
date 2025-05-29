@@ -16,7 +16,7 @@ pipeline {
 
   stages {
 
-    stage('🚀 Push to Server') {
+    stage('🚀 Deploy to Server') {
       when {
         anyOf {
           branch 'main'
@@ -25,24 +25,58 @@ pipeline {
         }
       }
       steps {
-        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: 'ops4-team-znzd', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
-            infisicalSecret(
-                includeImports: true, 
-                path: '/', 
+        script {
+          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'production'
+          def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
+    
+          withInfisical(configuration: [
+              infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
+              infisicalEnvironmentSlug: infisicalEnv,
+              infisicalProjectSlug: 'ops4-team-znzd',
+              infisicalUrl: 'https://infisical.6sensehq.com'
+            ],
+            infisicalSecrets: [
+              infisicalSecret(
+                includeImports: true,
+                path: '/6sense-team-pulse-frontend',
                 secretValues: [
-                    [infisicalKey: 'AUTH_SECRET'],
-                    [infisicalKey: "AUTH_GOOGLE_SECRET"],
-                    [infisicalKey: 'AUTH_GOOGLE_ID'],
-                    [infisicalKey: 'CONTAINER_NAME'],
-                    [infisicalKey: 'HOST_PORT'],
-                    [infisicalKey: 'IMAGE_TAG'],
+                  [infisicalKey: 'AUTH_SECRET'],
+                  [infisicalKey: 'AUTH_GOOGLE_SECRET'],
+                  [infisicalKey: 'AUTH_GOOGLE_ID'],
+                  [infisicalKey: 'CONTAINER_NAME'],
+                  [infisicalKey: 'HOST_PORT'],
+                  [infisicalKey: 'IMAGE_TAG'],
                 ]
-            )
-        ]) {
-            sh "printenv"
+              )
+            ]) {
+    
+            sshagent(credentials: ['staging-ssh']) {
+              sh """
+                ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << 'EOF'
+                  cd ~/${deployDir}
+    
+                  echo "⚙️ Writing .env file..."
+                  cat <<EOT > .env
+    AUTH_SECRET=${AUTH_SECRET}
+    AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
+    AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
+    CONTAINER_NAME=${CONTAINER_NAME}
+    HOST_PORT=${HOST_PORT}
+    IMAGE_TAG=${IMAGE_TAG}
+    NODE_ENV=production
+    EOT
+    
+                  echo "📦 Pulling and Restarting Docker containers..."
+                  echo "docker compose pull"
+                  echo "docker compose up -d --remove-orphans"
+                EOF
+              """
+            }
+          }
         }
       }
     }
+
     
     stage('📦 Checkout Source Code') {
       steps {
