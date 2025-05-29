@@ -44,6 +44,7 @@ import { TimelogReportedListTable } from "./_components/timelogReportedListTable
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  console.log("🚀 ~ TimelogPage ~ selectedIds:", selectedIds);
   const [activeTab, setActiveTab] = useState<"unreported" | "reported">("unreported");
   const session = useSession();
 
@@ -161,7 +162,13 @@ const TimelogPage = () => {
               <Tabs
                 defaultValue="unreported"
                 className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full"
-                onValueChange={(value) => setActiveTab(value as "unreported" | "reported")}
+                onValueChange={(value) => {
+                  // Reset selections when switching tabs
+                  setSelectedIds([]);
+                  setAnySelected(false);
+                  // Then update the active tab
+                  setActiveTab(value as "unreported" | "reported");
+                }}
               >
                 <TabsList className="bg-transparent flex">
                   <TabsTrigger
@@ -202,7 +209,13 @@ const TimelogPage = () => {
           {/* Date Picker & Create Log Button */}
           <div className="md:flex md:items-center md:gap-x-4 md:justify-center">
             {anySelected ? (
-              <AddReportedModal date={formattedDate} selectedIds={selectedIds} onClose={() => setAnySelected(false)} />
+              <AddReportedModal
+                date={formattedDate}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+                onClose={() => setAnySelected(false)}
+                activeTab={activeTab}
+              />
             ) : (
               <>
                 {/* Date Picker */}

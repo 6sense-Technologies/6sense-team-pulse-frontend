@@ -13,6 +13,7 @@ import { CreateReportedData, GetProjectList, GetWorksheetList } from "../../../.
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface Project {
   _id: string;
@@ -38,11 +39,13 @@ interface SearchResults {
 interface AddReportedModalProps {
   date: string;
   selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
   onClose: () => void;
   onSuccess?: () => void;
+  activeTab: "unreported" | "reported";
 }
 
-const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReportedModalProps) => {
+const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSuccess, activeTab }: AddReportedModalProps) => {
   const session = useSession();
   const form = useForm();
   const [open, setOpen] = useState(false);
@@ -131,6 +134,7 @@ const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReported
       queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
       onClose();
       onSuccess?.();
+      setSelectedIds([]); // This is fine here
     },
     onError: (error: any) => {
       console.error("Mutation error:", error);
@@ -177,9 +181,11 @@ const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReported
       }}
     >
       <DialogTrigger asChild>
-        <Button className="mt-4 md:mt-0" variant="defaultEx">
-          Assign to Project
-        </Button>
+        {activeTab === "unreported" && (
+          <Button className="mt-4 md:mt-0" variant="defaultEx">
+            Assign to Project
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
@@ -254,8 +260,10 @@ const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReported
                             handleSearch(value);
                           }
                         }}
-                        placeholder="Name of the work Sheet"
+                        placeholder="Name of the work sheet"
                         disabled={!projectId}
+                        className="placeholder-black"
+                        style={{ color: "black" }}
                       />
                     </FormControl>
                     {projectId && openPopover && searchResults.worksheets.length > 0 && (
@@ -283,13 +291,15 @@ const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReported
             {/* Display Info */}
             <div className="grid grid-cols-2 gap-4 text-[#64748B] font-normal text-sm leading-5">
               <p>Total logged time:</p>
-              <p className="text-black">
+              <p className={cn(selectedWorksheet ? "text-black font-medium" : "text-gray-500")}>
                 {selectedWorksheet ? `${selectedWorksheet.totalLoggedTime.hours}h ${selectedWorksheet.totalLoggedTime.minutes}m` : "00h 00m"}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-[#64748B] font-normal text-sm leading-5">
               <p>Total activities:</p>
-              <p className="text-black">{selectedWorksheet ? selectedWorksheet.totalActivities : 0}</p>
+              <p className={cn(selectedWorksheet ? "text-black font-medium" : "text-gray-500")}>
+                {selectedWorksheet ? selectedWorksheet.totalActivities : 0}
+              </p>
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
