@@ -43,7 +43,6 @@ pipeline {
                   [infisicalKey: 'AUTH_SECRET'],
                   [infisicalKey: 'AUTH_GOOGLE_SECRET'],
                   [infisicalKey: 'AUTH_GOOGLE_ID'],
-                  [infisicalKey: 'CONTAINER_NAME'],
                   [infisicalKey: 'HOST_PORT'],
                 ]
               )
