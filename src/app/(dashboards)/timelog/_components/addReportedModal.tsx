@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -39,13 +39,16 @@ interface AddReportedModalProps {
   date: string;
   selectedIds: string[];
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps) => {
+const AddReportedModal = ({ date, selectedIds, onClose, onSuccess }: AddReportedModalProps) => {
   const session = useSession();
   const form = useForm();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<SearchResults>({
@@ -53,7 +56,9 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
     loading: false,
   });
   const [openPopover, setOpenPopover] = useState<boolean>(false);
+  console.log("🚀 ~ AddReportedModal ~ openPopover:", openPopover);
   const [selectedWorksheet, setSelectedWorksheet] = useState<WorkSheet | null>(null);
+  const [shouldSkipFocus, setShouldSkipFocus] = useState(false);
 
   const projectId = form.watch("project");
 
@@ -66,20 +71,29 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
     queryFn: () => GetProjectList(session),
   });
 
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (searchQuery.length >= 3 && projectId) {
-        setSearchResults({ worksheets: [], loading: true });
+  const handleSearch = (query: string) => {
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
 
+    // Only search if we have 3+ characters and a project ID
+    if (query.length >= 3 && projectId) {
+      // Set loading state
+      setSearchResults({ worksheets: [], loading: true });
+
+      // Set a new timeout for debouncing
+      searchTimeoutRef.current = setTimeout(async () => {
         try {
           const worksheetData = await GetWorksheetList(
             {
               projectId,
-              worksheetName: searchQuery,
+              worksheetName: query,
               formattedDate: date,
             },
             session,
           );
+
           setSearchResults({
             worksheets: worksheetData || [],
             loading: false,
@@ -89,13 +103,20 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
           console.error("Error fetching worksheets:", error);
           setSearchResults({ worksheets: [], loading: false });
         }
-      } else {
-        setOpenPopover(false);
-      }
-    }, 300);
+      }, 300);
+    } else {
+      setOpenPopover(false);
+    }
+  };
 
-    return () => clearTimeout(timer);
-  }, [searchQuery, projectId, date, session]);
+  useEffect(() => {
+    return () => {
+      // Cleanup the timeout on unmount
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const reportedMutation = useMutation({
     mutationFn: (data: any) => CreateReportedData(data, session),
@@ -109,6 +130,7 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
       setSelectedWorksheet(null);
       queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
       onClose();
+      onSuccess?.();
     },
     onError: (error: any) => {
       console.error("Mutation error:", error);
@@ -131,13 +153,29 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
     reportedMutation.mutate(payload);
   };
 
+  const handleWorksheetSelect = (worksheet: WorkSheet, field: any) => {
+    field.onChange(worksheet.name);
+    setSelectedWorksheet(worksheet);
+    setSearchQuery(worksheet.name);
+    setOpenPopover(false);
+    setShouldSkipFocus(true);
+
+    // Use setTimeout to ensure the focus is skipped after the current event loop
+    setTimeout(() => {
+      setShouldSkipFocus(false);
+    }, 100);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
-      setOpen(isOpen);
-      if (!isOpen) {
-        onClose();
-      }
-    }}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen);
+        if (!isOpen) {
+          onClose();
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button className="mt-4 md:mt-0" variant="defaultEx">
           Assign to Project
@@ -146,7 +184,9 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle className="font-semibold text-2xl leading-6">Work Sheet</DialogTitle>
-          <DialogDescription className="text-[#64748B] font-normal text-sm leading-5">Group selected activities into a worksheet and assign it to a project in one go.</DialogDescription>
+          <DialogDescription className="text-[#64748B] font-normal text-sm leading-5">
+            Group selected activities into a worksheet and assign it to a project in one go.
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -157,7 +197,9 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
               name="project"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Select Project <span className="text-red-500">*</span></FormLabel>
+                  <FormLabel>
+                    Select Project <span className="text-red-500">*</span>
+                  </FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -197,81 +239,57 @@ const AddReportedModal = ({ date, selectedIds, onClose }: AddReportedModalProps)
                   <div className="relative">
                     <FormControl>
                       <Input
+                        ref={inputRef}
                         type="text"
                         value={field.value || ""}
                         onChange={(e) => {
-                          field.onChange(e.target.value);
+                          const value = e.target.value;
+                          field.onChange(value);
+                          setSearchQuery(value);
+
                           if (!selectedWorksheet) {
-                            setSearchQuery(e.target.value);
-                            if (e.target.value.length >= 3) {
-                              setOpenPopover(true);
-                            } else {
-                              setOpenPopover(false);
-                            }
+                            handleSearch(value);
                           } else {
                             setSelectedWorksheet(null);
-                            setSearchQuery(e.target.value);
-                            if (e.target.value.length >= 3) {
-                              setOpenPopover(true);
-                            }
-                          }
-                        }}
-                        onFocus={() => {
-                          if (field.value && field.value.length >= 3) {
-                            setOpenPopover(true);
+                            handleSearch(value);
                           }
                         }}
                         placeholder="Name of the work Sheet"
                         disabled={!projectId}
                       />
                     </FormControl>
-                    {projectId && openPopover && (
+                    {projectId && openPopover && searchResults.worksheets.length > 0 && (
                       <div className="absolute z-50 w-full mt-1 bg-white border rounded-md shadow-lg">
-                        {searchResults.loading ? (
-                          <div className="p-2 space-y-2">
-                            {[1, 2, 3].map((index) => (
-                              <div key={index} className="flex items-center space-x-2">
-                                <Skeleton className="h-8 w-full" />
-                              </div>
-                            ))}
-                          </div>
-                        ) : searchResults.worksheets.length > 0 ? (
-                          <div className="max-h-[200px] overflow-y-auto">
-                            {searchResults.worksheets.map((worksheet) => (
-                              <div
-                                key={worksheet._id}
-                                className="px-4 py-2 hover:bg-slate-100 cursor-pointer"
-                                onClick={() => {
-                                  field.onChange(worksheet.name);
-                                  setSelectedWorksheet(worksheet);
-                                  setSearchQuery(worksheet.name);
-                                  setOpenPopover(false);
-                                }}
-                              >
-                                {worksheet.name}
-                              </div>
-                            ))}
-                          </div>
-                        ) : searchQuery.length >= 3 ? (
-                          <div className="p-2">No worksheets found</div>
-                        ) : null}
+                        <div className="max-h-[200px] overflow-y-auto">
+                          {searchResults.worksheets.map((worksheet) => (
+                            <div
+                              key={worksheet._id}
+                              className="px-4 py-2 hover:bg-slate-100 cursor-pointer"
+                              onClick={() => handleWorksheetSelect(worksheet, field)}
+                            >
+                              {worksheet.name}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
-                  {/* {!projectId && <div className="text-xs text-muted-foreground mt-1">Select a project first</div>} */}
+
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             {/* Display Info */}
-            <div className="grid grid-cols-2 gap-4 text-[#64748B]">
+            <div className="grid grid-cols-2 gap-4 text-[#64748B] font-normal text-sm leading-5">
               <p>Total logged time:</p>
-              <p>{selectedWorksheet ? `${selectedWorksheet.totalLoggedTime.hours}h ${selectedWorksheet.totalLoggedTime.minutes}m` : "00h 00m"}</p>
+              <p className="text-black">
+                {selectedWorksheet ? `${selectedWorksheet.totalLoggedTime.hours}h ${selectedWorksheet.totalLoggedTime.minutes}m` : "00h 00m"}
+              </p>
             </div>
-            <div className="grid grid-cols-2 gap-4 text-[#64748B]">
+            <div className="grid grid-cols-2 gap-4 text-[#64748B] font-normal text-sm leading-5">
               <p>Total activities:</p>
-              <p>{selectedWorksheet ? selectedWorksheet.totalActivities : 0}</p>
+              <p className="text-black">{selectedWorksheet ? selectedWorksheet.totalActivities : 0}</p>
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
