@@ -25,7 +25,7 @@ pipeline {
         }
       }
       steps {
-        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: '6835de76d5560fd33d8b1a55', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
+        withInfisical(configuration: [infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2', infisicalEnvironmentSlug: 'dev', infisicalProjectSlug: 'ops4-team-znzd', infisicalUrl: 'https://infisical.6sensehq.com'], infisicalSecrets: [
             infisicalSecret(
                 includeImports: true, 
                 path: '/', 
