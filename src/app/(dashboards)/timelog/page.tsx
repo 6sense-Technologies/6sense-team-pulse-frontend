@@ -44,6 +44,7 @@ import { TimelogReportedListTable } from "./_components/timelogReportedListTable
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  console.log("🚀 ~ TimelogPage ~ selectedIds:", selectedIds);
   const [activeTab, setActiveTab] = useState<"unreported" | "reported">("unreported");
   const session = useSession();
 
@@ -109,21 +110,23 @@ const TimelogPage = () => {
     refetch: reportedListRefetch,
   } = useQuery<any>({
     queryKey: ["fetchReportedTimelogs", pages, limit, formattedStartDate, formattedEndDate, sort],
-    queryFn: () => GetTimelogListReported({ 
-      page: pages, 
-      limit, 
-      startDate: formattedStartDate || format(new Date(), "yyyy-MM-dd"),
-      endDate: formattedEndDate || format(addDays(new Date(), 7), "yyyy-MM-dd"), 
-      sort 
-    }, session),
+    queryFn: () =>
+      GetTimelogListReported(
+        {
+          page: pages,
+          limit,
+          startDate: formattedStartDate || format(new Date(), "yyyy-MM-dd"),
+          endDate: formattedEndDate || format(addDays(new Date(), 7), "yyyy-MM-dd"),
+          sort,
+        },
+        session,
+      ),
     enabled: activeTab === "reported" && !!formattedStartDate && !!formattedEndDate,
   });
 
   // Setup for pagination handling
   const totalCountAndLimit = {
-    totalCount: activeTab === "unreported" 
-      ? timelogList?.paginationMetadata?.totalCount ?? 0 
-      : reportedList?.paginationMetadata?.totalCount ?? 0,
+    totalCount: activeTab === "unreported" ? (timelogList?.paginationMetadata?.totalCount ?? 0) : (reportedList?.paginationMetadata?.totalCount ?? 0),
     size: pagination.size ?? 10,
   };
 
@@ -156,10 +159,16 @@ const TimelogPage = () => {
           <div className="item-start flex w-full flex-col md:flex-row md:items-end md:gap-x-4 md:gap-y-0 lg:ml-2">
             <div className="flex justify-center gap-4 my-4 md:mb-6 md:mt-4">
               {/* Tabs: Unreported / Reported */}
-              <Tabs 
-                defaultValue="unreported" 
+              <Tabs
+                defaultValue="unreported"
                 className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full"
-                onValueChange={(value) => setActiveTab(value as "unreported" | "reported")}
+                onValueChange={(value) => {
+                  // Reset selections when switching tabs
+                  setSelectedIds([]);
+                  setAnySelected(false);
+                  // Then update the active tab
+                  setActiveTab(value as "unreported" | "reported");
+                }}
               >
                 <TabsList className="bg-transparent flex">
                   <TabsTrigger
@@ -200,10 +209,12 @@ const TimelogPage = () => {
           {/* Date Picker & Create Log Button */}
           <div className="md:flex md:items-center md:gap-x-4 md:justify-center">
             {anySelected ? (
-              <AddReportedModal 
-                date={formattedDate} 
-                selectedIds={selectedIds} 
+              <AddReportedModal
+                date={formattedDate}
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
                 onClose={() => setAnySelected(false)}
+                activeTab={activeTab}
               />
             ) : (
               <>
@@ -220,9 +231,11 @@ const TimelogPage = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 bg-white" align="start">
+                      {/* Single date picker (unreported tab) */}
                       <Calendar
                         mode="single"
                         selected={date}
+                        disabled={{ after: new Date() }} // Add this line to disable future dates
                         onSelect={(selectedDate) => {
                           if (selectedDate) {
                             setDate(selectedDate);
@@ -245,18 +258,14 @@ const TimelogPage = () => {
                     <PopoverTrigger asChild>
                       <Button
                         variant={"outline"}
-                        className={cn(
-                          "flex items-center gap-2 justify-start text-left font-normal",
-                          !dateRange.from && "text-muted-foreground"
-                        )}
+                        className={cn("flex items-center gap-2 justify-start text-left font-normal", !dateRange.from && "text-muted-foreground")}
                       >
                         <CalendarIcon className="w-4 h-4" />
                         <span>
                           {dateRange.from ? (
                             dateRange.to ? (
                               <>
-                                {format(dateRange.from, "LLL dd")} -{" "}
-                                {format(dateRange.to, "LLL dd")}
+                                {format(dateRange.from, "LLL dd")} - {format(dateRange.to, "LLL dd")}
                               </>
                             ) : (
                               format(dateRange.from, "LLL dd, y")
@@ -268,9 +277,11 @@ const TimelogPage = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0 bg-white" align="start">
+                      {/* Date range picker (reported tab) */}
                       <Calendar
                         mode="range"
                         selected={dateRange}
+                        disabled={{ after: new Date() }} // Add this line to disable future dates
                         onSelect={(range) => {
                           if (range) {
                             setDateRange(range);
@@ -291,12 +302,14 @@ const TimelogPage = () => {
                   </Popover>
                 )}
 
-                {/* Create Log Button (Disabled) */}
-                <Link href={``}>
-                  <Button className="mt-4 md:mt-0" variant="defaultEx" disabled>
-                    <span className="flex items-center gap-x-[6px] text-nowrap">Create Log</span>
-                  </Button>
-                </Link>
+                {/* Create Log Button (Only show in unreported view) */}
+                {activeTab === "unreported" && (
+                  <Link href={``}>
+                    <Button className="mt-4 md:mt-0" variant="defaultEx" disabled>
+                      <span className="flex items-center gap-x-[6px] text-nowrap">Create Log</span>
+                    </Button>
+                  </Link>
+                )}
               </>
             )}
           </div>
@@ -321,23 +334,21 @@ const TimelogPage = () => {
                 setSelectedIds={setSelectedIds}
               />
             )
+          ) : reportedListLoading ? (
+            <EmptyTableSkeleton />
+          ) : reportedList?.data?.length === 0 ? (
+            <EmptyTimelogView />
           ) : (
-            reportedListLoading ? (
-              <EmptyTableSkeleton />
-            ) : reportedList?.data?.length === 0 ? (
-              <EmptyTimelogView />
-            ) : (
-              <TimelogReportedListTable
-                totalCountAndLimit={totalCountAndLimit}
-                projects={reportedList?.data ?? []}
-                loading={reportedListLoading}
-                refetch={reportedListRefetch}
-                currentPage={pages}
-                onSelectionChange={setAnySelected}
-                selectedIds={selectedIds}
-                setSelectedIds={setSelectedIds}
-              />
-            )
+            <TimelogReportedListTable
+              totalCountAndLimit={totalCountAndLimit}
+              projects={reportedList?.data ?? []}
+              loading={reportedListLoading}
+              refetch={reportedListRefetch}
+              currentPage={pages}
+              onSelectionChange={setAnySelected}
+              selectedIds={selectedIds}
+              setSelectedIds={setSelectedIds}
+            />
           )}
         </div>
       </div>

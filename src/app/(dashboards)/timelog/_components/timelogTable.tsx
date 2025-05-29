@@ -84,7 +84,7 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
       ),
       cell: ({ row }) => (
         <Checkbox
-          checked={row.getIsSelected()}
+          checked={selectedIds.includes(row.original._id)}
           onCheckedChange={(value) => {
             if (value) {
               setSelectedIds((prev) => [...prev, row.original._id]);
