@@ -26,7 +26,7 @@ pipeline {
       }
       steps {
         script {
-          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'production'
+          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'prod'
           def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
     
           withInfisical(configuration: [
