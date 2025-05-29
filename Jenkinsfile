@@ -45,13 +45,13 @@ pipeline {
                   [infisicalKey: 'AUTH_GOOGLE_ID'],
                   [infisicalKey: 'CONTAINER_NAME'],
                   [infisicalKey: 'HOST_PORT'],
-                  [infisicalKey: 'IMAGE_TAG'],
                 ]
               )
             ]) {
     
             sshagent(credentials: ['staging-ssh']) {
               sh """
+                scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
                 ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << 'EOF'
                   cd ~/${deployDir}
     
@@ -60,13 +60,14 @@ pipeline {
     AUTH_SECRET=${AUTH_SECRET}
     AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
     AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
-    CONTAINER_NAME=${CONTAINER_NAME}
+    CONTAINER_NAME=${deployDir}
     HOST_PORT=${HOST_PORT}
     IMAGE_TAG=${IMAGE_TAG}
     NODE_ENV=production
     EOT
     
                   echo "📦 Pulling and Restarting Docker containers..."
+                  // echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
                   echo "docker compose pull"
                   echo "docker compose up -d --remove-orphans"
                 EOF
