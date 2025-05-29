@@ -38,7 +38,7 @@ pipeline {
             infisicalSecrets: [
               infisicalSecret(
                 includeImports: true,
-                path: '"/6sense-team-pulse-frontend"',
+                path: '/6sense-team-pulse-frontend',
                 secretValues: [
                   [infisicalKey: 'AUTH_SECRET'],
                   [infisicalKey: 'AUTH_GOOGLE_SECRET'],
