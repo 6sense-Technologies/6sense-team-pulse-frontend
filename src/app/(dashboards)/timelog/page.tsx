@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { format, addDays } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, ListFilter, CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
@@ -50,8 +50,8 @@ const TimelogPage = () => {
 
   const [date, setDate] = useState<Date>(new Date());
   const [dateRange, setDateRange] = useState<DateRange>({
-    from: new Date(),
-    to: addDays(new Date(), 7),
+    from: subDays(new Date(), 7), // 7 days ago
+    to: new Date(), // Today
   });
 
   const formattedDate = date ? format(date, "yyyy-MM-dd") : "";

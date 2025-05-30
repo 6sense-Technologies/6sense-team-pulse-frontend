@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,21 +17,13 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import defaultActivityImg from "../../../../../public/logo/globe.png";
-import { useSearchParams } from "next/navigation";
-import { EllipsisVertical, Globe } from "lucide-react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { Globe } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
-import CustomMenu from "@/components/customMenu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ProjectPagination } from "../../projects/_components/projectPagination";
 import Image from "next/image";
-import { TimelogPagination } from "./timelogPagination";
-import { ButtonCng } from "@/components/ui/button";
-import { Button } from "@/components/ButtonComponent";
-import Link from "next/link";
-
-const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
+import { TimelogPagination } from "../../_components/timelogPagination";
+import { WorksheetPagination } from "./worksheetPagination";
 
 type TTimelogTableProps = {
   projects?: Projects[];
@@ -40,24 +32,22 @@ type TTimelogTableProps = {
   currentPage: number;
   loading?: boolean;
   onSelectionChange?: (anySelected: boolean) => void;
-  selectedIds: string[]; // Add this line
-  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; // Add this line
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  reportedId?: string | null;
 };
 
-export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
+export const WorksheetTable: React.FC<TTimelogTableProps> = ({
   projects = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
   loading,
   onSelectionChange,
-  selectedIds, // Add this parameter
-  setSelectedIds, // Add this parameter
+  selectedIds,
+  setSelectedIds,
+  reportedId,
 }) => {
-  // Remove local selectedIds state since it's now a prop
-  // const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  // console.log("🚀 ~ selectedIds:", selectedIds);
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -75,53 +65,68 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
 
   // Define columns for the table
   const columns: ColumnDef<any>[] = [
-    // {
-    //   id: "select",
-    //   size: 5,
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={row.getIsSelected()}
-    //       onCheckedChange={(value) => {
-    //         if (value) {
-    //           setSelectedIds((prev) => [...prev, row.original._id]);
-    //         } else {
-    //           setSelectedIds(selectedIds.filter((id) => id !== row.original._id));
-    //         }
-    //         row.toggleSelected(!!value);
-    //       }}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
-      accessorKey: "date",
-      header: () => <div className="text-bold">Date</div>,
-      cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("date") ? row.getValue("date") : "-"}</div>,
-      size: 20,
+      id: "select",
+      size: 5,
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          onCheckedChange={(value) => {
+            // Get all visible row IDs
+            const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
+
+            if (value) {
+              // Add all visible row IDs to selectedIds
+              setSelectedIds((prev) => {
+                const newSelection = [...prev];
+                visibleRowIds.forEach((id) => {
+                  if (!newSelection.includes(id)) {
+                    newSelection.push(id);
+                  }
+                });
+                return newSelection;
+              });
+            } else {
+              // Remove visible row IDs from selectedIds
+              setSelectedIds((prev) => prev.filter((id) => !visibleRowIds.includes(id)));
+            }
+
+            // Also update table's internal state
+            table.toggleAllPageRowsSelected(!!value);
+          }}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={selectedIds.includes(row.original._id)}
+          onCheckedChange={(value) => {
+            if (value) {
+              setSelectedIds((prev) => [...prev, row.original._id]);
+            } else {
+              setSelectedIds(selectedIds.filter((id) => id !== row.original._id));
+            }
+            row.toggleSelected(!!value);
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "name",
-      header: () => <div className="text-bold">Work Sheet</div>,
+      header: () => <div className="text-bold">Activity</div>,
       cell: ({ row }: { row: any }) => {
         const value = row.getValue("name") || "-";
         const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
         return (
           <div className="text-medium truncate flex items-center space-x-3">
-            {/* {row.original?.icon ? (
+            {row.original?.icon ? (
               <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-8 h-8 rounded-full" />
             ) : (
               <Globe />
-            )} */}
-
+            )}
             <span>{displayValue}</span>
           </div>
         );
@@ -129,44 +134,56 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
       size: 40,
     },
     {
-      accessorKey: "projectName",
-      header: () => <div className="text-bold">Project</div>,
-      cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("projectName") ? row.getValue("projectName") : "-"}</div>,
+      accessorKey: "startTime",
+      header: () => <div className="text-bold">Start</div>,
+      cell: ({ row }: { row: any }) => (
+        <div className="text-medium">
+          {row.getValue("startTime")
+            ? new Date(row.getValue("startTime")).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })
+            : "-"}
+        </div>
+      ),
       size: 20,
     },
-
     {
-      accessorKey: "totalLoggedTime",
+      accessorKey: "endTime",
+      header: () => <div className="text-bold">End</div>,
+      cell: ({ row }: { row: any }) => (
+        <div className="text-medium">
+          {row.getValue("endTime")
+            ? new Date(row.getValue("endTime")).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })
+            : "-"}
+        </div>
+      ),
+      size: 20,
+    },
+    {
+      accessorKey: "timeSpent",
       header: () => <div className="text-bold">Time Spent</div>,
       cell: ({ row }: { row: any }) => {
-        const totalLoggedTime = row.getValue("totalLoggedTime");
-        if (!totalLoggedTime) return <div className="text-medium">-</div>;
+        const timeSpent = row.getValue("timeSpent");
+        if (!timeSpent) return <div className="text-medium">-</div>;
         return (
           <div className="text-medium">
-            {totalLoggedTime.hours}h {totalLoggedTime.minutes}m
+            {timeSpent.hours}h {timeSpent.minutes}m
           </div>
         );
       },
       size: 20,
     },
-    // add a action column where will be a view button
-    {
-      accessorKey: "action",
-      header: () => <div className="text-bold">Action</div>,
-      cell: ({ row }: { row: any }) => (
-        <Link href={`/timelog/${row.original.worksheetId}`}>
-          <div className="text-medium">
-            <Button variant="outline">View</Button>
-          </div>
-        </Link>
-      ),
-      size: 20,
-    },
   ];
 
   const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
+  console.log("🚀 ~ totalPages:", totalPages);
 
-  // Initialize react-table
   const table = useReactTable({
     data: projects,
     columns,
@@ -189,7 +206,6 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
     pageCount: totalPages,
   });
 
-  // Page change handler
   const onPageChange = (page: number): void => {
     setIsLoading(true);
     setCurrentPageState(page);
@@ -197,15 +213,13 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
     refetch?.();
   };
 
-  // Loading effect
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading) {
       setIsLoading(false);
     }
   }, [loading]);
 
-  // Notify parent when selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (onSelectionChange) {
       onSelectionChange(selectedIds.length > 0);
     }
@@ -219,7 +233,6 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
         <EmptyTableSkeleton />
       ) : (
         <>
-          {/* Table Container */}
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
             <Table className="w-full">
               <TableHeader className="border-b-[1px] text-inputFooterColor">
@@ -239,7 +252,6 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
                 ))}
               </TableHeader>
 
-              {/* Table Body */}
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
@@ -267,13 +279,17 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
             </Table>
           </div>
 
-          {/* Pagination + Row Info */}
           <div className="flex flex-col items-center justify-center py-4 lg:flex-row lg:items-center lg:justify-between lg:space-x-3 lg:py-4">
             <div className="pl-2 text-sm text-subHeading md:pb-6">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing
             </div>
             <div className="mb-2 flex pt-4 md:justify-end lg:pt-0">
-              <TimelogPagination currentPage={currentPageState} totalPage={totalPages} onPageChange={onPageChange} />
+              <WorksheetPagination
+                currentPage={currentPageState}
+                totalPage={totalPages}
+                onPageChange={onPageChange}
+                reportedId={reportedId ?? null}
+              />
             </div>
           </div>
         </>
