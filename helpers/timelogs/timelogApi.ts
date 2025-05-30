@@ -8,7 +8,8 @@ interface TPaginationProps {
   formattedDate?: string;
   startDate?: string;
   endDate?: string;
-  sort: string;
+  sort?: string;
+  searchText?: string;
 }
 
 interface TWorksheetProps {
@@ -17,7 +18,7 @@ interface TWorksheetProps {
   formattedDate: string;
 }
 
-export const GetTimelogListUnreported  = async ({ page, limit, formattedDate, sort }: TPaginationProps, session: any) => {
+export const GetTimelogListUnreported = async ({ page, limit, formattedDate, sort }: TPaginationProps, session: any) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -116,7 +117,6 @@ export const CreateReportedData = async (data: any, session: any) => {
   return response.data;
 };
 
-
 export const GetTimelogListReported = async ({ page, limit, startDate, endDate, sort }: TPaginationProps, session: any) => {
   let accessToken: string = session.data.accessToken;
 
@@ -135,7 +135,37 @@ export const GetTimelogListReported = async ({ page, limit, startDate, endDate, 
         "Organization-Id": "67a317a25b672f01152f081a",
         "Timezone-Region": "Asia/Dhaka",
       },
-    }
+    },
+  );
+
+  if (response.status === 401) {
+    session.update();
+  }
+
+  return response.data;
+};
+
+export const GetReportedworksheetList = async ({ page, limit, sort, searchText }: TPaginationProps, reportedId: string | null, session: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  // <<temp_base_url>>/timelog/worksheet/6836bdd6eeecb27e220325ef
+
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/timelog/worksheet/${reportedId}?page=${page}&limit=${limit}&sort-order=${sort}&search=${searchText}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Organization-Id": "67a317a25b672f01152f081a",
+        "Timezone-Region": "Asia/Dhaka",
+      },
+    },
   );
 
   if (response.status === 401) {

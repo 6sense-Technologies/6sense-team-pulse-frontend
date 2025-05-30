@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,18 +17,12 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import defaultActivityImg from "../../../../../public/logo/globe.png";
 import { useSearchParams } from "next/navigation";
-import { EllipsisVertical, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
-import CustomMenu from "@/components/customMenu";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ProjectPagination } from "../../projects/_components/projectPagination";
 import Image from "next/image";
 import { TimelogPagination } from "./timelogPagination";
-
-const MAX_MANAGEMENT_TOOLS_DISPLAY = 4;
 
 type TTimelogTableProps = {
   projects?: Projects[];
@@ -37,8 +31,8 @@ type TTimelogTableProps = {
   currentPage: number;
   loading?: boolean;
   onSelectionChange?: (anySelected: boolean) => void;
-  selectedIds: string[]; // Add this line
-  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; // Add this line
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 export const TimelogTable: React.FC<TTimelogTableProps> = ({
@@ -48,13 +42,9 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
   currentPage,
   loading,
   onSelectionChange,
-  selectedIds, // Add this parameter
-  setSelectedIds, // Add this parameter
+  selectedIds,
+  setSelectedIds,
 }) => {
-  // Remove local selectedIds state since it's now a prop
-  // const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  // console.log("🚀 ~ selectedIds:", selectedIds);
-
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -112,7 +102,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
             ) : (
               <Globe />
             )}
-
             <span>{displayValue}</span>
           </div>
         );
@@ -169,7 +158,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
 
   const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
 
-  // Initialize react-table
   const table = useReactTable({
     data: projects,
     columns,
@@ -192,7 +180,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
     pageCount: totalPages,
   });
 
-  // Page change handler
   const onPageChange = (page: number): void => {
     setIsLoading(true);
     setCurrentPageState(page);
@@ -200,15 +187,13 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
     refetch?.();
   };
 
-  // Loading effect
-  React.useEffect(() => {
+  useEffect(() => {
     if (!loading) {
       setIsLoading(false);
     }
   }, [loading]);
 
-  // Notify parent when selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (onSelectionChange) {
       onSelectionChange(selectedIds.length > 0);
     }
@@ -222,7 +207,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
         <EmptyTableSkeleton />
       ) : (
         <>
-          {/* Table Container */}
           <div className="overflow-hidden rounded-lg border border-lightborderColor">
             <Table className="w-full">
               <TableHeader className="border-b-[1px] text-inputFooterColor">
@@ -242,7 +226,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
                 ))}
               </TableHeader>
 
-              {/* Table Body */}
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
@@ -270,7 +253,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
             </Table>
           </div>
 
-          {/* Pagination + Row Info */}
           <div className="flex flex-col items-center justify-center py-4 lg:flex-row lg:items-center lg:justify-between lg:space-x-3 lg:py-4">
             <div className="pl-2 text-sm text-subHeading md:pb-6">
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing
