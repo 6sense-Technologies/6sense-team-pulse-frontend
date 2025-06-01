@@ -20,6 +20,7 @@ import { GetReportedworksheetList } from "../../../../../helpers/timelogs/timelo
 import { WorksheetTable } from "./_components/worksheetTable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import EmptyTimelogView from "../_components/emptyTimelogView";
+import WorksheetRemoveModal from "./_components/worksheetRemoveModal";
 
 const ReportedIdPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -146,17 +147,8 @@ const ReportedIdPage = () => {
             <div className="flex justify-center md:justify-end">
               {selectedIds.length > 0 ? (
                 // Show Remove button when items are selected
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    // Handle removal of selected items
-                    console.log("Removing items with IDs:", selectedIds);
-                    // Add your remove API call here
-                  }}
-                  className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white"
-                >
-                  Remove
-                </Button>
+
+                <WorksheetRemoveModal worksheetId={reportedWorksheetList?.worksheetId} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
               ) : (
                 // Show last reported on when no items are selected
                 <div className="flex justify-center md:justify-end gap-2 font-normal text-base leading-6">
