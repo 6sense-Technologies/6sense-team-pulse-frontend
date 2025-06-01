@@ -174,3 +174,25 @@ export const GetReportedworksheetList = async ({ page, limit, sort, searchText }
 
   return response.data;
 };
+
+export const RemoveWorksheetData = async (data: any, session: any) => {
+  // console.log("Session Data",session.data);
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    console.log("Session expired. Updating session...");
+    // <<temp_base_url>>/timelog/unreported/assign-to-project
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.delete(`${TEMP_BACKEND_URI}/timelog/worksheet/remove-activities`, {
+    data,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Organization-Id": "67a317a25b672f01152f081a",
+    },
+  });
+
+  return response.data;
+};
