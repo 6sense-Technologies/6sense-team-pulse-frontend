@@ -48,7 +48,7 @@ pipeline {
               )
             ]) {
     
-            sshagent(credentials: ['staging-ssh']) {
+            sshagent(credentials: ['ssh-6sensehq']) {
               sh """
                 scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
                 ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << 'EOF'
