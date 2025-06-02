@@ -51,6 +51,7 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
               sshagent(credentials: ['ssh-6sensehq']) {
                 sh """
+                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 "mkdir -p ~/${deployDir}"
                   scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
                   ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << EOF
                     export GITHUB_USER='${GITHUB_USER}'
