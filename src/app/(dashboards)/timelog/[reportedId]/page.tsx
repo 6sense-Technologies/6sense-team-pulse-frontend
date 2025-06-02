@@ -148,7 +148,12 @@ const ReportedIdPage = () => {
               {selectedIds.length > 0 ? (
                 // Show Remove button when items are selected
 
-                <WorksheetRemoveModal worksheetId={reportedWorksheetList?.worksheetId} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+                <WorksheetRemoveModal
+                  reportedWorksheetList={reportedWorksheetList?.data}
+                  worksheetId={reportedWorksheetList?.worksheetId}
+                  selectedIds={selectedIds}
+                  setSelectedIds={setSelectedIds}
+                />
               ) : (
                 // Show last reported on when no items are selected
                 <div className="flex justify-center md:justify-end gap-2 font-normal text-base leading-6">

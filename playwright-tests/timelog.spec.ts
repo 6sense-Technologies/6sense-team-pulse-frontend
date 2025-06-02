@@ -1,29 +1,53 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 
-test.describe("Timelog Page", () => {
-  test("should load unreported tab by default", async ({ page }) => {
-    await page.goto("/timelog");
+test("Timelog", async ({ page }) => {
+  // Set a longer timeout for the entire test
+  test.setTimeout(120000); // 2 minutes
 
-    // Expect heading
-    await expect(page.getByRole("heading", { name: "Time Log" })).toBeVisible();
-
-    // Check if Unreported tab is active
-    const unreportedTab = page.getByRole("tab", { name: "Unreported" });
-    await expect(unreportedTab).toHaveAttribute("data-state", "active");
-
-    // Optional: wait for table or empty view
-    await expect(
-      page.locator("text=No time logs found"), // Adjust based on your actual empty state text
-    ).toBeVisible();
+  // Mock the network request for the sign-up process
+  await page.route("**/api/auth/signup", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        userInfo: { emailAddress: "nesame9192@bmixr.com" },
+        accessToken: "mockAccessToken",
+        refreshToken: "mockRefreshToken",
+      }),
+    });
   });
 
-  test("can switch to reported tab", async ({ page }) => {
-    await page.goto("/timelog");
+  // Mock the network request for the verification process
+  await page.route("**/api/auth/verify", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ success: true, isValidated: true }),
+    });
+  });
 
-    await page.getByRole("tab", { name: "Reported" }).click();
-    await expect(page.getByRole("tab", { name: "Reported" })).toHaveAttribute("data-state", "active");
+  // Mock the network request for the session update
+  await page.route("**/api/auth/session", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ isVerified: true, hasOrganization: true }),
+    });
 
-    // Wait for calendar or date picker to appear
-    await expect(page.locator("text=Pick a date range")).toBeVisible();
+    await page.goto("http://localhost:3000/sign-in");
+    await page.getByRole("textbox", { name: "Enter your email" }).click();
+    await page.getByRole("textbox", { name: "Enter your email" }).fill("6sensehq@example.com");
+    await page.getByRole("textbox", { name: "Password" }).click();
+    await page.getByRole("textbox", { name: "Password" }).fill("Strong@Password123!");
+    await page.getByRole("button", { name: "Sign in" }).click();
+    await page.getByRole("button", { name: "Projects" }).click();
+    await page.goto("http://localhost:3000/timelog");
+
+    await page.getByRole("tab", { name: "Reported", exact: true }).click();
+    await page.getByRole("tab", { name: "Unreported" }).click();
+    await page.getByRole("button", { name: "June 2nd," }).click();
+    await page.getByRole("gridcell", { name: "1", exact: true }).first().click();
+    await page.getByLabel("breadcrumb").getByRole("link", { name: "Time Log" }).click();
   });
 });

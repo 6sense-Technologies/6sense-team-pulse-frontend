@@ -14,6 +14,8 @@ import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface Project {
   _id: string;
@@ -45,9 +47,33 @@ interface AddReportedModalProps {
   activeTab: "unreported" | "reported";
 }
 
+// Define your validation schema
+const formSchema = z.object({
+  project: z
+    .string({
+      required_error: "Please select project.",
+    })
+    .min(1, "Please select project."),
+  workSheetName: z
+    .string({
+      required_error: "Work sheet name is required.",
+    })
+    .min(1, "Work sheet name is required."),
+});
+
+// Update your type definition
+type FormValues = z.infer<typeof formSchema>;
+
 const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSuccess, activeTab }: AddReportedModalProps) => {
   const session = useSession();
-  const form = useForm();
+  // Update your form initialization
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      project: "",
+      workSheetName: "",
+    },
+  });
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -146,7 +172,8 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
     },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  // Update your onSubmit function typing
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
     const payload = {
       projectId: data.project,
       worksheetName: data.workSheetName,
@@ -201,9 +228,9 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
             <FormField
               control={form.control}
               name="project"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className={fieldState.error ? "text-black" : ""}>
                     Select Project <span className="text-red-500">*</span>
                   </FormLabel>
                   <Select
@@ -228,7 +255,9 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <div className="h-5">
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />
@@ -237,9 +266,9 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
             <FormField
               control={form.control}
               name="workSheetName"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>
+                  <FormLabel className={fieldState.error ? "text-black" : ""}>
                     Work Sheet Name <span className="text-red-500">*</span>
                   </FormLabel>
                   <div className="relative">
@@ -283,7 +312,9 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
                     )}
                   </div>
 
-                  <FormMessage />
+                  <div className="h-5">
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />

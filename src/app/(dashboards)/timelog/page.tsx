@@ -68,8 +68,6 @@ const TimelogPage = () => {
     size: 10,
   });
 
-  const [anySelected, setAnySelected] = useState(false);
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -131,7 +129,7 @@ const TimelogPage = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       <PageTitle title="Time Log • Ops4 Team" />
 
       <div className="w-full pl-4 pr-[14px] pt-8 lg:pt-8">
@@ -165,7 +163,6 @@ const TimelogPage = () => {
                 onValueChange={(value) => {
                   // Reset selections when switching tabs
                   setSelectedIds([]);
-                  setAnySelected(false);
                   // Then update the active tab
                   setActiveTab(value as "unreported" | "reported");
                 }}
@@ -208,12 +205,12 @@ const TimelogPage = () => {
 
           {/* Date Picker & Create Log Button */}
           <div className="md:flex md:items-center md:gap-x-4 md:justify-center">
-            {anySelected ? (
+            {selectedIds.length > 0 ? (
               <AddReportedModal
                 date={formattedDate}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
-                onClose={() => setAnySelected(false)}
+                onClose={() => setSelectedIds([])} // Clear selected IDs instead of using setAnySelected
                 activeTab={activeTab}
               />
             ) : (
@@ -329,7 +326,6 @@ const TimelogPage = () => {
                 loading={timelogListLoading}
                 refetch={timelogListRefetch}
                 currentPage={pages}
-                onSelectionChange={setAnySelected}
                 selectedIds={selectedIds}
                 setSelectedIds={setSelectedIds}
               />
@@ -345,7 +341,6 @@ const TimelogPage = () => {
               loading={reportedListLoading}
               refetch={reportedListRefetch}
               currentPage={pages}
-              onSelectionChange={setAnySelected}
               selectedIds={selectedIds}
               setSelectedIds={setSelectedIds}
             />

@@ -21,9 +21,10 @@ interface WorksheetRemoveModalProps {
   selectedIds: string[];
   worksheetId: string;
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  reportedWorksheetList: any[]; // Adjust type as needed
 }
 
-const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds, setSelectedIds, worksheetId }) => {
+const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds, setSelectedIds, worksheetId, reportedWorksheetList }) => {
   const session = useSession();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -41,6 +42,13 @@ const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds
       // Invalidate and refetch the worksheet data
       queryClient.invalidateQueries({ queryKey: ["fetchReportedWorksheet"] });
       setSelectedIds([]);
+      // Refetch the worksheet list and redirect if empty after mutation
+      queryClient.invalidateQueries({ queryKey: ["fetchReportedWorksheet"] }).then(() => {
+        const updatedList = queryClient.getQueryData<any[]>(["fetchReportedWorksheet"]);
+        if (!updatedList || updatedList.length === 0) {
+          router.push("/timelog");
+        }
+      });
     },
     onError: (error) => {
       console.error("Error removing worksheet activities:", error);
