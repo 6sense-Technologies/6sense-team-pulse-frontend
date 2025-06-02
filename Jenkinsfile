@@ -64,11 +64,15 @@ pipeline {
     IMAGE_TAG=${IMAGE_TAG}
     NODE_ENV=production
     EOT
-    
-                  echo "📦 Pulling and Restarting Docker containers..."
-                  // echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
-                  echo "docker compose pull"
-                  echo "docker compose up -d --remove-orphans"
+                  withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
+                    echo "📦 Pulling and Restarting Docker containers..."
+                    echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
+                    echo "docker compose pull"
+                    docker compose pull
+                    echo "docker compose up -d --remove-orphans"
+                    docker compose up -d --remove-orphans
+                  }
+                  
                 EOF
               """
             }
