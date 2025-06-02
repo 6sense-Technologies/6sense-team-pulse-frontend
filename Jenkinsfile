@@ -65,12 +65,14 @@ pipeline {
     NODE_ENV=production
     EOT
                   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
-                    echo "📦 Pulling and Restarting Docker containers..."
-                    echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
-                    echo "docker compose pull"
-                    docker compose pull
-                    echo "docker compose up -d --remove-orphans"
-                    docker compose up -d --remove-orphans
+                    sh '''
+                      echo "📦 Pulling and Restarting Docker containers..."
+                      echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
+                      echo "docker compose pull"
+                      docker compose pull
+                      echo "docker compose up -d --remove-orphans"
+                      docker compose up -d --remove-orphans
+                    '''
                   }
                   
                 EOF
