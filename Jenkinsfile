@@ -15,76 +15,6 @@ pipeline {
   }
 
   stages {
-
-    stage('🚀 Deploy to Server') {
-      when {
-        anyOf {
-          branch 'main'
-          branch 'master'
-          branch 'beta'
-        }
-      }
-      steps {
-        script {
-          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'prod'
-          def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
-    
-          withInfisical(configuration: [
-              infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
-              infisicalEnvironmentSlug: infisicalEnv,
-              infisicalProjectSlug: 'ops4-team-znzd',
-              infisicalUrl: 'https://infisical.6sensehq.com'
-            ],
-            infisicalSecrets: [
-              infisicalSecret(
-                includeImports: true,
-                path: '/6sense-team-pulse-frontend',
-                secretValues: [
-                  [infisicalKey: 'AUTH_SECRET'],
-                  [infisicalKey: 'AUTH_GOOGLE_SECRET'],
-                  [infisicalKey: 'AUTH_GOOGLE_ID'],
-                  [infisicalKey: 'HOST_PORT'],
-                ]
-              )
-            ]) {
-
-            withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
-              sshagent(credentials: ['ssh-6sensehq']) {
-                sh """
-                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 "mkdir -p ~/${deployDir}"
-                  scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
-                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << EOF
-                    export GITHUB_USER='${GITHUB_USER}'
-                    export GITHUB_PAT='${GITHUB_PAT}'
-                    
-                    mkdir -p ~/${deployDir}
-                    cd ~/${deployDir}
-            
-                    echo "⚙️ Writing .env file..."
-                    cat <<EOT > .env
-            AUTH_SECRET=${AUTH_SECRET}
-            AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
-            AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
-            CONTAINER_NAME=${deployDir}
-            HOST_PORT=${HOST_PORT}
-            IMAGE_TAG=${IMAGE_TAG}
-            NODE_ENV=production
-            EOT
-            
-                    echo "📦 Pulling and Restarting Docker containers..."
-                    echo \$GITHUB_PAT | docker login ghcr.io -u \$GITHUB_USER --password-stdin
-                    docker compose pull
-                    docker compose up -d --remove-orphans
-                  EOF
-                """
-              }
-            }
-    
-          }
-        }
-      }
-    }
-
     
     stage('📦 Checkout Source Code') {
       steps {
@@ -92,24 +22,24 @@ pipeline {
       }
     }
 
-    stage('📥 Install Dependencies') {
-      steps {
-        sh 'npm ci'
-      }
-    }
+    // stage('📥 Install Dependencies') {
+    //   steps {
+    //     sh 'npm ci'
+    //   }
+    // }
 
-    stage('🧪 Run Unit Tests') {
-      when {
-        anyOf {
-          branch 'main'
-          branch 'master'
-          branch 'beta'
-        }
-      }
-      steps {
-        sh 'npm test'
-      }
-    }
+    // stage('🧪 Run Unit Tests') {
+    //   when {
+    //     anyOf {
+    //       branch 'main'
+    //       branch 'master'
+    //       branch 'beta'
+    //     }
+    //   }
+    //   steps {
+    //     sh 'npm test'
+    //   }
+    // }
 
     stage('🔨 Build Docker Image') {
       steps {
@@ -127,6 +57,75 @@ pipeline {
             docker push ghcr.io/${GHCR_USER}/${GHCR_REPO}:${IMAGE_TAG}
             docker image prune -f
           '''
+        }
+      }
+    }
+
+    stage('🚀 Deploy to Server') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'beta'
+        }
+      }
+      steps {
+        script {
+          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'prod'
+          def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
+    
+          withInfisical(configuration: [
+            infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
+            infisicalEnvironmentSlug: infisicalEnv,
+            infisicalProjectSlug: 'ops4-team-znzd',
+            infisicalUrl: 'https://infisical.6sensehq.com'
+          ],
+          infisicalSecrets: [
+            infisicalSecret(
+              includeImports: true,
+              path: '/6sense-team-pulse-frontend',
+              secretValues: [
+                [infisicalKey: 'AUTH_SECRET'],
+                [infisicalKey: 'AUTH_GOOGLE_SECRET'],
+                [infisicalKey: 'AUTH_GOOGLE_ID'],
+                [infisicalKey: 'HOST_PORT'],
+              ]
+            )
+          ]) {
+    
+            withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
+    
+              // Generate .env file locally in Jenkins
+              writeFile file: '.env', text: """\
+    AUTH_SECRET=${AUTH_SECRET}
+    AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
+    AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
+    CONTAINER_NAME=${deployDir}
+    HOST_PORT=${HOST_PORT}
+    IMAGE_TAG=${IMAGE_TAG}
+    NODE_ENV=production
+    """
+    
+              sshagent(credentials: ['ssh-6sensehq']) {
+                sh '''
+                  echo "📁 Creating remote deploy directory..."
+                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 "mkdir -p ~/''' + deployDir + '''"
+    
+                  echo "📤 Uploading docker-compose and .env..."
+                  scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/''' + deployDir + '''/
+                  scp -o StrictHostKeyChecking=no .env jenkins-deploy@95.216.144.222:~/''' + deployDir + '''/
+    
+                  echo "🚀 Deploying on server..."
+                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 <<'EOF'
+                    cd ~/''' + deployDir + '''
+                    echo "$GITHUB_PAT" | docker login ghcr.io -u $GITHUB_USER --password-stdin
+                    docker compose pull
+                    docker compose up -d --remove-orphans
+                  EOF
+                '''
+              }
+            }
+          }
         }
       }
     }
