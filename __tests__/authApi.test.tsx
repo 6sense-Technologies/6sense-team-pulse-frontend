@@ -77,26 +77,24 @@ describe("authApi", () => {
     });
   });
 
-  // describe('handleResendOTP', () => {
-  //   it('should handle successful OTP resend', async () => {
-  //     const mockEmail = 'test@example.com';
-  //     const mockResponse = { data: { success: true } };
-  //     mockedAxios.post.mockResolvedValueOnce(mockResponse);
+  describe("handleResendOTP", () => {
+    it("should handle successful OTP resend", async () => {
+      const mockEmail = "test@example.com";
+      const mockResponse = { data: { success: true } };
+      mockedAxios.post.mockResolvedValueOnce(mockResponse);
 
-  //     const result = await handleResendOTP(mockEmail);
+      const result = await handleResendOTP(mockEmail);
 
-  //     expect(result).toEqual(mockResponse);
-  //     expect(mockedAxios.post).toHaveBeenCalledWith(
-  //       `${TEMP_BACKEND_URI}/email-service/send-verfication-email?emailAddress=${mockEmail}`
-  //     );
-  //   });
+      expect(result).toEqual(mockResponse);
+      expect(mockedAxios.post).toHaveBeenCalledWith(`${TEMP_BACKEND_URI}/email-service/send-verfication-email?emailAddress=${mockEmail}`);
+    });
 
-  //   it('should handle OTP resend error', async () => {
-  //     const mockEmail = 'test@example.com';
-  //     const mockError = new Error('OTP resend failed');
-  //     mockedAxios.post.mockRejectedValueOnce(mockError);
+    it("should handle OTP resend error", async () => {
+      const mockEmail = "test@example.com";
+      const mockError = new Error("OTP resend failed");
+      mockedAxios.post.mockRejectedValueOnce(mockError);
 
-  //     await expect(handleResendOTP(mockEmail)).rejects.toThrow('OTP resend failed');
-  //   });
-  // });
+      await expect(handleResendOTP(mockEmail)).rejects.toThrow("OTP resend failed");
+    });
+  });
 });
