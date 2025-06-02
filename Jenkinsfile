@@ -107,22 +107,19 @@ pipeline {
     """
     
               sshagent(credentials: ['ssh-6sensehq']) {
-                sh '''
-                  echo "📁 Creating remote deploy directory..."
-                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 "mkdir -p ~/''' + deployDir + '''"
-    
-                  echo "📤 Uploading docker-compose and .env..."
-                  scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/''' + deployDir + '''/
-                  scp -o StrictHostKeyChecking=no .env jenkins-deploy@95.216.144.222:~/''' + deployDir + '''/
-    
-                  echo "🚀 Deploying on server..."
-                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 <<'EOF'
-                    cd ~/''' + deployDir + '''
-                    echo "$GITHUB_PAT" | docker login ghcr.io -u $GITHUB_USER --password-stdin
-                    docker compose pull
+                sh """
+                  ssh -t -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 "mkdir -p ~/${deployDir}"
+                  scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
+                  scp -o StrictHostKeyChecking=no .env jenkins-deploy@95.216.144.222:~/${deployDir}/
+                
+                  ssh -t -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 '
+                    cd ~/${deployDir} &&
+                    echo "$GITHUB_PAT" | docker login ghcr.io -u $GITHUB_USER --password-stdin &&
+                    docker compose pull &&
                     docker compose up -d --remove-orphans
-                  EOF
-                '''
+                  '
+                """
+
               }
             }
           }
