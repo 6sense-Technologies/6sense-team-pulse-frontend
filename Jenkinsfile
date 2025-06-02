@@ -52,32 +52,31 @@ pipeline {
               sshagent(credentials: ['ssh-6sensehq']) {
                 sh """
                   scp -o StrictHostKeyChecking=no docker-compose.yml jenkins-deploy@95.216.144.222:~/${deployDir}/
-                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << 'EOF'
+                  ssh -o StrictHostKeyChecking=no jenkins-deploy@95.216.144.222 << EOF
+                    export GITHUB_USER='${GITHUB_USER}'
+                    export GITHUB_PAT='${GITHUB_PAT}'
+                    
+                    mkdir -p ~/${deployDir}
                     cd ~/${deployDir}
-      
+            
                     echo "⚙️ Writing .env file..."
                     cat <<EOT > .env
-      AUTH_SECRET=${AUTH_SECRET}
-      AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
-      AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
-      CONTAINER_NAME=${deployDir}
-      HOST_PORT=${HOST_PORT}
-      IMAGE_TAG=${IMAGE_TAG}
-      NODE_ENV=production
-      EOT
-                    
+            AUTH_SECRET=${AUTH_SECRET}
+            AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
+            AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
+            CONTAINER_NAME=${deployDir}
+            HOST_PORT=${HOST_PORT}
+            IMAGE_TAG=${IMAGE_TAG}
+            NODE_ENV=production
+            EOT
+            
                     echo "📦 Pulling and Restarting Docker containers..."
-                    echo $GITHUB_PAT | docker login ghcr.io -u your-gh-username --password-stdin
-                    echo "docker compose pull"
+                    echo \$GITHUB_PAT | docker login ghcr.io -u \$GITHUB_USER --password-stdin
                     docker compose pull
-                    echo "docker compose up -d --remove-orphans"
                     docker compose up -d --remove-orphans
-                      
-                    
                   EOF
                 """
               }
-              
             }
     
           }
