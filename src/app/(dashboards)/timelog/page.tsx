@@ -1,51 +1,37 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useQuery } from "@tanstack/react-query";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { format, addDays, subDays } from "date-fns";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, ListFilter, CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
-
 import AvatarMenu from "@/components/AvatarMenu";
+import { Button } from "@/components/ButtonComponent";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import PageHeading from "@/components/pageHeading";
 import PageTitle from "@/components/PageTitle";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ButtonComponent";
-import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
-import EmptyProjectView from "@/components/emptyProjectView";
-import EmptyTimelogView from "./_components/emptyTimelogView";
-import { ProjectDropdown } from "../projects/_components/projectDropdown";
-import { TimelogTable } from "./_components/timelogTable";
-
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { addDays, format, subDays } from "date-fns";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, CalendarIcon, ChevronDown, ChevronUp, ListFilter } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
+import EmptyTimelogView from "./_components/emptyTimelogView";
+import { TimelogTable } from "./_components/timelogTable";
+import { GetTimelogListReported, GetTimelogListUnreported } from "../../../../helpers/timelogs/timelogApi";
 import AddReportedModal from "./_components/addReportedModal";
-import { GetTimelogListUnreported, GetTimelogListReported } from "../../../../helpers/timelogs/timelogApi";
 import { TimelogReportedListTable } from "./_components/timelogReportedListTable";
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   console.log("🚀 ~ TimelogPage ~ selectedIds:", selectedIds);
-  const [activeTab, setActiveTab] = useState<"unreported" | "reported">("unreported");
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState<"unreported" | "reported">(tabParam === "reported" ? "reported" : "unreported");
   const session = useSession();
 
   const [date, setDate] = useState<Date>(new Date());
@@ -68,7 +54,6 @@ const TimelogPage = () => {
     size: 10,
   });
 
-  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -158,13 +143,19 @@ const TimelogPage = () => {
             <div className="flex justify-center gap-4 my-4 md:mb-6 md:mt-4">
               {/* Tabs: Unreported / Reported */}
               <Tabs
-                defaultValue="unreported"
+                value={activeTab} // Make it controlled by state
                 className="bg-[#F1F5F9] rounded-md text-[#64748B] w-full"
                 onValueChange={(value) => {
                   // Reset selections when switching tabs
                   setSelectedIds([]);
-                  // Then update the active tab
+                  // Update the active tab
                   setActiveTab(value as "unreported" | "reported");
+
+                  // Update URL when tab changes
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.set("tab", value);
+                  params.set("page", "1"); // Reset to page 1 when changing tabs
+                  router.replace(`${pathname}?${params.toString()}`);
                 }}
               >
                 <TabsList className="bg-transparent flex">
@@ -232,7 +223,8 @@ const TimelogPage = () => {
                       <Calendar
                         mode="single"
                         selected={date}
-                        disabled={{ after: new Date() }} // Add this line to disable future dates
+                        defaultMonth={date} // Add this line to focus on the selected date's month
+                        disabled={{ after: new Date() }}
                         onSelect={(selectedDate) => {
                           if (selectedDate) {
                             setDate(selectedDate);
@@ -247,6 +239,10 @@ const TimelogPage = () => {
                           }
                         }}
                         initialFocus
+                        classNames={{
+                          day_selected: "bg-black text-white hover:bg-[#0F172A] hover:text-white",
+                          day_today: "",
+                        }}
                       />
                     </PopoverContent>
                   </Popover>

@@ -92,35 +92,47 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
     {
       id: "select",
       size: 5,
-      header: ({ table }) => (
-        <Checkbox
-          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => {
-            // Get all visible row IDs
-            const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
+      header: ({ table }) => {
+        // Get all visible row IDs on the current page
+        const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
 
-            if (value) {
-              // Add all visible row IDs to selectedIds
-              setSelectedIds((prev) => {
-                const newSelection = [...prev];
-                visibleRowIds.forEach((id) => {
-                  if (!newSelection.includes(id)) {
-                    newSelection.push(id);
-                  }
+        // Check if all visible rows are selected
+        const allSelected = visibleRowIds.length > 0 && visibleRowIds.every((id) => selectedIds.includes(id));
+
+        // Check if some (but not all) visible rows are selected
+        const someSelected = visibleRowIds.some((id) => selectedIds.includes(id)) && !allSelected;
+
+        return (
+          <Checkbox
+            checked={allSelected}
+            // indeterminate={someSelected}
+            onCheckedChange={(value) => {
+              // Get all visible row IDs
+              const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
+
+              if (value) {
+                // Add all visible row IDs to selectedIds
+                setSelectedIds((prev) => {
+                  const newSelection = [...prev];
+                  visibleRowIds.forEach((id) => {
+                    if (!newSelection.includes(id)) {
+                      newSelection.push(id);
+                    }
+                  });
+                  return newSelection;
                 });
-                return newSelection;
-              });
-            } else {
-              // Remove visible row IDs from selectedIds
-              setSelectedIds((prev) => prev.filter((id) => !visibleRowIds.includes(id)));
-            }
+              } else {
+                // Remove visible row IDs from selectedIds
+                setSelectedIds((prev) => prev.filter((id) => !visibleRowIds.includes(id)));
+              }
 
-            // Also update table's internal state
-            table.toggleAllPageRowsSelected(!!value);
-          }}
-          aria-label="Select all"
-        />
-      ),
+              // Also update table's internal state
+              table.toggleAllPageRowsSelected(!!value);
+            }}
+            aria-label="Select all"
+          />
+        );
+      },
       cell: ({ row }) => (
         <Checkbox
           checked={selectedIds.includes(row.original._id)}
@@ -146,11 +158,7 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
         const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
         return (
           <div className="text-medium truncate flex items-center space-x-3">
-            {row.original?.icon ? (
-              <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-8 h-8 rounded-full" />
-            ) : (
-              <Globe />
-            )}
+            {row.original?.icon ? <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-4 h-4" /> : <Globe />}
             <span>{displayValue}</span>
           </div>
         );

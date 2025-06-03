@@ -134,11 +134,7 @@ export const WorksheetTable: React.FC<TTimelogTableProps> = ({
         const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
         return (
           <div className="text-medium truncate flex items-center space-x-3">
-            {row.original?.icon ? (
-              <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-8 h-8 rounded-full" />
-            ) : (
-              <Globe />
-            )}
+            {row.original?.icon ? <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-4 h-4" /> : <Globe />}
             <span>{displayValue}</span>
           </div>
         );

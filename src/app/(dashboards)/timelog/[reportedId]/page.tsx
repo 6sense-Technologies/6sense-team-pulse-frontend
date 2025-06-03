@@ -7,7 +7,7 @@ import PageTitle from "@/components/PageTitle";
 import PageHeading from "@/components/pageHeading";
 import { useQuery } from "@tanstack/react-query";
 import { GetProjectList } from "../../../../../helpers/projects/projectApi";
-import { useSearchParams, useParams } from "next/navigation";
+import { useSearchParams, useParams, useRouter } from "next/navigation";
 import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronDown, ChevronUp, FolderPlus, ListFilter } from "lucide-react";
 import Link from "next/link";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
@@ -23,6 +23,7 @@ import EmptyTimelogView from "../_components/emptyTimelogView";
 import WorksheetRemoveModal from "./_components/worksheetRemoveModal";
 
 const ReportedIdPage = () => {
+  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
   //   console.log("🚀 ~ ReportedIdPage ~ selectedIds:", selectedIds);
@@ -81,6 +82,9 @@ const ReportedIdPage = () => {
     totalCount: reportedWorksheetList?.paginationMetadata?.totalCount ?? 0,
     size: pagination.size ?? 10,
   };
+  if (reportedWorksheetList?.data?.length === 0) {
+    router.push("/timelog?tab=reported");
+  }
 
   return (
     <div className="w-full">
@@ -149,7 +153,7 @@ const ReportedIdPage = () => {
                 // Show Remove button when items are selected
 
                 <WorksheetRemoveModal
-                  reportedWorksheetList={reportedWorksheetList?.data}
+                  reportedWorksheetList={reportedWorksheetList}
                   worksheetId={reportedWorksheetList?.worksheetId}
                   selectedIds={selectedIds}
                   setSelectedIds={setSelectedIds}
