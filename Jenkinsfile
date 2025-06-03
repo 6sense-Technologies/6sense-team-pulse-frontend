@@ -30,10 +30,11 @@ pipeline {
 
     stage('📤 Push to GHCR') {
       steps {
-        def deployUrl = env.DEPLOY_URL
-        def repo = getRepoFromGitUrl()
-        env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
-        
+        script {
+          def deployUrl = env.DEPLOY_URL
+          def repo = getRepoFromGitUrl()
+          env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
+        }
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
             echo $GITHUB_PAT | docker login ghcr.io -u $GITHUB_USER --password-stdin
