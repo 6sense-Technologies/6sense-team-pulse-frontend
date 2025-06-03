@@ -55,7 +55,7 @@ pipeline {
           def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
 
           def gitUrl = env.GIT_URL ?: ''
-          def repo = gitUrl.replaceFirst(/^.*github.com[/:]/, '').replaceAll(/\.git$/, '')
+          def repo = gitUrl.replaceFirst("^.*github.com[/:]", "").replaceAll("\\.git\$", "")
           def deployEnv = infisicalEnv
           def deployUrl = env.DEPLOY_URL
 
