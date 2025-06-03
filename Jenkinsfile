@@ -38,7 +38,7 @@ pipeline {
         script {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
-          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'staging' : 'production', env.DEPLOY_URL)
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'Preview' : 'Production', env.DEPLOY_URL)
         }
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
@@ -66,7 +66,7 @@ pipeline {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
 
-          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'staging' : 'production', env.DEPLOY_URL)
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'Preview' : 'Production', env.DEPLOY_URL)
 
           withInfisical(configuration: [
             infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
