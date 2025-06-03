@@ -118,14 +118,14 @@ NODE_ENV=production
     success {
       script {
         def gitUrl = env.GIT_URL ?: ''
-        def repo = gitUrl.replaceFirst(/^.*github.com[/:]/, '').replaceAll(/\.git$/, '')
+        def repo = getRepoFromGitUrl(env.GIT_URL)
         updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'success', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
       }
     }
     failure {
       script {
         def gitUrl = env.GIT_URL ?: ''
-        def repo = gitUrl.replaceFirst(/^.*github.com[/:]/, '').replaceAll(/\.git$/, '')
+        def repo = getRepoFromGitUrl(env.GIT_URL)
         updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID ?: '0', 'failure', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
       }
     }
