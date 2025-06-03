@@ -18,6 +18,11 @@ pipeline {
   stages {
     stage('📦 Checkout Source Code') {
       steps {
+        script {
+          def deployUrl = env.DEPLOY_URL
+          def repo = getRepoFromGitUrl()
+          env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
+        }
         checkout scm
       }
     }
@@ -61,6 +66,8 @@ pipeline {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
 
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
+
           withInfisical(configuration: [
             infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
             infisicalEnvironmentSlug: infisicalEnv,
@@ -80,6 +87,7 @@ pipeline {
             )
           ]) {
             // env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, deployEnv, deployUrl)
+            
 
             withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
               writeFile file: '.env', text: """\
@@ -169,6 +177,8 @@ def createAndUpdateGitHubDeployment(String repo, String ref, String branch, Stri
         """,
         returnStdout: true
       ).trim()
+      echo "deploymentId"
+      echo deploymentId
       return deploymentId
     }
     
