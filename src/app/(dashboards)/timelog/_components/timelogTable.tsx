@@ -62,13 +62,62 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
 
   // Define columns for the table
   const columns: ColumnDef<any>[] = [
+    // {
+    //   id: "select",
+    //   size: 5,
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={selectedIds.includes(row.original._id)}
+    //       onCheckedChange={(value) => {
+    //         if (value) {
+    //           setSelectedIds((prev) => [...prev, row.original._id]);
+    //         } else {
+    //           setSelectedIds(selectedIds.filter((id) => id !== row.original._id));
+    //         }
+    //         row.toggleSelected(!!value);
+    //       }}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       id: "select",
       size: 5,
       header: ({ table }) => (
         <Checkbox
           checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          onCheckedChange={(value) => {
+            // Get all visible row IDs
+            const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
+
+            if (value) {
+              // Add all visible row IDs to selectedIds
+              setSelectedIds((prev) => {
+                const newSelection = [...prev];
+                visibleRowIds.forEach((id) => {
+                  if (!newSelection.includes(id)) {
+                    newSelection.push(id);
+                  }
+                });
+                return newSelection;
+              });
+            } else {
+              // Remove visible row IDs from selectedIds
+              setSelectedIds((prev) => prev.filter((id) => !visibleRowIds.includes(id)));
+            }
+
+            // Also update table's internal state
+            table.toggleAllPageRowsSelected(!!value);
+          }}
           aria-label="Select all"
         />
       ),

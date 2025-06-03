@@ -2,13 +2,13 @@ name: Coverage Reporting
 
 on:
   push:
-    branches: [test]
+    branches: [timelog-dev]
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    if: github.actor == 'khanatik1176'
+    if: github.actor == 'ainayeem'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js

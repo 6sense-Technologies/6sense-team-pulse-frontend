@@ -115,7 +115,7 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
         const value = row.getValue("name") || "-";
         const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
         return (
-          <div className="text-medium truncate flex items-center space-x-3">
+          <div className="truncate flex items-center space-x-3 h-5 font-normal text-sm leading-5">
             {/* {row.original?.icon ? (
               <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-8 h-8 rounded-full" />
             ) : (
