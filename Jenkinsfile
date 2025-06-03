@@ -55,8 +55,7 @@ pipeline {
           def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
 
           def gitUrl = env.GIT_URL ?: ''
-          def temp = gitUrl.replace("https://github.com/", "").replace("git@github.com:", "")
-          def repo = temp.replaceAll(/\.git$/, "")
+          def repo = getRepoFromGitUrl(env.GIT_URL)
           def deployEnv = infisicalEnv
           def deployUrl = env.DEPLOY_URL
 
@@ -136,6 +135,16 @@ NODE_ENV=production
 // -------------------
 // GitHub API Helpers
 // -------------------
+def getRepoFromGitUrl(String url) {
+  if (url.startsWith("git@github.com:")) {
+    return url.replace("git@github.com:", "").replace(".git", "")
+  } else if (url.startsWith("https://github.com/")) {
+    return url.replace("https://github.com/", "").replace(".git", "")
+  } else {
+    error("Unknown Git URL format: ${url}")
+  }
+}
+
 def createAndUpdateGitHubDeployment(String repo, String ref, String branch, String deployEnv, String deployUrl) {
   withCredentials([string(credentialsId: 'github-pat-6sensehq', variable: 'GITHUB_PAT')]) {
     def deployDescription = "Deployed from Jenkins pipeline for branch ${branch}"
