@@ -12,11 +12,10 @@ pipeline {
     GHCR_REPO = '6sense-team-pulse-frontend'
     SHORT_SHA = "${env.GIT_COMMIT.take(7)}"
     IMAGE_TAG = "${env.BRANCH_NAME}-${env.BUILD_NUMBER}-${env.SHORT_SHA}".toLowerCase()
-    DEPLOY_URL = 'https://app.6sensehq.com' // 🔁 Change to actual deployment URL
+    DEPLOY_URL = 'https://app.6sensehq.com'
   }
 
   stages {
-
     stage('📦 Checkout Source Code') {
       steps {
         checkout scm
@@ -31,6 +30,10 @@ pipeline {
 
     stage('📤 Push to GHCR') {
       steps {
+        def deployUrl = env.DEPLOY_URL
+        def repo = getRepoFromGitUrl()
+        env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
+        
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
             echo $GITHUB_PAT | docker login ghcr.io -u $GITHUB_USER --password-stdin
@@ -53,11 +56,9 @@ pipeline {
         script {
           def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'prod'
           def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
-
-          def gitUrl = env.GIT_URL ?: ''
-          def repo = getRepoFromGitUrl(env.GIT_URL)
           def deployEnv = infisicalEnv
           def deployUrl = env.DEPLOY_URL
+          def repo = getRepoFromGitUrl()
 
           withInfisical(configuration: [
             infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
@@ -77,12 +78,9 @@ pipeline {
               ]
             )
           ]) {
-
-            // Create GitHub Deployment
             env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, deployEnv, deployUrl)
 
             withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
-
               writeFile file: '.env', text: """\
 AUTH_SECRET=${AUTH_SECRET}
 AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
@@ -117,15 +115,13 @@ NODE_ENV=production
   post {
     success {
       script {
-        def gitUrl = env.GIT_URL ?: ''
-        def repo = getRepoFromGitUrl(env.GIT_URL)
+        def repo = getRepoFromGitUrl()
         updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'success', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
       }
     }
     failure {
       script {
-        def gitUrl = env.GIT_URL ?: ''
-        def repo = getRepoFromGitUrl(env.GIT_URL)
+        def repo = getRepoFromGitUrl()
         updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID ?: '0', 'failure', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
       }
     }
@@ -135,7 +131,11 @@ NODE_ENV=production
 // -------------------
 // GitHub API Helpers
 // -------------------
-def getRepoFromGitUrl(String url) {
+def getRepoFromGitUrl() {
+  def url = env.GIT_URL
+  if (!url || url.trim() == '') {
+    url = sh(script: "git config --get remote.origin.url", returnStdout: true).trim()
+  }
   if (url.startsWith("git@github.com:")) {
     return url.replace("git@github.com:", "").replace(".git", "")
   } else if (url.startsWith("https://github.com/")) {
@@ -147,44 +147,39 @@ def getRepoFromGitUrl(String url) {
 
 def createAndUpdateGitHubDeployment(String repo, String ref, String branch, String deployEnv, String deployUrl) {
   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
-    def deployDescription = "Deployed from Jenkins pipeline for branch ${branch}"
-    def createResponse = sh(
+    def description = "Deployed from Jenkins pipeline for branch ${branch}"
+    def response = sh(
       script: """
-        curl -s -X POST \
-          -H "Authorization: token ${GITHUB_PAT}" \
-          -H "Accept: application/vnd.github+json" \
-          https://api.github.com/repos/${repo}/deployments \
+        curl -s -X POST \\
+          -H "Authorization: token ${GITHUB_PAT}" \\
+          -H "Accept: application/vnd.github+json" \\
+          https://api.github.com/repos/${repo}/deployments \\
           -d '{
             "ref": "${ref}",
             "task": "deploy",
             "auto_merge": false,
             "required_contexts": [],
-            "payload": {
-              "environment": "${deployEnv}"
-            },
-            "description": "${deployDescription}",
+            "description": "${description}",
             "environment": "${deployEnv}",
+            "environment_url": "${deployUrl}",
             "sha": "${ref}"
           }'
       """,
       returnStdout: true
     ).trim()
-
-    def deploymentId = new groovy.json.JsonSlurperClassic().parseText(createResponse).id
-    if (!deploymentId) {
-      error("❌ Failed to create GitHub deployment")
-    }
-    return deploymentId.toString()
+    def id = new groovy.json.JsonSlurperClassic().parseText(response).id
+    if (!id) error("❌ Failed to create GitHub deployment")
+    return id.toString()
   }
 }
 
 def updateGitHubDeploymentStatus(String repo, String logUrl, String deploymentId, String status, String deployEnv, String deployUrl) {
   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
     sh """
-      curl -s -X POST \
-        -H "Authorization: token ${GITHUB_PAT}" \
-        -H "Accept: application/vnd.github+json" \
-        https://api.github.com/repos/${repo}/deployments/${deploymentId}/statuses \
+      curl -s -X POST \\
+        -H "Authorization: token ${GITHUB_PAT}" \\
+        -H "Accept: application/vnd.github+json" \\
+        https://api.github.com/repos/${repo}/deployments/${deploymentId}/statuses \\
         -d '{
           "state": "${status}",
           "log_url": "${logUrl}",
