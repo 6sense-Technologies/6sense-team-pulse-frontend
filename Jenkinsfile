@@ -7,7 +7,6 @@ pipeline {
   }
 
   environment {
-    NODE_ENV = 'test'
     GHCR_USER = '6sense-technologies'
     GHCR_REPO = '6sense-team-pulse-frontend'
     SHORT_SHA = "${env.GIT_COMMIT.take(7)}"
@@ -17,6 +16,13 @@ pipeline {
 
   stages {
     stage('📦 Checkout Source Code') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'test'
+        }
+      }
       steps {
         script {
           def deployUrl = env.DEPLOY_URL
@@ -28,12 +34,26 @@ pipeline {
     }
 
     stage('🔨 Build Docker Image') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'test'
+        }
+      }
       steps {
         sh "docker build -t ghcr.io/${GHCR_USER}/${GHCR_REPO}:${IMAGE_TAG} ."
       }
     }
 
     stage('📤 Push to GHCR') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'master'
+          branch 'test'
+        }
+      }
       steps {
         script {
           def deployUrl = env.DEPLOY_URL
