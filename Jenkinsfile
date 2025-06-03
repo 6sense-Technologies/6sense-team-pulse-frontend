@@ -146,7 +146,7 @@ def getRepoFromGitUrl(String url) {
 }
 
 def createAndUpdateGitHubDeployment(String repo, String ref, String branch, String deployEnv, String deployUrl) {
-  withCredentials([string(credentialsId: 'github-pat-6sensehq', variable: 'GITHUB_PAT')]) {
+  withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
     def deployDescription = "Deployed from Jenkins pipeline for branch ${branch}"
     def createResponse = sh(
       script: """
@@ -179,7 +179,7 @@ def createAndUpdateGitHubDeployment(String repo, String ref, String branch, Stri
 }
 
 def updateGitHubDeploymentStatus(String repo, String logUrl, String deploymentId, String status, String deployEnv, String deployUrl) {
-  withCredentials([string(credentialsId: 'github-pat-6sensehq', variable: 'GITHUB_PAT')]) {
+  withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
     sh """
       curl -s -X POST \
         -H "Authorization: token ${GITHUB_PAT}" \
