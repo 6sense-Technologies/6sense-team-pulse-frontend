@@ -158,7 +158,7 @@ def createAndUpdateGitHubDeployment(String repo, String ref, String branch, Stri
   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
     withEnv(["TOKEN=${GITHUB_PAT}"]) {
       def description = "Deployed from Jenkins pipeline for branch ${branch}"
-      def deploymentId = sh(
+      def rawResponse = sh(
         script: """
           curl -s -X POST \\
             -H 'Authorization: token $TOKEN' \\
@@ -173,16 +173,26 @@ def createAndUpdateGitHubDeployment(String repo, String ref, String branch, Stri
               "environment": "${deployEnv}",
               "environment_url": "${deployUrl}",
               "sha": "${ref}"
-            }' | jq -r '.id'
+            }'
         """,
         returnStdout: true
       ).trim()
+
+      echo "GitHub Response: ${rawResponse}"
+
+      def deploymentId = sh(
+        script: """
+          echo '${rawResponse}' | grep -Eo '"id":[ ]*[0-9]+' | head -n1 | cut -d':' -f2
+        """,
+        returnStdout: true
+      ).trim()
+
+      echo "Parsed deploymentId: ${deploymentId}"
 
       if (!deploymentId || deploymentId == "null") {
         error("❌ Failed to extract deployment ID")
       }
 
-      echo "Parsed deploymentId: ${deploymentId}"
       return deploymentId
     }
   }
