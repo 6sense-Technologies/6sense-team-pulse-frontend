@@ -38,7 +38,7 @@ pipeline {
         script {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
-          env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
         }
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
