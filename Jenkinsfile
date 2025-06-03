@@ -21,7 +21,7 @@ pipeline {
         script {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
-          env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', deployUrl)
+          env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, (env.BRANCH_NAME == 'test') ? 'Preview' : 'Production', deployUrl)
         }
         checkout scm
       }
@@ -38,7 +38,7 @@ pipeline {
         script {
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
-          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'staging' : 'production', env.DEPLOY_URL)
         }
         withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
           sh '''
@@ -55,18 +55,18 @@ pipeline {
         anyOf {
           branch 'main'
           branch 'master'
-          branch 'beta'
+          branch 'test'
         }
       }
       steps {
         script {
-          def infisicalEnv = (env.BRANCH_NAME == 'beta') ? 'dev' : 'prod'
-          def deployDir = (env.BRANCH_NAME == 'beta') ? "6sense-team-pulse-frontend-beta" : "6sense-team-pulse-frontend-prod"
+          def infisicalEnv = (env.BRANCH_NAME == 'test') ? 'dev' : 'prod'
+          def deployDir = (env.BRANCH_NAME == 'test') ? "6sense-team-pulse-frontend-test" : "6sense-team-pulse-frontend-prod"
           def deployEnv = infisicalEnv
           def deployUrl = env.DEPLOY_URL
           def repo = getRepoFromGitUrl()
 
-          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
+          updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'in_progress', (env.BRANCH_NAME == 'test') ? 'staging' : 'production', env.DEPLOY_URL)
 
           withInfisical(configuration: [
             infisicalCredentialId: '6835f2d1ccea8e1cb5ed81e2',
@@ -125,13 +125,13 @@ NODE_ENV=production
     success {
       script {
         def repo = getRepoFromGitUrl()
-        updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'success', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
+        updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID, 'success', (env.BRANCH_NAME == 'test') ? 'Preview' : 'Production', env.DEPLOY_URL)
       }
     }
     failure {
       script {
         def repo = getRepoFromGitUrl()
-        updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID ?: '0', 'failure', (env.BRANCH_NAME == 'beta') ? 'staging' : 'production', env.DEPLOY_URL)
+        updateGitHubDeploymentStatus(repo, env.BUILD_URL, env.DEPLOYMENT_ID ?: '0', 'failure', (env.BRANCH_NAME == 'test') ? 'Preview' : 'Production', env.DEPLOY_URL)
       }
     }
   }
@@ -178,16 +178,12 @@ def createAndUpdateGitHubDeployment(String repo, String ref, String branch, Stri
         returnStdout: true
       ).trim()
 
-      echo "GitHub Response: ${rawResponse}"
-
       def deploymentId = sh(
         script: """
           echo '${rawResponse}' | grep -Eo '"id":[ ]*[0-9]+' | head -n1 | cut -d':' -f2
         """,
         returnStdout: true
       ).trim()
-
-      echo "Parsed deploymentId: ${deploymentId}"
 
       if (!deploymentId || deploymentId == "null") {
         error("❌ Failed to extract deployment ID")
