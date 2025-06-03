@@ -79,7 +79,7 @@ pipeline {
               ]
             )
           ]) {
-            env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, deployEnv, deployUrl)
+            // env.DEPLOYMENT_ID = createAndUpdateGitHubDeployment(repo, env.GIT_COMMIT, env.BRANCH_NAME, deployEnv, deployUrl)
 
             withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GITHUB_USER', passwordVariable: 'GITHUB_PAT')]) {
               writeFile file: '.env', text: """\
@@ -148,46 +148,50 @@ def getRepoFromGitUrl() {
 
 def createAndUpdateGitHubDeployment(String repo, String ref, String branch, String deployEnv, String deployUrl) {
   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
-    def description = "Deployed from Jenkins pipeline for branch ${branch}"
-    def response = sh(
-      script: """
-        curl -s -X POST \\
-          -H "Authorization: token ${GITHUB_PAT}" \\
-          -H "Accept: application/vnd.github+json" \\
-          https://api.github.com/repos/${repo}/deployments \\
-          -d '{
-            "ref": "${ref}",
-            "task": "deploy",
-            "auto_merge": false,
-            "required_contexts": [],
-            "description": "${description}",
-            "environment": "${deployEnv}",
-            "environment_url": "${deployUrl}",
-            "sha": "${ref}"
-          }'
-      """,
-      returnStdout: true
-    ).trim()
-    def id = new groovy.json.JsonSlurperClassic().parseText(response).id
-    if (!id) error("❌ Failed to create GitHub deployment")
-    return id.toString()
+    withEnv(["TOKEN=${GITHUB_PAT}"]) {
+      def description = "Deployed from Jenkins pipeline for branch ${branch}"
+      def deploymentId = sh(
+        script: """
+          curl -s -X POST \\
+            -H 'Authorization: token $TOKEN' \\
+            -H 'Accept: application/vnd.github+json' \\
+            https://api.github.com/repos/${repo}/deployments \\
+            -d '{
+              "ref": "${ref}",
+              "task": "deploy",
+              "auto_merge": false,
+              "required_contexts": [],
+              "description": "${description}",
+              "environment": "${deployEnv}",
+              "environment_url": "${deployUrl}",
+              "sha": "${ref}"
+            }' | grep -o '"id":[0-9]*' | head -n1 | cut -d':' -f2
+        """,
+        returnStdout: true
+      ).trim()
+      return deploymentId
+    }
+    
   }
 }
 
 def updateGitHubDeploymentStatus(String repo, String logUrl, String deploymentId, String status, String deployEnv, String deployUrl) {
   withCredentials([usernamePassword(credentialsId: 'github-pat-6sensehq', usernameVariable: 'GH_USER', passwordVariable: 'GITHUB_PAT')]) {
-    sh """
-      curl -s -X POST \\
-        -H "Authorization: token ${GITHUB_PAT}" \\
-        -H "Accept: application/vnd.github+json" \\
-        https://api.github.com/repos/${repo}/deployments/${deploymentId}/statuses \\
-        -d '{
-          "state": "${status}",
-          "log_url": "${logUrl}",
-          "description": "Deployment ${status}",
-          "environment": "${deployEnv}",
-          "environment_url": "${deployUrl}"
-        }'
-    """
+    withEnv(["TOKEN=${GITHUB_PAT}"]) {
+      sh """
+        curl -s -X POST \\
+          -H 'Authorization: token $TOKEN' \\
+          -H "Accept: application/vnd.github+json" \\
+          https://api.github.com/repos/${repo}/deployments/${deploymentId}/statuses \\
+          -d '{
+            "state": "${status}",
+            "log_url": "${logUrl}",
+            "description": "Deployment ${status}",
+            "environment": "${deployEnv}",
+            "environment_url": "${deployUrl}"
+          }'
+      """
+    }
+    
   }
 }
