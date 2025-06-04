@@ -4,7 +4,7 @@ services:
     container_name: ${CONTAINER_NAME}
     restart: unless-stopped
     ports:
-      - "${HOST_PORT}:3000"
+      - "${HOST_PORT}:4002"
     environment:
       - NODE_ENV=production
       - SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
