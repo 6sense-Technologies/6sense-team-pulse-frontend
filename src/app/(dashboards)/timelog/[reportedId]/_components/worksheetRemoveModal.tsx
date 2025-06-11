@@ -1,4 +1,3 @@
-import { Button } from "@/components/ButtonComponent";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,16 +9,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { RemoveWorksheetData } from "../../../../../../helpers/timelogs/timelogApi";
-import { useSession } from "next-auth/react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 
 interface PaginationMetadata {
   totalCount: number;
-  // Add other pagination fields if needed
 }
 
 interface ReportedWorksheetList {
@@ -63,20 +60,6 @@ const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds
       }
 
       queryClient.invalidateQueries({ queryKey: ["fetchReportedWorksheet"] });
-      // Optionally, you can also refetch the data to ensure the UI is up-to-date
-
-      // If only removing some activities, refetch and check if any remain
-      // await queryClient.invalidateQueries({
-      //   queryKey: ["fetchReportedWorksheet"],
-      // });
-
-      // // Get latest data after refetch
-      // const latestData = queryClient.getQueryData(["fetchReportedWorksheet"]);
-
-      // // If no data is left after the refetch, redirect
-      // if (!latestData?.data || latestData.data.length === 0) {
-      //   router.push("/timelog?tab=reported");
-      // }
     },
     onError: (error) => {
       console.error("Error removing worksheet activities:", error);
