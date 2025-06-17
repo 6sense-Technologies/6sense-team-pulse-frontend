@@ -53,7 +53,7 @@ export const GetProjectList = async (session: any) => {
     accessToken = response.data.accessToken;
   }
   // <<temp_base_url>>/projects/get-user-projects-by-organization
-  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/get-user-projects-by-organization`, {
+  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/name`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Organization-Id": "67a317a25b672f01152f081a",
