@@ -25,6 +25,7 @@ import { TimelogTable } from "./_components/timelogTable";
 import { GetTimelogListReported, GetTimelogListUnreported } from "../../../../helpers/timelogs/timelogApi";
 import AddReportedModal from "./_components/addReportedModal";
 import { TimelogReportedListTable } from "./_components/timelogReportedListTable";
+import CreateLogModal from "./_components/createLogModal";
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -296,13 +297,7 @@ const TimelogPage = () => {
                 )}
 
                 {/* Create Log Button (Only show in unreported view) */}
-                {activeTab === "unreported" && (
-                  <Link href={``}>
-                    <Button className="mt-4 md:mt-0" variant="defaultEx" disabled>
-                      <span className="flex items-center gap-x-[6px] text-nowrap">Create Log</span>
-                    </Button>
-                  </Link>
-                )}
+                {activeTab === "unreported" && <CreateLogModal />}
               </>
             )}
           </div>
