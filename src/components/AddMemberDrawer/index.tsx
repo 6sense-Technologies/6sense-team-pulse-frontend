@@ -325,8 +325,8 @@ import { useForm } from "react-hook-form";
 import toast, { Toaster } from "react-hot-toast";
 import { Button } from "../ButtonComponent";
 import { MemberSchema } from "../../../Zodschema/memberSchema";
-import { BACKEND_URI } from "../../../globalConstants";
 import { z } from "zod";
+import { TEMP_BACKEND_URI } from "../../../globalConstants";
 
 interface IProps {
   isOpen: boolean;
@@ -362,7 +362,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const { data: designationData } = useQuery({
     queryKey: ["getDesignationList"],
     queryFn: async () => {
-      const res: AxiosResponse<IDesignation> = await axios.get(`${BACKEND_URI}/users/designations/list`);
+      const res: AxiosResponse<IDesignation> = await axios.get(`${TEMP_BACKEND_URI}/users/designations/list`);
       return res.data;
     },
     refetchOnWindowFocus: false,
@@ -372,7 +372,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const { data: projectData } = useQuery({
     queryKey: ["getProjectList"],
     queryFn: async () => {
-      const res: AxiosResponse<{ projects: IProject[] }> = await axios.get(`${BACKEND_URI}/users/projects/list`);
+      const res: AxiosResponse<{ projects: IProject[] }> = await axios.get(`${TEMP_BACKEND_URI}/users/projects/list`);
       return res.data;
     },
     refetchOnWindowFocus: false,
@@ -410,7 +410,7 @@ const AddMemberDrawer = ({ isOpen, onClose, refetch }: IProps): JSX.Element => {
   const addMemberMutation = useMutation<AddMemberResponse, unknown, AddMemberVariables>({
     mutationKey: ["addMemberMutation"],
     mutationFn: async (newMember: AddMemberVariables) => {
-      const res = await axios.post<AddMemberResponse>(`${BACKEND_URI}/users/create`, {
+      const res = await axios.post<AddMemberResponse>(`${TEMP_BACKEND_URI}/users/create`, {
         ...newMember,
         projects: newMember.projects.map((project) => project._id),
       });

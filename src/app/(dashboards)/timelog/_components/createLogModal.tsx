@@ -108,7 +108,7 @@ const CreateLogModal = () => {
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger className="focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 border-0 !border-none !outline-none">
-                        <SelectValue placeholder="Select activity" />
+                        <SelectValue placeholder="Select" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="bg-white">
@@ -130,18 +130,12 @@ const CreateLogModal = () => {
                 control={form.control}
                 name="startTime"
                 render={({ field, fieldState }) => (
-                  <FormItem className="flex-1">
+                  <FormItem>
                     <FormLabel className={fieldState.error ? "text-black" : ""}>
                       Start <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="time"
-                        id="time-picker"
-                        step="60"
-                        defaultValue="00:00"
-                        className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                      />
+                      <Input type="text" placeholder="00:00" className="placeholder-black" style={{ color: "black" }} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -152,18 +146,12 @@ const CreateLogModal = () => {
                 control={form.control}
                 name="endTime"
                 render={({ field, fieldState }) => (
-                  <FormItem className="flex-1">
+                  <FormItem>
                     <FormLabel className={fieldState.error ? "text-black" : ""}>
                       End <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        type="time"
-                        id="time-picker"
-                        step="60"
-                        defaultValue="00:00"
-                        className="bg-background appearance-none [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-                      />
+                      <Input type="text" placeholder="00:00" className="placeholder-black" style={{ color: "black" }} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
