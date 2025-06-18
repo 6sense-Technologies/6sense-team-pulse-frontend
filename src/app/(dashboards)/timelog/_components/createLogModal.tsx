@@ -9,24 +9,50 @@ import { Button } from "@/components/ButtonComponent";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const formSchema = z.object({
-  workSheetName: z.string().min(1, "Log Title is required"),
-  project: z.string().min(1, "Activity is required"),
-  startTime: z.string().min(1, "Start time is required"),
-  endTime: z.string().min(1, "End time is required"),
-});
+const formSchema = z
+  .object({
+    logTitle: z.string().min(1, "Log title is required."),
+    activity: z.string().min(1, "Please select activity."),
+    startTime: z.string().min(1, "Enter start time."),
+    endTime: z.string().min(1, "Enter end time."),
+  })
+  .refine(
+    (data) => {
+      if (!data.startTime || !data.endTime) return true;
+      const [startH, startM] = data.startTime.split(":").map(Number);
+      const [endH, endM] = data.endTime.split(":").map(Number);
+      const start = startH * 60 + startM;
+      const end = endH * 60 + endM;
+      return start < end;
+    },
+    {
+      message: "Start time must be before end time.",
+      path: ["startTime"],
+    },
+  );
 
 type FormValues = z.infer<typeof formSchema>;
 
 const CreateLogModal = () => {
   const [open, setOpen] = useState(false);
+  // Set default time to 00:00 (midnight) today
+  const getTodayMidnight = () => {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+  };
+
+  const [startSelectedDateTime, setStartSelectedDateTime] = useState<Date | null>(getTodayMidnight());
+  const [endSelectedDateTime, setEndSelectedDateTime] = useState<Date | null>(getTodayMidnight());
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      workSheetName: "",
-      project: "",
+      logTitle: "",
+      activity: "",
       startTime: "",
       endTime: "",
     },
@@ -38,12 +64,11 @@ const CreateLogModal = () => {
 
   const onSubmit = (data: FormValues) => {
     console.log("Form inputs:", {
-      title: data.workSheetName,
-      activity: data.project,
+      title: data.logTitle,
+      activity: data.activity,
       start: data.startTime,
       end: data.endTime,
     });
-    // Here you would typically handle form submission
     setOpen(false);
   };
 
@@ -82,7 +107,7 @@ const CreateLogModal = () => {
             {/* Log Title */}
             <FormField
               control={form.control}
-              name="workSheetName"
+              name="logTitle"
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel className={fieldState.error ? "text-black" : ""}>
@@ -91,7 +116,9 @@ const CreateLogModal = () => {
                   <FormControl>
                     <Input type="text" placeholder="Name of the log" className="placeholder-black" style={{ color: "black" }} {...field} />
                   </FormControl>
-                  <FormMessage />
+                  <div className="h-5">
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />
@@ -99,7 +126,7 @@ const CreateLogModal = () => {
             {/* Activity Select */}
             <FormField
               control={form.control}
-              name="project"
+              name="activity"
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel className={fieldState.error ? "text-black" : ""}>
@@ -119,7 +146,9 @@ const CreateLogModal = () => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
+                  <div className="h-5">
+                    <FormMessage />
+                  </div>
                 </FormItem>
               )}
             />
@@ -135,9 +164,31 @@ const CreateLogModal = () => {
                       Start <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="00:00" className="placeholder-black" style={{ color: "black" }} {...field} />
+                      <DatePicker
+                        selected={startSelectedDateTime}
+                        onChange={(date) => {
+                          setStartSelectedDateTime(date);
+                          if (date) {
+                            const hours = date.getHours().toString().padStart(2, "0");
+                            const minutes = date.getMinutes().toString().padStart(2, "0");
+                            field.onChange(`${hours}:${minutes}`);
+                          } else {
+                            field.onChange("");
+                          }
+                        }}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={60}
+                        timeFormat="HH:mm"
+                        dateFormat="HH:mm"
+                        customInput={
+                          <Input className="placeholder-gray-500" ref={field.ref} value={field.value} onChange={field.onChange} readOnly />
+                        }
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <div className="h-5">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
@@ -151,18 +202,71 @@ const CreateLogModal = () => {
                       End <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <Input type="text" placeholder="00:00" className="placeholder-black" style={{ color: "black" }} {...field} />
+                      <DatePicker
+                        selected={endSelectedDateTime}
+                        onChange={(date) => {
+                          setEndSelectedDateTime(date);
+                          if (date) {
+                            const hours = date.getHours().toString().padStart(2, "0");
+                            const minutes = date.getMinutes().toString().padStart(2, "0");
+                            field.onChange(`${hours}:${minutes}`);
+                          } else {
+                            field.onChange("");
+                          }
+                        }}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={60}
+                        timeFormat="HH:mm"
+                        dateFormat="HH:mm"
+                        customInput={
+                          <Input className="placeholder-gray-500" ref={field.ref} value={field.value} onChange={field.onChange} readOnly />
+                        }
+                      />
                     </FormControl>
-                    <FormMessage />
+                    <div className="h-5">
+                      <FormMessage />
+                    </div>
                   </FormItem>
                 )}
               />
             </div>
 
             {/* Time Summary */}
-            <div className="grid grid-cols-2 gap-4 text-[#64748B] font-normal text-sm leading-5">
-              <p>Total logged time:</p>
-              <p>00h 00m</p>
+            <div className="grid grid-cols-2 gap-4 text-[#64748B] text-sm leading-5">
+              <p className="font-normal">Total logged time:</p>
+              <p
+                className={(() => {
+                  const start = form.getValues("startTime");
+                  const end = form.getValues("endTime");
+
+                  // Check if we have valid times that calculate to a positive duration
+                  if (!start || !end) return "font-normal";
+
+                  const [startH, startM] = start.split(":").map(Number);
+                  const [endH, endM] = end.split(":").map(Number);
+                  const startMinutes = startH * 60 + startM;
+                  const endMinutes = endH * 60 + endM;
+
+                  // Apply bold font only when we have valid times with positive duration
+                  return startMinutes < endMinutes ? "font-semibold text-black" : "font-normal";
+                })()}
+              >
+                {(() => {
+                  const start = form.getValues("startTime");
+                  const end = form.getValues("endTime");
+                  if (!start || !end) return "00h 00m";
+                  const [startH, startM] = start.split(":").map(Number);
+                  const [endH, endM] = end.split(":").map(Number);
+                  const startMinutes = startH * 60 + startM;
+                  const endMinutes = endH * 60 + endM;
+                  if (isNaN(startMinutes) || isNaN(endMinutes) || startMinutes >= endMinutes) return "00h 00m";
+                  const diff = endMinutes - startMinutes;
+                  const hours = Math.floor(diff / 60);
+                  const minutes = diff % 60;
+                  return `${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m`;
+                })()}
+              </p>
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
@@ -175,6 +279,8 @@ const CreateLogModal = () => {
               onClick={() => {
                 form.reset();
                 setOpen(false);
+                setStartSelectedDateTime(getTodayMidnight());
+                setEndSelectedDateTime(getTodayMidnight());
               }}
             >
               Cancel
