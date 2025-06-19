@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useRef, forwardRef } from "react";
+import React, { useState } from "react";
+import Select from "react-select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ButtonComponent";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
@@ -16,20 +16,26 @@ import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import { CreateLogData } from "../../../../../helpers/timelogs/timelogApi";
 
+interface ActivityOption {
+  value: string;
+  label: string;
+}
+
 const formSchema = z
   .object({
     logTitle: z.string().min(1, "Log title is required."),
-    activity: z.string().min(1, "Please select activity."),
-    startTime: z.string().min(1, "Enter start time."),
-    endTime: z.string().min(1, "Enter end time."),
+    activity: z.object({
+      value: z.string().min(1, "Please select activity."),
+      label: z.string().min(1, "Please select activity."),
+    }),
+    startTime: z.date({ required_error: "Enter start time." }),
+    endTime: z.date({ required_error: "Enter end time." }),
   })
   .refine(
     (data) => {
       if (!data.startTime || !data.endTime) return true;
-      const [startH, startM] = data.startTime.split(":").map(Number);
-      const [endH, endM] = data.endTime.split(":").map(Number);
-      const start = startH * 60 + startM;
-      const end = endH * 60 + endM;
+      const start = data.startTime.getTime();
+      const end = data.endTime.getTime();
       return start < end;
     },
     {
@@ -48,23 +54,23 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   const queryClient = useQueryClient();
   const session = useSession();
   const [open, setOpen] = useState(false);
-  // Set default time to 00:00 (midnight) today
-  const getTodayMidnight = () => {
+
+  const getTodayMidnight = (): Date => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     return now;
   };
 
-  const [startSelectedDateTime, setStartSelectedDateTime] = useState<Date | null>(getTodayMidnight());
-  const [endSelectedDateTime, setEndSelectedDateTime] = useState<Date | null>(getTodayMidnight());
+  const [startSelectedDateTime, setStartSelectedDateTime] = useState<Date>(getTodayMidnight());
+  const [endSelectedDateTime, setEndSelectedDateTime] = useState<Date>(getTodayMidnight());
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       logTitle: "",
-      activity: "",
-      startTime: "",
-      endTime: "",
+      activity: { value: "", label: "" },
+      startTime: getTodayMidnight(),
+      endTime: getTodayMidnight(),
     },
   });
 
@@ -72,15 +78,8 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     formState: { isSubmitting },
   } = form;
 
-  // {
-  //   "name": "Hello",
-  //   "manualType": "Brainstorming",
-  //   "startTime": "2025-05-23T23:55:56Z",
-  //   "endTime": "2025-05-23T23:59:59Z"
-  // }
-
   const createLogMutation = useMutation({
-    mutationFn: (data: any) => CreateLogData(data, session),
+    mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) => CreateLogData(data, session.data),
     onSuccess: () => {
       toast({
         title: "Log Updated",
@@ -90,11 +89,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
       form.reset();
       setStartSelectedDateTime(getTodayMidnight());
       setEndSelectedDateTime(getTodayMidnight());
-      // setSelectedWorksheet(null);
       queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
-      // onClose();
-      // onSuccess?.();
-      // setSelectedIds([]); // This is fine here
     },
     onError: (error: any) => {
       console.error("Mutation error:", error);
@@ -107,43 +102,65 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   });
 
   const onSubmit = (data: FormValues) => {
-    // console.log("Form inputs:", {
-    //   title: data.logTitle,
-    //   activity: data.activity,
-    //   start: data.startTime,
-    //   end: data.endTime,
-    // });
-    const pad = (n: number) => n.toString().padStart(2, "0");
-    const getDateTime = (date: Date, time: string) => {
-      const [h, m] = time.split(":").map(Number);
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(h)}:${pad(m)}:00Z`;
-    };
-
     const formatedData = {
       name: data.logTitle,
-      manualType: data.activity,
-      startTime: getDateTime(date, data.startTime),
-      endTime: getDateTime(date, data.endTime),
+      manualType: data.activity.value,
+      startTime: data.startTime.toISOString(),
+      endTime: data.endTime.toISOString(),
     };
 
     createLogMutation.mutate(formatedData);
-    console.log("🚀 ~ onSubmit ~ formatedData:", formatedData);
-    setOpen(false);
   };
 
-  const activityList = [
-    "Brainstorming",
-    "Code Review",
-    "Collaboration",
-    "Designing",
-    "Documentation",
-    "Emailing",
-    "Meeting",
-    "Planning",
-    "Presentation",
-    "Researching",
-    "Testing",
-    "Writing",
+  const activityList: ActivityOption[] = [
+    {
+      value: "Brainstorming",
+      label: "Brainstorming",
+    },
+    {
+      value: "Code Review",
+      label: "Code Review",
+    },
+    {
+      value: "Collaboration",
+      label: "Collaboration",
+    },
+    {
+      value: "Designing",
+      label: "Designing",
+    },
+    {
+      value: "Documentation",
+      label: "Documentation",
+    },
+    {
+      value: "Emailing",
+      label: "Emailing",
+    },
+    {
+      value: "Meeting",
+      label: "Meeting",
+    },
+    {
+      value: "Planning",
+      label: "Planning",
+    },
+    {
+      value: "Presentation",
+      label: "Presentation",
+    },
+    {
+      value: "Researching",
+      label: "Researching",
+    },
+    {
+      value: "Testing",
+      label: "Testing",
+    },
+    {
+      value: "Writing",
+      label: "Writing",
+    },
   ];
 
   return (
@@ -163,7 +180,6 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
 
         <Form {...form}>
           <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
-            {/* Log Title */}
             <FormField
               control={form.control}
               name="logTitle"
@@ -182,7 +198,6 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
               )}
             />
 
-            {/* Activity Select */}
             <FormField
               control={form.control}
               name="activity"
@@ -191,20 +206,17 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                   <FormLabel className={fieldState.error ? "text-black" : ""}>
                     Activity <span className="text-red-500">*</span>
                   </FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 border-0 !border-none !outline-none">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {activityList.map((activity) => (
-                        <SelectItem key={activity} value={activity}>
-                          {activity}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Select<ActivityOption>
+                    styles={{
+                      indicatorSeparator: (base) => ({ ...base, display: "none" }),
+                    }}
+                    value={field.value}
+                    onChange={(val) => field.onChange(val)}
+                    onBlur={field.onBlur}
+                    ref={field.ref}
+                    placeholder="Select"
+                    options={activityList}
+                  />
                   <div className="h-5">
                     <FormMessage />
                   </div>
@@ -212,7 +224,6 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
               )}
             />
 
-            {/* Time Inputs */}
             <div className="flex gap-4">
               <FormField
                 control={form.control}
@@ -225,14 +236,10 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     <FormControl>
                       <DatePicker
                         selected={startSelectedDateTime}
-                        onChange={(date) => {
-                          setStartSelectedDateTime(date);
+                        onChange={(date: Date | null) => {
                           if (date) {
-                            const hours = date.getHours().toString().padStart(2, "0");
-                            const minutes = date.getMinutes().toString().padStart(2, "0");
-                            field.onChange(`${hours}:${minutes}`);
-                          } else {
-                            field.onChange("");
+                            setStartSelectedDateTime(date);
+                            field.onChange(date);
                           }
                         }}
                         showTimeSelect
@@ -241,7 +248,14 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         customInput={
-                          <Input className="placeholder-gray-500" ref={field.ref} value={field.value} onChange={field.onChange} readOnly />
+                          <Input
+                            className="placeholder-gray-500"
+                            ref={field.ref}
+                            value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            readOnly
+                          />
                         }
                       />
                     </FormControl>
@@ -263,14 +277,10 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     <FormControl>
                       <DatePicker
                         selected={endSelectedDateTime}
-                        onChange={(date) => {
-                          setEndSelectedDateTime(date);
+                        onChange={(date: Date | null) => {
                           if (date) {
-                            const hours = date.getHours().toString().padStart(2, "0");
-                            const minutes = date.getMinutes().toString().padStart(2, "0");
-                            field.onChange(`${hours}:${minutes}`);
-                          } else {
-                            field.onChange("");
+                            setEndSelectedDateTime(date);
+                            field.onChange(date);
                           }
                         }}
                         showTimeSelect
@@ -279,7 +289,14 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         customInput={
-                          <Input className="placeholder-gray-500" ref={field.ref} value={field.value} onChange={field.onChange} readOnly />
+                          <Input
+                            className="placeholder-gray-500"
+                            ref={field.ref}
+                            value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                            readOnly
+                          />
                         }
                       />
                     </FormControl>
@@ -291,43 +308,20 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
               />
             </div>
 
-            {/* Time Summary */}
             <div className="grid grid-cols-2 gap-4 text-[#64748B] text-sm leading-5">
               <p className="font-normal">Total logged time:</p>
-              <p
-                className={(() => {
-                  const start = form.getValues("startTime");
-                  const end = form.getValues("endTime");
-
-                  // Check if we have valid times that calculate to a positive duration
-                  if (!start || !end) return "font-normal";
-
-                  const [startH, startM] = start.split(":").map(Number);
-                  const [endH, endM] = end.split(":").map(Number);
-                  const startMinutes = startH * 60 + startM;
-                  const endMinutes = endH * 60 + endM;
-
-                  // Apply bold font only when we have valid times with positive duration
-                  return startMinutes < endMinutes ? "font-semibold text-black" : "font-normal";
-                })()}
-              >
+              <p className="font-semibold">
                 {(() => {
-                  const start = form.getValues("startTime");
-                  const end = form.getValues("endTime");
-                  if (!start || !end) return "00h 00m";
-                  const [startH, startM] = start.split(":").map(Number);
-                  const [endH, endM] = end.split(":").map(Number);
-                  const startMinutes = startH * 60 + startM;
-                  const endMinutes = endH * 60 + endM;
-                  if (isNaN(startMinutes) || isNaN(endMinutes) || startMinutes >= endMinutes) return "00h 00m";
-                  const diff = endMinutes - startMinutes;
-                  const hours = Math.floor(diff / 60);
-                  const minutes = diff % 60;
+                  const startTime = form.watch("startTime");
+                  const endTime = form.watch("endTime");
 
-                  // Format hours - remove leading zero for all values except 0
-                  const hoursFormatted = hours === 0 ? "00" : hours.toString();
-
-                  return `${hoursFormatted}h ${minutes.toString().padStart(2, "0")}m`;
+                  if (startTime && endTime) {
+                    const diffMs = endTime.getTime() - startTime.getTime();
+                    const hours = Math.floor(diffMs / 3600000);
+                    const minutes = Math.floor((diffMs % 3600000) / 60000);
+                    return `${hours}h ${minutes}m`;
+                  }
+                  return "00h 00m";
                 })()}
               </p>
             </div>
