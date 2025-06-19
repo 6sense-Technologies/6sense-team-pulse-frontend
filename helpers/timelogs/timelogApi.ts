@@ -53,7 +53,7 @@ export const GetProjectList = async (session: any) => {
     accessToken = response.data.accessToken;
   }
   // <<temp_base_url>>/projects/get-user-projects-by-organization
-  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/name`, {
+  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/names`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Organization-Id": "67a317a25b672f01152f081a",
@@ -191,6 +191,25 @@ export const RemoveWorksheetData = async (data: any, session: any) => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Organization-Id": "67a317a25b672f01152f081a",
+    },
+  });
+
+  return response.data;
+};
+
+export const CreateLogData = async (data: any, session: any) => {
+  // console.log("Session Data",session.data);
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.post(`${TEMP_BACKEND_URI}/timelog/unreported/manual-entry`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      // "Organization-Id": "67a317a25b672f01152f081a",
     },
   });
 

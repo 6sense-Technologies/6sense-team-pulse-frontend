@@ -24,7 +24,7 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    <span className="text-[#64748B]">{children}</span>
+    <span className="text-black">{children}</span>
     <SelectPrimitive.Icon asChild>
       <ChevronDown className="h-4 w-4 opacity-50" />
     </SelectPrimitive.Icon>

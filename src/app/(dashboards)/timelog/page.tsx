@@ -297,7 +297,7 @@ const TimelogPage = () => {
                 )}
 
                 {/* Create Log Button (Only show in unreported view) */}
-                {activeTab === "unreported" && <CreateLogModal />}
+                {activeTab === "unreported" && <CreateLogModal date={date} />}
               </>
             )}
           </div>

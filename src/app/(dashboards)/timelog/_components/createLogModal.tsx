@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, forwardRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
@@ -11,6 +11,10 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
+import { CreateLogData } from "../../../../../helpers/timelogs/timelogApi";
 
 const formSchema = z
   .object({
@@ -36,7 +40,13 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-const CreateLogModal = () => {
+interface CreateLogModalProps {
+  date: Date;
+}
+
+const CreateLogModal = ({ date }: CreateLogModalProps) => {
+  const queryClient = useQueryClient();
+  const session = useSession();
   const [open, setOpen] = useState(false);
   // Set default time to 00:00 (midnight) today
   const getTodayMidnight = () => {
@@ -62,13 +72,62 @@ const CreateLogModal = () => {
     formState: { isSubmitting },
   } = form;
 
+  // {
+  //   "name": "Hello",
+  //   "manualType": "Brainstorming",
+  //   "startTime": "2025-05-23T23:55:56Z",
+  //   "endTime": "2025-05-23T23:59:59Z"
+  // }
+
+  const createLogMutation = useMutation({
+    mutationFn: (data: any) => CreateLogData(data, session),
+    onSuccess: () => {
+      toast({
+        title: "Log Updated",
+        description: "Your custom activity has been successfully edited.",
+      });
+      setOpen(false);
+      form.reset();
+      setStartSelectedDateTime(getTodayMidnight());
+      setEndSelectedDateTime(getTodayMidnight());
+      // setSelectedWorksheet(null);
+      queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
+      // onClose();
+      // onSuccess?.();
+      // setSelectedIds([]); // This is fine here
+    },
+    onError: (error: any) => {
+      console.error("Mutation error:", error);
+      toast({
+        title: "Failed to Update Log",
+        description: error.response?.data?.message || "There was an issue saving your changes. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onSubmit = (data: FormValues) => {
-    console.log("Form inputs:", {
-      title: data.logTitle,
-      activity: data.activity,
-      start: data.startTime,
-      end: data.endTime,
-    });
+    // console.log("Form inputs:", {
+    //   title: data.logTitle,
+    //   activity: data.activity,
+    //   start: data.startTime,
+    //   end: data.endTime,
+    // });
+    const pad = (n: number) => n.toString().padStart(2, "0");
+    const getDateTime = (date: Date, time: string) => {
+      const [h, m] = time.split(":").map(Number);
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(h)}:${pad(m)}:00Z`;
+    };
+
+    const formatedData = {
+      name: data.logTitle,
+      manualType: data.activity,
+      startTime: getDateTime(date, data.startTime),
+      endTime: getDateTime(date, data.endTime),
+    };
+
+    createLogMutation.mutate(formatedData);
+    console.log("🚀 ~ onSubmit ~ formatedData:", formatedData);
     setOpen(false);
   };
 
@@ -178,7 +237,7 @@ const CreateLogModal = () => {
                         }}
                         showTimeSelect
                         showTimeSelectOnly
-                        timeIntervals={60}
+                        timeIntervals={15}
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         customInput={
@@ -264,7 +323,11 @@ const CreateLogModal = () => {
                   const diff = endMinutes - startMinutes;
                   const hours = Math.floor(diff / 60);
                   const minutes = diff % 60;
-                  return `${hours.toString().padStart(2, "0")}h ${minutes.toString().padStart(2, "0")}m`;
+
+                  // Format hours - remove leading zero for all values except 0
+                  const hoursFormatted = hours === 0 ? "00" : hours.toString();
+
+                  return `${hoursFormatted}h ${minutes.toString().padStart(2, "0")}m`;
                 })()}
               </p>
             </div>
