@@ -17,9 +17,10 @@ export interface TeamList {
     designations: string[]
   }
 
-  export interface Projects
+  export interface Project
   {
-    projects: string[]
+    _id: string;
+    name: string;
   }
 
   export interface InviteMemberForm {
