@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { FC } from "react";
 import { MultiDropdown } from "@/components/multidropdown";
-import { Projects } from "@/types/Members.types";
+import { Project } from "@/types/Members.types";
 import { GetProjects } from "../../../../../../helpers/Member/memberApi";
 import { useSession } from "next-auth/react";
 type ProjectDropdownProps = {
@@ -24,17 +24,18 @@ const ProjectDropdown: FC<ProjectDropdownProps> = ({
   const session = useSession();
 
   const {
-    data: projects,
-  } = useQuery<Projects[]>({
+    data,
+  } = useQuery<Project[]>({
     queryKey: ["getProjects"],
     queryFn: () => GetProjects(session)
   });
-    console.log("🚀 ~ projects:", projects)
+  console.log("🚀 ~ projects:", data);
 
-  const projectOptions = projects?.map((project) => ({
-    value: project,
-    label: project 
-  })) || [];
+  const projectOptions =
+    data?.map((project) => ({
+      value: project.name,
+      label: project.name,
+    })) || [];
 
   console.log("ProjectDropdown", projectOptions);
 
