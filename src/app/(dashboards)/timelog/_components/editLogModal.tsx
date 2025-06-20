@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -15,6 +15,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import { CreateLogData } from "../../../../../helpers/timelogs/timelogApi";
+import { PencilLine } from "lucide-react";
+import { TSelectedTimeLog } from "./timelogTable";
 
 interface ActivityOption {
   value: string;
@@ -55,14 +57,16 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface CreateLogModalProps {
-  date: Date;
+interface EditLogModalProps {
+  selectedTimeLog?: TSelectedTimeLog;
+  editTimelogModalOpen: boolean;
+  setEditTimelogModalOpen: (open: boolean) => void;
 }
 
-const CreateLogModal = ({ date }: CreateLogModalProps) => {
+const EditLogModal = ({ selectedTimeLog, editTimelogModalOpen, setEditTimelogModalOpen }: EditLogModalProps) => {
+  console.log("🚀 ~ EditLogModal ~ selectedTimeLog:", selectedTimeLog);
   const queryClient = useQueryClient();
   const session = useSession();
-  const [open, setOpen] = useState(false);
 
   const getTodayMidnight = (): Date => {
     const now = new Date();
@@ -76,16 +80,18 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      logTitle: "",
-      activity: undefined,
-      startTime: undefined,
-      endTime: undefined,
+      logTitle: selectedTimeLog?.name || "",
+      activity: { value: selectedTimeLog?.manualType || "", label: selectedTimeLog?.manualType || "" },
+      startTime: selectedTimeLog?.startTime ? new Date(selectedTimeLog.startTime) : undefined,
+      endTime: selectedTimeLog?.endTime ? new Date(selectedTimeLog.endTime) : undefined,
     },
   });
 
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    getValues,
   } = form;
+  console.log("🚀 ~ EditLogModal ~ getValues:", getValues());
 
   const createLogMutation = useMutation({
     mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) => CreateLogData(data, session),
@@ -94,7 +100,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
         title: "Log Created",
         description: "Your custom activity has been successfully added.",
       });
-      setOpen(false);
+      //   setOpen(false);
       form.reset();
       setStartSelectedDateTime(getTodayMidnight());
       setEndSelectedDateTime(getTodayMidnight());
@@ -172,18 +178,32 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     },
   ];
 
+  useEffect(() => {
+    if (selectedTimeLog) {
+      setStartSelectedDateTime(selectedTimeLog.startTime ? new Date(selectedTimeLog.startTime) : getTodayMidnight());
+      setEndSelectedDateTime(selectedTimeLog.endTime ? new Date(selectedTimeLog.endTime) : getTodayMidnight());
+      form.reset({
+        logTitle: selectedTimeLog.name || "",
+        activity: { value: selectedTimeLog.manualType || "", label: selectedTimeLog.manualType || "" },
+        startTime: selectedTimeLog.startTime ? new Date(selectedTimeLog.startTime) : undefined,
+        endTime: selectedTimeLog.endTime ? new Date(selectedTimeLog.endTime) : undefined,
+      });
+    }
+  }, [selectedTimeLog]);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={editTimelogModalOpen} onOpenChange={setEditTimelogModalOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-4 md:mt-0" variant="defaultEx">
+        {/* <Button className="mt-4 md:mt-0" variant="defaultEx">
           Create Log
-        </Button>
+        </Button> */}
+        <PencilLine className="w-4 h-4 cursor-pointer" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
-          <DialogTitle className="font-semibold text-2xl leading-6">Create Log</DialogTitle>
+          <DialogTitle className="font-semibold text-2xl leading-6">Edit Log</DialogTitle>
           <DialogDescription className="text-[#64748B] font-normal text-sm leading-5">
-            Manually enter activities to create a custom log entry.
+            Update activity details in your custom log entry.
           </DialogDescription>
         </DialogHeader>
 
@@ -287,7 +307,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                 control={form.control}
                 name="endTime"
                 render={({ field, fieldState }) => (
-                  <FormItem>
+                  <FormItem {...field}>
                     <FormLabel className={fieldState.error ? "text-black" : ""}>
                       End <span className="text-red-500">*</span>
                     </FormLabel>
@@ -344,7 +364,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Log"}
+              {isSubmitting ? "Updating..." : "Save"}
             </Button>
             <Button
               type="button"
@@ -352,7 +372,8 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
               className="w-full"
               onClick={() => {
                 form.reset();
-                setOpen(false);
+                // setOpen(false);
+                setEditTimelogModalOpen(false);
                 setStartSelectedDateTime(getTodayMidnight());
                 setEndSelectedDateTime(getTodayMidnight());
               }}
@@ -366,4 +387,4 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   );
 };
 
-export default CreateLogModal;
+export default EditLogModal;
