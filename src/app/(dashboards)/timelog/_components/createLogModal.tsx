@@ -24,19 +24,28 @@ interface ActivityOption {
 const formSchema = z
   .object({
     logTitle: z.string().min(1, "Log title is required."),
-    activity: z.object({
-      value: z.string().min(1, "Please select activity."),
-      label: z.string().min(1, "Please select activity."),
+    activity: z.object(
+      {
+        value: z.string().min(1, "Please select an activity from the list."),
+        label: z.string().min(1, "Please select an activity from the list."),
+      },
+      {
+        required_error: "Activity selection is required.",
+      },
+    ),
+    startTime: z.date({
+      required_error: "Select start time",
+      invalid_type_error: "Select start time",
     }),
-    startTime: z.date({ required_error: "Enter start time." }),
-    endTime: z.date({ required_error: "Enter end time." }),
+    endTime: z.date({
+      required_error: "Select end time",
+      invalid_type_error: "Select end time",
+    }),
   })
   .refine(
     (data) => {
       if (!data.startTime || !data.endTime) return true;
-      const start = data.startTime.getTime();
-      const end = data.endTime.getTime();
-      return start < end;
+      return data.startTime < data.endTime;
     },
     {
       message: "Start time must be before end time.",
@@ -68,9 +77,9 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       logTitle: "",
-      activity: { value: "", label: "" },
-      startTime: getTodayMidnight(),
-      endTime: getTodayMidnight(),
+      activity: undefined,
+      startTime: undefined,
+      endTime: undefined,
     },
   });
 
@@ -79,11 +88,11 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   } = form;
 
   const createLogMutation = useMutation({
-    mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) => CreateLogData(data, session.data),
+    mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) => CreateLogData(data, session),
     onSuccess: () => {
       toast({
-        title: "Log Updated",
-        description: "Your custom activity has been successfully edited.",
+        title: "Log Created",
+        description: "Your custom activity has been successfully added.",
       });
       setOpen(false);
       form.reset();
@@ -94,8 +103,8 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     onError: (error: any) => {
       console.error("Mutation error:", error);
       toast({
-        title: "Failed to Update Log",
-        description: error.response?.data?.message || "There was an issue saving your changes. Please try again.",
+        title: "Failed to Create Log",
+        description: error.response?.data?.message || "There was an issue adding your activity. Please try again.",
         variant: "destructive",
       });
     },
@@ -189,7 +198,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     Log Title <span className="text-red-500">*</span>
                   </FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="Name of the log" className="placeholder-black" style={{ color: "black" }} {...field} />
+                    <Input type="text" placeholder="Name of the log" className={`placeholder-black`} style={{ color: "black" }} {...field} />
                   </FormControl>
                   <div className="h-5">
                     <FormMessage />
@@ -209,8 +218,16 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                   <Select<ActivityOption>
                     styles={{
                       indicatorSeparator: (base) => ({ ...base, display: "none" }),
+                      // control: (base, state) => ({
+                      //   ...base,
+                      //   borderColor: fieldState.error ? "#ef4444" : base.borderColor,
+                      //   "&:hover": {
+                      //     borderColor: fieldState.error ? "#ef4444" : base.borderColor,
+                      //   },
+                      // }),
                     }}
-                    value={field.value}
+                    defaultValue={undefined}
+                    value={field?.value}
                     onChange={(val) => field.onChange(val)}
                     onBlur={field.onBlur}
                     ref={field.ref}
@@ -218,7 +235,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     options={activityList}
                   />
                   <div className="h-5">
-                    <FormMessage />
+                    <p className="text-[0.8rem] font-medium text-destructive">{fieldState.error ? "Select an activity" : null}</p>
                   </div>
                 </FormItem>
               )}
@@ -244,12 +261,12 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                         }}
                         showTimeSelect
                         showTimeSelectOnly
-                        timeIntervals={15}
+                        timeIntervals={60}
                         timeFormat="HH:mm"
                         dateFormat="HH:mm"
                         customInput={
                           <Input
-                            className="placeholder-gray-500"
+                            className={`placeholder-gray-500`}
                             ref={field.ref}
                             value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                             onChange={field.onChange}
@@ -290,7 +307,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                         dateFormat="HH:mm"
                         customInput={
                           <Input
-                            className="placeholder-gray-500"
+                            className={`placeholder-gray-500`}
                             ref={field.ref}
                             value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
                             onChange={field.onChange}
@@ -315,7 +332,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                   const startTime = form.watch("startTime");
                   const endTime = form.watch("endTime");
 
-                  if (startTime && endTime) {
+                  if (startTime && endTime && startTime < endTime) {
                     const diffMs = endTime.getTime() - startTime.getTime();
                     const hours = Math.floor(diffMs / 3600000);
                     const minutes = Math.floor((diffMs % 3600000) / 60000);
