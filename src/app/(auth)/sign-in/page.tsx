@@ -64,7 +64,7 @@ const SignIn = () => {
       router.push("/dashboard");
     },
     onError: (error: any) => {
-      // console.log("Error:", error);
+      //
       if (error.message === "User not found") {
         setErrorMessage("No account found with this email.");
         setErrorFlag(false);
@@ -74,8 +74,6 @@ const SignIn = () => {
       }
     },
   });
-
-  console.log("Error Messages", errorMessage);
 
   const handleSubmission: SubmitHandler<TBasicSignInFormInputs> = (data) => {
     setErrorMessage(null);
@@ -106,11 +104,7 @@ const SignIn = () => {
       signOut({ redirect: false }).then(() => {
         return <Loader />;
       });
-    } else if (
-      session.data?.isVerified &&
-      session.data?.hasOrganization &&
-      session.status === "authenticated"
-    ) {
+    } else if (session.data?.isVerified && session.data?.hasOrganization && session.status === "authenticated") {
       router.push("/dashboard");
       return <Loader />;
     }
@@ -144,9 +138,7 @@ const SignIn = () => {
         </div>
 
         <div className="w-full max-w-[465px] mx-auto px-8 pt-6 xl:pt-8 lg:px-5 lg:pt-0">
-          <p className="text-3xl text-black font-semibold pt-4 lg:pt-0">
-            Sign in
-          </p>
+          <p className="text-3xl text-black font-semibold pt-4 lg:pt-0">Sign in</p>
           <div>
             <AuthPageHeader
               title="You are one click away"
@@ -157,62 +149,23 @@ const SignIn = () => {
           </div>
           <div className="flex gap-x-4">
             {/* <Link href={"/sign-in/sso"}> */}
-            <Button
-              variant="extralight"
-              size="minixl"
-              onClick={() =>
-                comingSoonAlert()}
-            >
-
+            <Button variant="extralight" size="minixl" onClick={() => comingSoonAlert()}>
               SSO
             </Button>
             {/* </Link> */}
             <div className="flex gap-x-[16px]">
-              <Button
-                variant="extralight"
-                size="smallest"
-                onClick={() =>
-                  comingSoonAlert()}
-              >
-                <Image
-                  src={GoogleLogo}
-                  width={24}
-                  height={24}
-                  alt="googleLogo"
-                />
+              <Button variant="extralight" size="smallest" onClick={() => comingSoonAlert()}>
+                <Image src={GoogleLogo} width={24} height={24} alt="googleLogo" />
               </Button>
-              <Button
-                variant="extralight"
-                size="smallest"
-                onClick={() =>
-                  comingSoonAlert()}
-              >
-                <Image
-                  src={FacebookLogo}
-                  width={24}
-                  height={24}
-                  alt="facebookLogo"
-                />
+              <Button variant="extralight" size="smallest" onClick={() => comingSoonAlert()}>
+                <Image src={FacebookLogo} width={24} height={24} alt="facebookLogo" />
               </Button>
-              <Button
-                variant="extralight"
-                size="smallest"
-                onClick={() =>
-                  comingSoonAlert()}
-              >
-                <Image
-                  src={AppleLogo}
-                  width={24}
-                  height={24}
-                  alt="appleLogo"
-                />
+              <Button variant="extralight" size="smallest" onClick={() => comingSoonAlert()}>
+                <Image src={AppleLogo} width={24} height={24} alt="appleLogo" />
               </Button>
             </div>
           </div>
-          <OrDivider
-            text="OR CONTINUE WITH"
-            className="text-[12px] text-textMuted"
-          />
+          <OrDivider text="OR CONTINUE WITH" className="text-[12px] text-textMuted" />
 
           <form onSubmit={handleSubmit(handleSubmission)}>
             <div className="w-full pt-2 lg:pt-0">
@@ -230,10 +183,7 @@ const SignIn = () => {
               />
             </div>
             <div className="pt-6 lg:pt-5 w-full">
-              <label
-                htmlFor="password"
-                className="text-black font-medium text-sm"
-              >
+              <label htmlFor="password" className="text-black font-medium text-sm">
                 Password
               </label>
               <div className="relative">
@@ -246,18 +196,11 @@ const SignIn = () => {
                     errors={errors}
                     className="placeholder:text-subHeading w-full mt-[4px]"
                   />
-                  <button
-                    type="button"
-                    onClick={handlePasswordVisibility}
-                    className="absolute right-5 top-2.5"
-                  >
+                  <button type="button" onClick={handlePasswordVisibility} className="absolute right-5 top-2.5">
                     {passwordVisible ? (
                       <Eye size={20} className="text-xl text-deepBlackColor" />
                     ) : (
-                      <EyeOff
-                        size={20}
-                        className="text-xl text-deepBlackColor"
-                      />
+                      <EyeOff size={20} className="text-xl text-deepBlackColor" />
                     )}
                   </button>
                 </div>
@@ -266,15 +209,8 @@ const SignIn = () => {
 
             {errorFlag ? <InvalidErrorBanner /> : null}
 
-            <Button
-              variant="dark"
-              className={`${errorFlag ? "mt-2 w-full" : "mt-8 w-full"}`}
-            >
-              {BasicSignInMutation.isPending ? (
-                <Circle className="animate-spin" />
-              ) : (
-                "Sign in"
-              )}
+            <Button variant="dark" className={`${errorFlag ? "mt-2 w-full" : "mt-8 w-full"}`}>
+              {BasicSignInMutation.isPending ? <Circle className="animate-spin" /> : "Sign in"}
             </Button>
           </form>
 
@@ -287,12 +223,8 @@ const SignIn = () => {
           </div>
 
           <div>
-            <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() =>
-              comingSoonAlert()
-            }>
-              By clicking continue, you agree to our{" "}
-              <span className="underline cursor-pointer">Terms of Service</span>{" "}
-              and{" "}
+            <p className="text-sm text-textMuted px-10 text-center pt-5" onClick={() => comingSoonAlert()}>
+              By clicking continue, you agree to our <span className="underline cursor-pointer">Terms of Service</span> and{" "}
               <span className="underline cursor-pointer">Privacy Policy</span>.
             </p>
           </div>

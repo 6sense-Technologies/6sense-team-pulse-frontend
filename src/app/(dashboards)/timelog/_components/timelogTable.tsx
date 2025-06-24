@@ -27,7 +27,7 @@ import EditLogModal from "./editLogModal";
 import { set } from "date-fns";
 
 export type TSelectedTimeLog = {
-  id: string;
+  _id: string;
   name: string;
   manualType: string;
   startTime: Date;
@@ -70,7 +70,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
   const [currentPageState, setCurrentPageState] = useState(page);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTimeLog, setSelectedTimeLog] = useState<TSelectedTimeLog>();
-  console.log("🚀 ~ selectedTimeLog-----:", selectedTimeLog);
 
   const [editTimelogModalOpen, setEditTimelogModalOpen] = useState(false);
   // Define columns for the table

@@ -12,21 +12,13 @@ type ToolDropdownProps = {
   index?: number;
 };
 
-const ToolDropdown: FC<ToolDropdownProps> = ({
-  control,
-  name,
-  placeholder,
-  errors,
-  index,
-}) => {
-  const {
-    data: tools,
-  } = useQuery<ToolOptionList>({
+const ToolDropdown: FC<ToolDropdownProps> = ({ control, name, placeholder, errors, index }) => {
+  const { data: tools } = useQuery<ToolOptionList>({
     queryKey: ["getTools"],
     queryFn: () => GetTools(),
   });
 
-  // console.log("ToolDropdown", tools);
+  //
 
   const toolOptions =
     tools?.map((tool) => ({
@@ -36,10 +28,7 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
 
   return (
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 mt-3 lg:mt-8 relative">
-      <label
-        htmlFor="projectName"
-        className="text-sm font-medium text-black pb-[6px]"
-      >
+      <label htmlFor="projectName" className="text-sm font-medium text-black pb-[6px]">
         Tool
         {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>
@@ -47,18 +36,14 @@ const ToolDropdown: FC<ToolDropdownProps> = ({
         control={control}
         name={name}
         placeholder={placeholder || "Select"}
-        className={`w-full max-w-[553px] placeholder:text-subHeading ${errors ? "border-destructive" : null }`}
+        className={`w-full max-w-[553px] placeholder:text-subHeading ${errors ? "border-destructive" : null}`}
         additionalText="Select the management tool you use to manage this project"
         active={true}
         errors={errors}
         message={errors}
         options={toolOptions}
       />
-      {errors && (
-        <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">
-          {errors}
-        </p>
-      )}
+      {errors && <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">{errors}</p>}
     </div>
   );
 };

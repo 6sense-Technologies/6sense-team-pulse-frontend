@@ -30,9 +30,7 @@ const ProjectList = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const newPage = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : 1;
+    const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
     setPages(newPage);
     // Only update pagination if the new page is different from the current page
@@ -53,10 +51,10 @@ const ProjectList = () => {
     refetch: projectListRefetch,
   } = useQuery<any>({
     queryKey: ["fetchProjects", pages, limit],
-    queryFn: () => GetProjectList({ page: pages, limit },session),
+    queryFn: () => GetProjectList({ page: pages, limit }, session),
   });
 
-  // console.log(projectList);
+  //
 
   const totalCountAndLimit = {
     totalCount: projectList?.total ?? 0,
@@ -68,23 +66,19 @@ const ProjectList = () => {
       <PageTitle title="Projects • Ops4 Team" />
 
       <div className="pl-4 pt-8 lg:pt-8 pr-[14px] w-full">
-      <div className="md:hidden pb-4 flex justify-between items-center">
-          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+        <div className="md:hidden pb-4 flex justify-between items-center">
+          <span className="md:hidden pl-1 ">
+            <SidebarTrigger />
+          </span>
           <AvatarMenu />
         </div>
         <div className="flex justify-between items-center">
-        <GlobalBreadCrumb
-          initialData="Projects"
-          initalLink="/projects"
-        />
-        <span className="hidden md:flex pr-2">
-          <AvatarMenu />
+          <GlobalBreadCrumb initialData="Projects" initalLink="/projects" />
+          <span className="hidden md:flex pr-2">
+            <AvatarMenu />
           </span>
         </div>
-        <PageHeading
-          title="Projects"
-          className="pl-2 pt-1"
-        />
+        <PageHeading title="Projects" className="pl-2 pt-1" />
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
@@ -95,12 +89,7 @@ const ProjectList = () => {
               className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
             />
-            <ProjectDropdown
-              placeholder="Filter by Tool"
-              name="tool"
-              active={false}
-              className="mb-[26px]"
-            />
+            <ProjectDropdown placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" />
           </div>
           <div className="w-full md:w-auto">
             <Link href={`/projects/create`}>

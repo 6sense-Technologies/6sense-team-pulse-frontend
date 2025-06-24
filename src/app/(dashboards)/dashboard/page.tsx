@@ -9,28 +9,25 @@ import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 const Dashboard = () => {
   // const session = useSession();
 
-  // console.log("Session Data", session.data);
+  //
 
   return (
     <div>
-      <PageTitle
-        title="Dashboard • Ops4 Team"
-      />
+      <PageTitle title="Dashboard • Ops4 Team" />
       <div className="flex justify-between items-center md:hidden px-2 py-2">
-      <span className="md:hidden"><SidebarTrigger /></span>
+        <span className="md:hidden">
+          <SidebarTrigger />
+        </span>
         <AvatarMenu />
       </div>
       <div className="flex justify-between items-center pl-2 px-2 py-2">
-        <GlobalBreadCrumb
-          initialData="Dashboard"
-          initalLink="/dashboard"
-        />
+        <GlobalBreadCrumb initialData="Dashboard" initalLink="/dashboard" />
         <span className="hidden md:flex pr-2">
           <AvatarMenu />
-          </span>
-        </div>
+        </span>
+      </div>
       <div className="pl-2">
-      <PageHeading title="Dashboard" className="pl-2 pt-3" />
+        <PageHeading title="Dashboard" className="pl-2 pt-3" />
       </div>
     </div>
   );

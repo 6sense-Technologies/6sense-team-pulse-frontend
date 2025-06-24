@@ -1,32 +1,24 @@
-import axios from 'axios';
-import { TEMP_BACKEND_URI } from '../../globalConstants';
+import axios from "axios";
+import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 interface TPaginationProps {
   page: number;
   limit: number;
 }
 
-export const GetProjectList = async (
-  { page, limit }: TPaginationProps,
-  session: any
-) => {
+export const GetProjectList = async ({ page, limit }: TPaginationProps, session: any) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log('Session expired. Updating session...');
-
-    const response = await axios.get('/api/auth/session');
+    const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
 
-  const response = await axios.get(
-    `${TEMP_BACKEND_URI}/projects?page=${page}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+  const response = await axios.get(`${TEMP_BACKEND_URI}/projects?page=${page}&limit=${limit}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
   if (response.status === 401) {
     session.update();
@@ -42,17 +34,15 @@ export const GetTools = async () => {
 };
 
 export const CreateProject = async (data: any, session: any) => {
-  // console.log("Session Data",session.data);
+  //
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log('Session expired. Updating session...');
-
-    const response = await axios.get('/api/auth/session');
+    const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
 
-  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`,data, {
+  const response = await axios.post(`${TEMP_BACKEND_URI}/projects`, data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -62,9 +52,7 @@ export const CreateProject = async (data: any, session: any) => {
 };
 
 export const GetDesignations = async () => {
-  const response = await axios.get(
-    `${TEMP_BACKEND_URI}/users/designations/list`
-  );
+  const response = await axios.get(`${TEMP_BACKEND_URI}/users/designations/list`);
 
   return response.data;
 };

@@ -51,7 +51,6 @@ const MemberDetail = ({ onUpdate, memberInformation, totalCountAndLimit }: IProp
 
   const handleConfirmDelete = (): void => {
     // Logic for archiving the member goes here
-    console.log("Member archived");
 
     archiveMutation.mutate(undefined, {
       onSuccess: () => {
@@ -72,7 +71,6 @@ const MemberDetail = ({ onUpdate, memberInformation, totalCountAndLimit }: IProp
   const handleUpdateProfile = (): void => {
     updateProfileMutation.mutate(undefined, {
       onSuccess: () => {
-        console.log("Updated Profile Successfully!");
         onUpdate();
       },
       onError: (error) => {
@@ -80,8 +78,6 @@ const MemberDetail = ({ onUpdate, memberInformation, totalCountAndLimit }: IProp
       },
     });
   };
-
-  console.log("MemberInfo", memberInformation);
 
   return (
     <div className="mt-10 relative">

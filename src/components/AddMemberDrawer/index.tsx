@@ -128,7 +128,7 @@
 //     setIsLoading(true);
 //     addMemberMutation.mutate(data, {
 //       onSuccess: (data) => {
-//         console.log(data);
+//
 //         onClose();
 //         router.push("/member-list?page=1");
 //         refetch();
@@ -152,7 +152,7 @@
 //     })
 //   };
 
-//   console.log(errors)
+//
 
 //   return (
 //     <div

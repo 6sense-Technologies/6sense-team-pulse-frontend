@@ -18,7 +18,6 @@ import AvatarMenu from "@/components/AvatarMenu";
 import Link from "next/link";
 
 const TeamListPage: React.FC = () => {
-
   const [pages, setPages] = useState<number>(1);
   const [limit] = useState<number>(10);
   const session = useSession();
@@ -35,9 +34,7 @@ const TeamListPage: React.FC = () => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    const newPage = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : 1;
+    const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
     setPages(newPage);
     // Only update pagination if the new page is different from the current page
@@ -58,16 +55,15 @@ const TeamListPage: React.FC = () => {
     refetch: teamListRefetch,
   } = useQuery<TeamList>({
     queryKey: ["teamList", pages, limit],
-    queryFn: () => GetTeamList({ page: pages, limit}, session),
+    queryFn: () => GetTeamList({ page: pages, limit }, session),
   });
 
-  // console.log("Team", teamList);
+  //
 
   const totalCountAndLimit = {
     totalCount: teamList?.count ?? 0,
     size: pagination.size ?? 10,
   };
-
 
   return (
     <div className="w-full">
@@ -75,16 +71,15 @@ const TeamListPage: React.FC = () => {
 
       <div className="px-4 lg:pl-4 pt-8 lg:pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">
-          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <span className="md:hidden pl-1 ">
+            <SidebarTrigger />
+          </span>
           <AvatarMenu />
         </div>
         <div className="flex justify-between items-center">
-        <GlobalBreadCrumb
-          initialData="Members"
-          initalLink="/members"
-        />
-        <span className="hidden md:flex pr-2">
-          <AvatarMenu />
+          <GlobalBreadCrumb initialData="Members" initalLink="/members" />
+          <span className="hidden md:flex pr-2">
+            <AvatarMenu />
           </span>
         </div>
         <PageHeading title="All Members" className="pl-2 pt-1" />
@@ -117,7 +112,9 @@ const TeamListPage: React.FC = () => {
             </div>
             <div className="w-full md:w-auto">
               <Link href="/members/create">
-              <Button variant="defaultEx" className="mb-[26px] mr-1">Invite Member</Button>
+                <Button variant="defaultEx" className="mb-[26px] mr-1">
+                  Invite Member
+                </Button>
               </Link>
             </div>
           </div>

@@ -22,8 +22,6 @@ export const GetTimelogListUnreported = async ({ page, limit, formattedDate, sor
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
@@ -47,8 +45,6 @@ export const GetProjectList = async (session: any) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
@@ -72,8 +68,6 @@ export const GetWorksheetList = async ({ projectId, worksheetName, formattedDate
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
@@ -97,11 +91,10 @@ export const GetWorksheetList = async ({ projectId, worksheetName, formattedDate
 };
 
 export const CreateReportedData = async (data: any, session: any) => {
-  // console.log("Session Data",session.data);
+  //
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
     // <<temp_base_url>>/timelog/unreported/assign-to-project
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
@@ -121,8 +114,6 @@ export const GetTimelogListReported = async ({ page, limit, startDate, endDate, 
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
@@ -149,8 +140,6 @@ export const GetReportedworksheetList = async ({ page, limit, sort, searchText }
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
-
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
   }
@@ -176,11 +165,10 @@ export const GetReportedworksheetList = async ({ page, limit, sort, searchText }
 };
 
 export const RemoveWorksheetData = async (data: any, session: any) => {
-  // console.log("Session Data",session.data);
+  //
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
-    console.log("Session expired. Updating session...");
     // <<temp_base_url>>/timelog/unreported/assign-to-project
     const response = await axios.get("/api/auth/session");
     accessToken = response.data.accessToken;
@@ -198,7 +186,7 @@ export const RemoveWorksheetData = async (data: any, session: any) => {
 };
 
 export const CreateLogData = async (data: any, session: any) => {
-  // console.log("Session Data",session.data);
+  //
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -207,6 +195,25 @@ export const CreateLogData = async (data: any, session: any) => {
   }
 
   const response = await axios.post(`${TEMP_BACKEND_URI}/timelog/unreported/manual-entry`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      // "Organization-Id": "67a317a25b672f01152f081a",
+    },
+  });
+
+  return response.data;
+};
+
+export const UpdateLogData = async (data: any, session: any, selectedTimeLogId: string) => {
+  //
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+  // <<dev_base_url>>/timelog/unreported/manual-entry/683560166bd49aefa9ac2690
+  const response = await axios.patch(`${TEMP_BACKEND_URI}/timelog/unreported/manual-entry/${selectedTimeLogId}`, data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       // "Organization-Id": "67a317a25b672f01152f081a",

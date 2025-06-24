@@ -56,7 +56,7 @@ export const TimelogReportedListTable: React.FC<TTimelogTableProps> = ({
 }) => {
   // Remove local selectedIds state since it's now a prop
   // const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  // console.log("🚀 ~ selectedIds:", selectedIds);
+  //
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

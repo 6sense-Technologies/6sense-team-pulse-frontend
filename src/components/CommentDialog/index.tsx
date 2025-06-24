@@ -57,10 +57,8 @@ const CommentDialog: React.FC<ICommentDialogProps> = ({ commentAdded, isOpen, on
       onSuccess: (data) => {
         handleCloseDialog();
         commentAdded();
-        console.log(data);
       },
       onError: (error) => {
-        console.log(error);
         setSubmissionError("Adding comment failed!");
       },
       onSettled: () => {

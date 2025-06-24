@@ -8,20 +8,12 @@ type WorkspaceURLProps = {
   index?: number;
 };
 
-const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
-  control,
-  name,
-  errors,
-  index,
-}) => {
-  // console.log("WorkspaceURL", name);
+const WorkspaceURL: React.FC<WorkspaceURLProps> = ({ control, name, errors, index }) => {
+  //
 
   return (
     <div className="w-full max-w-[553px] pt-8 md:pt-10 relative">
-      <label
-        htmlFor="workspace"
-        className="text-sm font-medium text-black pb-[6px]"
-      >
+      <label htmlFor="workspace" className="text-sm font-medium text-black pb-[6px]">
         Workspace URL
         {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>
@@ -34,11 +26,7 @@ const WorkspaceURL: React.FC<WorkspaceURLProps> = ({
         additionalText="Project URL of the selected tool"
         message={errors}
       />
-      {errors && (
-        <p className="text-destructive text-twelve md:text-sm font-medium pt-1 absolute">
-          {errors}
-        </p>
-      )}
+      {errors && <p className="text-destructive text-twelve md:text-sm font-medium pt-1 absolute">{errors}</p>}
     </div>
   );
 };

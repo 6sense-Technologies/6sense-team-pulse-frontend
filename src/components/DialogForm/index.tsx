@@ -59,10 +59,8 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
     bugReportMutation.mutate(data, {
       onSuccess: (data) => {
         handleCloseDialog();
-        console.log(data);
       },
       onError: (error) => {
-        console.log(error);
         setSubmissionError("Bug report failed!");
       },
       onSettled: () => {
