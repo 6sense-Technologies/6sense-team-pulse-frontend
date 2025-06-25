@@ -207,7 +207,7 @@ const EditLogModal = ({ selectedTimeLog, editTimelogModalOpen, setEditTimelogMod
         {/* <Button className="mt-4 md:mt-0" variant="defaultEx">
           Create Log
         </Button> */}
-        <PencilLine className="w-4 h-4 cursor-pointer" />
+        {/* <PencilLine className="w-4 h-4 cursor-pointer" /> */}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
