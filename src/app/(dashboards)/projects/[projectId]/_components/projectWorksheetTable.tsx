@@ -18,13 +18,14 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import { Globe, Pencil, PencilLine } from "lucide-react";
+import { Globe, Pencil, PencilLine, User } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Image from "next/image";
-import { TimelogPagination } from "./timelogPagination";
-import EditLogModal from "./editLogModal";
+
 import { set } from "date-fns";
+import { TimelogPagination } from "@/app/(dashboards)/timelog/_components/timelogPagination";
+import { Button } from "@/components/ButtonComponent";
 
 export type TSelectedTimeLog = {
   _id: string;
@@ -34,26 +35,12 @@ export type TSelectedTimeLog = {
   endTime: Date;
 };
 
-type TTimelogTableProps = {
-  projects?: Projects[];
-  refetch?: () => void;
-  totalCountAndLimit?: { totalCount: number; size: number };
-  currentPage: number;
-  loading?: boolean;
-  onSelectionChange?: (anySelected: boolean) => void;
-  selectedIds: string[];
-  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
-};
-
-export const TimelogTable: React.FC<TTimelogTableProps> = ({
-  projects = [],
+export const ProjectWorksheetTable: React.FC<any> = ({
+  worksheets = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
   currentPage,
   loading,
-  onSelectionChange,
-  selectedIds,
-  setSelectedIds,
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -75,132 +62,54 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
   // Define columns for the table
   const columns: ColumnDef<any>[] = [
     {
-      id: "select",
-      size: 5,
-      header: ({ table }) => {
-        // Get all visible row IDs on the current page
-        const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
-
-        // Check if all visible rows are selected
-        const allSelected = visibleRowIds.length > 0 && visibleRowIds.every((id) => selectedIds.includes(id));
-
-        // Check if some (but not all) visible rows are selected
-        const someSelected = visibleRowIds.some((id) => selectedIds.includes(id)) && !allSelected;
-
-        return (
-          <Checkbox
-            checked={allSelected}
-            // indeterminate={someSelected}
-            onCheckedChange={(value) => {
-              // Get all visible row IDs
-              const visibleRowIds = table.getRowModel().rows.map((row) => row.original._id);
-
-              if (value) {
-                // Add all visible row IDs to selectedIds
-                setSelectedIds((prev) => {
-                  const newSelection = [...prev];
-                  visibleRowIds.forEach((id) => {
-                    if (!newSelection.includes(id)) {
-                      newSelection.push(id);
-                    }
-                  });
-                  return newSelection;
-                });
-              } else {
-                // Remove visible row IDs from selectedIds
-                setSelectedIds((prev) => prev.filter((id) => !visibleRowIds.includes(id)));
-              }
-
-              // Also update table's internal state
-              table.toggleAllPageRowsSelected(!!value);
-            }}
-            aria-label="Select all"
-          />
-        );
-      },
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedIds.includes(row.original._id)}
-          onCheckedChange={(value) => {
-            if (value) {
-              setSelectedIds((prev) => [...prev, row.original._id]);
-            } else {
-              setSelectedIds(selectedIds.filter((id) => id !== row.original._id));
-            }
-            row.toggleSelected(!!value);
-          }}
-          aria-label="Select row"
-        />
+      accessorKey: "createdAt",
+      header: () => <div className="text-bold">Reported Time</div>,
+      cell: ({ row }: { row: any }) => (
+        <div className="text-medium">
+          {row.getValue("createdAt")
+            ? new Date(row.getValue("createdAt")).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })
+            : "-"}
+        </div>
       ),
-      enableSorting: false,
-      enableHiding: false,
+      size: 20,
     },
+    // {
+    //   accessorKey: "endTime",
+    //   header: () => <div className="text-bold">End</div>,
+    //   cell: ({ row }: { row: any }) => (
+    //     <div className="text-medium">
+    //       {row.getValue("endTime")
+    //         ? new Date(row.getValue("endTime")).toLocaleTimeString([], {
+    //             hour: "2-digit",
+    //             minute: "2-digit",
+    //             hour12: false,
+    //           })
+    //         : "-"}
+    //     </div>
+    //   ),
+    //   size: 20,
+    // },
     {
       accessorKey: "name",
-      header: () => <div className="text-bold">Activity</div>,
-      cell: ({ row }: { row: any }) => {
-        const value = row.getValue("name") || "-";
-        const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
-
-        return (
-          <div className="text-medium truncate flex items-center space-x-3">
-            {row.original?.icon ? <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-4 h-4" /> : <Globe />}
-            <span>{displayValue}</span>
-            {row.original.manualType && (
-              <>
-                <span> | {row.original.manualType}</span>
-                <span className="border rounded-full py-0.5 px-2.5">Manual</span>
-                <PencilLine
-                  className="w-4 h-4 cursor-pointer"
-                  onClick={() => {
-                    setSelectedTimeLog(row.original);
-                    setEditTimelogModalOpen(true);
-                  }}
-                />
-              </>
-            )}
-          </div>
-        );
-      },
-      size: 40,
-    },
-    {
-      accessorKey: "startTime",
-      header: () => <div className="text-bold">Start</div>,
-      cell: ({ row }: { row: any }) => (
-        <div className="text-medium">
-          {row.getValue("startTime")
-            ? new Date(row.getValue("startTime")).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              })
-            : "-"}
-        </div>
-      ),
+      header: () => <div className="text-bold">Work Sheet</div>,
+      cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("name") || "-"}</div>,
       size: 20,
     },
     {
-      accessorKey: "endTime",
-      header: () => <div className="text-bold">End</div>,
-      cell: ({ row }: { row: any }) => (
-        <div className="text-medium">
-          {row.getValue("endTime")
-            ? new Date(row.getValue("endTime")).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              })
-            : "-"}
-        </div>
-      ),
+      accessorKey: "totalActivities",
+      header: () => <div className="text-bold">Total Activities</div>,
+      cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("totalActivities") || "-"}</div>,
       size: 20,
     },
     {
-      accessorKey: "timeSpent",
+      accessorKey: "totalLoggedTime",
       header: () => <div className="text-bold">Time Spent</div>,
       cell: ({ row }: { row: any }) => {
-        const timeSpent = row.getValue("timeSpent");
+        const timeSpent = row.getValue("totalLoggedTime");
         if (!timeSpent) return <div className="text-medium">-</div>;
         return (
           <div className="text-medium">
@@ -210,12 +119,43 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
       },
       size: 20,
     },
+    {
+      accessorKey: "user",
+      header: () => <div className="text-bold">Reported By</div>,
+      cell: ({ row }: { row: any }) => {
+        const userValue = row.original?.user;
+
+        return (
+          <div className="text-medium flex items-center space-x-3">
+            {userValue?.avatarUrls ? (
+              <Image src={userValue.avatarUrls} alt={userValue.displayName} width={40} height={40} className="w-4 h-4" />
+            ) : (
+              <User className="w-4 h-4" />
+            )}
+            <span className="truncate">{userValue?.displayName || "-"}</span>
+          </div>
+        );
+      },
+      size: 40,
+    },
+    {
+      accessorKey: "action",
+      header: () => <div className="text-bold">Action</div>,
+      cell: ({ row }: { row: any }) => (
+        // <Link href={`/timelog/${row.original.worksheetId}`}>
+        <div className="text-medium">
+          <Button variant="outline">View</Button>
+        </div>
+        // </Link>
+      ),
+      size: 20,
+    },
   ];
 
   const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
 
   const table = useReactTable({
-    data: projects,
+    data: worksheets,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -249,13 +189,13 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
     }
   }, [loading]);
 
-  useEffect(() => {
-    if (onSelectionChange) {
-      onSelectionChange(selectedIds.length > 0);
-    }
-  }, [selectedIds, onSelectionChange]);
+  //   useEffect(() => {
+  //     if (onSelectionChange) {
+  //       onSelectionChange(selectedIds.length > 0);
+  //     }
+  //   }, [selectedIds, onSelectionChange]);
 
-  const displayedRowsCount = currentPageState > 1 ? (currentPageState - 1) * pagination.pageSize + projects.length : projects.length;
+  const displayedRowsCount = currentPageState > 1 ? (currentPageState - 1) * pagination.pageSize + worksheets.length : worksheets.length;
 
   return (
     <div className="w-full">
@@ -307,13 +247,6 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
                 )}
               </TableBody>
             </Table>
-            {selectedTimeLog ? (
-              <EditLogModal
-                editTimelogModalOpen={editTimelogModalOpen}
-                setEditTimelogModalOpen={setEditTimelogModalOpen}
-                selectedTimeLog={selectedTimeLog}
-              />
-            ) : null}
           </div>
 
           <div className="flex flex-col items-center justify-center py-4 lg:flex-row lg:items-center lg:justify-between lg:space-x-3 lg:py-4">

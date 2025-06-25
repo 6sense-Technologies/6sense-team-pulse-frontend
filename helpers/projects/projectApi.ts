@@ -3,7 +3,11 @@ import { TEMP_BACKEND_URI } from "../../globalConstants";
 
 interface TPaginationProps {
   page: number;
-  limit: number;
+  limit?: number;
+  startDate?: string;
+  endDate?: string;
+  sort?: string;
+  projectId?: string;
 }
 
 export const GetProjectList = async ({ page, limit }: TPaginationProps, session: any) => {
@@ -53,6 +57,65 @@ export const CreateProject = async (data: any, session: any) => {
 
 export const GetDesignations = async () => {
   const response = await axios.get(`${TEMP_BACKEND_URI}/users/designations/list`);
+
+  return response.data;
+};
+
+// get project details work sheet performance
+export const GetProjectWorksheetPerformance = async (session: any, data: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+  // <<base_url>>/projects/worksheet-analytics
+  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/worksheet-analytics`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    params: data,
+  });
+
+  if (response.status === 401) {
+    session.update();
+  }
+
+  return response.data;
+};
+
+// get project route worksheet list
+export const GetProjectWorksheetList = async (
+  {
+    page,
+    limit,
+    projectId,
+    // startDate, endDate, sort
+  }: TPaginationProps,
+  session: any,
+) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(
+    // `${TEMP_BACKEND_URI}/projects/worksheet-list?page=${page}&limit=${limit}&start-date=${startDate}&end-date=${endDate}&sort-order=${sort}`,
+    `${TEMP_BACKEND_URI}/projects/worksheet-list?page=${page}&limit=${limit}&project-id=${projectId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        // "Organization-Id": "67a317a25b672f01152f081a",
+        // "Timezone-Region": "Asia/Dhaka",
+      },
+    },
+  );
+
+  if (response.status === 401) {
+    session.update();
+  }
 
   return response.data;
 };
