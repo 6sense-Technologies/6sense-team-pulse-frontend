@@ -180,7 +180,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
           Create Log
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <DialogTitle className="font-semibold text-2xl leading-6">Create Log</DialogTitle>
           <DialogDescription className="text-[#64748B] font-normal text-sm leading-5">
