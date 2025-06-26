@@ -114,9 +114,10 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     const formatedData = {
       name: data.logTitle,
       manualType: data.activity.value,
-      startTime: data.startTime.toISOString(),
-      endTime: data.endTime.toISOString(),
+      startTime: new Date(date.getFullYear(), date.getMonth(), date.getDate(), data.startTime.getHours(), data.startTime.getMinutes()).toISOString(),
+      endTime: new Date(date.getFullYear(), date.getMonth(), date.getDate(), data.endTime.getHours(), data.endTime.getMinutes()).toISOString(),
     };
+    // console.log("🚀 ~ onSubmit ~ formatedData:", formatedData);
 
     createLogMutation.mutate(formatedData);
   };
