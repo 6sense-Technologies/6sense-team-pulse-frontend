@@ -13,6 +13,9 @@ import EmptyTimelogView from "../../timelog/_components/emptyTimelogView";
 import WorksheetTab from "./_components/worksheetTab";
 import { Button } from "@/components/ButtonComponent";
 import { EllipsisVertical } from "lucide-react";
+import { GetSingleProjectDetails } from "../../../../../helpers/projects/projectApi";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 
 const ProjectIdPage = () => {
   const router = useRouter();
@@ -26,6 +29,14 @@ const ProjectIdPage = () => {
   const params = useParams();
   const projectId = typeof params.projectId === "string" ? params.projectId : null;
   //   console.log("🚀 ~ ProjectIdPage ~ projectId:", projectId);
+
+  const session = useSession();
+  // get single project details
+  const { data: projectDetails, isLoading: projectDetailsLoading } = useQuery({
+    queryKey: ["fetchSingleProjectDetails", projectId],
+    queryFn: () => GetSingleProjectDetails(projectId as string, session),
+  });
+  // console.log("🚀 ~ ProjectIdPage ~ projectDetails:", projectDetails);
 
   return (
     <div className="w-full">
@@ -44,10 +55,7 @@ const ProjectIdPage = () => {
             <AvatarMenu />
           </span>
         </div>
-        <PageHeading
-          // title={reportedWorksheetList?.projectName || ""}
-          title="HireX"
-        />
+        <PageHeading title={projectDetails?.name || ""} />
 
         {/* tabs */}
         <div className="mb-3 flex flex-col items-start justify-between overflow-x-hidden md:mb-0 lg:flex-row lg:items-center">

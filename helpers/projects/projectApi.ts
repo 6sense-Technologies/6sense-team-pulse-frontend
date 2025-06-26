@@ -8,6 +8,9 @@ interface TPaginationProps {
   endDate?: string;
   sort?: string;
   projectId?: string;
+  searchText?: string;
+  sortBy?: string;
+  sortOrder?: string;
 }
 
 export const GetProjectList = async ({ page, limit }: TPaginationProps, session: any) => {
@@ -90,7 +93,12 @@ export const GetProjectWorksheetList = async (
     page,
     limit,
     projectId,
-    // startDate, endDate, sort
+    startDate,
+    endDate,
+    searchText,
+    sortBy,
+    sortOrder,
+    //  sort
   }: TPaginationProps,
   session: any,
 ) => {
@@ -103,7 +111,7 @@ export const GetProjectWorksheetList = async (
 
   const response = await axios.get(
     // `${TEMP_BACKEND_URI}/projects/worksheet-list?page=${page}&limit=${limit}&start-date=${startDate}&end-date=${endDate}&sort-order=${sort}`,
-    `${TEMP_BACKEND_URI}/projects/worksheet-list?page=${page}&limit=${limit}&project-id=${projectId}`,
+    `${TEMP_BACKEND_URI}/projects/worksheet-list?page=${page}&limit=${limit}&project-id=${projectId}&start-date=${startDate}&end-date=${endDate}&search=${searchText}&sort-by=${sortBy}&sort-order=${sortOrder}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -112,6 +120,28 @@ export const GetProjectWorksheetList = async (
       },
     },
   );
+
+  if (response.status === 401) {
+    session.update();
+  }
+
+  return response.data;
+};
+
+// get single project details
+export const GetSingleProjectDetails = async (projectId: string, session: any) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(`${TEMP_BACKEND_URI}/projects/${projectId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
   if (response.status === 401) {
     session.update();
