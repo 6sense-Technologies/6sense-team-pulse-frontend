@@ -172,7 +172,9 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
           />
           {/* filter Dropdown */}
           <DropdownMenu open={sortOpen} onOpenChange={setSortOpen}>
-            <DropdownMenuTrigger className="px-3 flex gap-4 items-center">
+            <DropdownMenuTrigger
+              className={cn("px-3 flex gap-4 items-center", sortOpen ? "border-2 border-black rounded-md px-3 py-1.5" : "border-0")}
+            >
               <div className="hidden md:flex">Filter {sortOpen ? <ChevronUp /> : <ChevronDown />}</div>
               <div className="md:hidden">
                 <ListFilter />

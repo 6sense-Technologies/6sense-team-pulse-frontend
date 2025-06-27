@@ -18,7 +18,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import { Globe, Pencil, PencilLine, User } from "lucide-react";
+import { Globe, Keyboard, Pencil, PencilLine, User } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Image from "next/image";
@@ -26,6 +26,7 @@ import Image from "next/image";
 import { set } from "date-fns";
 import { TimelogPagination } from "@/app/(dashboards)/timelog/_components/timelogPagination";
 import { Button } from "@/components/ButtonComponent";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export type TSelectedTimeLog = {
   _id: string;
@@ -96,7 +97,21 @@ export const ProjectWorksheetTable: React.FC<any> = ({
     {
       accessorKey: "name",
       header: () => <div className="text-bold">Work Sheet</div>,
-      cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("name") || "-"}</div>,
+      cell: ({ row }: { row: any }) => (
+        <div className="text-medium flex items-center gap-2">
+          {row.original.containsManualActivity && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Keyboard className="h-4 w-4" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>This work sheet includes manual log entries</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {row.getValue("name") || "-"}
+        </div>
+      ),
       size: 20,
     },
     {
