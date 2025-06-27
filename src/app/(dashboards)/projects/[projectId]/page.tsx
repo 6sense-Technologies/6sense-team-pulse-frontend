@@ -118,27 +118,6 @@ const ProjectIdPage = () => {
         </div>
 
         <div className="mt-6 lg:ml-2 lg:mt-0">
-          {/* {activeTab === "worksheet" ? (
-              timelogListLoading ? (
-                <EmptyTableSkeleton />
-              ) : timelogList?.data?.length === 0 ? (
-                <EmptyTimelogView />
-              ) : (
-                //   <TimelogTable
-                //     totalCountAndLimit={totalCountAndLimit}
-                //     projects={timelogList?.data ?? []}
-                //     loading={timelogListLoading}
-                //     refetch={timelogListRefetch}
-                //     currentPage={pages}
-                //     selectedIds={selectedIds}
-                //     setSelectedIds={setSelectedIds}
-                //   />
-               
-              )
-            ) : (
-              <div>Worksheet Placeholder</div> // Replace with actual Worksheet component
-            )} */}
-
           {activeTab === "team" ? (
             <div className="flex justify-center items-center h-64">team</div>
           ) : activeTab === "analytics" ? (

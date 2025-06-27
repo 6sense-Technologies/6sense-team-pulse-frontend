@@ -27,6 +27,8 @@ import { set } from "date-fns";
 import { TimelogPagination } from "@/app/(dashboards)/timelog/_components/timelogPagination";
 import { Button } from "@/components/ButtonComponent";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ProjectPagination } from "../../_components/projectPagination";
+import { ProjectWorksheetPagination } from "./projectWorksheetPagination";
 
 export type TSelectedTimeLog = {
   _id: string;
@@ -37,6 +39,7 @@ export type TSelectedTimeLog = {
 };
 
 export const ProjectWorksheetTable: React.FC<any> = ({
+  projectId,
   worksheets = [],
   refetch,
   totalCountAndLimit = { totalCount: 0, size: 10 },
@@ -78,40 +81,28 @@ export const ProjectWorksheetTable: React.FC<any> = ({
       ),
       size: 20,
     },
-    // {
-    //   accessorKey: "endTime",
-    //   header: () => <div className="text-bold">End</div>,
-    //   cell: ({ row }: { row: any }) => (
-    //     <div className="text-medium">
-    //       {row.getValue("endTime")
-    //         ? new Date(row.getValue("endTime")).toLocaleTimeString([], {
-    //             hour: "2-digit",
-    //             minute: "2-digit",
-    //             hour12: false,
-    //           })
-    //         : "-"}
-    //     </div>
-    //   ),
-    //   size: 20,
-    // },
     {
       accessorKey: "name",
       header: () => <div className="text-bold">Work Sheet</div>,
-      cell: ({ row }: { row: any }) => (
-        <div className="text-medium flex items-center gap-2">
-          {row.original.containsManualActivity && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Keyboard className="h-4 w-4" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>This work sheet includes manual log entries</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-          {row.getValue("name") || "-"}
-        </div>
-      ),
+      cell: ({ row }: { row: any }) => {
+        const value = row.getValue("name") || "-";
+        const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
+        return (
+          <div className="text-medium flex items-center gap-2">
+            {row.original.containsManualActivity && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Keyboard className="h-4 w-4" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>This work sheet includes manual log entries</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {displayValue}
+          </div>
+        );
+      },
       size: 20,
     },
     {
@@ -269,7 +260,7 @@ export const ProjectWorksheetTable: React.FC<any> = ({
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing
             </div>
             <div className="mb-2 flex pt-4 md:justify-end lg:pt-0">
-              <TimelogPagination currentPage={currentPageState} totalPage={totalPages} onPageChange={onPageChange} />
+              <ProjectWorksheetPagination projectId={projectId} currentPage={currentPageState} totalPage={totalPages} onPageChange={onPageChange} />
             </div>
           </div>
         </>
