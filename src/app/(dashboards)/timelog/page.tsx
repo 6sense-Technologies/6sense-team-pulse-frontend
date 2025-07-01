@@ -29,7 +29,7 @@ import CreateLogModal from "./_components/createLogModal";
 
 const TimelogPage = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  console.log("🚀 ~ TimelogPage ~ selectedIds:", selectedIds);
+
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<"unreported" | "reported">(tabParam === "reported" ? "reported" : "unreported");
@@ -297,7 +297,7 @@ const TimelogPage = () => {
                 )}
 
                 {/* Create Log Button (Only show in unreported view) */}
-                {activeTab === "unreported" && <CreateLogModal />}
+                {activeTab === "unreported" && <CreateLogModal date={date} />}
               </>
             )}
           </div>

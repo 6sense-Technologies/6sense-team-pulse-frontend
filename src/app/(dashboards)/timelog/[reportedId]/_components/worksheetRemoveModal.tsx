@@ -32,7 +32,6 @@ interface WorksheetRemoveModalProps {
 }
 
 const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds, setSelectedIds, worksheetId, reportedWorksheetList }) => {
-  console.log("🚀 ~from worksheet remove modal reportedWorksheetList:", reportedWorksheetList);
   const session = useSession();
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -42,7 +41,6 @@ const WorksheetRemoveModal: React.FC<WorksheetRemoveModalProps> = ({ selectedIds
     worksheetId: worksheetId,
     activityIds: selectedIds,
   };
-  console.log("🚀 ~ formatedData:", formatedData);
 
   const removeWorksheetMutation = useMutation({
     mutationFn: () => RemoveWorksheetData(formatedData, session),

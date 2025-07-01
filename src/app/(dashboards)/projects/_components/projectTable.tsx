@@ -14,14 +14,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
 import ManagementToolBadge from "./managementToolBadge";
 import { EllipsisVertical } from "lucide-react";
@@ -38,9 +31,7 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "name",
     header: () => <div className="text-bold">Project Name</div>,
-    cell: ({ row }: { row: any }) => (
-      <div className="text-medium">{row.getValue("name") || "-"}</div>
-    ),
+    cell: ({ row }: { row: any }) => <div className="text-medium">{row.getValue("name") || "-"}</div>,
   },
   {
     accessorKey: "tools",
@@ -71,9 +62,7 @@ export const columns: ColumnDef<Projects>[] = [
                   onMouseEnter={() => setIsTooltipOpen(true)}
                   onMouseLeave={() => setIsTooltipOpen(false)}
                 >
-                  <ManagementToolBadge className="text-medium cursor-pointer">
-                    +{remainingToolsCount}
-                  </ManagementToolBadge>
+                  <ManagementToolBadge className="text-medium cursor-pointer">+{remainingToolsCount}</ManagementToolBadge>
                 </TooltipTrigger>
                 <TooltipContent className="bg-primary text-white w-full max-w-[100px] lg:max-w-[200px]">
                   <p>{remainingTools.map((tool: any) => tool.toolName).join(", ")}</p>
@@ -88,15 +77,14 @@ export const columns: ColumnDef<Projects>[] = [
   {
     accessorKey: "teamSize",
     header: () => <div className="text-bold">Team Size</div>,
-    cell: ({ row }: { row: any }): JSX.Element => (
-      <div className="text-medium">{row.getValue("teamSize") || "-"}</div>
-    ),
+    cell: ({ row }: { row: any }): JSX.Element => <div className="text-medium">{row.getValue("teamSize") || "-"}</div>,
   },
   {
     id: "actions",
     header: () => <div className="text-bold text-right pr-4">ACTIONS</div>,
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }: { row: any }) => {
+      const projectId = row.original._id;
       const [isMenuOpen, setIsMenuOpen] = useState(false);
       const ellipsisRef = React.useRef<HTMLDivElement>(null);
 
@@ -114,11 +102,7 @@ export const columns: ColumnDef<Projects>[] = [
             <EllipsisVertical className="cursor-pointer w-4 h-4" onClick={handleOpenMenu} />
           </div>
           <CustomMenu isOpen={isMenuOpen} onClose={handleCloseMenu} anchorRef={ellipsisRef}>
-            <ProjectCustomMenuItems 
-            firstText="View"
-            secondText="Edit"
-            ThirdText="Delete"
-            />
+            <ProjectCustomMenuItems firstText="View" secondText="Edit" ThirdText="Delete" projectId={projectId} />
           </CustomMenu>
         </div>
       );
@@ -142,11 +126,8 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   loading,
 }) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [pagination] = React.useState({
     pageIndex: currentPage - 1,
@@ -156,9 +137,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPageState, setCurrentPageState] = React.useState(page);
   const [isLoading, setIsLoading] = React.useState(false); // State to manage loading
-  const totalPages = totalCountAndLimit.totalCount
-    ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size)
-    : 0;
+  const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
 
   const table = useReactTable({
     data: projects,
@@ -195,9 +174,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
     }
   }, [loading]);
 
-  const displayedRowsCount = currentPageState > 1
-    ? (currentPageState - 1) * pagination.pageSize + projects.length
-    : projects.length;
+  const displayedRowsCount = currentPageState > 1 ? (currentPageState - 1) * pagination.pageSize + projects.length : projects.length;
 
   return (
     <div className="w-full">
@@ -214,15 +191,16 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                       <TableHead
                         key={header.id}
                         className={`text-left h-12 pl-4 leading-none ${
-                          header.column.id === "actions" ? "text-right" : header.column.id === "tools" ? "min-w-[140px]" : header.column.id === "name" ? "min-w-[140px]" : ""
+                          header.column.id === "actions"
+                            ? "text-right"
+                            : header.column.id === "tools"
+                              ? "min-w-[140px]"
+                              : header.column.id === "name"
+                                ? "min-w-[140px]"
+                                : ""
                         }`}
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -231,11 +209,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
               <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}
-                      className="h-12 leading-none"
-                    >
+                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="h-12 leading-none">
                       {row.getVisibleCells().map((cell) => (
                         <TableCell
                           key={cell.id}
@@ -243,26 +217,20 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
                             cell.column.id === "actions"
                               ? "text-right"
                               : cell.column.id === "teamSize"
-                              ? "pl-5 text-start w-72"
-                              : cell.column.id === "tools"
-                              ? "pl-3 text-start"
-                              : "pl-4 text-start"
+                                ? "pl-5 text-start w-72"
+                                : cell.column.id === "tools"
+                                  ? "pl-3 text-start"
+                                  : "pl-4 text-start"
                           }`}
                         >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow className="py-1 leading-none">
-                    <TableCell
-                      colSpan={columns.length}
-                      className="h-24 text-center"
-                    >
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
                       No results.
                     </TableCell>
                   </TableRow>
@@ -275,11 +243,7 @@ export const ProjectTable: React.FC<TProjectTableProps> = ({
               {displayedRowsCount} of {totalCountAndLimit.totalCount} row(s) showing
             </div>
             <div className="flex md:justify-end mb-2 pt-4 lg:pt-0">
-              <ProjectPagination
-                currentPage={currentPageState}
-                totalPage={totalPages}
-                onPageChange={onPageChange}
-              />
+              <ProjectPagination currentPage={currentPageState} totalPage={totalPages} onPageChange={onPageChange} />
             </div>
           </div>
         </>

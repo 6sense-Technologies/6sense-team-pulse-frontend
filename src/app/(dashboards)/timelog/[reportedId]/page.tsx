@@ -26,7 +26,7 @@ const ReportedIdPage = () => {
   const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchText, setSearchText] = useState("");
-  //   console.log("🚀 ~ ReportedIdPage ~ selectedIds:", selectedIds);
+  //
   const [anySelected, setAnySelected] = useState(false);
   const [pages, setPages] = useState(1);
   const [limit] = useState(10);
@@ -39,7 +39,6 @@ const ReportedIdPage = () => {
   const searchParams = useSearchParams();
   const params = useParams();
   const reportedId = typeof params.reportedId === "string" ? params.reportedId : null;
-  console.log("🚀 ~ ReportedIdPage ~ reportedId:", reportedId);
 
   useEffect(() => {
     const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
@@ -74,9 +73,8 @@ const ReportedIdPage = () => {
     queryKey: ["fetchReportedWorksheet", pages, limit, sort, searchText], // Add searchText to query key
     queryFn: () => GetReportedworksheetList({ page: pages, limit, sort, searchText }, reportedId, session),
   });
-  console.log("🚀 ~ ReportedIdPage ~ reportedWorksheetList:", reportedWorksheetList);
 
-  // console.log(projectList);
+  //
 
   const totalCountAndLimit = {
     totalCount: reportedWorksheetList?.paginationMetadata?.totalCount ?? 0,

@@ -18,11 +18,21 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useSearchParams } from "next/navigation";
-import { Globe } from "lucide-react";
+import { Globe, Pencil, PencilLine } from "lucide-react";
 import { Projects } from "@/types/Project.types";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import Image from "next/image";
 import { TimelogPagination } from "./timelogPagination";
+import EditLogModal from "./editLogModal";
+import { set } from "date-fns";
+
+export type TSelectedTimeLog = {
+  _id: string;
+  name: string;
+  manualType: string;
+  startTime: Date;
+  endTime: Date;
+};
 
 type TTimelogTableProps = {
   projects?: Projects[];
@@ -59,36 +69,11 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
   const page = parseInt(searchParams?.get("page") || "1");
   const [currentPageState, setCurrentPageState] = useState(page);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedTimeLog, setSelectedTimeLog] = useState<TSelectedTimeLog>();
 
+  const [editTimelogModalOpen, setEditTimelogModalOpen] = useState(false);
   // Define columns for the table
   const columns: ColumnDef<any>[] = [
-    // {
-    //   id: "select",
-    //   size: 5,
-    //   header: ({ table }) => (
-    //     <Checkbox
-    //       checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-    //       aria-label="Select all"
-    //     />
-    //   ),
-    //   cell: ({ row }) => (
-    //     <Checkbox
-    //       checked={selectedIds.includes(row.original._id)}
-    //       onCheckedChange={(value) => {
-    //         if (value) {
-    //           setSelectedIds((prev) => [...prev, row.original._id]);
-    //         } else {
-    //           setSelectedIds(selectedIds.filter((id) => id !== row.original._id));
-    //         }
-    //         row.toggleSelected(!!value);
-    //       }}
-    //       aria-label="Select row"
-    //     />
-    //   ),
-    //   enableSorting: false,
-    //   enableHiding: false,
-    // },
     {
       id: "select",
       size: 5,
@@ -156,10 +141,24 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
       cell: ({ row }: { row: any }) => {
         const value = row.getValue("name") || "-";
         const displayValue = typeof value === "string" && value.length > 50 ? value.slice(0, 50) + "..." : value;
+
         return (
           <div className="text-medium truncate flex items-center space-x-3">
             {row.original?.icon ? <Image src={row.original?.icon} alt={row.original.name} width={40} height={40} className="w-4 h-4" /> : <Globe />}
             <span>{displayValue}</span>
+            {row.original.manualType && (
+              <>
+                <span> | {row.original.manualType}</span>
+                <span className="border rounded-full py-0.5 px-2.5">Manual</span>
+                <PencilLine
+                  className="w-4 h-4 cursor-pointer"
+                  onClick={() => {
+                    setSelectedTimeLog(row.original);
+                    setEditTimelogModalOpen(true);
+                  }}
+                />
+              </>
+            )}
           </div>
         );
       },
@@ -308,6 +307,13 @@ export const TimelogTable: React.FC<TTimelogTableProps> = ({
                 )}
               </TableBody>
             </Table>
+            {selectedTimeLog ? (
+              <EditLogModal
+                editTimelogModalOpen={editTimelogModalOpen}
+                setEditTimelogModalOpen={setEditTimelogModalOpen}
+                selectedTimeLog={selectedTimeLog}
+              />
+            ) : null}
           </div>
 
           <div className="flex flex-col items-center justify-center py-4 lg:flex-row lg:items-center lg:justify-between lg:space-x-3 lg:py-4">

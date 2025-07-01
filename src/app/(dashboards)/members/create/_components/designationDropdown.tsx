@@ -13,37 +13,25 @@ type DesignationDropdownProps = {
   index?: number;
 };
 
-const DesignationDropdown: FC<DesignationDropdownProps> = ({
-  control,
-  name,
-  placeholder,
-  errors,
-  index,
-}) => {
-  const {
-    data: designations,
-  } = useQuery<Designations>({
+const DesignationDropdown: FC<DesignationDropdownProps> = ({ control, name, placeholder, errors, index }) => {
+  const { data: designations } = useQuery<Designations>({
     queryKey: ["getDesignations"],
     queryFn: () => GetDesignations(),
   });
 
+  //
 
-  // console.log("DesignationDropdown", designations);
+  const designationOptions =
+    designations?.designations?.map((designation) => ({
+      value: designation,
+      label: designation,
+    })) || [];
 
-
-  const designationOptions = designations?.designations?.map((designation) => ({
-    value: designation,
-    label: designation,
-  })) || [];
-
-  // console.log("DesignationDropdown12", designationOptions);
+  //
 
   return (
     <div className="w-full max-w-[553px] pl-2 lg:pl-0 mt-3 lg:mt-8 relative">
-      <label
-        htmlFor="designation"
-        className="text-sm font-medium text-black"
-      >
+      <label htmlFor="designation" className="text-sm font-medium text-black">
         Designation
         {index === 0 && <span className="text-destructive pl-1">*</span>}
       </label>
@@ -58,11 +46,7 @@ const DesignationDropdown: FC<DesignationDropdownProps> = ({
         message={errors}
         options={designationOptions}
       />
-      {errors && (
-        <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">
-          {errors}
-        </p>
-      )}
+      {errors && <p className="text-destructive text-twelve md:text-sm font-medium absolute pt-1">{errors}</p>}
     </div>
   );
 };

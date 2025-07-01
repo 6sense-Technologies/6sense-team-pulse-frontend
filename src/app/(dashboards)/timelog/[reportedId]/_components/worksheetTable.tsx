@@ -190,7 +190,6 @@ export const WorksheetTable: React.FC<TTimelogTableProps> = ({
   ];
 
   const totalPages = totalCountAndLimit.totalCount ? Math.ceil(totalCountAndLimit.totalCount / totalCountAndLimit.size) : 0;
-  console.log("🚀 ~ totalPages:", totalPages);
 
   const table = useReactTable({
     data: projects,

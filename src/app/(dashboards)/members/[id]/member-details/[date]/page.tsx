@@ -31,14 +31,10 @@ const EfficiencyMemberDetails: React.FC = () => {
 
   const { id: member_id, date } = useParams() as { id: string; date: string };
 
-  const [activeTab, setActiveTab] = useState<string>(
-    searchParams.get("tab") === "git" ? "git" : "items"
-  );
+  const [activeTab, setActiveTab] = useState<string>(searchParams.get("tab") === "git" ? "git" : "items");
 
   useEffect(() => {
-    const newPage = searchParams.get("page")
-      ? Number(searchParams.get("page"))
-      : 1;
+    const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
 
     setPages(newPage);
   }, [searchParams]);
@@ -56,10 +52,7 @@ const EfficiencyMemberDetails: React.FC = () => {
     router.push(newUrl);
   };
 
-  const {
-    data: individualMemberData,
-    isFetching: individualMemberDataLoading,
-  } = useQuery<any>({
+  const { data: individualMemberData, isFetching: individualMemberDataLoading } = useQuery<any>({
     queryKey: ["individualMemberData", member_id],
     queryFn: () => GetIndividualTeamMember(member_id, session),
   });
@@ -102,20 +95,16 @@ const EfficiencyMemberDetails: React.FC = () => {
     queryFn: () => GetGitData({ member_id, date }, session),
   });
 
-  const {
-    data: gitCalculations,
-  } = useQuery<any>({
+  const { data: gitCalculations } = useQuery<any>({
     queryKey: ["gitCalculations", pages, limit],
     queryFn: () => GetGitCalculations({ member_id, date }, session),
   });
-    console.log("🚀 ~ gitCalculations:", gitCalculations)
 
   const gitTotalCountAndLimit = {
     totalCount: gitDetails?.totalCount ?? 0,
     size: limit,
   };
 
-  
   const formatNumber = (num: string | undefined) => {
     const number = parseFloat(num ?? "0");
     return num !== undefined ? number.toFixed(2) : "0.00";
@@ -124,10 +113,12 @@ const EfficiencyMemberDetails: React.FC = () => {
   return (
     <div className="w-full">
       <PageTitle title="Performance Details • Ops4 Team" />
-        <Toaster/>
+      <Toaster />
       <div className="pl-4 pt-8 pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">
-          <span className="md:hidden pl-1 "><SidebarTrigger /></span>
+          <span className="md:hidden pl-1 ">
+            <SidebarTrigger />
+          </span>
           <AvatarMenu />
         </div>
         <div className="flex justify-between items-center">
@@ -143,16 +134,14 @@ const EfficiencyMemberDetails: React.FC = () => {
             <AvatarMenu />
           </span>
         </div>
-        <PageHeading
-          title="Daily Performance"
-          titleclassName="font-medium"
-          className="pl-2 pt-1"
-        />
+        <PageHeading title="Daily Performance" titleclassName="font-medium" className="pl-2 pt-1" />
         <div className="flex items-center justify-between md:mb-4">
           <div className="flex flex-col md:flex-row items-start md:items-center mb-1 md:mb-0">
             <div className="flex flex-row md:gap-x-4 md:gap-y-0 item-start md:items-center mr-4">
               {individualMemberDataLoading ? (
-                <span className="ml-5 mr-2 mt-8 mb-6"><TitleAvatarSkeleton /></span>
+                <span className="ml-5 mr-2 mt-8 mb-6">
+                  <TitleAvatarSkeleton />
+                </span>
               ) : (
                 <>
                   <div>
@@ -160,19 +149,13 @@ const EfficiencyMemberDetails: React.FC = () => {
                       {individualAvatar ? (
                         <AvatarImage src={individualAvatar} alt="Avatar" />
                       ) : (
-                        <AvatarFallback className="bg-primary text-white">
-                          {getInitials(individualName)}
-                        </AvatarFallback>
+                        <AvatarFallback className="bg-primary text-white">{getInitials(individualName)}</AvatarFallback>
                       )}
                     </Avatar>
                   </div>
                   <div className="pl-2 pt-11 md:pt-1 md:pl-0">
-                    <h1 className="pb-[3px] text-sm font-semibold">
-                      {individualName}
-                    </h1>
-                    <p className="text-twelve text-miniSubheadingColor">
-                      {individualDesignation}
-                    </p>
+                    <h1 className="pb-[3px] text-sm font-semibold">{individualName}</h1>
+                    <p className="text-twelve text-miniSubheadingColor">{individualDesignation}</p>
                   </div>
                 </>
               )}

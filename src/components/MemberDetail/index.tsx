@@ -1,6 +1,5 @@
 "use client";
 
-
 import { cn } from "@/app/utils/tailwindMerge";
 import { IMemberInfo } from "@/types/types";
 import { useMutation } from "@tanstack/react-query";
@@ -13,18 +12,14 @@ import IconComponent from "../IconComponent";
 import { Button } from "../ButtonComponent";
 import MemberDetailListView from "../MemberDetailListView";
 import ConfirmDialog from "../ConfirmDialog";
-import { BACKEND_URI } from "../../../globalConstants";
+import { TEMP_BACKEND_URI } from "../../../globalConstants";
 
 interface IProps {
   memberInformation?: IMemberInfo;
   totalCountAndLimit: { totalCount: number; size: number };
   onUpdate: () => void;
 }
-const MemberDetail = ({
-  onUpdate,
-  memberInformation,
-  totalCountAndLimit,
-}: IProps): JSX.Element => {
+const MemberDetail = ({ onUpdate, memberInformation, totalCountAndLimit }: IProps): JSX.Element => {
   const router = useRouter();
 
   const [isOpenDialog, setIsOpenDialog] = useState(false);
@@ -32,8 +27,7 @@ const MemberDetail = ({
 
   useEffect(() => {
     if (memberInformation && !memberInformation?.userData?.avatarUrls) {
-      const memberNameArray =
-        memberInformation && memberInformation?.userData?.displayName?.split(" ");
+      const memberNameArray = memberInformation && memberInformation?.userData?.displayName?.split(" ");
       if (memberNameArray && memberNameArray?.length > 1) {
         setAvatarName(memberNameArray?.[0]?.[0] + memberNameArray?.[1]?.[0]);
       }
@@ -50,17 +44,13 @@ const MemberDetail = ({
   const archiveMutation = useMutation({
     mutationKey: ["archive", memberInformation?.userData?._id],
     mutationFn: async () => {
-      const res = await axios.put(
-        `${BACKEND_URI}/users/${memberInformation?.userData?._id}/archive`,
-        null
-      );
+      const res = await axios.put(`${TEMP_BACKEND_URI}/users/${memberInformation?.userData?._id}/archive`, null);
       return res.data;
     },
   });
 
   const handleConfirmDelete = (): void => {
     // Logic for archiving the member goes here
-    console.log("Member archived");
 
     archiveMutation.mutate(undefined, {
       onSuccess: () => {
@@ -73,10 +63,7 @@ const MemberDetail = ({
   const updateProfileMutation = useMutation({
     mutationKey: ["updateProfile", memberInformation?.userData?._id],
     mutationFn: async () => {
-      const res = await axios.put(
-        `${BACKEND_URI}/jira/user/${memberInformation?.userData?._id}`,
-        null
-      );
+      const res = await axios.put(`${TEMP_BACKEND_URI}/jira/user/${memberInformation?.userData?._id}`, null);
       return res.data;
     },
   });
@@ -84,7 +71,6 @@ const MemberDetail = ({
   const handleUpdateProfile = (): void => {
     updateProfileMutation.mutate(undefined, {
       onSuccess: () => {
-        console.log("Updated Profile Successfully!");
         onUpdate();
       },
       onError: (error) => {
@@ -92,8 +78,6 @@ const MemberDetail = ({
       },
     });
   };
-
-  console.log("MemberInfo",memberInformation);
 
   return (
     <div className="mt-10 relative">
@@ -109,20 +93,12 @@ const MemberDetail = ({
               className="text-left md:mt-1"
             />
           ) : (
-            <span className="mt-1 w-[40px] h-[40px] bg-[#405A4C] rounded-full flex justify-center items-center text-white">
-              {avatarName}
-            </span>
+            <span className="mt-1 w-[40px] h-[40px] bg-[#405A4C] rounded-full flex justify-center items-center text-white">{avatarName}</span>
           )}
           <div>
             <div className="flex gap-2 items-center">
-              <h3 className="text-xl text-textSecondary font-semibold capitalize">
-                {memberInformation?.userData?.displayName}
-              </h3>
-              <div
-                id="profile-sync"
-                onClick={handleUpdateProfile}
-                className="cursor-pointer"
-              >
+              <h3 className="text-xl text-textSecondary font-semibold capitalize">{memberInformation?.userData?.displayName}</h3>
+              <div id="profile-sync" onClick={handleUpdateProfile} className="cursor-pointer">
                 <IconComponent
                   name={"ArrowsClockwise"}
                   color={""}
@@ -158,17 +134,17 @@ const MemberDetail = ({
                 );
               })}
             </div>
-            <p className="text-sm text-subHeading">
-              {memberInformation?.userData?.emailAddress}
-            </p>
-            <p className="text-sm text-subHeading">
-              {memberInformation?.userData?.designation}
-            </p>
+            <p className="text-sm text-subHeading">{memberInformation?.userData?.emailAddress}</p>
+            <p className="text-sm text-subHeading">{memberInformation?.userData?.designation}</p>
           </div>
         </div>
         <div className="flex gap-4 mt-4 md:mt-0">
-          <Button prefixIcon="TrendUp"
-          onClick={() => {router.push(`/member-list/${memberInformation?.userData?._id}/growth?page=1`)}}>
+          <Button
+            prefixIcon="TrendUp"
+            onClick={() => {
+              router.push(`/member-list/${memberInformation?.userData?._id}/growth?page=1`);
+            }}
+          >
             Growth
           </Button>
           <Button

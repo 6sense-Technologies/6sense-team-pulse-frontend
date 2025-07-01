@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "../ButtonComponent";
 import { BugReportSchema } from "../../../Zodschema/memberInformationSchema";
-import { BACKEND_URI } from "../../../globalConstants";
+import { TEMP_BACKEND_URI } from "../../../globalConstants";
 
 interface IDialogFormProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
   };
 
   const handleBugReport = async (data: IFormData): Promise<void> => {
-    const res = await axios.put(`${BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
+    const res = await axios.put(`${TEMP_BACKEND_URI}/users/bug-report/${accountId}/${currentDate}`, {
       noOfBugs: data?.noOfBug,
       comment: data?.comment ?? "",
       token: data?.token,
@@ -59,10 +59,8 @@ const DialogForm: React.FC<IDialogFormProps> = ({ isOpen, onClose, currentDate, 
     bugReportMutation.mutate(data, {
       onSuccess: (data) => {
         handleCloseDialog();
-        console.log(data);
       },
       onError: (error) => {
-        console.log(error);
         setSubmissionError("Bug report failed!");
       },
       onSettled: () => {

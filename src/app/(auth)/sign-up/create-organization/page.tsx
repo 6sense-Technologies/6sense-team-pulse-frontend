@@ -48,7 +48,6 @@ const OrganizationDetails = () => {
     }
   }, [organizationName, setValue]);
 
-
   const OrganizationMutation = useMutation({
     mutationFn: (data: TOrgazinationDetails) => handleOrganizationDetails(data, session),
     onSuccess: () => {
@@ -57,7 +56,7 @@ const OrganizationDetails = () => {
       });
     },
     onError: (error) => {
-      // console.log(error.message);
+      //
       if (error.message) {
         setOrgError("Domain must be unique.");
       }
@@ -86,11 +85,7 @@ const OrganizationDetails = () => {
     if (session.isVerified && !session.hasOrganization) {
       router.push("/sign-up/create-organization");
     }
-    if (
-      session.isVerified &&
-      session.hasOrganization &&
-      status === "authenticated"
-    ) {
+    if (session.isVerified && session.hasOrganization && status === "authenticated") {
       router.push("/dashboard");
       return <Loader />;
     }
@@ -101,10 +96,7 @@ const OrganizationDetails = () => {
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">
-      <PageTitle
-        pageName="Create Organization"
-        title="Try Ops4 Team for Free • Ops4 Team"
-      />
+      <PageTitle pageName="Create Organization" title="Try Ops4 Team for Free • Ops4 Team" />
       <div className="bg-blackishBg w-full h-screen md:flex md:flex-col md:justify-between hidden">
         <div className="pl-[36px] pt-[36px]">
           <Image src={Logo} alt="Ops4Team Logo" />
@@ -143,11 +135,7 @@ const OrganizationDetails = () => {
                 placeholder="Enter your organization name"
                 className="placeholder:text-subHeading w-full mt-[4px]"
               />
-              {errors.organizationName && (
-                <p className=" text-destructive font-medium text-sm absolute pt-2">
-                  {errors.organizationName.message}
-                </p>
-              )}
+              {errors.organizationName && <p className=" text-destructive font-medium text-sm absolute pt-2">{errors.organizationName.message}</p>}
             </div>
             <div className="w-full pt-6 pb-6 relative">
               <label htmlFor="domain" className="text-black font-medium text-sm">
@@ -167,36 +155,18 @@ const OrganizationDetails = () => {
                 </span>
               </div>
               {errors.domainName ? (
-                <p className="text-destructive  font-medium text-sm absolute pt-2">
-                  {errors.domainName.message}
-                </p>
+                <p className="text-destructive  font-medium text-sm absolute pt-2">{errors.domainName.message}</p>
               ) : orgError ? (
-                <p className="text-destructive font-medium text-sm absolute pt-2">
-                  {orgError}
-                </p>
+                <p className="text-destructive font-medium text-sm absolute pt-2">{orgError}</p>
               ) : null}
             </div>
 
-            <Button
-              variant="submit"
-              className="mt-6 bg-primary hover:bg-primary hidden lg:block"
-            >
-              {OrganizationMutation.isPending ? (
-                <Circle className="animate-spin" />
-              ) : (
-                "Submit"
-              )}
+            <Button variant="submit" className="mt-6 bg-primary hover:bg-primary hidden lg:block">
+              {OrganizationMutation.isPending ? <Circle className="animate-spin" /> : "Submit"}
             </Button>
 
-            <Button
-              variant="submitExtended"
-              className="mt-6 bg-primary hover:bg-primary block lg:hidden"
-            >
-              {OrganizationMutation.isPending ? (
-                <Circle className="animate-spin mx-auto" />
-              ) : (
-                "Submit"
-              )}
+            <Button variant="submitExtended" className="mt-6 bg-primary hover:bg-primary block lg:hidden">
+              {OrganizationMutation.isPending ? <Circle className="animate-spin mx-auto" /> : "Submit"}
             </Button>
           </form>
         </div>

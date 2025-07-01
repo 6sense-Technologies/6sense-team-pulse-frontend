@@ -85,7 +85,7 @@ const AddReportedModal = ({ date, selectedIds, setSelectedIds, onClose, onSucces
     loading: false,
   });
   const [openPopover, setOpenPopover] = useState<boolean>(false);
-  console.log("🚀 ~ AddReportedModal ~ openPopover:", openPopover);
+
   const [selectedWorksheet, setSelectedWorksheet] = useState<WorkSheet | null>(null);
   const [shouldSkipFocus, setShouldSkipFocus] = useState(false);
 

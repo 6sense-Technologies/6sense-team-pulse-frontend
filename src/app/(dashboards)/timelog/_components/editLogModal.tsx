@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,7 +14,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
-import { CreateLogData } from "../../../../../helpers/timelogs/timelogApi";
+import { CreateLogData, UpdateLogData } from "../../../../../helpers/timelogs/timelogApi";
+import { PencilLine } from "lucide-react";
+import { TSelectedTimeLog } from "./timelogTable";
+import { get } from "http";
 
 interface ActivityOption {
   value: string;
@@ -55,14 +58,16 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface CreateLogModalProps {
-  date: Date;
+interface EditLogModalProps {
+  selectedTimeLog?: TSelectedTimeLog;
+  editTimelogModalOpen: boolean;
+  setEditTimelogModalOpen: (open: boolean) => void;
 }
 
-const CreateLogModal = ({ date }: CreateLogModalProps) => {
+const EditLogModal = ({ selectedTimeLog, editTimelogModalOpen, setEditTimelogModalOpen }: EditLogModalProps) => {
+  // console.log("🚀 ~ EditLogModal ~ selectedTimeLog:", selectedTimeLog);
   const queryClient = useQueryClient();
   const session = useSession();
-  const [open, setOpen] = useState(false);
 
   const getTodayMidnight = (): Date => {
     const now = new Date();
@@ -70,38 +75,43 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     return now;
   };
 
-  const [startSelectedDateTime, setStartSelectedDateTime] = useState<Date>(getTodayMidnight());
-  const [endSelectedDateTime, setEndSelectedDateTime] = useState<Date>(getTodayMidnight());
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      logTitle: "",
-      activity: undefined,
-      startTime: undefined,
-      endTime: undefined,
+      logTitle: selectedTimeLog?.name || "",
+      activity: { value: selectedTimeLog?.manualType || "", label: selectedTimeLog?.manualType || "" },
+      startTime: selectedTimeLog?.startTime ? new Date(selectedTimeLog.startTime) : undefined,
+      endTime: selectedTimeLog?.endTime ? new Date(selectedTimeLog.endTime) : undefined,
     },
   });
 
   const {
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    getValues,
   } = form;
+  console.log("🚀 ~ EditLogModal ~ getValues:", getValues());
 
-  const createLogMutation = useMutation({
-    mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) => CreateLogData(data, session),
+  // const [startSelectedDateTime, setStartSelectedDateTime] = useState<Date>(getValues("startTime"));
+  // console.log("🚀 ~ EditLogModal ~ startSelectedDateTime:", startSelectedDateTime);
+  // const [endSelectedDateTime, setEndSelectedDateTime] = useState<Date>(getValues("endTime"));
+  // console.log("🚀 ~ EditLogModal ~ endSelectedDateTime:", endSelectedDateTime);
+
+  const updateLogMutation = useMutation({
+    mutationFn: (data: { name: string; manualType: string; startTime: string; endTime: string }) =>
+      UpdateLogData(data, session, selectedTimeLog?._id as string),
     onSuccess: () => {
       toast({
-        title: "Log Created",
-        description: "Your custom activity has been successfully added.",
+        title: "Log Updated",
+        description: "Your custom activity has been successfully edited.",
       });
-      setOpen(false);
-      form.reset();
-      setStartSelectedDateTime(getTodayMidnight());
-      setEndSelectedDateTime(getTodayMidnight());
+      //   setOpen(false);
+      // form.reset();
+      // setStartSelectedDateTime(getTodayMidnight());
+      // setEndSelectedDateTime(getTodayMidnight());
       queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
     },
     onError: (error: any) => {
-      console.error("Mutation error:", error);
+      // console.error("Mutation error:", error);
       toast({
         title: "Failed to Create Log",
         description: error.response?.data?.message || "There was an issue adding your activity. Please try again.",
@@ -114,12 +124,12 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     const formatedData = {
       name: data.logTitle,
       manualType: data.activity.value,
-      startTime: new Date(date.getFullYear(), date.getMonth(), date.getDate(), data.startTime.getHours(), data.startTime.getMinutes()).toISOString(),
-      endTime: new Date(date.getFullYear(), date.getMonth(), date.getDate(), data.endTime.getHours(), data.endTime.getMinutes()).toISOString(),
+      startTime: data.startTime.toISOString(),
+      endTime: data.endTime.toISOString(),
     };
-    // console.log("🚀 ~ onSubmit ~ formatedData:", formatedData);
+    // console.log("🚀 ~ onSubmit ~ formatedData:-----------", formatedData);
 
-    createLogMutation.mutate(formatedData);
+    updateLogMutation.mutate(formatedData);
   };
 
   const activityList: ActivityOption[] = [
@@ -173,23 +183,43 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
     },
   ];
 
+  // useEffect(() => {
+  //   if (selectedTimeLog) {
+  //     setStartSelectedDateTime(selectedTimeLog.startTime ? new Date(selectedTimeLog.startTime) : getTodayMidnight());
+  //     setEndSelectedDateTime(selectedTimeLog.endTime ? new Date(selectedTimeLog.endTime) : getTodayMidnight());
+  //     form.reset({
+  //       logTitle: selectedTimeLog.name || "",
+  //       activity: { value: selectedTimeLog.manualType || "", label: selectedTimeLog.manualType || "" },
+  //       startTime: selectedTimeLog.startTime ? new Date(selectedTimeLog.startTime) : undefined,
+  //       endTime: selectedTimeLog.endTime ? new Date(selectedTimeLog.endTime) : undefined,
+  //     });
+  //   }
+  // }, [selectedTimeLog]);
+
+  // Add a helper function to validate dates
+  const isValidDate = (date: any): boolean => {
+    return date instanceof Date && !isNaN(date.getTime());
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={editTimelogModalOpen} onOpenChange={setEditTimelogModalOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-4 md:mt-0" variant="defaultEx">
+        {/* <Button className="mt-4 md:mt-0" variant="defaultEx">
           Create Log
-        </Button>
+        </Button> */}
+        {/* <PencilLine className="w-4 h-4 cursor-pointer" /> */}
       </DialogTrigger>
-      <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
-          <DialogTitle className="font-semibold text-2xl leading-6">Create Log</DialogTitle>
+          <DialogTitle className="font-semibold text-2xl leading-6">Edit Log</DialogTitle>
           <DialogDescription className="text-[#64748B] font-normal text-sm leading-5">
-            Manually enter activities to create a custom log entry.
+            Update activity details in your custom log entry.
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form className="flex flex-col gap-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <input className="pointer-events-none absolute z-[-100] opacity-0 focus:outline-0" />
             <FormField
               control={form.control}
               name="logTitle"
@@ -219,13 +249,6 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                   <Select<ActivityOption>
                     styles={{
                       indicatorSeparator: (base) => ({ ...base, display: "none" }),
-                      // control: (base, state) => ({
-                      //   ...base,
-                      //   borderColor: fieldState.error ? "#ef4444" : base.borderColor,
-                      //   "&:hover": {
-                      //     borderColor: fieldState.error ? "#ef4444" : base.borderColor,
-                      //   },
-                      // }),
                     }}
                     defaultValue={undefined}
                     value={field?.value}
@@ -253,13 +276,19 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     </FormLabel>
                     <FormControl>
                       <DatePicker
-                        selected={startSelectedDateTime}
+                        selected={isValidDate(field.value) ? field.value : null}
                         onChange={(date: Date | null) => {
-                          if (date) {
-                            setStartSelectedDateTime(date);
+                          if (date && isValidDate(date)) {
                             field.onChange(date);
                           }
                         }}
+                        // selected={startSelectedDateTime}
+                        // onChange={(date: Date | null) => {
+                        //   if (date) {
+                        //     setStartSelectedDateTime(date);
+                        //     field.onChange(date);
+                        //   }
+                        // }}
                         showTimeSelect
                         showTimeSelectOnly
                         timeIntervals={60}
@@ -269,7 +298,11 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                           <Input
                             className={`placeholder-gray-500`}
                             ref={field.ref}
-                            value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                            value={
+                              field.value && isValidDate(field.value)
+                                ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                                : ""
+                            }
                             onChange={field.onChange}
                             onBlur={field.onBlur}
                             readOnly
@@ -294,13 +327,19 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                     </FormLabel>
                     <FormControl>
                       <DatePicker
-                        selected={endSelectedDateTime}
+                        selected={isValidDate(field.value) ? field.value : null}
                         onChange={(date: Date | null) => {
-                          if (date) {
-                            setEndSelectedDateTime(date);
+                          if (date && isValidDate(date)) {
                             field.onChange(date);
                           }
                         }}
+                        // selected={startSelectedDateTime}
+                        // onChange={(date: Date | null) => {
+                        //   if (date) {
+                        //     setStartSelectedDateTime(date);
+                        //     field.onChange(date);
+                        //   }
+                        // }}
                         showTimeSelect
                         showTimeSelectOnly
                         timeIntervals={60}
@@ -310,7 +349,11 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
                           <Input
                             className={`placeholder-gray-500`}
                             ref={field.ref}
-                            value={field.value ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                            value={
+                              field.value && isValidDate(field.value)
+                                ? field.value.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+                                : ""
+                            }
                             onChange={field.onChange}
                             onBlur={field.onBlur}
                             readOnly
@@ -345,7 +388,7 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
             </div>
 
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Creating..." : "Create Log"}
+              {isSubmitting ? "Updating..." : "Save"}
             </Button>
             <Button
               type="button"
@@ -353,9 +396,10 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
               className="w-full"
               onClick={() => {
                 form.reset();
-                setOpen(false);
-                setStartSelectedDateTime(getTodayMidnight());
-                setEndSelectedDateTime(getTodayMidnight());
+                // setOpen(false);
+                setEditTimelogModalOpen(false);
+                // setStartSelectedDateTime(getTodayMidnight());
+                // setEndSelectedDateTime(getTodayMidnight());
               }}
             >
               Cancel
@@ -367,4 +411,4 @@ const CreateLogModal = ({ date }: CreateLogModalProps) => {
   );
 };
 
-export default CreateLogModal;
+export default EditLogModal;

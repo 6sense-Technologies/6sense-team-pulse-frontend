@@ -3,7 +3,7 @@ import NextAuth, { CredentialsSignin } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthGoogleID, AuthGoogleSecret } from "./config";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { TEMP_BACKEND_URI } from "./globalConstants";
 
 declare module "next-auth" {
@@ -38,15 +38,14 @@ class CustomError extends CredentialsSignin {
 
 // Function to check if the token is expired
 const isTokenExpired = (token: string): boolean => {
-  console.log("Checking if token is expired....")
   const decoded = jwt.decode(token) as { exp: number };
-  console.log("Decoded",decoded)
+
   if (!decoded || !decoded.exp) return true;
   return Date.now() >= decoded.exp * 1000;
 };
 
 // Function to refresh the access token
-const refreshAccessToken = async (refreshToken: string): Promise<{ accessToken: string, refreshToken: string }> => {
+const refreshAccessToken = async (refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> => {
   try {
     const response = await axios.post(
       `${TEMP_BACKEND_URI}/auth/refresh`,
@@ -56,9 +55,9 @@ const refreshAccessToken = async (refreshToken: string): Promise<{ accessToken: 
           Authorization: `Bearer ${refreshToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
-    console.log(response.data)
+
     return response.data;
   } catch (error) {
     console.error("Failed to refresh access token:", error);
@@ -102,12 +101,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               headers: {
                 "Content-Type": "application/json",
               },
-            }
+            },
           );
           const data = response.data;
-          
-          console.log("User Info",data?.userInfo);
-          
+
           if (data?.accessToken) {
             return {
               emailAddress: data?.userInfro?.emailAddress,
@@ -151,7 +148,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.hasOrganization = user.hasOrganization as boolean;
         token.role = user.role;
         token.avatarUrl = user.avatarUrl;
-        token.id = user.id; 
+        token.id = user.id;
       }
 
       if (account && account.provider === "google") {
@@ -165,15 +162,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             headers: {
               "Content-Type": "application/json",
             },
-          }
+          },
         );
         token.accessToken = response.data?.accessToken;
         token.refreshToken = response.data?.refreshToken;
       }
-      console.log("JWT INVOKED....")
+
       // Check if the access token is expired and refresh it if necessary
       if (token.accessToken && isTokenExpired(token.accessToken as string)) {
-        console.log("UPDATED")
         const refreshedTokens = await refreshAccessToken(token.refreshToken as string);
         token.accessToken = refreshedTokens.accessToken;
         token.refreshToken = refreshedTokens.refreshToken;
@@ -189,15 +185,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       session.role = token.role as string;
       session.avatarUrl = token.avatarUrl as string;
       session.id = token.id as string;
-      
+
       // Set session expiry based on the token's expiration time
       if (token.accessToken) {
         const decoded = jwt.decode(token.accessToken as string) as { exp: number };
         if (decoded && decoded.exp) {
-          session.expires = new Date(decoded.exp * 1000); 
+          session.expires = new Date(decoded.exp * 1000);
         }
       }
-      
+
       return session;
     },
     async redirect({ baseUrl }) {
