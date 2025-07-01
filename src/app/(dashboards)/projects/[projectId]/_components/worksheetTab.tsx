@@ -5,11 +5,7 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
-// API imports
 import { GetProjectWorksheetList, GetProjectWorksheetPerformance } from "../../../../../../helpers/projects/projectApi";
-
-// UI Components
 import { Button } from "@/components/ButtonComponent";
 import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import { Calendar } from "@/components/ui/calendar";
@@ -19,11 +15,7 @@ import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 import Searchbar from "../../_components/searchbar";
 import EmptyWorksheetView from "./emptyWorksheetView";
 import { ProjectWorksheetTable } from "./projectWorksheetTable";
-
-// Icons
-import { CalendarIcon, ChevronDown, ChevronUp, ListFilter } from "lucide-react";
-
-// Utilities
+import { CalendarIcon, ChevronDown, ChevronUp, CircleAlert, ListFilter } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const WorksheetTab = ({ projectId }: { projectId: string }) => {
@@ -32,7 +24,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // =========== State Management ===========
   // Pagination state
   const [pagination, setPagination] = useState({ page: 1, size: 10 });
   const [pages, setPages] = useState(1);
@@ -48,7 +39,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
   // Formatted values
   const formattedDate = format(date, "yyyy-MM-dd");
 
-  // =========== Effects ===========
   // Update pagination from URL params
   useEffect(() => {
     const newPage = searchParams.get("page") ? Number(searchParams.get("page")) : 1;
@@ -62,7 +52,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
     });
   }, [searchParams]);
 
-  // =========== API Queries ===========
   // Performance data query
   const { data: projectWorksheetPerformance, isFetching: projectWorksheetPerformanceLoading } = useQuery({
     queryKey: ["fetchProjectWorksheetPerformance"],
@@ -92,7 +81,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
       ),
   });
 
-  // =========== Event Handlers ===========
   // Handle search submission
   const handleSearch = (value: string) => {
     setSearchText(value);
@@ -135,13 +123,11 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
     }
   };
 
-  // =========== Derived Data ===========
   const totalCountAndLimit = {
     totalCount: worksheetList?.paginationMetadata?.totalCount ?? 0,
     size: pagination.size ?? 10,
   };
 
-  // =========== Render Component ===========
   return (
     <div>
       {/* Performance Metrics Section */}
@@ -202,7 +188,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
           )}
         </div>
       </div>
-
       {/* Filters and Search Section */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden py-6 ">
         <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 items-center w-full lg:ml-2">
@@ -280,7 +265,6 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
           </div>
         </div>
       </div>
-
       {/* Worksheet Table Section */}
       <div>
         {worksheetListLoading ? (

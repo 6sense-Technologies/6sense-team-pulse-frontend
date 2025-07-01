@@ -21,6 +21,7 @@ import { WorksheetTable } from "./_components/worksheetTable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import EmptyTimelogView from "../_components/emptyTimelogView";
 import WorksheetRemoveModal from "./_components/worksheetRemoveModal";
+import { ConnectLinear } from "../../../../../helpers/linear/linearApi";
 
 const ReportedIdPage = () => {
   const router = useRouter();

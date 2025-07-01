@@ -1,42 +1,72 @@
 "use client";
 
+import React, { useState } from "react";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { GetSingleProjectDetails } from "../../../../../helpers/projects/projectApi";
 import AvatarMenu from "@/components/AvatarMenu";
-import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import PageHeading from "@/components/pageHeading";
 import PageTitle from "@/components/PageTitle";
+import { Button } from "@/components/ButtonComponent";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import React, { useState } from "react";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import EmptyTimelogView from "../../timelog/_components/emptyTimelogView";
 import WorksheetTab from "./_components/worksheetTab";
-import { Button } from "@/components/ButtonComponent";
-import { EllipsisVertical } from "lucide-react";
-import { GetSingleProjectDetails } from "../../../../../helpers/projects/projectApi";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
+import { CircleAlert, EllipsisVertical } from "lucide-react";
+import { ConnectLinear } from "../../../../../helpers/linear/linearApi";
 
 const ProjectIdPage = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const params = useParams();
+  const session = useSession();
   const tabParam = searchParams.get("tab");
+  const projectId = typeof params.projectId === "string" ? params.projectId : null;
   const [activeTab, setActiveTab] = useState<"overview" | "team" | "analytics" | "worksheet">(
     tabParam === "team" ? "team" : tabParam === "worksheet" ? "worksheet" : tabParam === "analytics" ? "analytics" : "overview",
   );
 
-  const params = useParams();
-  const projectId = typeof params.projectId === "string" ? params.projectId : null;
-  //   console.log("🚀 ~ ProjectIdPage ~ projectId:", projectId);
-
-  const session = useSession();
-  // get single project details
   const { data: projectDetails, isLoading: projectDetailsLoading } = useQuery({
     queryKey: ["fetchSingleProjectDetails", projectId],
     queryFn: () => GetSingleProjectDetails(projectId as string, session),
   });
-  // console.log("🚀 ~ ProjectIdPage ~ projectDetails:", projectDetails);
+
+  // Extract Linear tool ID
+  interface ITool {
+    toolName: string;
+    _id: string;
+  }
+
+  const toolId: string | null = projectDetails?.tools?.find((tool: ITool) => tool.toolName === "Linear")?._id || null;
+
+  const { refetch: connectLinear, data: linearConnectData } = useQuery({
+    queryKey: ["connectLinear", toolId],
+    queryFn: () => ConnectLinear(toolId, session),
+    enabled: false,
+  });
+  // console.log("🚀 ~ ProjectIdPage ~ linearConnectData:", linearConnectData?.redirectUri);
+
+  if (linearConnectData?.redirectUri) {
+    // window.open(linearConnectData.redirectUri, "_blank");
+    router.push(linearConnectData.redirectUri);
+  }
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value as "overview" | "team" | "analytics" | "worksheet");
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", value);
+    params.set("page", "1");
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  const handleAuthorizeLinear = () => {
+    if (toolId) {
+      connectLinear();
+    }
+  };
 
   return (
     <div className="w-full">
@@ -44,7 +74,7 @@ const ProjectIdPage = () => {
 
       <div className="pl-4 pt-8 lg:pt-8 pr-[14px] w-full">
         <div className="md:hidden pb-4 flex justify-between items-center">
-          <span className="md:hidden pl-1 ">
+          <span className="md:hidden pl-1">
             <SidebarTrigger />
           </span>
           <AvatarMenu />
@@ -56,6 +86,27 @@ const ProjectIdPage = () => {
           </span>
         </div>
         <PageHeading title={projectDetails?.name || ""} />
+        {projectDetails?.tools.map(
+          (tool: { id: string; toolName: string; connected: boolean }) =>
+            tool.toolName === "Linear" &&
+            !tool.connected && (
+              <div key={tool.id} className="text-destructive border border-destructive rounded-lg flex gap-3 items-center p-4 mt-8">
+                <CircleAlert />
+                <h2 className="">
+                  Authorize linear tool to see analytics data.{" "}
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAuthorizeLinear();
+                    }}
+                    className="underline cursor-pointer"
+                  >
+                    Authorize now
+                  </span>
+                </h2>
+              </div>
+            ),
+        )}
 
         {/* tabs */}
         <div className="mb-3 flex flex-col items-start justify-between overflow-x-hidden md:mb-0 lg:flex-row lg:items-center">
@@ -65,18 +116,7 @@ const ProjectIdPage = () => {
               <Tabs
                 value={activeTab} // Make it controlled by state
                 className="text-[#64748B] w-full rounded-none"
-                onValueChange={(value) => {
-                  // Reset selections when switching tabs
-                  //   setSelectedIds([]);
-                  // Update the active tab
-                  setActiveTab(value as "overview" | "team" | "analytics" | "worksheet");
-
-                  // Update URL when tab changes
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set("tab", value);
-                  params.set("page", "1");
-                  router.replace(`${pathname}?${params.toString()}`);
-                }}
+                onValueChange={handleTabChange}
               >
                 <TabsList className="bg-transparent flex">
                   <TabsTrigger
@@ -116,7 +156,6 @@ const ProjectIdPage = () => {
             <EllipsisVertical />
           </div>
         </div>
-
         <div className="mt-6 lg:ml-2 lg:mt-0">
           {activeTab === "team" ? (
             <div className="flex justify-center items-center h-64">team</div>
