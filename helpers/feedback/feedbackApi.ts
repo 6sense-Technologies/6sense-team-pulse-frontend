@@ -39,3 +39,24 @@ export const GetLinkedItems = async (memberId: string, session: any) => {
 
   return response.data;
 };
+
+// send feedback
+export const sendFeedback = async (data: any, session: any) => {
+  //
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    // <<temp_base_url>>/timelog/unreported/assign-to-project
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.post(`${TEMP_BACKEND_URI}/timelog/unreported/assign-to-project`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      // "Organization-Id": "67a317a25b672f01152f081a",
+    },
+  });
+
+  return response.data;
+};

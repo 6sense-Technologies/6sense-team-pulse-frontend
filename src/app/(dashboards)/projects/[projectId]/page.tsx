@@ -64,6 +64,10 @@ const ProjectIdPage = () => {
 
   const handleAuthorizeLinear = () => {
     if (toolId) {
+      //set toolId and project id in local storage
+      localStorage.setItem("linearToolId", toolId);
+      localStorage.setItem("projectId", projectDetails?._id || "");
+
       connectLinear();
     }
   };

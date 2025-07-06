@@ -9,7 +9,6 @@ import { Button } from "@/components/ButtonComponent";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,7 +17,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/textarea";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { GetLinkedItems } from "../../../../../../../helpers/feedback/feedbackApi";
+import { GetLinkedItems, sendFeedback } from "../../../../../../../helpers/feedback/feedbackApi";
 import Link from "next/link";
 
 const typeList = [
@@ -46,7 +45,7 @@ const FeedbackForm = ({ memberId }: { memberId: string }) => {
   //   console.log("🚀 ~ FeedbackForm ~ linkedItemsData:", linkedItemsData?.[0]._id);
 
   //   form submission
-  console.log("🚀 ~ FeedbackForm ~ memberId:", memberId);
+  // console.log("🚀 ~ FeedbackForm ~ memberId:", memberId);
   const formSchema = z.object({
     type: z.string().min(1, "Please select an option."),
     tone: z.string().min(1, "Please select an option."),
@@ -68,17 +67,43 @@ const FeedbackForm = ({ memberId }: { memberId: string }) => {
     formState: { isSubmitting },
   } = form;
 
+  const sendFeedbackMutation = useMutation({
+    mutationFn: (data: any) => sendFeedback(data, session),
+    onSuccess: () => {
+      toast({
+        title: "Feedback Sent",
+        description: "Your feedback has been sent successfully.",
+      });
+      // setOpen(false);
+      form.reset();
+      // setSelectedWorksheet(null);
+      // queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
+      // onClose();
+      // onSuccess?.();
+      // setSelectedIds([]); // This is fine here
+    },
+    onError: (error: any) => {
+      console.error("Mutation error:", error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Update your onSubmit function typing
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log("🚀 ~ constonSubmit:SubmitHandler<FormValues>= ~ data:", data);
-    //   const payload = {
-    //     projectId: data.project,
-    //     worksheetName: data.workSheetName,
-    //     date: date,
-    //     activityIds: selectedIds,
-    //   };
+    // console.log("🚀 ~ constonSubmit:SubmitHandler<FormValues>= ~ data:", data);
+    const payload = {
+      type: data.type,
+      tone: data.tone,
+      comment: data.comment,
+      linkedItems: data.linkedItems,
+      userId: memberId,
+    };
 
-    //   reportedMutation.mutate(payload);
+    sendFeedbackMutation.mutate(payload);
   };
 
   // Create the linked items options from API data
@@ -305,11 +330,7 @@ const FeedbackForm = ({ memberId }: { memberId: string }) => {
                 Cancel
               </Button>
             </Link>
-            <Button
-              type="submit"
-              className="w-full"
-              //   disabled={isSubmitting}
-            >
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
               Send
             </Button>
           </div>
