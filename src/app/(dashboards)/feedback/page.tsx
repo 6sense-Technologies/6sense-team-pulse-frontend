@@ -11,8 +11,17 @@ import PageTitle from "@/components/PageTitle";
 import { Button } from "@/components/ButtonComponent";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleAlert, EllipsisVertical } from "lucide-react";
+import { CircleAlert, CircleUser, EllipsisVertical } from "lucide-react";
 import Link from "next/link";
+import { GetFeedbackList } from "../../../../helpers/feedback/feedbackApi";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
+import EmptyMemberListView from "./send-feedback/emptyMemberlistView";
+import { CustomTable } from "@/components/ui/customTable/CustomTable";
+import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
+import { CustomPagination } from "@/components/ui/customTable/CustomPagination";
+import { cn } from "@/lib/utils";
+import EmptyFeedbackListView from "./_components/EmptyFeedbackListView";
 
 const FeedbackPage = () => {
   const router = useRouter();
@@ -20,6 +29,110 @@ const FeedbackPage = () => {
   const searchParams = useSearchParams();
   const params = useParams();
   const session = useSession();
+
+  // UI States
+  const [searchText, setSearchText] = useState("");
+
+  // Pagination handling
+  let currentPage = parseInt(searchParams.get("page") || "1");
+  let page = searchText ? "1" : currentPage.toString();
+  const limit = "10";
+
+  // Data fetching
+  const {
+    data: feedbackList,
+    isFetching: feedbackListLoading,
+    refetch: feedbackListRefetch,
+  } = useQuery<any>({
+    queryKey: ["fetchFeedback", page, limit, searchText],
+    queryFn: () => GetFeedbackList(session, page, limit, searchText),
+  });
+  console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
+
+  // Table columns definition
+  const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "createdAt",
+      header: () => <div className="">Date</div>,
+      cell: ({ row }) => (
+        <div className="">
+          {row.original?.createdAt
+            ? new Date(row.original.createdAt).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })
+            : ""}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "assignedTo",
+      header: () => <div>Name</div>,
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2 w-full">
+          {row.original?.assignedTo?.avatarUrls ? (
+            <Image
+              src={row.original?.assignedTo?.avatarUrls}
+              alt={row.original?.assignedTo?.displayName}
+              width={40}
+              height={40}
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
+            <CircleUser className="w-10 h-10 text-muted-foreground" />
+          )}
+          <div>
+            <h1 className="font-semibold text-sm line-clamp-none break-words">{row.original?.assignedTo?.displayName}</h1>
+            <p className="text-sm text-muted-foreground">{row.original?.assignedTo?.designation}</p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "comment",
+      header: () => <div className="">Comment</div>,
+      cell: ({ row }) => {
+        const value = row.original?.comment || "";
+        const displayValue = value.length > 50 ? `${value.slice(0, 50)}...` : value;
+        return (
+          <div className="flex items-center gap-2">
+            <div
+              className={cn("w-1.5 h-1.5 rounded-full", {
+                "bg-[#15803D]": row.original?.tone === "Positive", // Positive
+                "bg-[#6B7280]": row.original?.tone === "Neutral", // Negative
+                "bg-[#B91C1C]": row.original?.tone === "Negative", // Neutral
+              })}
+            ></div>
+            {displayValue || "-"}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "type",
+      header: () => <div className="">Type</div>,
+      cell: ({ row }) => (
+        <div className="">
+          <span className="border rounded-full py-1.5 px-3">{row.original?.type}</span>
+        </div>
+      ),
+    },
+    {
+      accessorKey: "action",
+      header: () => <div className="text-bold">Action</div>,
+      cell: ({ row }: { row: any }) => (
+        <Link href={`/feedback/send-feedback/${row.original._id}`}>
+          <div className="text-medium flex items-center">
+            <Button className="hidden md:inline-flex" variant="outline">
+              View
+            </Button>
+          </div>
+        </Link>
+      ),
+      size: 20,
+    },
+  ];
 
   return (
     <div className="w-full">
@@ -60,7 +173,19 @@ const FeedbackPage = () => {
           </div>
         </div>
 
-        <div>content</div>
+        <div className="mt-6 lg:mt-0 lg:ml-2">
+          {feedbackListLoading ? (
+            <EmptyTableSkeleton /> // Show loader while data is being fetched
+          ) : feedbackList?.data?.length === 0 ? (
+            <EmptyFeedbackListView />
+          ) : (
+            <div className="flex flex-col gap-4">
+              <CustomTable columns={columns} data={feedbackList?.data || []} />
+
+              <CustomPagination page={currentPage} pageSize={10} totalCount={feedbackList?.paginationMetadata?.totalCount || 0} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

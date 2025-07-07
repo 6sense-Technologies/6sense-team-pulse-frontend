@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { GetLinkedItems, sendFeedback } from "../../../../../../../helpers/feedback/feedbackApi";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const typeList = [
   { _id: "Bug", name: "Bug" },
@@ -36,6 +37,7 @@ const toneList = [
 
 const FeedbackForm = ({ memberId }: { memberId: string }) => {
   const session = useSession();
+  const router = useRouter();
 
   const { data: linkedItemsData, isFetching: linkedItemsDataLoading } = useQuery<any>({
     queryKey: ["linkedItemsData", memberId],
@@ -75,12 +77,16 @@ const FeedbackForm = ({ memberId }: { memberId: string }) => {
         description: "Your feedback has been sent successfully.",
       });
       // setOpen(false);
-      form.reset();
-      // setSelectedWorksheet(null);
+      form.reset({
+        type: "",
+        tone: "",
+        comment: "",
+        linkedItems: [],
+      });
+      router.push("/feedback");
       // queryClient.invalidateQueries({ queryKey: ["fetchTimelogs"] });
       // onClose();
       // onSuccess?.();
-      // setSelectedIds([]); // This is fine here
     },
     onError: (error: any) => {
       console.error("Mutation error:", error);
@@ -97,10 +103,10 @@ const FeedbackForm = ({ memberId }: { memberId: string }) => {
     // console.log("🚀 ~ constonSubmit:SubmitHandler<FormValues>= ~ data:", data);
     const payload = {
       type: data.type,
+      linkedIssues: data.linkedItems || [],
       tone: data.tone,
       comment: data.comment,
-      linkedItems: data.linkedItems,
-      userId: memberId,
+      assignedTo: memberId,
     };
 
     sendFeedbackMutation.mutate(payload);
