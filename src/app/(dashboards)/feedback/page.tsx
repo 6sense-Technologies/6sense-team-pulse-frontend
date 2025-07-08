@@ -22,6 +22,8 @@ import Image from "next/image";
 import { CustomPagination } from "@/components/ui/customTable/CustomPagination";
 import { cn } from "@/lib/utils";
 import EmptyFeedbackListView from "./_components/EmptyFeedbackListView";
+import ViewFeedbackModal from "./_components/ViewFeedbackModal";
+import Searchbar from "../projects/_components/searchbar";
 
 const FeedbackPage = () => {
   const router = useRouter();
@@ -122,13 +124,9 @@ const FeedbackPage = () => {
       accessorKey: "action",
       header: () => <div className="text-bold">Action</div>,
       cell: ({ row }: { row: any }) => (
-        <Link href={`/feedback/send-feedback/${row.original._id}`}>
-          <div className="text-medium flex items-center">
-            <Button className="hidden md:inline-flex" variant="outline">
-              View
-            </Button>
-          </div>
-        </Link>
+        <div className="text-medium flex items-center">
+          <ViewFeedbackModal feedbackId={row.original?._id} />
+        </div>
       ),
       size: 20,
     },
@@ -155,13 +153,13 @@ const FeedbackPage = () => {
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
-            {/* <Searchbar
+            <Searchbar
               placeholder="Search by project name"
               name="search"
               btntext="Search"
               className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
-            /> */}
+            />
             {/* <ProjectDropdown placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" /> */}
           </div>
           <div className="w-full md:w-auto">
