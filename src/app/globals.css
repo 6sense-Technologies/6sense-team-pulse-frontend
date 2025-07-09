@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .adjustedWidthForMenu {
-  width: 100%
+  width: 100%;
 }
 
 .react-tooltip.core-styles-module_tooltip__3vRRp.styles-module_tooltip__mnnfp.styles-module_dark__xNqje.react-tooltip__place-left.core-styles-module_show__Nt9eE.react-tooltip__show {
@@ -60,6 +60,6 @@
   background-color: #ababae; /* Hovered thumb color */
   cursor: default !important;
 }
-
-
-
+.wrap-anywhere {
+  overflow-wrap: anywhere;
+}
