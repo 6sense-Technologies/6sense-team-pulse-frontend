@@ -1,29 +1,27 @@
 "use client";
 
-import React, { useState } from "react";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
 import AvatarMenu from "@/components/AvatarMenu";
+import { Button } from "@/components/ButtonComponent";
+import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
 import GlobalBreadCrumb from "@/components/globalBreadCrumb";
 import PageHeading from "@/components/pageHeading";
 import PageTitle from "@/components/PageTitle";
-import { Button } from "@/components/ButtonComponent";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircleAlert, CircleUser, EllipsisVertical } from "lucide-react";
-import Link from "next/link";
-import { GetFeedbackList } from "../../../../helpers/feedback/feedbackApi";
-import EmptyTableSkeleton from "@/components/emptyTableSkeleton";
-import EmptyMemberListView from "./send-feedback/emptyMemberlistView";
-import { CustomTable } from "@/components/ui/customTable/CustomTable";
-import { ColumnDef } from "@tanstack/react-table";
-import Image from "next/image";
 import { CustomPagination } from "@/components/ui/customTable/CustomPagination";
+import { CustomTable } from "@/components/ui/customTable/CustomTable";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { CircleUser } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { GetFeedbackList } from "../../../../helpers/feedback/feedbackApi";
+import Searchbar from "../projects/_components/searchbar";
 import EmptyFeedbackListView from "./_components/EmptyFeedbackListView";
 import ViewFeedbackModal from "./_components/ViewFeedbackModal";
-import Searchbar from "../projects/_components/searchbar";
 
 const FeedbackPage = () => {
   const router = useRouter();
@@ -32,13 +30,35 @@ const FeedbackPage = () => {
   const params = useParams();
   const session = useSession();
 
-  // UI States
-  const [searchText, setSearchText] = useState("");
+  // Get search text from URL on initial load
+  const urlSearchText = searchParams.get("search") || "";
+
+  // UI States - initialize from URL
+  const [searchText, setSearchText] = useState(urlSearchText);
 
   // Pagination handling
   let currentPage = parseInt(searchParams.get("page") || "1");
-  let page = searchText ? "1" : currentPage.toString();
+  let page = currentPage.toString();
   const limit = "10";
+
+  // 2. Update effect to preserve search text in URL
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Only update URL if searchText has changed
+    if (searchText !== params.get("search")) {
+      if (searchText) {
+        params.set("search", searchText);
+        params.set("page", "1"); // Reset to page 1 on new search
+      } else {
+        params.delete("search");
+      }
+
+      router.push(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+  }, [searchText, searchParams, pathname, router]);
 
   // Data fetching
   const {
@@ -49,7 +69,12 @@ const FeedbackPage = () => {
     queryKey: ["fetchFeedback", page, limit, searchText],
     queryFn: () => GetFeedbackList(session, page, limit, searchText),
   });
-  console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
+  // console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
+
+  // 3. Update search handler
+  const handleSearch = (value: string) => {
+    setSearchText(value);
+  };
 
   // Table columns definition
   const columns: ColumnDef<any>[] = [
@@ -153,12 +178,17 @@ const FeedbackPage = () => {
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
+            {/* Search Bar */}
             <Searchbar
-              placeholder="Search by project name"
+              placeholder="Search by name, comments"
               name="search"
               btntext="Search"
               className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
+              disabled={false}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onSubmit={handleSearch}
             />
             {/* <ProjectDropdown placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" /> */}
           </div>
