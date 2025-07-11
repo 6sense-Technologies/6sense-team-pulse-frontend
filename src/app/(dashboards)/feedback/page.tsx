@@ -12,7 +12,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { CircleUser } from "lucide-react";
+import { ChevronDown, ChevronUp, CircleUser, ListFilter, Check, CircleDot, Dot, Circle } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,6 +22,16 @@ import { GetFeedbackList } from "../../../../helpers/feedback/feedbackApi";
 import Searchbar from "../projects/_components/searchbar";
 import EmptyFeedbackListView from "./_components/EmptyFeedbackListView";
 import ViewFeedbackModal from "./_components/ViewFeedbackModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const FeedbackPage = () => {
   const router = useRouter();
@@ -36,6 +46,17 @@ const FeedbackPage = () => {
   // UI States - initialize from URL
   const [searchText, setSearchText] = useState(urlSearchText);
 
+  const [sortOpen, setSortOpen] = useState(false);
+  // Add these state variables to your component
+  const [selectedTypes, setSelectedTypes] = useState<string[]>(() => {
+    const filterParam = searchParams.get("filter");
+    return filterParam ? filterParam.split(",") : [];
+  });
+  const [sortOrder, setSortOrder] = useState<string>(() => {
+    const sortParam = searchParams.get("sort");
+    return sortParam || "latest";
+  });
+
   // Pagination handling
   let currentPage = parseInt(searchParams.get("page") || "1");
   let page = currentPage.toString();
@@ -44,21 +65,48 @@ const FeedbackPage = () => {
   // 2. Update effect to preserve search text in URL
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
+    let shouldUpdateUrl = false;
 
-    // Only update URL if searchText has changed
+    // Update search parameter
     if (searchText !== params.get("search")) {
+      shouldUpdateUrl = true;
       if (searchText) {
         params.set("search", searchText);
         params.set("page", "1"); // Reset to page 1 on new search
       } else {
         params.delete("search");
       }
+    }
 
+    // Update selected types in URL
+    const currentFilter = params.get("filter");
+    const newFilter = selectedTypes.length > 0 ? selectedTypes.join(",") : "";
+    if (currentFilter !== newFilter) {
+      shouldUpdateUrl = true;
+      if (selectedTypes.length > 0) {
+        params.set("filter", newFilter);
+      } else {
+        params.delete("filter");
+      }
+    }
+
+    // Update sort order in URL
+    if (sortOrder !== params.get("sort")) {
+      shouldUpdateUrl = true;
+      if (sortOrder) {
+        params.set("sort", sortOrder);
+      } else {
+        params.delete("sort");
+      }
+    }
+
+    // Apply all URL updates in a single router.push
+    if (shouldUpdateUrl) {
       router.push(`${pathname}?${params.toString()}`, {
         scroll: false,
       });
     }
-  }, [searchText, searchParams, pathname, router]);
+  }, [searchText, searchParams, pathname, router, selectedTypes, sortOrder]);
 
   // Data fetching
   const {
@@ -66,8 +114,8 @@ const FeedbackPage = () => {
     isFetching: feedbackListLoading,
     refetch: feedbackListRefetch,
   } = useQuery<any>({
-    queryKey: ["fetchFeedback", page, limit, searchText],
-    queryFn: () => GetFeedbackList(session, page, limit, searchText),
+    queryKey: ["fetchFeedback", page, limit, searchText, selectedTypes, sortOrder],
+    queryFn: () => GetFeedbackList(session, page, limit, searchText, selectedTypes, sortOrder),
   });
   // console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
 
@@ -157,6 +205,16 @@ const FeedbackPage = () => {
     },
   ];
 
+  // Add this handler to toggle type selection
+  const toggleTypeSelection = (type: string) => {
+    setSelectedTypes((current) => (current.includes(type) ? current.filter((t) => t !== type) : [...current, type]));
+  };
+
+  // Add this handler for sort selection
+  const handleSortSelection = (sort: string) => {
+    setSortOrder(sort);
+  };
+
   return (
     <div className="w-full">
       <PageTitle title="Projects • Ops4 Team" />
@@ -177,20 +235,66 @@ const FeedbackPage = () => {
         <PageHeading title="All Feedbacks" />
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
-          <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
+          <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2 items-center mb-6">
             {/* Search Bar */}
             <Searchbar
               placeholder="Search by name, comments"
               name="search"
               btntext="Search"
-              className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
+              className="mt-6 lg:mt-[18px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
               disabled={false}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               onSubmit={handleSearch}
             />
-            {/* <ProjectDropdown placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" /> */}
+
+            {/* Sort/Filter Dropdown */}
+            <DropdownMenu open={sortOpen} onOpenChange={setSortOpen}>
+              <DropdownMenuTrigger className={cn(" focus:outline-0")}>
+                <div className="hidden md:flex items-center gap-1">
+                  Filter {selectedTypes.length > 0 && <span>by Type</span>} {sortOpen ? <ChevronUp /> : <ChevronDown />}
+                </div>
+                <div className="md:hidden">
+                  <ListFilter />
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="bg-white w-56">
+                {/* Type Filter */}
+                <DropdownMenuLabel className="font-semibold text-sm">Type</DropdownMenuLabel>
+                <DropdownMenuGroup className="space-y-1 p-1">
+                  {/* US, Task, Bug, Suggestions, Personal */}
+                  {["Bug", "Personal", "Suggestions", "Task", "User Story"].map((type) => (
+                    <DropdownMenuItem key={type} onClick={() => toggleTypeSelection(type)} className="flex items-center gap-2 p-1.5 cursor-pointer">
+                      <div className="w-4 flex items-center justify-center">{selectedTypes.includes(type) && <Check className="h-4 w-4" />}</div>
+                      <span>{type}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
+                {/* Sort by Time */}
+                <DropdownMenuLabel className="font-semibold text-sm">Sort by Time</DropdownMenuLabel>
+                <DropdownMenuGroup className="space-y-1 p-1">
+                  {[
+                    { id: "latest", label: "Latest" },
+                    { id: "oldest", label: "Oldest" },
+                  ].map((option) => (
+                    <DropdownMenuItem
+                      key={option.id}
+                      onClick={() => handleSortSelection(option.id)}
+                      className="flex items-center gap-2 p-1.5 cursor-pointer"
+                    >
+                      <div className="w-4 flex items-center justify-center">
+                        {sortOrder === option.id && <Circle fill="black" className="w-2 h-2 " />}
+                      </div>
+                      <span>{option.label}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="w-full md:w-auto">
             <Link href={`/feedback/send-feedback`}>
