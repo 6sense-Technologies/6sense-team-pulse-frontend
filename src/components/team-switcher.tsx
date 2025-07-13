@@ -56,20 +56,23 @@ export function TeamSwitcher({
     mutationFn: (organizationId: string) => changeOrganization(organizationId, { data: sessionData }),
     onSuccess: async (data) => {
       try {
-        console.log("🚀 ~ onSuccess: ~ data:", data);
-        await update();
-        console.log("🚀 ~ onSuccess: ~ sessionData:", sessionData);
+        // console.log("🚀 ~ onSuccess: ~ data:", data);
+        // console.log("🚀 ~ Before update ~ sessionData:", sessionData);
+
+        await update({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
+
+        // console.log("🚀 ~ Update result:", updateResult);
+
+        // Force refresh to get updated session
+        router.refresh();
 
         toast({
           title: "Organization Changed",
           description: "Your organization has been changed successfully.",
         });
-
-        // Use router.refresh() instead of window.location.reload()
-        // router.refresh();
-
-        // Or if you really need a full reload:
-        // window.location.reload();
       } catch (error) {
         console.error("Failed to update session:", error);
         toast({

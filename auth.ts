@@ -139,6 +139,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (session.hasOrganization !== undefined) {
           token.hasOrganization = session.hasOrganization;
         }
+        // Add these lines to handle accessToken and refreshToken updates
+        if (session.accessToken) {
+          token.accessToken = session.accessToken;
+        }
+        if (session.refreshToken) {
+          token.refreshToken = session.refreshToken;
+        }
       }
 
       if (user) {
@@ -177,6 +184,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       return token;
     },
+
     async session({ session, token }) {
       session.accessToken = token.accessToken as string;
       session.refreshToken = token.refreshToken as string;
