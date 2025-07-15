@@ -12,7 +12,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { ChevronDown, ChevronUp, CircleUser, ListFilter, Check, CircleDot, Dot, Circle } from "lucide-react";
+import { ChevronDown, ChevronUp, CircleUser, ListFilter, Check, CircleDot, Dot, Circle, CalendarIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -32,6 +32,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { DateRange } from "react-day-picker";
+import { addDays, format, subDays } from "date-fns";
 
 const FeedbackPage = () => {
   const router = useRouter();
@@ -45,6 +49,13 @@ const FeedbackPage = () => {
 
   // UI States - initialize from URL
   const [searchText, setSearchText] = useState(urlSearchText);
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: subDays(new Date(), 7), // 7 days ago
+    to: new Date(), // Today
+  });
+  const formattedStartDate = dateRange?.from ? dateRange.from.toISOString() : "";
+  const formattedEndDate = dateRange?.to ? dateRange.to.toISOString() : "";
 
   const [sortOpen, setSortOpen] = useState(false);
   // Add these state variables to your component
@@ -100,13 +111,31 @@ const FeedbackPage = () => {
       }
     }
 
+    // Add date range parameters to URL
+    const currentStartDate = params.get("startDate");
+    const currentEndDate = params.get("endDate");
+
+    if (formattedStartDate !== currentStartDate || formattedEndDate !== currentEndDate) {
+      shouldUpdateUrl = true;
+      if (formattedStartDate) {
+        params.set("startDate", formattedStartDate);
+      } else {
+        params.delete("startDate");
+      }
+      if (formattedEndDate) {
+        params.set("endDate", formattedEndDate);
+      } else {
+        params.delete("endDate");
+      }
+    }
+
     // Apply all URL updates in a single router.push
     if (shouldUpdateUrl) {
       router.push(`${pathname}?${params.toString()}`, {
         scroll: false,
       });
     }
-  }, [searchText, searchParams, pathname, router, selectedTypes, sortOrder]);
+  }, [searchText, searchParams, pathname, router, selectedTypes, sortOrder, formattedStartDate, formattedEndDate]);
 
   // Data fetching
   const {
@@ -114,8 +143,8 @@ const FeedbackPage = () => {
     isFetching: feedbackListLoading,
     refetch: feedbackListRefetch,
   } = useQuery<any>({
-    queryKey: ["fetchFeedback", page, limit, searchText, selectedTypes, sortOrder],
-    queryFn: () => GetFeedbackList(session, page, limit, searchText, selectedTypes, sortOrder),
+    queryKey: ["fetchFeedback", page, limit, searchText, selectedTypes, sortOrder, formattedStartDate, formattedEndDate],
+    queryFn: () => GetFeedbackList(session, page, limit, searchText, selectedTypes, sortOrder, formattedStartDate, formattedEndDate),
   });
   // console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
 
@@ -296,7 +325,56 @@ const FeedbackPage = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="w-full md:w-auto">
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn("flex items-center gap-2 justify-start text-left font-normal", !dateRange.from && "text-muted-foreground")}
+              >
+                <CalendarIcon className="w-4 h-4" />
+                <span>
+                  {dateRange.from ? (
+                    dateRange.to ? (
+                      <>
+                        {format(dateRange.from, "LLL dd")} - {format(dateRange.to, "LLL dd")}
+                      </>
+                    ) : (
+                      format(dateRange.from, "LLL dd, y")
+                    )
+                  ) : (
+                    "Pick a date range"
+                  )}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0 bg-white" align="start">
+              {/* Date range picker (reported tab) */}
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                disabled={{ after: new Date() }}
+                onSelect={(range) => {
+                  if (range?.from) {
+                    setDateRange({
+                      from: range.from,
+                      to: range.to || range.from,
+                    });
+                  }
+                  // else {
+                  //   setDateRange({
+                  //     from: subDays(new Date(), 7),
+                  //     to: new Date(),
+                  //   });
+                  // }
+                }}
+                initialFocus
+                className="[&_.rdp-day_selected]:!bg-[#0F172A] [&_.rdp-day_in_range]:!bg-[#F1F5F9] [&_.rdp-day_in_range]:!rounded-none [&_.rdp-day_selected]:!rounded-md [&_.rdp-day_selected:first-child]:!rounded-l-md [&_.rdp-day_selected:last-child]:!rounded-r-md"
+              />
+            </PopoverContent>
+          </Popover>
+
+          <div className="w-full md:w-auto ml-2">
             <Link href={`/feedback/send-feedback`}>
               <Button variant="defaultEx">
                 <span className="text-nowrap flex items-center gap-x-[6px]">Send Feedback</span>

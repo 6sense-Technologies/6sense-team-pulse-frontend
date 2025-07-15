@@ -62,7 +62,16 @@ export const sendFeedback = async (data: any, session: any) => {
 };
 
 // Get feedback list
-export const GetFeedbackList = async (session: any, page: string, limit: string, searchText: string, selectedTypes: string[], sortOrder: string) => {
+export const GetFeedbackList = async (
+  session: any,
+  page: string,
+  limit: string,
+  searchText: string,
+  selectedTypes: string[],
+  sortOrder: string,
+  startDate?: string,
+  endDate?: string,
+) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -71,7 +80,7 @@ export const GetFeedbackList = async (session: any, page: string, limit: string,
   }
 
   const response = await axios.get(
-    `${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}&filter=${selectedTypes.join(",")}&sort=${sortOrder}`,
+    `${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}&filter=${selectedTypes.join(",")}&sort=${sortOrder}&startDate=${startDate}&endDate=${endDate}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
