@@ -67,6 +67,10 @@ const FeedbackPage = () => {
     const sortParam = searchParams.get("sort");
     return sortParam || "latest";
   });
+  const [source, setSource] = useState<string>(() => {
+    const sourceParam = searchParams.get("direction");
+    return sourceParam || "both"; // Default to "both"
+  });
 
   // Pagination handling
   let currentPage = parseInt(searchParams.get("page") || "1");
@@ -111,6 +115,16 @@ const FeedbackPage = () => {
       }
     }
 
+    // Update source in URL
+    if (source !== params.get("direction")) {
+      shouldUpdateUrl = true;
+      if (source) {
+        params.set("direction", source);
+      } else {
+        params.delete("direction");
+      }
+    }
+
     // Add date range parameters to URL
     const currentStartDate = params.get("startDate");
     const currentEndDate = params.get("endDate");
@@ -143,8 +157,8 @@ const FeedbackPage = () => {
     isFetching: feedbackListLoading,
     refetch: feedbackListRefetch,
   } = useQuery<any>({
-    queryKey: ["fetchFeedback", page, limit, searchText, selectedTypes, sortOrder, formattedStartDate, formattedEndDate],
-    queryFn: () => GetFeedbackList(session, page, limit, searchText, selectedTypes, sortOrder, formattedStartDate, formattedEndDate),
+    queryKey: ["fetchFeedback", page, limit, searchText, selectedTypes, sortOrder, source, formattedStartDate, formattedEndDate],
+    queryFn: () => GetFeedbackList(session, page, limit, searchText, selectedTypes, sortOrder, source, formattedStartDate, formattedEndDate),
   });
   // console.log("🚀 ~ FeedbackPage ~ feedbackList:", feedbackList);
 
@@ -244,6 +258,11 @@ const FeedbackPage = () => {
     setSortOrder(sort);
   };
 
+  // Add this handler for source selection
+  const handleSourceSelection = (source: string) => {
+    setSource(source);
+  };
+
   return (
     <div className="w-full">
       <PageTitle title="Projects • Ops4 Team" />
@@ -302,6 +321,26 @@ const FeedbackPage = () => {
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />
+
+                {/* Source Filter */}
+                <DropdownMenuLabel className="font-semibold text-sm">Source</DropdownMenuLabel>
+                <DropdownMenuGroup className="space-y-1 p-1">
+                  {[
+                    { id: "sent", label: "Sent" },
+                    { id: "received", label: "Received" },
+                  ].map((option) => (
+                    <DropdownMenuItem
+                      key={option.id}
+                      onClick={() => handleSourceSelection(option.id)}
+                      className="flex items-center gap-2 p-1.5 cursor-pointer"
+                    >
+                      <div className="w-4 flex items-center justify-center">
+                        {/* {sortOrder === option.id && <Circle fill="black" className="w-2 h-2 " />} */}
+                      </div>
+                      <span>{option.label}</span>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuGroup>
 
                 {/* Sort by Time */}
                 <DropdownMenuLabel className="font-semibold text-sm">Sort by Time</DropdownMenuLabel>

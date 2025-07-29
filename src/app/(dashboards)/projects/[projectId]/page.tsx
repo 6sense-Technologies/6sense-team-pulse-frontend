@@ -162,13 +162,13 @@ const ProjectIdPage = () => {
         </div>
         <div className="mt-6 lg:ml-2 lg:mt-0">
           {activeTab === "team" ? (
-            <div className="flex justify-center items-center h-64">team</div>
+            <div className="flex justify-center items-center h-64">Team feature is coming soon!</div>
           ) : activeTab === "analytics" ? (
-            <div className="flex justify-center items-center h-64">analytics</div>
+            <div className="flex justify-center items-center h-64">Analytics feature is coming soon!</div>
           ) : activeTab === "worksheet" ? (
             <WorksheetTab projectId={projectId as string} />
           ) : (
-            <div className="flex justify-center items-center h-64">overview</div>
+            <div className="flex justify-center items-center h-64">Overview feature is coming soon!</div>
           )}
         </div>
       </div>

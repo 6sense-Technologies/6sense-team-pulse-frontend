@@ -69,6 +69,7 @@ export const GetFeedbackList = async (
   searchText: string,
   selectedTypes: string[],
   sortOrder: string,
+  source: string,
   startDate?: string,
   endDate?: string,
 ) => {
@@ -80,7 +81,7 @@ export const GetFeedbackList = async (
   }
 
   const response = await axios.get(
-    `${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}&filter=${selectedTypes.join(",")}&sort=${sortOrder}&startDate=${startDate}&endDate=${endDate}`,
+    `${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}&filter=${selectedTypes.join(",")}&sort=${sortOrder}&direction=${source}&startDate=${startDate}&endDate=${endDate}`,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
