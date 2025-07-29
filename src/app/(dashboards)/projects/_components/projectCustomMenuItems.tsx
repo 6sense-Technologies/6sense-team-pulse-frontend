@@ -16,11 +16,11 @@ const ProjectCustomMenuItems: FC<TProjectCustomMenuItemsProps> = ({ firstText, s
         <button className="w-full text-left pl-8 pr-2 py-[6px]">{firstText}</button>
       </Link>
 
-      <button disabled className="w-full text-left pl-8 pr-2 py-[6px] cursor-not-allowed">
+      <button disabled className="w-full text-left pl-8 pr-2 py-[6px] cursor-not-allowed text-gray-500">
         {secondText}
       </button>
       <hr className="my-2" />
-      <button disabled className="w-full text-left pl-8 pr-2 pt-[6px] pb-3 cursor-not-allowed">
+      <button disabled className="w-full text-left pl-8 pr-2 pt-[6px] pb-3 cursor-not-allowed text-gray-500">
         {ThirdText}
       </button>
     </div>

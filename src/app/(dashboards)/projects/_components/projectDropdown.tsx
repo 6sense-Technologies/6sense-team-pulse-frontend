@@ -11,12 +11,22 @@ type DropdownProps = {
   errors?: any;
   additionalText?: string;
   active?: boolean;
+  disabled?: boolean; // <-- Add this line
 };
 
-export function ProjectDropdown({ className, placeholder, control, name, errors = {}, additionalText, active = false }: DropdownProps) {
+export function ProjectDropdown({
+  className,
+  placeholder,
+  control,
+  name,
+  errors = {},
+  additionalText,
+  active = false,
+  disabled = false, // <-- Add this line
+}: DropdownProps) {
   const renderSelect = (field: any) => (
-    <Select {...field}>
-      <SelectTrigger className={cn("w-[140px] lg:w-[200px] border-none shadow-none", className)}>
+    <Select {...field} disabled={disabled}>
+      <SelectTrigger className={cn("w-[140px] lg:w-[200px] border-none shadow-none", className)} disabled={disabled}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>

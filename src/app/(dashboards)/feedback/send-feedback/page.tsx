@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -28,13 +28,35 @@ const SendFeedbackPage = () => {
   const params = useParams();
   const session = useSession();
 
+  // Get search text from URL on initial load
+  const urlSearchText = searchParams.get("search") || "";
+
   // UI States
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState(urlSearchText);
 
   // Pagination handling
   let currentPage = parseInt(searchParams.get("page") || "1");
-  let page = searchText ? "1" : currentPage.toString();
+  let page = currentPage.toString();
   const limit = "10";
+
+  // 2. Update effect to preserve search text in URL
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    // Only update URL if searchText has changed
+    if (searchText !== params.get("search")) {
+      if (searchText) {
+        params.set("search", searchText);
+        params.set("page", "1"); // Reset to page 1 on new search
+      } else {
+        params.delete("search");
+      }
+
+      router.push(`${pathname}?${params.toString()}`, {
+        scroll: false,
+      });
+    }
+  }, [searchText, searchParams, pathname, router]);
 
   // Data fetching
   const {
@@ -49,11 +71,6 @@ const SendFeedbackPage = () => {
   // Handle search submission
   const handleSearch = (value: string) => {
     setSearchText(value);
-
-    // Update URL to reflect page change
-    // const params = new URLSearchParams(searchParams.toString());
-    // params.set("page", "1");
-    // router.replace(`${pathname}?${params.toString()}`);
   };
 
   // Table columns definition

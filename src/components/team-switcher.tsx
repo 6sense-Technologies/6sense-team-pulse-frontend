@@ -1,17 +1,34 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { ChevronsUpDown} from 'lucide-react';
+import * as React from "react";
+import { Check, ChevronsUpDown, Plus } from "lucide-react";
 
 import {
   DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from '@/components/ui/sidebar';
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { changeOrganization, GetOrganizationList } from "../../helpers/organization/organizationApi";
+import { useSession } from "next-auth/react";
+import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { Button } from "./ButtonComponent";
+
+export type TOrganizationList = TOrganization[];
+
+export interface TOrganization {
+  lastAccessed: string;
+  _id: string;
+  organizationName: string;
+  domain: string;
+  connected: boolean;
+}
 
 export function TeamSwitcher({
   teams,
@@ -22,59 +39,103 @@ export function TeamSwitcher({
     plan: string;
   }[];
 }) {
-  const [activeTeam] = React.useState(teams[0]);
+  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const { data: sessionData, update } = useSession();
+  console.log("🚀 ~ sessionData:", sessionData);
+  const router = useRouter();
+
+  // Data fetching
+  const { data: organizationList, isFetching: organizationListLoading } = useQuery<TOrganizationList>({
+    queryKey: ["fetchOrganizations"],
+    queryFn: () => GetOrganizationList({ data: sessionData }),
+    enabled: !!sessionData?.accessToken, // Ensure session is available
+  });
+
+  // Fix the mutation
+  const organizationChangeMutation = useMutation({
+    mutationFn: (organizationId: string) => changeOrganization(organizationId, { data: sessionData }),
+    onSuccess: async (data) => {
+      try {
+        // console.log("🚀 ~ onSuccess: ~ data:", data);
+        // console.log("🚀 ~ Before update ~ sessionData:", sessionData);
+
+        await update({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken,
+        });
+
+        // console.log("🚀 ~ Update result:", updateResult);
+
+        // Force refresh to get updated session
+        router.refresh();
+
+        toast({
+          title: "Organization Changed",
+          description: "Your organization has been changed successfully.",
+        });
+      } catch (error) {
+        console.error("Failed to update session:", error);
+        toast({
+          title: "Error",
+          description: "Failed to update session with new organization",
+          variant: "destructive",
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error("Mutation error:", error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "An error occurred",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleOrganizationChange = (orgId: string) => {
+    // setOrganizationId(orgId);
+    organizationChangeMutation.mutate(orgId);
+  };
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
-            >
-              <div className='flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-white'>
-                <activeTeam.logo className='size-4' />
+            <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-white">
+                <activeTeam.logo className="size-4" />
               </div>
-              <div className='grid flex-1 text-left text-sm leading-tight'>
-                <span className='truncate font-semibold'>
-                  {activeTeam.name}
-                </span>
-                <span className='truncate text-xs'>{activeTeam.plan}</span>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">{activeTeam.name}</span>
+                <span className="truncate text-xs">{activeTeam.plan}</span>
               </div>
-              <ChevronsUpDown className='ml-auto cursor-not-allowed' />
+              <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          {/* <DropdownMenuContent
-            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-            align='start'
-            side={isMobile ? 'bottom' : 'right'}
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg bg-white"
+            align="start"
+            side="right"
             sideOffset={4}
           >
-            <DropdownMenuLabel className='text-muted-foreground text-xs'>
-              Teams
-            </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className='gap-2 p-2'
-              >
-                <div className='flex size-6 items-center justify-center rounded-sm border'>
-                  <team.logo className='size-4 shrink-0' />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-2 p-2'>
-              <div className='bg-background flex size-6 items-center justify-center rounded-md border'>
-                <Plus className='size-4' />
-              </div>
-              <div className='text-muted-foreground font-medium'>Add team</div>
-            </DropdownMenuItem>
-          </DropdownMenuContent> */}
+            <DropdownMenuLabel className="text-muted-foreground text-sm font-semibold">Recents</DropdownMenuLabel>
+            {/* <button onClick={async () => await data.update({ role: "alu" })}>check</button> */}
+            {organizationList && (
+              <>
+                {organizationList?.map((org) => (
+                  <DropdownMenuItem key={org._id}>
+                    <div className="cursor-pointer flex items-center">
+                      <span className="" onClick={() => handleOrganizationChange(org._id)}>
+                        {org?.domain}
+                      </span>
+                      {org.connected ? <Check className="h-4 w-4 ml-2" /> : null}
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </>
+            )}
+          </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
