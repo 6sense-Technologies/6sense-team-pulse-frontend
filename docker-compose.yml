@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  dep-shield-client:
+    image: ghcr.io/6sense-technologies/6sense-team-pulse-frontend:${IMAGE_TAG}
+    container_name: ${CONTAINER_NAME}
+    restart: unless-stopped
+    ports:
+      - "${HOST_PORT}:3000"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
+      - NEXT_PUBLIC_TEMP_BACKEND_URI=${NEXT_PUBLIC_TEMP_BACKEND_URI}
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
+      - AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}
+      - AUTH_TRUST_HOST=${AUTH_TRUST_HOST}
+      - IMAGE_TAG=${IMAGE_TAG}
+      - CONTAINER_NAME=${CONTAINER_NAME}
+      - HOST_PORT=${HOST_PORT}
+    networks:
+      - 6sensehq_net
+
+networks:
+  6sensehq_net:
+    external: true
+    name: 6sensehq-network
