@@ -262,30 +262,7 @@ def updateGitHubDeploymentStatus(String repo, String logUrl, String deploymentId
 }
 
 def sendSlackBuildNotification(String status) {
-  def color = status == 'success' ? "#36a64f" : "#FF0000"
   def statusText = status == 'success' ? "Build succeeded" : "Build failed"
-  def committer = sh(script: "git log -1 --pretty=format:'%an'", returnStdout: true).trim()
+  slackSend channel: "#ops4", message: "${statusText} - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
 
-  slackSend(
-    channel: "#ops4",
-    color: color,
-    text: "${statusText} - ${env.JOB_NAME} #${env.BUILD_NUMBER}", // Fallback text
-    blocks: [
-      [
-        type: "section",
-        text: [
-          type: "mrkdwn",
-          text: "*${statusText}*\n<${env.BUILD_URL}|${env.JOB_NAME} #${env.BUILD_NUMBER}>"
-        ]
-      ],
-      [
-        type: "section",
-        fields: [
-          [ type: "mrkdwn", text: "*Branch:*\n${env.BRANCH_NAME}" ],
-          [ type: "mrkdwn", text: "*Committer:*\n${committer}" ],
-          [ type: "mrkdwn", text: "*Project:*\n${env.GHCR_REPO}" ]
-        ]
-      ]
-    ]
-  )
 }
