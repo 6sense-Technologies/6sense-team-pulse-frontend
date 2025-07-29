@@ -139,9 +139,11 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
             <div className="h-6 w-20 bg-gray-200 animate-pulse rounded mt-2"></div>
           ) : (
             <h1 className="font-medium mt-2">
-              {projectWorksheetPerformance?.today?.hours === 0 && projectWorksheetPerformance?.today?.minutes === 0
-                ? "00:00"
-                : `${projectWorksheetPerformance?.today.hours}h ${projectWorksheetPerformance?.today.minutes}m`}
+              {projectWorksheetPerformance?.today?.hours == null || projectWorksheetPerformance?.today?.minutes == null
+                ? "00h 00m"
+                : projectWorksheetPerformance?.today.hours === 0 && projectWorksheetPerformance?.today.minutes === 0
+                  ? "00h 00m"
+                  : `${projectWorksheetPerformance?.today.hours}h ${projectWorksheetPerformance?.today.minutes}m`}
             </h1>
           )}
         </div>
@@ -153,9 +155,11 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
             <div className="h-6 w-20 bg-gray-200 animate-pulse rounded mt-2"></div>
           ) : (
             <h1 className="font-medium mt-2">
-              {projectWorksheetPerformance?.thisWeek?.hours === 0 && projectWorksheetPerformance?.thisWeek?.minutes === 0
-                ? "00:00"
-                : `${projectWorksheetPerformance?.thisWeek.hours}h ${projectWorksheetPerformance?.thisWeek.minutes}m`}
+              {projectWorksheetPerformance?.thisWeek?.hours == null || projectWorksheetPerformance?.thisWeek?.minutes == null
+                ? "00h 00m"
+                : projectWorksheetPerformance?.thisWeek.hours === 0 && projectWorksheetPerformance?.thisWeek.minutes === 0
+                  ? "00h 00m"
+                  : `${projectWorksheetPerformance?.thisWeek.hours}h ${projectWorksheetPerformance?.thisWeek.minutes}m`}
             </h1>
           )}
         </div>
@@ -167,9 +171,11 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
             <div className="h-6 w-20 bg-gray-200 animate-pulse rounded mt-2"></div>
           ) : (
             <h1 className="font-medium mt-2">
-              {projectWorksheetPerformance?.thisMonth?.hours === 0 && projectWorksheetPerformance?.thisMonth?.minutes === 0
-                ? "00:00"
-                : `${projectWorksheetPerformance?.thisMonth.hours}h ${projectWorksheetPerformance?.thisMonth.minutes}m`}
+              {projectWorksheetPerformance?.thisMonth?.hours == null || projectWorksheetPerformance?.thisMonth?.minutes == null
+                ? "00h 00m"
+                : projectWorksheetPerformance?.thisMonth.hours === 0 && projectWorksheetPerformance?.thisMonth.minutes === 0
+                  ? "00h 00m"
+                  : `${projectWorksheetPerformance?.thisMonth.hours}h ${projectWorksheetPerformance?.thisMonth.minutes}m`}
             </h1>
           )}
         </div>
@@ -181,9 +187,11 @@ const WorksheetTab = ({ projectId }: { projectId: string }) => {
             <div className="h-6 w-20 bg-gray-200 animate-pulse rounded mt-2"></div>
           ) : (
             <h1 className="font-medium mt-2">
-              {projectWorksheetPerformance?.allTime?.hours === 0 && projectWorksheetPerformance?.allTime?.minutes === 0
-                ? "00:00"
-                : `${projectWorksheetPerformance?.allTime.hours}h ${projectWorksheetPerformance?.allTime.minutes}m`}
+              {projectWorksheetPerformance?.allTime?.hours == null || projectWorksheetPerformance?.allTime?.minutes == null
+                ? "00h 00m"
+                : projectWorksheetPerformance?.allTime.hours === 0 && projectWorksheetPerformance?.allTime.minutes === 0
+                  ? "00h 00m"
+                  : `${projectWorksheetPerformance?.allTime.hours}h ${projectWorksheetPerformance?.allTime.minutes}m`}
             </h1>
           )}
         </div>

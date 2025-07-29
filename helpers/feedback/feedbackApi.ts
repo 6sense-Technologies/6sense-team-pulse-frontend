@@ -62,7 +62,17 @@ export const sendFeedback = async (data: any, session: any) => {
 };
 
 // Get feedback list
-export const GetFeedbackList = async (session: any, page: string, limit: string, searchText: string) => {
+export const GetFeedbackList = async (
+  session: any,
+  page: string,
+  limit: string,
+  searchText: string,
+  selectedTypes: string[],
+  sortOrder: string,
+  source: string,
+  startDate?: string,
+  endDate?: string,
+) => {
   let accessToken: string = session.data.accessToken;
 
   if (new Date(session.data.expires) <= new Date()) {
@@ -70,7 +80,32 @@ export const GetFeedbackList = async (session: any, page: string, limit: string,
     accessToken = response.data.accessToken;
   }
 
-  const response = await axios.get(`${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}`, {
+  const response = await axios.get(
+    `${TEMP_BACKEND_URI}/feedback?page=${page}&limit=${limit}&search=${searchText}&filter=${selectedTypes.join(",")}&sort=${sortOrder}&direction=${source}&startDate=${startDate}&endDate=${endDate}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  if (response.status === 401) {
+    session.update();
+  }
+
+  return response.data;
+};
+
+// Get single feedback
+export const GetSingleFeedback = async (session: any, feedbackId: string) => {
+  let accessToken: string = session.data.accessToken;
+
+  if (new Date(session.data.expires) <= new Date()) {
+    const response = await axios.get("/api/auth/session");
+    accessToken = response.data.accessToken;
+  }
+
+  const response = await axios.get(`${TEMP_BACKEND_URI}/feedback/${feedbackId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

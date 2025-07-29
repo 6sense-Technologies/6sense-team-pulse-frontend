@@ -83,13 +83,14 @@ const ProjectList = () => {
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
           <div className="flex flex-col md:flex-row md:gap-x-4 md:gap-y-0 item-start md:items-end w-full lg:ml-2">
             <Searchbar
+              disabled={true}
               placeholder="Search by project name"
               name="search"
               btntext="Search"
               className="mt-6 lg:mt-[18px] mb-[26px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
             />
-            <ProjectDropdown placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" />
+            <ProjectDropdown disabled={true} placeholder="Filter by Tool" name="tool" active={false} className="mb-[26px]" />
           </div>
           <div className="w-full md:w-auto">
             <Link href={`/projects/create`}>

@@ -13,7 +13,7 @@ import { usePathname } from "next/navigation";
 
 const defaultData = {
   user: {
-    name: "Khan Atik Faisal",
+    name: "Default User",
     email: "",
     avatar: "/avatars/shadcn.jpg",
   },
@@ -21,7 +21,7 @@ const defaultData = {
     {
       name: "Ops4Team",
       logo: GalleryVerticalEnd,
-      plan: "Admin",
+      plan: "Adminnn",
     },
   ],
   navMain: [
