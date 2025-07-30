@@ -107,7 +107,8 @@ pipeline {
                 [infisicalKey: 'AUTH_GOOGLE_ID'],
                 [infisicalKey: 'AUTH_GOOGLE_SECRET'],
                 [infisicalKey: 'AUTH_TRUST_HOST'],
-                [infisicalKey: 'HOST_PORT'],                
+                [infisicalKey: 'HOST_PORT'],
+                [infisicalKey: 'NEXTAUTH_URL'],                
               ]
             )
           ]) {
@@ -117,6 +118,7 @@ pipeline {
               writeFile file: '.env', text: """\
 NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 NEXT_PUBLIC_TEMP_BACKEND_URI=${NEXT_PUBLIC_TEMP_BACKEND_URI}
+NEXTAUTH_URL=${NEXTAUTH_URL}
 AUTH_SECRET=${AUTH_SECRET}
 AUTH_GOOGLE_ID=${AUTH_GOOGLE_ID}
 AUTH_GOOGLE_SECRET=${AUTH_GOOGLE_SECRET}

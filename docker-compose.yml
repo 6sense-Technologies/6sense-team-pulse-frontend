@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   dep-shield-client:
@@ -21,6 +21,7 @@ services:
       - IMAGE_TAG=${IMAGE_TAG}
       - CONTAINER_NAME=${CONTAINER_NAME}
       - HOST_PORT=${HOST_PORT}
+      - NEXTAUTH_URL=${NEXTAUTH_URL}
     networks:
       - 6sensehq_net
 
