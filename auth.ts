@@ -108,7 +108,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (data?.accessToken) {
             return {
-              emailAddress: data?.userInfro?.emailAddress,
+              emailAddress: data?.userInfo?.emailAddress,
               name: data?.userInfo?.displayName,
               accessToken: data.accessToken,
               refreshToken: data.refreshToken,
