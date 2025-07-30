@@ -104,6 +104,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
           );
           const data = response.data;
+          console.log("🚀 ~ authorize ~ data:", data);
 
           if (data?.accessToken) {
             return {
@@ -205,6 +206,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
     async redirect({ baseUrl }) {
+      console.log("🚀 ~ redirect ~ baseUrl:", baseUrl);
       return `${baseUrl}/dashboard`;
     },
   },
