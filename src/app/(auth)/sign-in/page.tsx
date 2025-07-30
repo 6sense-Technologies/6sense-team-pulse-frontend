@@ -62,6 +62,7 @@ const SignIn = () => {
     },
     onSuccess: () => {
       router.push("/dashboard");
+      console.log("Sign in successful", process.env.NEXT_PUBLIC_TEMP_BACKEND_URI);
     },
     onError: (error: any) => {
       //
