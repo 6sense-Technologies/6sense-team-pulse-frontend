@@ -54,6 +54,7 @@ const SignIn = () => {
         emailAddress: data.emailAddress,
         password: data.password,
       });
+      console.log("🚀 ~ SignIn ~ result:", result);
 
       if (result?.code) {
         throw new Error(result.code);
