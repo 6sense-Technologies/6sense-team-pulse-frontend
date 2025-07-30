@@ -221,6 +221,25 @@ const FeedbackPage = () => {
       ),
     },
     {
+      accessorKey: "sentOrReceived",
+      header: () => <div className="">Source</div>,
+      cell: ({ row }) => {
+        const source = row.original?.sentOrReceived;
+        return (
+          <div className="flex items-center gap-2">
+            {source === "sent" ? (
+              <ArrowUpRight className="w-4 h-4 text-[#0284C7]" />
+            ) : source === "received" ? (
+              <ArrowDownLeft className="w-4 h-4" />
+            ) : (
+              <CircleDot className="w-4 h-4 text-muted-foreground" />
+            )}
+            <span>{source || "-"}</span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "comment",
       header: () => <div className="">Comment</div>,
       cell: ({ row }) => {
@@ -296,13 +315,13 @@ const FeedbackPage = () => {
         <PageHeading title="All Feedbacks" />
 
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-3 md:mb-0 overflow-x-hidden">
-          <div className="flex justify-center md:flex-row gap-x-4 item-start md:items-end w-full lg:ml-2 items-center mb-6 ">
+          <div className="flex md:flex-row gap-x-4 item-start md:items-end w-full lg:ml-2 items-center mb-6 ">
             {/* Search Bar */}
             <Searchbar
               placeholder="Search by name, comments"
               name="search"
               btntext="Search"
-              className=" lg:mt-[18px] gap-x-2 w-full md:max-w-[291px] relative"
+              className="lg:mt-[18px] gap-x-2 w-full md:max-w-[291px] relative"
               variant="light"
               disabled={false}
               value={searchText}
@@ -381,18 +400,15 @@ const FeedbackPage = () => {
             </div>
           </div>
 
-          <div className="w-full">
+          <div className="w-full md:w-auto">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
                   variant={"outline"}
-                  className={cn(
-                    "flex border-red-500 items-center gap-2 justify-start text-left font-normal w-full",
-                    !dateRange.from && "text-muted-foreground",
-                  )}
+                  className={cn("flex items-center gap-2 justify-start text-left font-normal w-full", !dateRange.from && "text-muted-foreground")}
                 >
                   <CalendarIcon className="w-4 h-4" />
-                  <span className="border">
+                  <span className="">
                     {dateRange.from ? (
                       dateRange.to ? (
                         <>
@@ -434,7 +450,7 @@ const FeedbackPage = () => {
             </Popover>
           </div>
 
-          <div className="w-full md:w-auto ml-2">
+          <div className="w-full md:w-auto md:ml-2 mt-4 md:mt-0">
             <Link href={`/feedback/send-feedback`}>
               <Button variant="defaultEx">
                 <span className="text-nowrap flex items-center gap-x-[6px]">Send Feedback</span>
