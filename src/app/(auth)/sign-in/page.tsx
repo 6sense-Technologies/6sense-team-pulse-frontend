@@ -54,6 +54,7 @@ const SignIn = () => {
         emailAddress: data.emailAddress,
         password: data.password,
       });
+      console.log("🚀 ~ SignIn ~ result:", result);
 
       if (result?.code) {
         throw new Error(result.code);
@@ -62,6 +63,7 @@ const SignIn = () => {
     },
     onSuccess: () => {
       router.push("/dashboard");
+      console.log("Sign in successful", process.env.NEXT_PUBLIC_TEMP_BACKEND_URI);
     },
     onError: (error: any) => {
       //
