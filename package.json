@@ -15,7 +15,7 @@
     "release": "npm run build && vercel --prod"
   },
   "dependencies": {
-    "@hookform/resolvers": "^4.1.3",
+    "@hookform/resolvers": "^5.0.0",
     "@next/env": "^15.0.3",
     "@phosphor-icons/react": "^2.1.7",
     "@radix-ui/react-alert-dialog": "^1.1.6",
