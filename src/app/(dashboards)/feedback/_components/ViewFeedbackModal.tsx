@@ -142,12 +142,14 @@ const ViewFeedbackModal = ({ feedbackId }: { feedbackId: string }) => {
                       className="rounded-full"
                     />
                   </div>
+
                   <div>
                     <h1 className="font-semibold text-sm">{singleFeedback?.assignedTo?.displayName}</h1>
                     <p className="font-normal text-xs text-[#334155]">{singleFeedback?.assignedTo?.emailAddress}</p>
                     <p className="font-normal text-xs text-[#334155]">{singleFeedback?.assignedTo?.designation}</p>
                   </div>
                 </div>
+
                 <div className="font-normal text-sm text-[#334155]">
                   <p className="flex items-center gap-2">
                     Posted on:
@@ -174,6 +176,7 @@ const ViewFeedbackModal = ({ feedbackId }: { feedbackId: string }) => {
                   </p>
                 </div>
               </div>
+
               <div className="flex justify-between items-center">
                 <div className="flex items-center w-full mt-4 gap-4">
                   <p className="border rounded-full py-1.5 px-3">{singleFeedback?.type}</p>
@@ -189,6 +192,7 @@ const ViewFeedbackModal = ({ feedbackId }: { feedbackId: string }) => {
                     {singleFeedback?.tone}
                   </p>
                 </div>
+
                 <div className="w-full text-right">
                   {singleFeedback?.type === "Bug" || singleFeedback?.type === "Task" || singleFeedback?.type === "User Story" ? (
                     <p className="text-sm font-normal">
@@ -200,8 +204,8 @@ const ViewFeedbackModal = ({ feedbackId }: { feedbackId: string }) => {
                   ) : null}
                 </div>
               </div>
-              <div className="mt-4 p-4 border rounded-md bg-gray-50">
-                <h3 className="font-medium mb-2">Comment:</h3>
+
+              <div className="mt-4 p-4">
                 <p className="whitespace-pre-wrap break-words overflow-y-auto max-h-60">{singleFeedback?.comment || "No comment provided."}</p>
               </div>
             </div>
