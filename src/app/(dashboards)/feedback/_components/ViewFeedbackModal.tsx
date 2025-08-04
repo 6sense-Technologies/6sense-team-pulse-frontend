@@ -101,7 +101,15 @@ const ViewFeedbackModal = ({ feedbackId }: { feedbackId: string }) => {
   ];
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) {
+          setShowLinkedIssues(false);
+        }
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant="outline">View</Button>
       </DialogTrigger>
