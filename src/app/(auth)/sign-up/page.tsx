@@ -56,7 +56,7 @@ const SignUpContent = () => {
   useEffect(() => {
     if (session.status === "unauthenticated" && token) {
       axios
-        .post("https://ops4team-test.onrender.com/auth/register/verify-invite", {
+        .post(`${process.env.NEXT_PUBLIC_TEMP_BACKEND_URI}/auth/register/verify-invite`, {
           jwtToken: token,
         })
         .then((response) => {
@@ -110,12 +110,10 @@ const SignUpContent = () => {
     if (!session.data?.isVerified && !session.data?.hasOrganization) {
       router.push("/sign-up/verification");
       return <Loader />;
-    }
-    if (session.data?.isVerified && !session.data?.hasOrganization) {
+    } else if (session.data?.isVerified && !session.data?.hasOrganization) {
       router.push("/sign-up/create-organization");
       return <Loader />;
-    }
-    if (session.data?.isVerified && session.data?.hasOrganization && session.status === "authenticated") {
+    } else if (session.data?.isVerified && session.data?.hasOrganization) {
       router.push("/dashboard");
       return <Loader />;
     }
