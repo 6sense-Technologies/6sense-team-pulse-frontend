@@ -38,6 +38,7 @@ const SignUpContent = () => {
   } | null>(null);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const backendUrl = process.env.NEXT_PUBLIC_TEMP_BACKEND_URI;
 
   const handlePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -56,7 +57,7 @@ const SignUpContent = () => {
   useEffect(() => {
     if (session.status === "unauthenticated" && token) {
       axios
-        .post(`${process.env.NEXT_PUBLIC_TEMP_BACKEND_URI}/auth/register/verify-invite`, {
+        .post(`${backendUrl}/auth/register/verify-invite`, {
           jwtToken: token,
         })
         .then((response) => {
