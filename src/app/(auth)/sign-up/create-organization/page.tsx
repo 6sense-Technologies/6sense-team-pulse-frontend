@@ -50,8 +50,8 @@ const OrganizationDetails = () => {
 
   const OrganizationMutation = useMutation({
     mutationFn: (data: TOrgazinationDetails) => handleOrganizationDetails(data, session),
-    onSuccess: () => {
-      update({ hasOrganization: true }).then(() => {
+    onSuccess: (data) => {
+      update({ hasOrganization: true, accessToken: data.accessToken, refreshToken: data.refreshToken }).then(() => {
         router.push("/dashboard");
       });
     },
