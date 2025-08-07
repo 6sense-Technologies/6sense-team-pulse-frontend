@@ -50,8 +50,8 @@ const OrganizationDetails = () => {
 
   const OrganizationMutation = useMutation({
     mutationFn: (data: TOrgazinationDetails) => handleOrganizationDetails(data, session),
-    onSuccess: () => {
-      update({ hasOrganization: true }).then(() => {
+    onSuccess: (data) => {
+      update({ hasOrganization: true, accessToken: data.accessToken, refreshToken: data.refreshToken }).then(() => {
         router.push("/dashboard");
       });
     },
@@ -70,29 +70,30 @@ const OrganizationDetails = () => {
       ...data,
       domainName: data.domainName.toLowerCase(),
     };
+    console.log("🚀 ~ handleSubmission ~ updatedData:", updatedData);
     OrganizationMutation.mutate(updatedData);
   };
 
-  if (status === "loading") {
-    return <Loader />;
-  }
+  // if (status === "loading") {
+  //   return <Loader />;
+  // }
 
-  if (status === "authenticated") {
-    if (!session.isVerified && !session.hasOrganization) {
-      router.push("/sign-up/verification");
-      return <Loader />;
-    }
-    if (session.isVerified && !session.hasOrganization) {
-      router.push("/sign-up/create-organization");
-    }
-    if (session.isVerified && session.hasOrganization && status === "authenticated") {
-      router.push("/dashboard");
-      return <Loader />;
-    }
-  } else if (status === "unauthenticated") {
-    router.push("/sign-in");
-    return <Loader />;
-  }
+  // if (status === "authenticated") {
+  //   if (!session.isVerified && !session.hasOrganization) {
+  //     router.push("/sign-up/verification");
+  //     return <Loader />;
+  //   }
+  //   if (session.isVerified && !session.hasOrganization) {
+  //     router.push("/sign-up/create-organization");
+  //   }
+  //   if (session.isVerified && session.hasOrganization && status === "authenticated") {
+  //     router.push("/dashboard");
+  //     return <Loader />;
+  //   }
+  // } else if (status === "unauthenticated") {
+  //   router.push("/sign-in");
+  //   return <Loader />;
+  // }
 
   return (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 ">

@@ -36,7 +36,22 @@ export const handleOrganizationDetails = async (data: TOrgazinationDetails, sess
     },
   });
 
-  return response.data;
+  console.log("🚀 ~ handleOrganizationDetails ~ response:", response.data);
+  const newOrganization = response.data._id;
+  console.log("🚀 ~ handleOrganizationDetails ~ newOrganization:", newOrganization);
+
+  const changeOrgResponse = await axios.post(
+    `${TEMP_BACKEND_URI}/auth/change-organization`,
+    { organizationId: newOrganization },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  console.log("🚀 ~ changeOrgResponse:", changeOrgResponse.data);
+  return changeOrgResponse.data;
 };
 
 export const handleResendOTP = (data: string) => {
